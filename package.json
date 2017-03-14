@@ -1,0 +1,48 @@
+{
+  "name": "platformsh-client",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/platform-api.min.js",
+  "scripts": {
+    "build": "webpack --env.mode=build",
+    "dev": "webpack --progress --colors --watch --env.mode=dev",
+    "test": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js"
+  },
+  "devDependencies": {
+    "babel": "6.23.0",
+    "babel-cli": "^6.16.0",
+    "babel-core": "6.23.1",
+    "babel-eslint": "7.1.1",
+    "babel-loader": "6.3.2",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "6.22.0",
+    "babel-register": "^6.16.3",
+    "chai": "3.5.0",
+    "eslint": "^3.16.1",
+    "eslint-loader": "1.6.3",
+    "eslint-plugin-no-unused-vars-rest": "^1.0.4",
+    "fake-fetch": "^1.0.0",
+    "fetch-mock": "^5.9.4",
+    "jsdom": "^9.6.0",
+    "mocha": "3.2.0",
+    "mock-local-storage": "^1.0.2",
+    "sinon": "^1.17.6",
+    "webpack": "2.2.1",
+    "yargs": "6.6.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "basename": "^0.1.2",
+    "detect-node": "^2.0.3",
+    "es6-promise": "^4.1.0",
+    "is-scalar": "^1.0.2",
+    "isomorphic-fetch": "^2.2.1",
+    "jquery-param": "^0.2.0",
+    "object.pick": "^1.2.0",
+    "parse_url": "^0.1.1",
+    "slugify": "^1.1.0",
+    "url-pattern": "^1.0.3"
+  }
+}
