@@ -33,7 +33,6 @@ export default class Ressource {
 
     this.copy(data);
     this._url = _urlParser(_url, params, paramDefaults);
-    this._queryUrl = Ressource.getQueryUrl(this._url);
     const parsedUrl = parse_url(_url);
 
     if(parsedUrl[1] === 'http' || parsedUrl[1] === 'https') {
@@ -45,7 +44,7 @@ export default class Ressource {
     return new Proxy(this, handler);
   }
 
-  static getQueryUrl(_url) {
+  static getQueryUrl(_url = '') {
     return _url.substring(0, _url.lastIndexOf('/'));
   }
 

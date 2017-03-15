@@ -9,6 +9,7 @@ export default class SshKey extends Ressource {
     const { id } = sshKey;
 
     super(url, paramDefaults, { id }, sshKey, ['title', 'value']);
+    this._queryUrl = Ressource.getQueryUrl(url);
     this.changed = '';
     this.title = '';
     this.key_id = 0;

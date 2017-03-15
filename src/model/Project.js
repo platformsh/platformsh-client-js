@@ -15,6 +15,7 @@ const paramDefaults = {};
 export default class Project extends Ressource {
   constructor(project, url) {
     super(url, paramDefaults, {}, project);
+    this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
     this.title = '';
     this.created_at = '';

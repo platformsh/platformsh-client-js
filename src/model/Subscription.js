@@ -17,6 +17,7 @@ export default class Subscription extends Ressource {
     const { id } = subscription;
 
     super(url, paramDefaults, { id }, subscription, creatableField);
+    this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
     this.status = '';
     this.owner = '';
