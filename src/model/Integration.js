@@ -1,14 +1,28 @@
 import Ressource from './Ressource';
 
 const paramDefaults = {};
+const types = ['bitbucket', 'hipchat', 'github', 'webhook'];
 
 export default class Integration extends Ressource {
   constructor(integration, url) {
     const { id } = integration;
 
     super(url, paramDefaults, { id }, integration, ['type']);
+    this._required = ['type'];
     this.id = '';
     this.type = '';
+  }
+
+  /**
+   * @inheritdoc
+   */
+  checkProperty(property, value) {
+    const errors = {};
+
+    if (property === 'type' && types.indexOf(value) === -1) {
+      errors[property] = `Invalid type: '${value}'`;
+    }
+    return errors;
   }
 
   static get(params, url) {

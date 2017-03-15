@@ -122,11 +122,23 @@ describe('Client', () => {
     });
   });
 
-  it('Add ssh key', done => {
+  it('Add a bad ssh key', done => {
     fetchMock.mock(`${API_URL}/ssh_keys`, {
       changed: '2017-03-13T17:38:49+01:00'
     }, { method: 'POST'});
-    client.addSshKey('valueofsshkey', 'titleofsshkey').then(result => {
+    client.addSshKey('valueofsshkey', 'titleofsshkey').catch(err => {
+      assert.equal(err.value, 'The SSH key is invalid');
+      done();
+    });
+  });
+
+  it('Add a ssh key', done => {
+    fetchMock.mock(`${API_URL}/ssh_keys`, {
+      changed: '2017-03-13T17:38:49+01:00'
+    }, { method: 'POST'});
+    const validSshKey = 'ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB';// eslint-disable-line max-len
+
+    client.addSshKey(validSshKey, 'titleofsshkey').then(result => {
       assert.equal(result.constructor.name, 'Result');
       done();
     });
@@ -146,7 +158,7 @@ describe('Client', () => {
     fetchMock.mock(`${API_URL}/subscriptions`, {
       'project_region': 'region'
     }, { method: 'POST'});
-    client.createSubscription('region', 'development', 'title', 'storage', 'environments', [])
+    client.createSubscription('region', 'development', 'title', 'storage', 'environments', {uri: 'http://www.google.fr'})
       .then(result => {
         assert.equal(result.constructor.name, 'Result');
         done();

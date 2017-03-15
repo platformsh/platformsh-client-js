@@ -69,11 +69,67 @@ describe('Project', () => {
       title: 'project title'
     }, 'https://test.com/api/projects/ffzefzef3');
 
-    project.addUser('test@test.com', 'role').then(result => {
+    project.addUser('test@test.com', 'admin').then(result => {
       assert.equal(result.constructor.name, 'Result');
       assert.equal(result.getActivities('https://test.com/api/projects/ffzefzef3')[0].constructor.name, 'Activity');
       done();
     });
+  });
+
+  it('Add user in a project with bad role', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/access', {
+      _embedded: {
+        activities: [
+          {
+            completion_percent: 0
+          }
+        ]
+      }
+    }, 'POST');
+
+    const project = new Project({
+      _links: {
+        access: {
+          href: '/api/projects/ffzefzef3/access'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.addUser('test@test.com', 'role').catch(err => {
+      assert.equal(err.role, 'Invalid role: \'role\'');
+      done();
+    });
+  });
+
+  it('Add user in a project with bad email and role', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/access', {
+      _embedded: {
+        activities: [
+          {
+            completion_percent: 0
+          }
+        ]
+      }
+    }, 'POST');
+
+    const project = new Project({
+      _links: {
+        access: {
+          href: '/api/projects/ffzefzef3/access'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.addUser('test@test', 'role')
+      .catch(err => {
+        assert.equal(err.email, 'Invalid email address: \'test@test\'');
+        assert.equal(err.role, 'Invalid role: \'role\'');
+        done();
+      });
   });
 
   it('Get environment', done => {
@@ -226,6 +282,24 @@ describe('Project', () => {
 
     project.addIntegration('bitbucket').then(result => {
       assert.equal(result.constructor.name, 'Result');
+      done();
+    });
+  });
+
+  it('Add integration with bad type', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/integrations', {}, 'POST');
+    const project = new Project({
+      _links: {
+        integrations: {
+          href: '/api/projects/ffzefzef3/integrations'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.addIntegration('test').catch(err => {
+      assert.equal(err.type, 'Invalid type: \'test\'');
       done();
     });
   });

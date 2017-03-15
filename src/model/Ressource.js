@@ -65,10 +65,36 @@ export default class Ressource {
     });
   }
 
+  checkProperty() {
+    return undefined;
+  }
+
+  /**
+  * Validate values for update.
+  *
+  * @param array values
+  *
+  * @return string{} An object of validation errors.
+  */
+  checkUpdate(values = {}) {
+    let errors;
+
+    for(let key in Object.keys(values)) {
+      errors = { ...errors, ...this.checkProperty(key, values[key])};
+    }
+    return Object.keys(errors).length ? errors : undefined;
+  }
+
   update(data) {
     this.copy(data);
     if(!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
+    }
+
+    const errors = this.checkUpdate(this.data);
+
+    if(errors) {
+      return Promise.reject(errors);
     }
 
     const parsedUrl = _urlParser(this._url, this.data, this._paramDefaults);
@@ -78,9 +104,49 @@ export default class Ressource {
     });
   }
 
+  /**
+  * Get the required properties for creating a new resource.
+  *
+  * @return array
+  */
+  getRequired() {
+    return this._required || [];
+  }
+
+/**
+  * Validate a new resource.
+  *
+  * @param array $data
+  *
+  * @return string{} An object of validation errors.
+  */
+  checkNew(values = {}) {
+    let errors = {};
+    const dataKeys = Object.keys(values);
+
+    const missing = this.getRequired().filter(function(i) {return dataKeys.indexOf(i) < 0;});
+
+    if (missing.length) {
+      errors._error = `Missing ${missing.join(', ')}`;
+    }
+
+    for(let i = 0 ;i < dataKeys.length;i++) {
+      const key = dataKeys[i];
+
+      errors = { ...errors, ...this.checkProperty(key, values[key])};
+    }
+
+    return Object.keys(errors).length ? errors : undefined;
+  }
+
   save() {
     if(!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
+    }
+    const errors = this.checkNew(this.data);
+
+    if(errors) {
+      return Promise.reject(errors);
     }
     const url = this._queryUrl || this._url;
 

@@ -38,4 +38,23 @@ export default class Subscription extends Ressource {
 
     return super.get(url, { id }, paramDefaults, queryParams);
   }
+
+  /**
+  * @inheritdoc
+  */
+  checkProperty(property, value) {
+    const errors = {};
+
+    if (property === 'storage' && value < 1024) {
+      errors[property] = 'Storage must be at least 1024 MiB';
+    } else if (property === 'activation_callback') {
+      if(!value.uri) {
+        errors[property] = "A 'uri' key is required in the activation callback";
+      } else if (!isUrl(value.uri)) {
+        errors[property] = 'Invalid URI in activation callback';
+      }
+    }
+
+    return errors;
+  }
 }

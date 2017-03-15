@@ -7,6 +7,7 @@ export default class Domain extends Ressource {
     super(url, paramDefaults, { }, domain, ['name', 'ssl']);
     this.id = '';
     this.name = '';
+    this._required = ['name'];
   }
 
   static get(params, url) {
