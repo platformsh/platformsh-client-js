@@ -1,11 +1,11 @@
-import User from './User';
+import Account from './Account';
 import Project from './Project';
 import SshKey from './SshKey';
 import Subscription from './Subscription';
-import Activity from './Activity'
+import Activity from './Activity';
 
 export default {
-  User,
+  Account,
   Project,
   SshKey,
   Subscription,

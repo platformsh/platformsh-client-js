@@ -1,5 +1,5 @@
 import Ressource from './Ressource';
-import User from './User';
+import Account from './Account';
 
 const paramDefaults = {};
 
@@ -22,7 +22,7 @@ export default class ProjectAccess extends Ressource {
   * @return Account
   */
   static getAccount() {
-    return User.get(this.id).then(account => {
+    return Account.get(this.id).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);
       }
