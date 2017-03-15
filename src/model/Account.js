@@ -6,11 +6,16 @@ const paramDefaults = {};
 
 export default class Account extends Ressource {
   constructor(account) {
-    const { id, ...queryParams } = account;
+    const { id } = account;
 
     super(url, paramDefaults, { id }, account);
+    this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
-    this.name = '';
+    this.created_at = '';
+    this.updated_at = '';
+    this.has_key = false;
+    this.display_name = '';
+    this.email = '';
   }
 
   static get(params) {
@@ -20,8 +25,6 @@ export default class Account extends Ressource {
   }
 
   static query(params) {
-    const { id, ...queryParams } = params;
-
-    return super.query(url, { id }, paramDefaults, queryParams);
+    return super.query(this.getQueryUrl(url), {}, paramDefaults, params);
   }
 }
