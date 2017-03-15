@@ -74,7 +74,7 @@ export default class Ressource {
     const parsedUrl = _urlParser(this._url, this.data, this._paramDefaults);
 
     return request(parsedUrl, 'PATCH', pick(this, this._modifiableField)).then(data => {
-      return new Result(data, this._url);
+      return new Result(data, this._url, this.constructor);
     });
   }
 
@@ -85,13 +85,13 @@ export default class Ressource {
     const url = this._queryUrl || this._url;
 
     return request(url, 'POST', pick(this, this._creatableField)).then(data => {
-      return new Result(data, url);
+      return new Result(data, url, this.constructor);
     });
   }
 
   delete() {
     return request(this._url, 'DELETE', {}, this._baseUrl).then(result => {
-      return new Result(result, this._url);
+      return new Result(result, this._url, this.constructor);
     });
   }
 

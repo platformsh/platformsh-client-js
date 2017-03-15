@@ -1,7 +1,8 @@
 export default class Result {
-  constructor(result, url) {
+  constructor(result, url, ressourceClass) {
     this._url = url;
     this.data = result;
+    this._ressourceClass = ressourceClass;
   }
 
   /**
@@ -32,4 +33,23 @@ export default class Result {
 
     return this.data._embedded.activities.map(activity => new Activity(activity, this._url));
   }
+
+  /**
+   * Get the entity embedded in the result.
+   *
+   * @throws \Exception If no entity was embedded.
+   *
+   * @return Resource
+   *   An instance of Resource.
+   */
+  getEntity() {
+    const data = this.data['_embedded']['entity'];
+
+    if (!data || !this._ressourceClass) {
+      throw new Error('No entity found in result');
+    }
+
+    return this._ressourceClass(data, this._url);
+  }
+
 }
