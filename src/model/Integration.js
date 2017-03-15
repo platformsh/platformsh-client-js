@@ -6,9 +6,9 @@ export default class Integration extends Ressource {
   constructor(integration, url) {
     const { id } = integration;
 
-    super(url, paramDefaults, { id }, integration);
+    super(url, paramDefaults, { id }, integration, ['type']);
     this.id = '';
-    this.name = '';
+    this.type = '';
   }
 
   static get(params, url) {

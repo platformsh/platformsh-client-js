@@ -11,7 +11,7 @@ export default (url = '', params = {}, paramDefaults = {}) => {
 
   for(let i = 0;i < paramsList.length;i++) {
     const paramName = paramsList[i].substring(1);
-    const fieldName = paramDefaults[`@${paramName}`] || paramName;
+    const fieldName = paramDefaults[paramName] || paramName;
 
     if(params[fieldName]) {
       parsedUrl = parsedUrl.replace(paramsList[i], params[fieldName]);

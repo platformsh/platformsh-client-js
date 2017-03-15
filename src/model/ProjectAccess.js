@@ -5,7 +5,7 @@ const paramDefaults = {};
 
 export default class ProjectAccess extends Ressource {
   constructor(projectAccess, url) {
-    super(url, paramDefaults, {}, projectAccess);
+    super(url, paramDefaults, {}, projectAccess, ['role', 'user', 'email']);
     this.id = '';
     this.role = '';
   }

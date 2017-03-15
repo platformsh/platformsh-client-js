@@ -23,6 +23,7 @@ export default class Project extends Ressource {
     this.owner = '';
     this.subscription = {};
     this.subscription_id = '';
+    this.status = '';
   }
 
   static get(params, url) {
@@ -98,12 +99,12 @@ export default class Project extends Ressource {
   /**
   * Get a single environment of the project.
   *
-  * @param string $id
+  * @param string id
   *
   * @return Environment|false
   */
   getEnvironment(id) {
-    return Environment.get(id, this.getLink('environments'));
+    return Environment.get({ id }, this.getLink('environments'));
   }
 
   /**
@@ -169,7 +170,7 @@ export default class Project extends Ressource {
   *
   * @return Result
   */
-  addDomain(name, ssl) {
+  addDomain(name, ssl = []) {
     const body = { name };
 
     if (ssl.length) {
@@ -241,7 +242,7 @@ export default class Project extends Ressource {
   * @return Activity[]
   */
   getActivities(limit = 0, type, startsAt) {
-    const params = { limit, type, starts_at: new Date(startsAt) };
+    const params = { limit, type, starts_at: startsAt && new Date(startsAt) };
 
     return Activity.query(params, `${this.getUri()}/activities`);
   }
@@ -296,14 +297,28 @@ export default class Project extends Ressource {
       visible_build: visibleBuild,
       visible_runtime: visibleRuntime
     };
-    const existing = this.getVariable(name);
 
-    if (existing) {
-      return existing.update(values);
-    }
-    values.name = name;
-    const projectLevelVariable = new ProjectLevelVariable(values, this.getLink('#manage-variables'));
+    return this.getVariable(name).then(variable => {
+      if (variable && variable.name) {
+        return variable.update(values);
+      }
+      values.name = name;
+      const projectLevelVariable = new ProjectLevelVariable(values, this.getLink('#manage-variables'));
 
-    return projectLevelVariable.save();
+      return projectLevelVariable.save();
+    });
   }
+
+  /**
+   * Get a single variable.
+   *
+   * @param string id
+   *   The name of the variable to retrieve.
+   * @return ProjectLevelVariable|false
+   *   The variable requested, or False if it is not defined.
+   */
+  getVariable(name) {
+    return ProjectLevelVariable.get({ name }, this.getLink('#manage-variables'));
+  }
+
 }

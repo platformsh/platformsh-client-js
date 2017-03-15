@@ -126,9 +126,8 @@ describe('Client', () => {
     fetchMock.mock(`${API_URL}/ssh_keys`, {
       changed: '2017-03-13T17:38:49+01:00'
     }, { method: 'POST'});
-    client.addSshKey('valueofsshkey', 'titleofsshkey').then(sshkey => {
-      assert.equal(sshkey.changed, '2017-03-13T17:38:49+01:00');
-      assert.equal(sshkey.constructor.name, 'SshKey');
+    client.addSshKey('valueofsshkey', 'titleofsshkey').then(result => {
+      assert.equal(result.constructor.name, 'Result');
       done();
     });
   });
@@ -148,9 +147,8 @@ describe('Client', () => {
       'project_region': 'region'
     }, { method: 'POST'});
     client.createSubscription('region', 'development', 'title', 'storage', 'environments', [])
-      .then(subscription => {
-        assert.equal(subscription.project_region, 'region');
-        assert.equal(subscription.constructor.name, 'Subscription');
+      .then(result => {
+        assert.equal(result.constructor.name, 'Result');
         done();
       });
   });

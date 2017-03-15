@@ -40,6 +40,7 @@ export default class Ressource {
     }
     this._creatableField = _creatableField;
     this._modifiableField = _modifiableField;
+    this._paramDefaults = paramDefaults;
 
     return new Proxy(this, handler);
   }
@@ -65,12 +66,15 @@ export default class Ressource {
   }
 
   update(data) {
-    this.data = { data, ...this.data };
+    this.copy(data);
     if(!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
     }
-    return request(this._url, 'PATCH', pick(this, this._modifiableField)).then(data => {
-      return new this.constructor(data, this._url);
+
+    const parsedUrl = _urlParser(this._url, this.data, this._paramDefaults);
+
+    return request(parsedUrl, 'PATCH', pick(this, this._modifiableField)).then(data => {
+      return new Result(data, this._url);
     });
   }
 
@@ -92,7 +96,7 @@ export default class Ressource {
   }
 
   copy(data) {
-    this.data = { ...data };
+    this.data = { ...data, ...this.data };
   }
 
   static wrap(objects) {
@@ -129,7 +133,7 @@ export default class Ressource {
   * @return bool
   */
   hasLink(rel) {
-    return this.data['_links'][rel]['href'];
+    return this.data._links[rel] && this.data._links[rel].href;
   }
 
   /**
