@@ -1,6 +1,6 @@
-
 export default class Result {
-  constructor(result) {
+  constructor(result, url) {
+    this._url = url;
     this.data = result;
   }
 
@@ -23,10 +23,13 @@ export default class Result {
   *
   * @return Activity[]
   */
-  getActivities(url, ResultClass) {
+  getActivities() {
     if (!this.data._embedded.activities) {
       return [];
     }
-    return this.data._embedded.activities.map(activity => new ResultClass(url, activity));
+    // Workaround the cycle dependency with webpack Ressource->Result->Activity->Ressouce...
+    const Activity = require('./Activity');
+
+    return this.data._embedded.activities.map(activity => new Activity(activity, this._url));
   }
 }

@@ -2,7 +2,6 @@ import parse_url from 'parse_url';
 import slugify from 'slugify';
 
 import Ressource from './Ressource';
-import Activity from './Activity';
 
 const paramDefaults = {};
 
@@ -61,7 +60,7 @@ export default class Environment extends Ressource {
   branch(title, id = this.sanitizeId(title)) {
     const body = { name: id, title };
 
-    return this.runLongOperation('branch', 'POST', body, Activity);
+    return this.runLongOperation('branch', 'POST', body);
   }
 
   /**
@@ -105,7 +104,7 @@ export default class Environment extends Ressource {
     if (this.isActive()) {
       throw new Error('Active environments cannot be activated');
     }
-    return this.runLongOperation('activate', '', {}, Activity);
+    return this.runLongOperation('activate', '', {});
   }
 
   /**
@@ -119,7 +118,7 @@ export default class Environment extends Ressource {
     if (!this.isActive()) {
       throw new Error('Inactive environments cannot be deactivated');
     }
-    return this.runLongOperation('deactivate', 'POST', {}, Activity);
+    return this.runLongOperation('deactivate', 'POST', {});
   }
 
   /**
@@ -133,6 +132,6 @@ export default class Environment extends Ressource {
     if (!this.parent) {
       throw new Error('The environment does not have a parent, so it cannot be merged');
     }
-    return this.runLongOperation('merge', 'POST', {}, Activity);
+    return this.runLongOperation('merge', 'POST', {});
   }
 }

@@ -121,7 +121,7 @@ export default class Activity extends Ressource {
       throw new Error('Cannot restore backup (not complete)');
     }
 
-    return this.runLongOperation('restore', 'POST', {}, Activity);
+    return this.runLongOperation('restore', 'POST', {});
   }
 
   /**

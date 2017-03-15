@@ -79,13 +79,17 @@ export default class Ressource {
     if(!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
     }
-    return request(this._queryUrl, 'POST', pick(this, this._creatableField)).then(data => {
-      return new this.constructor(data, this._url);
+    const url = this._queryUrl || this._url;
+
+    return request(url, 'POST', pick(this, this._creatableField)).then(data => {
+      return new Result(data, url);
     });
   }
 
   delete() {
-    return request(this._url, 'DELETE', {}, this._baseUrl);
+    return request(this._url, 'DELETE', {}, this._baseUrl).then(result => {
+      return new Result(result, this._url);
+    });
   }
 
   copy(data) {
@@ -198,10 +202,10 @@ export default class Ressource {
   *
   * @return Activity
   */
-  runLongOperation(op, method = 'POST', body = {}, ResultClass) {
+  runLongOperation(op, method = 'POST', body = {}) {
     return this.runOperation(op, method, body).then(data => {
-      const result = new Result(data);
-      const activities = result.getActivities(this.getUri(), ResultClass);
+      const result = new Result(data, this.getUri());
+      const activities = result.getActivities();
 
       if (activities.length !== 1) {
         throw new Error(`Expected one activity, found ${activities.length }`);
