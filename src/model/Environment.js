@@ -35,7 +35,7 @@ export default class Environment extends Ressource {
   */
   getSshUrl(app = '') {
     if (!this.hasLink('ssh')) {
-      throw new Error(`The environment '${this.id}' does not have an SSH URL. It may be currently inactive, or you may not have permission to SSH.`);
+      throw new Error(`The environment '${this.id}' does not have an SSH URL. It may be currently inactive, or you may not have permission to SSH.`); // eslint-disable-line max-len
     }
     const sshUrl = parse_url(this.getLink('ssh'));
     const host = sshUrl[3];

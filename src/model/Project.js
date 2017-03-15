@@ -74,9 +74,9 @@ export default class Project extends Ressource {
   /**
   * Add a new user to a project.
   *
-  * @param string $user   The user's UUID or email address (see $byUuid).
-  * @param string $role   One of ProjectAccess::$roles.
-  * @param bool   $byUuid Set true if $user is a UUID, or false (default) if
+  * @param string user   The user's UUID or email address (see $byUuid).
+  * @param string role   One of ProjectAccess::$roles.
+  * @param bool   byUuid Set true if $user is a UUID, or false (default) if
   *                       $user is an email address.
   *
   * Note that for legacy reasons, the default for $byUuid is false for
@@ -270,15 +270,15 @@ export default class Project extends Ressource {
   /**
   * Set a variable.
   *
-  * @param string $name
+  * @param string name
   *   The name of the variable to set.
-  * @param mixed  $value
+  * @param mixed  value
   *   The value of the variable to set.  If non-scalar it will be JSON-encoded automatically.
-  * @param bool $json
+  * @param bool json
   *   True if this value is an encoded JSON value. false if it's a primitive.
-  * @param bool $visibleBuild
+  * @param bool visibleBuild
   *   True if this variable should be exposed during the build phase, false otherwise.
-  * @param bool $visibleRuntime
+  * @param bool visibleRuntime
   *   True if this variable should be exposed during deploy and runtime, false otherwise.
   *
   * @return Result

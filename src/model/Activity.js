@@ -49,7 +49,7 @@ export default class Activity extends Ressource {
   *                                messages as they are received. It will be
   *                                passed one argument: the message as a
   *                                string.
-  * @param int|float $pollInterval The polling interval, in seconds.
+  * @param int|float pollInterval The polling interval, in seconds.
   */
   wait(onPoll, onLog, pollInterval = 1) {
     const log = this.log;
@@ -135,31 +135,31 @@ export default class Activity extends Ressource {
 
     switch (type) {
       case 'project.domain.create':
-        return `${payload['user']['display_name']} added domain ${payload['domain']['name']}`;
+        return `${payload.user.display_name} added domain ${payload.domain.name}`;
       case 'project.domain.delete':
-        return `${payload['user']['display_name']} deleted domain ${payload['domain']['name']}`;
+        return `${payload.user.display_name} deleted domain ${payload.domain.name}`;
       case 'project.domain.update':
-        return `${payload['user']['display_name']} updated domain ${payload['domain']['name']}`;
+        return `${payload.user.display_name} updated domain ${payload.domain.name}`;
       case 'project.modify.title':
-        return `${payload['user']['display_name']} changed project name to ${payload['new_title']}`;
+        return `${payload.user.display_name} changed project name to ${payload.new_title}`;
       case 'environment.activate':
-        return `${payload['user']['display_name']} activated environment ${payload['environment']['title']}`;
+        return `${payload.user.display_name} activated environment ${payload.environment.title}`;
       case 'environment.backup':
-        return `${payload['user']['display_name']} created a snapshot of ${payload['environment']['title']}`;
+        return `${payload.user.display_name} created a snapshot of ${payload.environment.title}`;
       case 'environment.branch':
-        return `${payload['user']['display_name']} branched ${payload['outcome']['title']} from ${payload['parent']['title']}`;
+        return `${payload.user.display_name} branched ${payload.outcome.title} from ${payload.parent.title}`;
       case 'environment.delete':
-        return `${payload['user']['display_name']} deleted environment ${payload['environment']['title']}`;
+        return `${payload.user.display_name} deleted environment ${payload.environment.title}`;
       case 'environment.deactivate':
-        return `${payload['user']['display_name']} deactivated environment ${payload['environment']['title']}`;
+        return `${payload.user.display_name} deactivated environment ${payload.environment.title}`;
       case 'environment.initialize':
-        return `${payload['user']['display_name']} initialized environment ${payload['outcome']['title']} with profile ${payload['profile']}`;
+        return `${payload.user.display_name} initialized environment ${payload.outcome.title} with profile ${payload.profile}`; // eslint-disable-line max-len
       case 'environment.merge':
-        return `${payload['user']['display_name']} merged ${payload['outcome']['title']} into ${payload['environment']['title']}`;
+        return `${payload.user.display_name} merged ${payload.outcome.title} into ${payload.environment.title}`;
       case 'environment.push':
-        return `${payload['user']['display_name']} pushed to ${payload['environment']['title']}`;
+        return `${payload.user.display_name} pushed to ${payload.environment.title}`;
       case 'environment.restore':
-        return `${payload['user']['display_name']} restored ${payload['environment']} from snapshot ${payload['backup_name'].substr(0, 7)}`;
+        return `${payload.user.display_name} restored ${payload.environment} from snapshot ${payload.backup_name.substr(0, 7)}`; // eslint-disable-line max-len
       case 'environment.synchronize':
         const syncedCode = !payload['synchronize_code'];
         let syncType = 'data';
@@ -169,31 +169,31 @@ export default class Activity extends Ressource {
         } else if (syncedCode) {
           syncType = 'code';
         }
-        return `${payload['user']['display_name']} synced ${payload['outcome']['title']}'s ${syncType} with ${payload['environment']['title']}`;
+        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${syncType} with ${payload.environment.title}`; // eslint-disable-line max-len
       case 'environment.access.add':
-        return `${payload['user']['display_name']} added ${payload['access']['display_name']} to ${payload['environment']['title']}`;
+        return `${payload.user.display_name} added ${payload.access.display_name} to ${payload.environment.title}`;
       case 'environment.access.remove':
-        return `${payload['user']['display_name']} removed ${payload['access']['display_name']} from ${payload['environment']['title']}`;
+        return `${payload.user.display_name} removed ${payload.access.display_name} from ${payload.environment.title}`;
       case 'environment.variable.create':
-        return `${payload['user']['display_name']} added variable ${payload['variable']['name']}`;
+        return `${payload.user.display_name} added variable ${payload.variable.name}`;
       case 'environment.variable.delete':
-        return `${payload['user']['display_name']} deleted variable ${payload['variable']['name']}`;
+        return `${payload.user.display_name} deleted variable ${payload.variable.name}`;
       case 'environment.variable.update':
-        return `${payload['user']['display_name']} modified variable ${payload['variable']['name']}`;
+        return `${payload.user.display_name} modified variable ${payload.variable.name}`;
       case 'environment.update.http_access':
-        return `${payload['user']['display_name']} updated HTTP Access settings on environment ${payload['environment']['title']}`;
+        return `${payload.user.display_name} updated HTTP Access settings on environment ${payload.environment.title}`;
       case 'environment.update.smtp':
-        return `${payload['user']['display_name']} updated SMTP settings on environment ${payload['environment']['title']}`;
+        return `${payload.user.display_name} updated SMTP settings on environment ${payload.environment.title}`;
       case 'environment.route.create':
-        return `${payload['user']['display_name']} added route ${payload['route']['route']}`;
+        return `${payload.user.display_name} added route ${payload.route.route}`;
       case 'environment.route.delete':
-        return `${payload['user']['display_name']} deleted route ${payload['route']['route']}`;
+        return `${payload.user.display_name} deleted route ${payload.route.route}`;
       case 'environment.route.update':
-        return `${payload['user']['display_name']} modified route ${payload['route']['route']}`;
+        return `${payload.user.display_name} modified route ${payload.route.route}`;
       case 'environment.subscription.update':
-        return `${payload['user']['display_name']} modified subscription`;
+        return `${payload.user.display_name} modified subscription`;
       case 'project.create':
-        return `${payload['user']['display_name']} created a new project ${payload['outcome']['title']}`;
+        return `${payload.user.display_name} created a new project ${payload.outcome.title}`;
     }
     return type;
   }
