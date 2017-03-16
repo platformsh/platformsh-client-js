@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --env.mode=build",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
-    "test": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js"
+    "test": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
+    "eslint": "eslint ."
   },
   "devDependencies": {
     "babel": "6.23.0",
@@ -27,6 +28,8 @@
     "jsdom": "^9.6.0",
     "mocha": "3.2.0",
     "mock-local-storage": "^1.0.2",
+    "pre-commit": "^1.2.2",
+    "pre-push": "^0.1.1",
     "sinon": "^1.17.6",
     "webpack": "2.2.1",
     "yargs": "6.6.0"
@@ -47,5 +50,11 @@
     "parse_url": "^0.1.1",
     "slugify": "^1.1.0",
     "url-pattern": "^1.0.3"
-  }
+  },
+  "pre-commit": [
+    "eslint"
+  ],
+  "pre-push": [
+    "test"
+  ]
 }
