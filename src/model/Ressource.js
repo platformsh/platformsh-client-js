@@ -156,13 +156,13 @@ export default class Ressource {
   }
 
   delete() {
-    return request(this._url, 'DELETE', {}, this._baseUrl).then(result => {
+    return request(this._url, 'DELETE', {}).then(result => {
       return new Result(result, this._url, this.constructor);
     });
   }
 
   copy(data) {
-    this.data = { ...data, ...this.data };
+    this.data = { ...this.data, ...data };
   }
 
   static wrap(objects) {
@@ -173,10 +173,10 @@ export default class Ressource {
   * Refresh the resource.
   *
   */
-  refresh() {
-    return this.get(this._url).then(data => {
+  refresh(params) {
+    return request(this.getUri(), 'GET', params).then(data => {
       this.copy(data);
-      return data;
+      return this;
     });
   }
 
