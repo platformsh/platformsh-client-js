@@ -18,10 +18,10 @@ export default class Account extends Ressource {
     this.email = '';
   }
 
-  static get(params) {
+  static get(params, customUrl = url) {
     const { id, ...queryParams } = params;
 
-    return super.get(url, { id }, paramDefaults, queryParams);
+    return super.get(customUrl, { id }, paramDefaults, queryParams);
   }
 
   static query(params) {
