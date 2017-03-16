@@ -76,12 +76,12 @@ export default class Project extends Ressource {
   /**
   * Add a new user to a project.
   *
-  * @param string user   The user's UUID or email address (see $byUuid).
+  * @param string user   The user's UUID or email address (see byUuid).
   * @param string role   One of ProjectAccess::$roles.
-  * @param bool   byUuid Set true if $user is a UUID, or false (default) if
-  *                       $user is an email address.
+  * @param bool   byUuid Set true if user is a UUID, or false (default) if
+  *                       user is an email address.
   *
-  * Note that for legacy reasons, the default for $byUuid is false for
+  * Note that for legacy reasons, the default for byUuid is false for
   * Project::addUser(), but true for Environment::addUser().
   *
   * @return Result
@@ -132,7 +132,7 @@ export default class Project extends Ressource {
   /**
   * Get a list of environments for the project.
   *
-  * @param int $limit
+  * @param int limit
   *
   * @return Environment[]
   */
@@ -143,7 +143,7 @@ export default class Project extends Ressource {
   /**
   * Get a list of domains for the project.
   *
-  * @param int $limit
+  * @param int limit
   *
   * @return Domain[]
   */
@@ -154,7 +154,7 @@ export default class Project extends Ressource {
   /**
   * Get a single domain of the project.
   *
-  * @param string $name
+  * @param string name
   *
   * @return Domain|false
   */
@@ -165,8 +165,8 @@ export default class Project extends Ressource {
   /**
   * Add a domain to the project.
   *
-  * @param string $name
-  * @param array  $ssl
+  * @param string name
+  * @param array  ssl
   *
   * @return Result
   */
@@ -184,7 +184,7 @@ export default class Project extends Ressource {
   /**
   * Get a list of integrations for the project.
   *
-  * @param int $limit
+  * @param int limit
   *
   * @return Integration[]
   */
@@ -195,7 +195,7 @@ export default class Project extends Ressource {
   /**
   * Get a single integration of the project.
   *
-  * @param string $id
+  * @param string id
   *
   * @return Integration|false
   */
@@ -286,7 +286,7 @@ export default class Project extends Ressource {
   * @return Result
   */
   setVariable(name, value, json = false, visibleBuild = true, visibleRuntime = true) {
-    // If $value isn't a scalar, assume it's supposed to be JSON.
+    // If value isn't a scalar, assume it's supposed to be JSON.
     if (!is_scalar(value)) {
       value = JSON.parse(value);
       json = true;

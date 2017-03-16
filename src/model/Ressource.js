@@ -116,7 +116,7 @@ export default class Ressource {
 /**
   * Validate a new resource.
   *
-  * @param array $data
+  * @param array data
   *
   * @return string{} An object of validation errors.
   */
@@ -238,8 +238,8 @@ export default class Ressource {
   /**
   * Make a URL absolute, based on the base URL.
   *
-  * @param string $relativeUrl
-  * @param string $_baseUrl
+  * @param string relativeUrl
+  * @param string _baseUrl
   *
   * @return string
   */

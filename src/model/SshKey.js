@@ -42,7 +42,7 @@ export default class SshKey extends Ressource {
   /**
    * Validate an SSH public key.
    *
-   * @param string $value
+   * @param string value
    *
    * @return bool
    */

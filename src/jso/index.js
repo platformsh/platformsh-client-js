@@ -362,88 +362,9 @@ export const jso_getToken = (providerid, scopes) => {
 };
 
 export const jso_registerRedirectHandler = callback => {
-	api_redirect = callback;
+  api_redirect = callback;
 };
 
 export const jso_registerStorageHandler = object => {
-	api_storage = object;
+  api_storage = object;
 };
-
-
-/*
-* From now on, we only perform tasks that require jQuery.
-* Like adding the $.oajax function.
-*/
-// if (typeof $ === 'undefined') return;
-/*
-$.oajax = function(settings) {
-var
-allowia,
-scopes,
-token,
-providerid,
-co;
-
-providerid = settings.jso_provider;
-allowia = settings.jso_allowia || false;
-scopes = settings.jso_scopes;
-token = api_storage.getToken(providerid, scopes);
-co = config[providerid];
-
-// var successOverridden = settings.success;
-// settings.success = function(response) {
-// }
-
-var errorOverridden = settings.error || null;
-
-var performAjax = function() {
-// log("Perform ajax!");
-
-if (!token) throw "Could not perform AJAX call because no valid tokens was found.";
-
-if (co["presenttoken"] && co["presenttoken"] === "qs") {
-// settings.url += ((h.indexOf("?") === -1) ? '?' : '&') + "access_token=" + encodeURIComponent(token["access_token"]);
-if (!settings.data) settings.data = {};
-settings.data["access_token"] = token["access_token"];
-} else {
-if (!settings.headers) settings.headers = {};
-settings.headers["Authorization"] = "Bearer " + token["access_token"];
-}
-return $.ajax(settings);
-};
-
-settings.error = function(jqXHR, textStatus, errorThrown) {
-log('error(jqXHR, textStatus, errorThrown)');
-log(jqXHR);
-log(textStatus);
-log(errorThrown);
-
-if (jqXHR.status === 401) {
-
-log("Token expired. About to delete this token");
-log(token);
-api_storage.wipeTokens(providerid);
-
-}
-if (errorOverridden && typeof errorOverridden === 'function') {
-errorOverridden(jqXHR, textStatus, errorThrown);
-}
-}
-
-
-if (!token) {
-if (allowia) {
-log("Perform authrequest");
-jso_authrequest(providerid, scopes, function() {
-token = api_storage.getToken(providerid, scopes);
-performAjax();
-});
-return;
-} else {
-throw "Could not perform AJAX call because no valid tokens was found.";
-}
-}
-
-
-return performAjax();
-};*/

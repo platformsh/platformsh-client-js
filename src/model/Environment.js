@@ -213,7 +213,7 @@ export default class Environment extends Ressource {
   /**
   * Get a list of variables.
   *
-  * @param int $limit
+  * @param int limit
   *
   * @return Variable[]
   */
@@ -306,7 +306,7 @@ export default class Environment extends Ressource {
   /**
   * Get a user's access to this environment.
   *
-  * @param string $uuid
+  * @param string uuid
   *
   * @return EnvironmentAccess|false
   */

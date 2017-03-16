@@ -53,10 +53,10 @@ export default class Client {
   /**
   * Get a single project at a known location.
   *
-  * @param string $id       The project ID.
-  * @param string $hostname The hostname of the Platform.sh regional API,
+  * @param string id       The project ID.
+  * @param string hostname The hostname of the Platform.sh regional API,
   *                         e.g. 'eu.platform.sh' or 'us.platform.sh'.
-  * @param bool   $https    Whether to use HTTPS (default: true).
+  * @param bool   https    Whether to use HTTPS (default: true).
   *
   * @internal It's now better to use getProject(). This method will be made
   *           private in a future release.
@@ -136,7 +136,7 @@ export default class Client {
   /**
   * Get a single SSH key by its ID.
   *
-  * @param string|int $id
+  * @param string|int id
   *
   * @return SshKey|false
   */
@@ -149,8 +149,8 @@ export default class Client {
   /**
   * Add an SSH public key to the logged-in user's account.
   *
-  * @param string $value The SSH key value.
-  * @param string $title A title for the key (optional).
+  * @param string value The SSH key value.
+  * @param string title A title for the key (optional).
   *
   * @return Result
   */
