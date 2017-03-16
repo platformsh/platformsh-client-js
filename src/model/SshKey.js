@@ -1,10 +1,11 @@
 import atob from 'atob';
 
 import Ressource from './Ressource';
-import { API_URL } from '../config';
+import { getConfig } from '../config';
 
+const { api_url } = getConfig();
 const paramDefaults = {};
-const url = `${API_URL}/ssh_keys/:id`;
+const url = `${api_url}/ssh_keys/:id`;
 
 export default class SshKey extends Ressource {
   constructor(sshKey) {

@@ -3,14 +3,15 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
-import { API_URL, AUTHENTICATION_URL } from '../src/config';
+import { getConfig } from '../src/config';
 import Client from '../src';
 
 describe('Client', () => {
   let client;
+  const { api_url, authentication_url } = getConfig();
 
   beforeEach(function() {
-    fetchMock.mock(`${AUTHENTICATION_URL}/oauth2/token`, {'access_token': 'test'});
+    fetchMock.mock(`${authentication_url}/oauth2/token`, {'access_token': 'test'});
     client = new Client();
   });
 
@@ -19,7 +20,7 @@ describe('Client', () => {
   });
 
   it('Get current Account', done => {
-    fetchMock.mock(`${API_URL}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       projects: [
@@ -37,7 +38,7 @@ describe('Client', () => {
   });
 
   it('Get project already in the current user', done => {
-    fetchMock.mock(`${API_URL}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       projects: [
@@ -56,7 +57,7 @@ describe('Client', () => {
   });
 
   it('Get project not already in the current user but hostname is known', done => {
-    fetchMock.mock(`${API_URL}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       projects: [
@@ -76,7 +77,7 @@ describe('Client', () => {
   });
 
   it('Get project not already in the current user and hostname is unknown', done => {
-    fetchMock.mock(`${API_URL}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       projects: [
@@ -88,7 +89,7 @@ describe('Client', () => {
       ]
     });
     fetchMock.mock('https://test.com/api/projects/ffzefzef3', { id: 'ffzefzef3', title: 'greatProject' });
-    fetchMock.mock(`${API_URL}/projects/ffzefzef3`, { endpoint: 'https://test.com/api/projects/ffzefzef3' });
+    fetchMock.mock(`${api_url}/projects/ffzefzef3`, { endpoint: 'https://test.com/api/projects/ffzefzef3' });
     client.getProject('ffzefzef3').then(project => {
       assert.equal(project.title, 'greatProject');
       assert.equal(project.constructor.name, 'Project');
@@ -97,7 +98,7 @@ describe('Client', () => {
   });
 
   it('Get ssh keys', done => {
-    fetchMock.mock(`${API_URL}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       'ssh_keys': [{
@@ -112,7 +113,7 @@ describe('Client', () => {
   });
 
   it('Get ssh key', done => {
-    fetchMock.mock(`${API_URL}/ssh_keys/theId`, {
+    fetchMock.mock(`${api_url}/ssh_keys/theId`, {
       changed: '2017-03-13T17:38:49+01:00'
     });
     client.getSshKey({ id: 'theId' }).then(sshkey => {
@@ -123,7 +124,7 @@ describe('Client', () => {
   });
 
   it('Add a bad ssh key', done => {
-    fetchMock.mock(`${API_URL}/ssh_keys`, {
+    fetchMock.mock(`${api_url}/ssh_keys`, {
       changed: '2017-03-13T17:38:49+01:00'
     }, { method: 'POST'});
     client.addSshKey('valueofsshkey', 'titleofsshkey').catch(err => {
@@ -133,7 +134,7 @@ describe('Client', () => {
   });
 
   it('Add a ssh key', done => {
-    fetchMock.mock(`${API_URL}/ssh_keys`, {
+    fetchMock.mock(`${api_url}/ssh_keys`, {
       changed: '2017-03-13T17:38:49+01:00'
     }, { method: 'POST'});
     const validSshKey = 'ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB';// eslint-disable-line max-len
@@ -155,7 +156,7 @@ describe('Client', () => {
   });
 
   it('Create subscription', done => {
-    fetchMock.mock(`${API_URL}/subscriptions`, {
+    fetchMock.mock(`${api_url}/subscriptions`, {
       'project_region': 'region'
     }, { method: 'POST'});
     const activationCallback = { uri: 'http://www.google.fr'};
@@ -168,7 +169,7 @@ describe('Client', () => {
   });
 
   it('Get subscription', done => {
-    fetchMock.mock(`${API_URL}/subscriptions/1`, {
+    fetchMock.mock(`${api_url}/subscriptions/1`, {
       'project_region': 'region'
     });
     client.getSubscription({id: '1'})
@@ -180,7 +181,7 @@ describe('Client', () => {
   });
 
   it('Get subscription estimate', done => {
-    fetchMock.mock(`${API_URL}/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`, {
+    fetchMock.mock(`${api_url}/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`, {
       key: 'value'
     });
     client.getSubscriptionEstimate('plan', 'storage', 'environments', 'users')

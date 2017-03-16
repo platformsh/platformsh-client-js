@@ -3,11 +3,13 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
-import { API_URL } from '../src/config';
+import { getConfig } from '../src/config';
 import { setToken } from '../src/api';
 import Activity from '../src/model/Activity';
 
 describe('Activity', () => {
+  const { api_url } = getConfig();
+
   beforeEach(function() {
     setToken('testToken');
   });
@@ -19,7 +21,7 @@ describe('Activity', () => {
   it('Wait for activity', done => {
     let onPollCalled = false;
     let onLogCalled = false;
-    const url = `${API_URL}/projects/1/activities/2`;
+    const url = `${api_url}/projects/1/activities/2`;
 
     fetchMock.mock(`${url}?timeout=5.01`, {
       id: 1,

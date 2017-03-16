@@ -3,11 +3,13 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
-import { API_URL } from '../src/config';
+import { getConfig } from '../src/config';
 import { setToken } from '../src/api';
 import Account from '../src/model/Account';
 
 describe('Account', () => {
+  const { api_url } = getConfig();
+
   before(function() {
     setToken('testToken');
   });
@@ -17,7 +19,8 @@ describe('Account', () => {
   });
 
   it('Get account', done => {
-    fetchMock.mock(`${API_URL}/user/1`, {id: 1, email: 'test@test.com'});
+
+    fetchMock.mock(`${api_url}/user/1`, {id: 1, email: 'test@test.com'});
 
     Account.get({id: 1}).then(account => {
       assert.equal(account.id, 1);
@@ -35,7 +38,7 @@ describe('Account', () => {
       {id: 4, email: 'test4'}
     ];
 
-    fetchMock.mock(`${API_URL}/user?id%5B%5D=1&id%5B%5D=2&id%5B%5D=3&id%5B%5D=4`, accounts);
+    fetchMock.mock(`${api_url}/user?id%5B%5D=1&id%5B%5D=2&id%5B%5D=3&id%5B%5D=4`, accounts);
 
     Account.query({id: [1, 2, 3, 4]}).then(accounts => {
       assert.equal(accounts.length, 4);

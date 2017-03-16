@@ -1,13 +1,13 @@
 import request, { setToken } from './api';
 import model from './model';
 import connector from './authentication/connector';
-import { API_URL, setAuthenticationConfig } from './config';
+import { getConfig, setConfig } from './config';
 
 export default class Client {
   constructor(authenticationConfig = {}) {
-    const { api_token, ...browserAuthenticationConfig } = authenticationConfig;
+    const { api_token, ...config } = authenticationConfig;
 
-    setAuthenticationConfig(browserAuthenticationConfig);
+    setConfig(config);
     this.authenticationPromise = connector(api_token).then(access_token => {
       setToken(access_token);
     });
@@ -23,7 +23,9 @@ export default class Client {
   getAccountInfo(reset = false) {
     return this.authenticationPromise.then(() => {
       if (!this.accountInfo || reset) {
-        return request(`${API_URL}/platform/me`, 'GET').then(me => {
+        const { api_url } = getConfig();
+
+        return request(`${api_url}/platform/me`, 'GET').then(me => {
           this.accountInfo = me;
           return me;
         });
@@ -44,7 +46,9 @@ export default class Client {
   */
   locateProject(id) {
     return this.authenticationPromise.then(() => {
-      return request(`${API_URL}/projects/${id}`, 'GET').then(result => {
+      const { api_url } = getConfig();
+
+      return request(`${api_url}/projects/${id}`, 'GET').then(result => {
         return result.endpoint || false;
       });
     });
@@ -231,7 +235,8 @@ export default class Client {
       environments,
       user_licenses: users
     };
+    const { api_url } = getConfig();
 
-    return request(`${API_URL}/estimate`, 'GET', query);
+    return request(`${api_url}/estimate`, 'GET', query);
   }
 }

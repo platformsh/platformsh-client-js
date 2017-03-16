@@ -1,7 +1,8 @@
 import Ressource from './Ressource';
-import { API_URL } from '../config';
+import { getConfig } from '../config';
 
-const url = `${API_URL}/user/:id`;
+const { api_url } = getConfig();
+const url = `${api_url}/user/:id`;
 const paramDefaults = {};
 
 export default class Account extends Ressource {

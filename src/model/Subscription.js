@@ -3,8 +3,9 @@ import isUrl from 'is-url';
 import Ressource from './Ressource';
 import Account from './Account';
 import Project from './Project';
-import { API_URL } from '../config';
+import { getConfig } from '../config';
 
+const { api_url } = getConfig();
 const paramDefaults = {};
 const creatableField = [
   'project_region',
@@ -14,7 +15,7 @@ const creatableField = [
   'environments',
   'activation_callback'
 ];
-const url = `${API_URL}/subscriptions/:id`;
+const url = `${api_url}/subscriptions/:id`;
 const STATUS_ACTIVE = 'active';
 const STATUS_REQUESTED = 'requested';
 const STATUS_PROVISIONING = 'provisioning';

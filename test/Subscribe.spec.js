@@ -3,11 +3,13 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
-import { API_URL } from '../src/config';
+import { getConfig } from '../src/config';
 import { setToken } from '../src/api';
 import Subscription from '../src/model/Subscription';
 
 describe('Subscribe', () => {
+  const { api_url } = getConfig();
+
   beforeEach(function() {
     setToken('testToken');
   });
@@ -19,7 +21,7 @@ describe('Subscribe', () => {
   it('Wait for subscription', done => {
     let onPollCalled = false;
 
-    fetchMock.mock(`${API_URL}/subscriptions/1`, {
+    fetchMock.mock(`${api_url}/subscriptions/1`, {
       body: {
         id: 1,
         status: 'active'
@@ -28,7 +30,7 @@ describe('Subscribe', () => {
     const subscription = new Subscription({
       _links: {
         self: {
-          href: `${API_URL}/subscriptions/1`
+          href: `${api_url}/subscriptions/1`
         }
       },
       id: 1,
@@ -37,7 +39,7 @@ describe('Subscribe', () => {
     const onPoll = () => {
       onPollCalled = true;
       fetchMock.restore();
-      fetchMock.mock(`${API_URL}/subscriptions/1`, {
+      fetchMock.mock(`${api_url}/subscriptions/1`, {
         body: {
           id: 1,
           status: 'active'

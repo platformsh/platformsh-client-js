@@ -1,19 +1,20 @@
-export const API_URL = 'https://accounts.platform.sh/api';
-export const AUTHENTICATION_URL = 'https://accounts.platform.sh';
+const DEFAULT_URL = 'https://accounts.platform.sh';
 
-const AUTH_CONFIG_DEFAULT = {
+const getConfigDefault = (baseUrl = DEFAULT_URL) => ({
   'client_id': 'platform@d4tobd5qpizwa.eu.platform.sh',
+  'api_url': `${baseUrl}/api`,
+  'authentication_url': baseUrl,
   scope: ['account'],
-  authorization: 'https://accounts.internal.platform.sh/oauth2/authorize',
-  'logout_url': 'https://accounts.internal.platform.sh/user/logout'
+  authorization: `${baseUrl}/oauth2/authorize`,
+  'logout_url': `${baseUrl}/user/logout`
+});
+
+let config = getConfigDefault();
+
+export const setConfig = (newConfig) => {
+  config = {...getConfigDefault(newConfig.base_url), ...newConfig};
 };
 
-let config = {...AUTH_CONFIG_DEFAULT};
-
-export const setAuthenticationConfig = (newConfig) => {
-  config = {...config, ...newConfig};
-};
-
-export const getAuthenticationConfig = () => {
+export const getConfig = () => {
   return config;
 };

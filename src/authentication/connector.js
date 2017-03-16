@@ -1,9 +1,8 @@
 import isNode from 'detect-node';
 
 import { request } from '../api';
-import { AUTHENTICATION_URL } from '../config';
 import { jso_configure, jso_ensureTokens, jso_getToken } from '../jso';
-import { getAuthenticationConfig } from '../config';
+import { getConfig } from '../config';
 
 const basicAuth = btoa('platform-cli:');
 
@@ -15,20 +14,21 @@ function logInWithToken(token) {
   const headers = {
     Authorization: `Basic ${basicAuth}`
   };
+  const { authentication_url } = getConfig();
 
-  return request(`${AUTHENTICATION_URL}/oauth2/token`, 'POST', credentials, headers)
+  return request(`${authentication_url}/oauth2/token`, 'POST', credentials, headers)
           .then(session => session.access_token);
 }
 
 function logInWithRedirect() {
   return new Promise((resolve, reject) => {
-    const auth = getAuthenticationConfig();
+    const auth = getConfig();
 
     if (!auth.client_id) {
       reject('Client_id in AUTH_CONFIG is mandatory');
     }
     // ensure that there is an access token, redirecting to auth if needed
-    if (!('redirect_uri' in auth)) {
+    if (!auth.redirect_uri) {
       // Some targets just need some dynamism
       auth.redirect_uri = window.location.origin;
     }
