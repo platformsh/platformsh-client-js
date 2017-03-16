@@ -326,7 +326,9 @@ describe('Project', () => {
   });
 
   it('Get activities', done => {
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3/activities?limit=1&type=theType&starts_at=Sun+Jan+01+2017+00%3A00%3A00+GMT%2B0100+(CET)', [{
+    const queryString = '?limit=1&type=theType&starts_at=Sun+Jan+01+2017+00%3A00%3A00+GMT%2B0100+(CET)';
+
+    fetchMock.mock(`https://test.com/api/projects/ffzefzef3/activities${queryString}`, [{
       id: 1
     }]);
     const project = new Project({

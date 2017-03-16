@@ -158,7 +158,9 @@ describe('Client', () => {
     fetchMock.mock(`${API_URL}/subscriptions`, {
       'project_region': 'region'
     }, { method: 'POST'});
-    client.createSubscription('region', 'development', 'title', 'storage', 'environments', {uri: 'http://www.google.fr'})
+    const activationCallback = { uri: 'http://www.google.fr'};
+
+    client.createSubscription('region', 'development', 'title', 'storage', 'environments', activationCallback)
       .then(result => {
         assert.equal(result.constructor.name, 'Result');
         done();
