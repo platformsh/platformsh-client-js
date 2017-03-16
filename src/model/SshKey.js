@@ -3,17 +3,17 @@ import atob from 'atob';
 import Ressource from './Ressource';
 import { getConfig } from '../config';
 
-const { api_url } = getConfig();
 const paramDefaults = {};
-const url = `${api_url}/ssh_keys/:id`;
+const url = '/ssh_keys/:id';
 
 export default class SshKey extends Ressource {
   constructor(sshKey) {
     const { id } = sshKey;
+    const { api_url } = getConfig();
 
-    super(url, paramDefaults, { id }, sshKey, ['title', 'value']);
+    super(`${api_url}${url}`, paramDefaults, { id }, sshKey, ['title', 'value']);
     this._required = ['value'];
-    this._queryUrl = Ressource.getQueryUrl(url);
+    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
     this.changed = '';
     this.title = '';
     this.key_id = 0;
@@ -23,8 +23,9 @@ export default class SshKey extends Ressource {
 
   static get(params) {
     const {id, ...queryParams} = params;
+    const { api_url } = getConfig();
 
-    return super.get(url, { id }, paramDefaults, queryParams);
+    return super.get(`${api_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   /**

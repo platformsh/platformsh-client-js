@@ -5,7 +5,6 @@ import Account from './Account';
 import Project from './Project';
 import { getConfig } from '../config';
 
-const { api_url } = getConfig();
 const paramDefaults = {};
 const creatableField = [
   'project_region',
@@ -15,7 +14,7 @@ const creatableField = [
   'environments',
   'activation_callback'
 ];
-const url = `${api_url}/subscriptions/:id`;
+const url = '/subscriptions/:id';
 const STATUS_ACTIVE = 'active';
 const STATUS_REQUESTED = 'requested';
 const STATUS_PROVISIONING = 'provisioning';
@@ -26,9 +25,10 @@ const availableRegions = ['eu.platform.sh', 'us.platform.sh'];
 export default class Subscription extends Ressource {
   constructor(subscription) {
     const { id } = subscription;
+    const { api_url } = getConfig();
 
-    super(url, paramDefaults, { id }, subscription, creatableField);
-    this._queryUrl = Ressource.getQueryUrl(url);
+    super(`${api_url}${url}`, paramDefaults, { id }, subscription, creatableField);
+    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
     this._required = ['project_region'];
     this.id = '';
     this.status = '';
@@ -48,10 +48,11 @@ export default class Subscription extends Ressource {
     this.STATUS_DELETED = 'deleted';
   }
 
-  static get(params, customUrl = url) {
+  static get(params, customUrl) {
     const {id, ...queryParams} = params;
+    const { api_url } = getConfig();
 
-    return super.get(customUrl, { id }, paramDefaults, queryParams);
+    return super.get(customUrl || `${api_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   static getAvailablePlans() {
