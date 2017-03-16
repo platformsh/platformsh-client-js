@@ -17,7 +17,6 @@ export default class ApiDefaultStorage {
   * @type {Object}
   */
   getState(state) {
-    // log("getState (" + state+ ")");
     var obj = JSON.parse(localStorage.getItem('state-' + state));
 
     localStorage.removeItem('state-' + state);
