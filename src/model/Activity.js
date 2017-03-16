@@ -52,7 +52,7 @@ export default class Activity extends Ressource {
   * @param int|float pollInterval The polling interval, in seconds.
   */
   wait(onPoll, onLog, pollInterval = 1) {
-    const log = this.log;
+    const log = this.log || '';
 
     if (onLog && log.trim().length) {
       onLog(`${log.trim()}\n`);
@@ -73,7 +73,7 @@ export default class Activity extends Ressource {
           }
 
           if (onLog) {
-            const newLog = this.log.substring(length);
+            const newLog = (this.log || '').substring(length);
 
             onLog(`${newLog.trim()}\n`);
             length = newLog.length;
@@ -86,7 +86,7 @@ export default class Activity extends Ressource {
 
           reject(err);
         });
-      }, pollInterval * 1000000);
+      }, pollInterval * 1000);
     });
   }
 
