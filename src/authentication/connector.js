@@ -3,7 +3,7 @@ import isNode from 'detect-node';
 import { request } from '../api';
 import { AUTHENTICATION_URL } from '../config';
 import { jso_configure, jso_ensureTokens, jso_getToken } from '../jso';
-import { AUTH_CONFIG } from '../config';
+import { getAuthenticationConfig } from '../config';
 
 const basicAuth = btoa('platform-cli:');
 
@@ -22,7 +22,7 @@ function logInWithToken(token) {
 
 function logInWithRedirect() {
   return new Promise((resolve, reject) => {
-    const auth = { ...AUTH_CONFIG };
+    const auth = getAuthenticationConfig();
 
     if (!auth.client_id) {
       reject('Client_id in AUTH_CONFIG is mandatory');

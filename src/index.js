@@ -1,11 +1,14 @@
 import request, { setToken } from './api';
 import model from './model';
 import connector from './authentication/connector';
-import { API_URL } from './config';
+import { API_URL, setAuthenticationConfig } from './config';
 
 export default class Client {
-  constructor(apiToken) {
-    this.authenticationPromise = connector(apiToken).then(access_token => {
+  constructor(authenticationConfig = {}) {
+    const { api_token, ...browserAuthenticationConfig } = authenticationConfig;
+
+    setAuthenticationConfig(browserAuthenticationConfig);
+    this.authenticationPromise = connector(api_token).then(access_token => {
       setToken(access_token);
     });
   }

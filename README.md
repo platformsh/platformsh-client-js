@@ -13,7 +13,10 @@ Run ``` npm install platformsh-client ```
 ```Javascript
 import Client from 'platformsh-client';
 
-const client = new Client(/* api token if you use it with NodeJS*/);
+const client = new Client({
+  api_token: /* api token if you use it with NodeJS*/,
+  redirect_uri: /* custom redirection uri if you use it in the browser (current uri by default)*/
+});
 
 client.getProjects().then(projects => {
   const project = projects[0];
