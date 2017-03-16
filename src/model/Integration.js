@@ -1,4 +1,5 @@
 import Ressource from './Ressource';
+import {request} from '../api';
 
 const paramDefaults = {};
 const types = ['bitbucket', 'hipchat', 'github', 'webhook'];
@@ -33,5 +34,17 @@ export default class Integration extends Ressource {
 
   static query(params, url) {
     return super.query(url, {}, paramDefaults, params);
+  }
+
+  /**
+   * Trigger the integration's web hook.
+   *
+   * Normally the external service should do this in response to events, but
+   * it may be useful to trigger the hook manually in certain cases.
+   */
+  triggerHook() {
+    const hookUrl = this.getLink('#hook');
+
+    return request(hookUrl, 'post');
   }
 }
