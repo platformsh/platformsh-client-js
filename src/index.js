@@ -5,12 +5,17 @@ import { getConfig, setConfig } from './config';
 
 export default class Client {
   constructor(authenticationConfig = {}) {
-    const { api_token, ...config } = authenticationConfig;
+    const { api_token, access_token, ...config } = authenticationConfig;
 
     setConfig(config);
-    this.authenticationPromise = connector(api_token).then(access_token => {
+    if(access_token) {
       setToken(access_token);
-    });
+      this.authenticationPromise = Promise.resolve();
+    } else {
+      this.authenticationPromise = connector(api_token).then(new_access_token => {
+        setToken(new_access_token);
+      });
+    }
   }
 
   /**
