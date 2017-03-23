@@ -9,6 +9,7 @@ import Domain from './Domain';
 import Integration from './Integration';
 import ProjectLevelVariable from './ProjectLevelVariable';
 import Activity from './Activity';
+import Certificate from './Certificate';
 
 const paramDefaults = {};
 
@@ -321,4 +322,22 @@ export default class Project extends Ressource {
     return ProjectLevelVariable.get({ name }, this.getLink('#manage-variables'));
   }
 
+  /**
+  * get certificates
+  */
+  getCertificates() {
+    return Certificate.query({}, `${this.getUri()}/certificates`);
+  }
+
+  /**
+  * add certificate
+  * @param string certificate
+  * @param string key
+  * @param array  chain
+  */
+  addCertificate(certificate, key, chain = []) {
+    const certificateObj = new Certificate({ certificate, key, chain}, `${this.getUri()}/certificates`);
+
+    return certificateObj.save();
+  }
 }

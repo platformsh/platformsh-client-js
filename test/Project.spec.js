@@ -498,4 +498,41 @@ describe('Project', () => {
       done();
     });
   });
+
+  it('Get certificates', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/certificates', [{}]);
+    const project = new Project({
+      _links: {
+        self: {
+          href: '/api/projects/ffzefzef3'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.getCertificates().then(certificates => {
+      assert.equal(certificates.length, 1);
+      assert.equal(certificates[0].constructor.name, 'Certificate');
+      done();
+    });
+  });
+
+  it('Add certificate', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/certificates', {}, 'POST');
+    const project = new Project({
+      _links: {
+        self: {
+          href: '/api/projects/ffzefzef3'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.addCertificate('certif', 'key', 'chain').then(result => {
+      assert.equal(result.constructor.name, 'Result');
+      done();
+    });
+  });
 });
