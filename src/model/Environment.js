@@ -7,6 +7,7 @@ import Activity from './Activity';
 import Variable from './Variable';
 import Route from './Route';
 import EnvironmentAccess from './EnvironmentAccess';
+import Metric from './Metric';
 
 const paramDefaults = {};
 
@@ -342,5 +343,19 @@ export default class Environment extends Ressource {
     const environmentAccess = new EnvironmentAccess(body, this.getLink('#manage-access'));
 
     return environmentAccess.save();
+  }
+
+  /**
+  * Get environment metrics.
+  *
+  * @param string query
+  *   InfluxDB query
+  *
+  * @return Metric
+  */
+  getMetrics(query) {
+    const params = query && { q: query };
+
+    return Metric.get(params, `${this.getUri()}/metrics`);
   }
 }

@@ -51,4 +51,24 @@ describe('Environment', () => {
       done();
     });
   });
+
+  it('Get metrics', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/metrics', {
+      results: {}
+    });
+
+    const environment = new Environment({
+      _links: {
+        self: {
+          href: 'https://test.com/api/projects/ffzefzef3/environments'
+        }
+      },
+      id: 1
+    }, 'https://test.com/api/projects/ffzefzef3/environments');
+
+    environment.getMetrics().then(metrics => {
+      assert.isNotNull(metrics.results);
+      done();
+    });
+  });
 });
