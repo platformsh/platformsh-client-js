@@ -136,8 +136,8 @@ describe('Project', () => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/1', { id: 1 });
     const project = new Project({
       _links: {
-        environments: {
-          href: '/api/projects/ffzefzef3/environments'
+        self: {
+          href: '/api/projects/ffzefzef3'
         }
       },
       id: 'ffzefzef3',

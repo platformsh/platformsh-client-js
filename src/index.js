@@ -92,7 +92,7 @@ export default class Client {
         return false;
       }
 
-      return me.projects.map(project => new model.Project(project, project.enpoint));
+      return me.projects.map(project => new model.Project(project, project.endpoint));
     });
   }
 

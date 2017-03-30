@@ -199,7 +199,7 @@ export default class Ressource {
   * @return bool
   */
   hasLink(rel) {
-    return this.data._links[rel] && this.data._links[rel].href;
+    return this.data._links && this.data._links[rel] && this.data._links[rel].href;
   }
 
   /**
