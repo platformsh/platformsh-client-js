@@ -137,7 +137,7 @@ export default class Project extends Ressource {
   *
   * @return Environment[]
   */
-  getEnvironments(limit = 0) {
+  getEnvironments(limit) {
     return Environment.query({ limit }, this.getLink('environments'));
   }
 
@@ -148,7 +148,7 @@ export default class Project extends Ressource {
   *
   * @return Domain[]
   */
-  getDomains(limit = 0) {
+  getDomains(limit) {
     return Domain.query({ limit }, this.getLink('domains'));
   }
 
@@ -189,7 +189,7 @@ export default class Project extends Ressource {
   *
   * @return Integration[]
   */
-  getIntegrations(limit = 0) {
+  getIntegrations(limit) {
     return Integration.query({ limit }, this.getLink('integrations'));
   }
 
@@ -242,7 +242,7 @@ export default class Project extends Ressource {
   *
   * @return Activity[]
   */
-  getActivities(limit = 0, type, startsAt) {
+  getActivities(limit, type, startsAt) {
     const params = { limit, type, starts_at: startsAt && new Date(startsAt) };
 
     return Activity.query(params, `${this.getUri()}/activities`);
@@ -266,7 +266,7 @@ export default class Project extends Ressource {
   *
   * @return ProjectLevelVariable[]
   */
-  getVariables(limit = 0) {
+  getVariables(limit) {
     return ProjectLevelVariable.query({ limit }, this.getLink('#manage-variables'));
   }
 

@@ -205,7 +205,7 @@ export default class Environment extends Ressource {
   *
   * @return Activity[]
   */
-  getActivities(limit = 0, type, startsAt) {
+  getActivities(limit, type, startsAt) {
     const params = { limit, type, starts_at: (startsAt && new Date(startsAt)) };
 
     return Activity.query(params, `${this.getUri()}/activities`);
@@ -218,7 +218,7 @@ export default class Environment extends Ressource {
   *
   * @return Variable[]
   */
-  getVariables(limit = 0) {
+  getVariables(limit) {
     return Variable.query({ limit }, this.getLink('#manage-variables'));
   }
 

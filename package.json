@@ -45,7 +45,7 @@
     "is-scalar": "^1.0.2",
     "is-url": "^1.2.2",
     "isomorphic-fetch": "^2.2.1",
-    "jquery-param": "^0.2.0",
+    "jquery-param": "git://github.com/ydeshayes/jquery-param.git#fix-undefined-value",
     "object.pick": "^1.2.0",
     "parse_url": "^0.1.1",
     "slugify": "^1.1.0",
