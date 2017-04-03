@@ -25,6 +25,7 @@ export default class Project extends Ressource {
     this.subscription = {};
     this.subscription_id = '';
     this.status = '';
+    this.endpoint = '';
   }
 
   static get(params, url) {

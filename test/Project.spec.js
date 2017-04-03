@@ -169,6 +169,21 @@ describe('Project', () => {
     });
   });
 
+  it('Get environments without _links', done => {
+    fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments', [{id: 1}]);
+    const project = new Project({
+      endpoint: 'https://test.com/api/projects/ffzefzef3',
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.getEnvironments().then(environments => {
+      assert.equal(environments[0].id, 1);
+      assert.equal(environments[0].constructor.name, 'Environment');
+      done();
+    });
+  });
+
   it('Get domains', done => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/domains?limit=2', [{id: 1}]);
     const project = new Project({
