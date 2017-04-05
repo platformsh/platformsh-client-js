@@ -36,6 +36,10 @@ export const authenticatedRequest = (url, method, data = {}, additionalHeaders =
   return request(url, method, data, { ...additionalHeaders, ...authenticationHeaders});
 };
 
+export const createEventSource = (url) => {
+  return new window.EventSource(`${url}?access_token=${token}`);
+};
+
 export const setToken = newToken => {
   token = newToken;
 };

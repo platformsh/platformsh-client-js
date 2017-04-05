@@ -2,6 +2,8 @@ import basename from 'basename';
 import is_scalar from 'is-scalar';
 import parse_url from 'parse_url';
 
+import { createEventSource } from '../api';
+
 import Ressource from './Ressource';
 import ProjectAccess from './ProjectAccess';
 import Environment from './Environment';
@@ -12,6 +14,7 @@ import Activity from './Activity';
 import Certificate from './Certificate';
 
 const paramDefaults = {};
+let _source;
 
 export default class Project extends Ressource {
   constructor(project, url) {
@@ -340,5 +343,16 @@ export default class Project extends Ressource {
     const certificateObj = new Certificate({ certificate, key, chain}, `${this.getUri()}/certificates`);
 
     return certificateObj.save();
+  }
+
+  /**
+  * subscribe to project updates
+  */
+  subscribe() {
+    if(_source) {
+      _source.close();
+    }
+    _source = createEventSource(`${this.getUri()}/subscribe`);
+    return _source;
   }
 }
