@@ -36,7 +36,7 @@ export default class Ressource {
     const parsedUrl = parse_url(_url);
 
     if(parsedUrl[1] === 'http' || parsedUrl[1] === 'https') {
-      this._baseUrl = `${parsedUrl[1]}:${parsedUrl[2]}${parsedUrl[3]}`;
+      this._baseUrl = `${parsedUrl[1]}:${parsedUrl[2]}${parsedUrl[3]}${parsedUrl[4] ? `:${parsedUrl[4]}` : ''}`;
     }
     this._creatableField = _creatableField;
     this._modifiableField = _modifiableField;
