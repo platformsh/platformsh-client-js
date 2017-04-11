@@ -246,8 +246,8 @@ export default class Project extends Ressource {
   *
   * @return Activity[]
   */
-  getActivities(limit, type, startsAt) {
-    const params = { limit, type, starts_at: startsAt && new Date(startsAt) };
+  getActivities(type, startsAt) {
+    const params = { type, starts_at: startsAt && new Date(startsAt) };
 
     return Activity.query(params, `${this.getUri()}/activities`);
   }
