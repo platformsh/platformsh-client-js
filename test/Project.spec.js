@@ -341,7 +341,7 @@ describe('Project', () => {
   });
 
   it('Get activities', done => {
-    const queryString = '?type=theType&starts_at=Sun+Jan+01+2017+00%3A00%3A00+GMT%2B0100+(CET)';
+    const queryString = '?type=theType&starts_at=2017-03-21T09%3A06%3A30.550116%2B00%3A00';
 
     fetchMock.mock(`https://test.com/api/projects/ffzefzef3/activities${queryString}`, [{
       id: 1
@@ -356,7 +356,7 @@ describe('Project', () => {
       title: 'project title'
     }, 'https://test.com/api/projects/ffzefzef3');
 
-    project.getActivities('theType', '1/1/2017').then(activities => {
+    project.getActivities('theType', '2017-03-21T09:06:30.550116+00:00').then(activities => {
       assert.equal(activities[0].constructor.name, 'Activity');
       assert.equal(activities[0].id, 1);
       done();

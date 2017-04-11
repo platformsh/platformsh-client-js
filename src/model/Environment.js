@@ -205,8 +205,8 @@ export default class Environment extends Ressource {
   *
   * @return Activity[]
   */
-  getActivities(limit, type, startsAt) {
-    const params = { limit, type, starts_at: (startsAt && new Date(startsAt)) };
+  getActivities(type, starts_at) {
+    const params = { type, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
   }
