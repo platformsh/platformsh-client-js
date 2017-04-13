@@ -2,6 +2,9 @@ import request, { setToken } from './api';
 import model from './model';
 import connector from './authentication/connector';
 import { getConfig, setConfig } from './config';
+import entities from './model';
+
+export const models = entities;
 
 export default class Client {
   constructor(authenticationConfig = {}) {
