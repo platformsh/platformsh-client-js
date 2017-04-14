@@ -17,11 +17,16 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ''}`;
   }
 
-  return fetch(apiUrl, {
+  const requestConfig = {
     method,
-    headers: {...defaultHeaders, ...additionalHeaders},
-    body: method !== 'GET' && method !== 'HEAD' && JSON.stringify(body)
-  }).then(data => data.json());
+    headers: {...defaultHeaders, ...additionalHeaders}
+  };
+
+  if(method !== 'GET' && method !== 'HEAD' && body) {
+    requestConfig.body = JSON.stringify(body);
+  }
+
+  return fetch(apiUrl, requestConfig).then(data => data.json());
 };
 
 export const authenticatedRequest = (url, method, data = {}, additionalHeaders = {}) => {
