@@ -30,16 +30,13 @@ export default class Client {
   */
   getAccountInfo(reset = false) {
     return this.authenticationPromise.then(() => {
-      if (!this.accountInfo || reset) {
+      if (!this.getAccountInfoPromise || reset) {
         const { api_url } = getConfig();
 
-        return request(`${api_url}/platform/me`, 'GET').then(me => {
-          this.accountInfo = me;
-          return me;
-        });
+        this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
       }
 
-      return new Promise(resolve => resolve(this.accountInfo));
+      return this.getAccountInfoPromise;
     });
   }
 
