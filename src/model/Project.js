@@ -239,15 +239,15 @@ export default class Project extends Ressource {
   *
   * @param int limit
   *   Limit the number of activities to return.
-  * @param string type
+  * @param string[] types
   *   Filter activities by type.
   * @param int startsAt
   *   A UNIX timestamp for the maximum created date of activities to return.
   *
   * @return Activity[]
   */
-  getActivities(type, starts_at) {
-    const params = { type, starts_at };
+  getActivities(types, starts_at) {
+    const params = { type: types, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
   }
