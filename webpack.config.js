@@ -8,7 +8,14 @@ var libraryName = 'platform-api';
 var plugins = [], outputFile;
 
 if (env.mode === 'build') {
-  plugins.push(new UglifyJsPlugin({ minimize: true }));
+  plugins.push(new UglifyJsPlugin({
+    minimize: true,
+    compress: {
+		    warnings: false,
+		    drop_console: true
+  	},
+  	comments: false
+  }));
   outputFile = libraryName + '.min.js';
 } else {
   outputFile = libraryName + '.js';
