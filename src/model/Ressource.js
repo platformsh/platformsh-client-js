@@ -284,4 +284,7 @@ export default class Ressource {
     });
   }
 
+  hasPermission(permission) {
+    return this.data._links && !!this.data._links[permission];
+  }
 }
