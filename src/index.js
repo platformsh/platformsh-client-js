@@ -50,7 +50,12 @@ export default class Client {
   *   The project's API endpoint.
   */
   locateProject(id) {
-    return this.authenticationPromise.then(() => {
+    return this.getProjects().then(projects => {
+      const project = projects.find(project => project.id === id);
+
+      if(project && project.endpoint) {
+        return project.endpoint;
+      }
       const { api_url } = getConfig();
 
       return request(`${api_url}/projects/${id}`, 'GET').then(result => {
@@ -106,26 +111,17 @@ export default class Client {
   * @return Project|false
   */
   getProject(id, hostname, https = true) {
-    // Search for a project in the user's project list.
-    return this.getProjects().then(projects => {
-      const project = projects.find(project => project.id === id);
+    if (hostname) {
+      return this.getProjectDirect(id, hostname, https);
+    }
 
-      if(project) {
-        return project;
+    // Use the project locator.
+    return this.locateProject(id).then(endpoint => {
+      if (endpoint) {
+        return model.Project.get({}, endpoint);
       }
 
-      if (hostname) {
-        return this.getProjectDirect(id, hostname, https);
-      }
-
-      // Use the project locator.
-      return this.locateProject(id).then(endpoint => {
-        if (endpoint) {
-          return model.Project.get({}, endpoint);
-        }
-
-        return false;
-      });
+      return false;
     });
   }
 

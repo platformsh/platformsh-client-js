@@ -37,25 +37,6 @@ describe('Client', () => {
     });
   });
 
-  it('Get project already in the current user', done => {
-    fetchMock.mock(`${api_url}/platform/me`, {
-      id: 1,
-      name: 'test',
-      projects: [
-        {
-          id: 'ffzefzef',
-          title: 'greatProject',
-          endpoint: 'http://test.com/api/projects/ffzefzef'
-        }
-      ]
-    });
-    client.getProject('ffzefzef').then(project => {
-      assert.equal(project.title, 'greatProject');
-      assert.equal(project.constructor.name, 'Project');
-      done();
-    });
-  });
-
   it('Get project not already in the current user but hostname is known', done => {
     fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
