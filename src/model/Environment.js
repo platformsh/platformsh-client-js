@@ -10,12 +10,13 @@ import EnvironmentAccess from './EnvironmentAccess';
 import Metric from './Metric';
 
 const paramDefaults = {};
+const modifiableField = ['enable_smtp', 'restrict_robots', 'http_access', 'title'];
 
 export default class Environment extends Ressource {
   constructor(environment, url) {
     const { id } = environment;
 
-    super(url, paramDefaults, { id }, environment);
+    super(url, paramDefaults, { id }, environment, [], modifiableField);
     this.id = '';
     this.status = '';
     this.head_commit = '';

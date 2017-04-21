@@ -14,11 +14,12 @@ import Activity from './Activity';
 import Certificate from './Certificate';
 
 const paramDefaults = {};
+const modifiableField = ['default_domain', 'title'];
 let _source;
 
 export default class Project extends Ressource {
   constructor(project, url) {
-    super(url, paramDefaults, {}, project);
+    super(url, paramDefaults, {}, project, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
     this.title = '';
