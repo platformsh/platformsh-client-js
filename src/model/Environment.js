@@ -45,6 +45,10 @@ export default class Environment extends Ressource {
     return super.query(url, {}, paramDefaults, params);
   }
 
+  update(data) {
+    return super.update(data, `${this._url}/:id`);
+  }
+
   /**
   * Get the SSH URL for the environment.
   *

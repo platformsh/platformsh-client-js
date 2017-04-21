@@ -85,8 +85,8 @@ export default class Ressource {
     return Object.keys(errors).length ? errors : undefined;
   }
 
-  update(data) {
     this.copy(data);
+  update(data, _url) {
     if(!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
     }
@@ -97,7 +97,7 @@ export default class Ressource {
       return Promise.reject(errors);
     }
 
-    const parsedUrl = _urlParser(this._url, this.data, this._paramDefaults);
+    const parsedUrl = _urlParser(_url || this._url, this.data, this._paramDefaults);
 
     return request(parsedUrl, 'PATCH', pick(this, this._modifiableField)).then(data => {
       return new Result(data, this._url, this.constructor);
