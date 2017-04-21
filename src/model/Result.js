@@ -49,7 +49,7 @@ export default class Result {
       throw new Error('No entity found in result');
     }
 
-    return this._ressourceClass(data, this._url);
+    return new this._ressourceClass(data, this._url);
   }
 
 }
