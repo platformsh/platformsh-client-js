@@ -23,6 +23,7 @@ export default class Environment extends Ressource {
     this.name = '';
     this.parent = '';
     this.machine_name = '';
+    this.restrict_robots = false;
     this.title = '';
     this.created_at = '';
     this.updated_at = '';
@@ -31,7 +32,7 @@ export default class Environment extends Ressource {
     this.enable_smtp = false;
     this.has_code = false;
     this.deployment_target = '';
-    this.http_access = [];
+    this.http_access = {};
     this.is_main = [];
   }
 
