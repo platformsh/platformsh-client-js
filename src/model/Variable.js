@@ -2,10 +2,12 @@ import Ressource from './Ressource';
 import Result from './Result';
 
 const paramDefaults = {};
+const creatableField = ['name', 'value', 'is_json'];
+const modifialbleField = ['value', 'is_json'];
 
 export default class Variable extends Ressource {
   constructor(variable, url) {
-    super(url, paramDefaults, { }, variable);
+    super(url, paramDefaults, { }, variable, creatableField, modifialbleField);
     this.id = '';
     this.name = '';
     this.project = '';

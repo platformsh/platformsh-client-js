@@ -1,6 +1,5 @@
 import parse_url from 'parse_url';
 import slugify from 'slugify';
-import is_scalar from 'is-scalar';
 
 import Ressource from './Ressource';
 import Activity from './Activity';
@@ -237,24 +236,25 @@ export default class Environment extends Ressource {
   *
   * @return Result
   */
-  setVariable(name, value, json = false) {
-    let encodedValue = {...value};
+  setVariable(name, value, isJson = false) {
+    let encodedValue = value;
 
-    if (!is_scalar(encodedValue)) {
+    if (isJson) {
       encodedValue = JSON.parse(encodedValue);
-      json = true;
     }
-    const values = { value: encodedValue, 'is_json': json };
+    const values = { value: encodedValue, 'is_json': isJson };
 
-    return this.getVariable(name).then(existing => {
-      if (existing) {
-        return existing.update(values);
-      }
-      values.name = name;
-      const variable = new Variable(values, this.getLink('#manage-variables'));
+    return this.getVariable(name)
+      .then(existing => {
+        if(existing && existing.id) {
+          return existing.update(values);
+        }
 
-      return variable.save();
-    });
+        values.name = name;
+        const variable = new Variable(values, this.getLink('#manage-variables'));
+
+        return variable.save();
+      });
   }
 
 /**
