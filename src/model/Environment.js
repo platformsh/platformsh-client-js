@@ -269,13 +269,41 @@ export default class Environment extends Ressource {
   }
 
   /**
+   * Set the environment's route configuration.
+   *
+   * @param object route
+   *
+   * @return Route
+   */
+  setRoute(route) {
+    return this.getRoute(route.id)
+      .then(route => {
+        if(route && route.id) {
+          return route.update(route);
+        }
+
+        return route.save();
+      });
+  }
+
+  /**
+   * Get the route configuration.
+   *
+   *
+   * @return Route
+   */
+  getRoute(id) {
+    return Route.get({ id }, this.getLink('#manage-routes'));
+  }
+
+  /**
    * Get the environment's routes configuration.
    *
    *
    * @return Route[]
    */
   getRoutes() {
-    return Route.query(this.getLink('#manage-routes'));
+    return Route.query({}, this.getLink('#manage-routes'));
   }
 
   /**
