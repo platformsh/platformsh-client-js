@@ -275,12 +275,19 @@ export default class Environment extends Ressource {
    *
    * @return Route
    */
-  setRoute(route) {
-    return this.getRoute(route.id)
-      .then(route => {
-        if(route && route.id) {
-          return route.update(route);
+  setRoute(values = {}) {
+    if(!values.id) {
+      const route = new Route(values, this.getLink('#manage-routes'));
+
+      return route.save();
+    }
+    return this.getRoute(values.id)
+      .then(existing => {
+        if(existing && existing.id) {
+          return existing.update(values, `${this.getLink('#manage-routes')}/${encodeURIComponent(existing.id)}`);
         }
+
+        const route = new Route(values, this.getLink('#manage-routes'));
 
         return route.save();
       });

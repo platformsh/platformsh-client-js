@@ -6,7 +6,6 @@ const creatableAndModifiableField = ['route', 'to', 'type', 'upstream', 'cache']
 export default class Route extends Ressource {
   constructor(route, url) {
     super(url, paramDefaults, { }, route, creatableAndModifiableField, creatableAndModifiableField);
-    this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
     this.project = '';
     this.environment = '';
