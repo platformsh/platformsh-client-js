@@ -34,6 +34,10 @@ export default class EnvironmentAccess extends Ressource {
     return super.query(url, {}, paramDefaults, params);
   }
 
+  update(access) {
+    return super.update(access, this.getLink('#edit'));
+  }
+
   /**
   * @inheritdoc
   */
