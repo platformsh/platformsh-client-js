@@ -1,4 +1,5 @@
 import Ressource from './Ressource';
+import Account from './Account';
 
 const paramDefaults = {};
 
@@ -48,5 +49,20 @@ export default class EnvironmentAccess extends Ressource {
       return this.getUri(absolute);
     }
     return super.getLink(rel, absolute);
+  }
+  /**
+  * Get the account information for this user.
+  *
+  * @throws \Exception
+  *
+  * @return Account
+  */
+  getAccount() {
+    return Account.get({id: this.id}).then(account => {
+      if (!account) {
+        throw new Error(`Account not found for user: ${this.id}`);
+      }
+      return account;
+    });
   }
 }
