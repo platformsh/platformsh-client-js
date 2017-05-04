@@ -361,7 +361,7 @@ export default class Environment extends Ressource {
   * @return EnvironmentAccess[]
   */
   getUsers() {
-    return EnvironmentAccess.query(this.getLink('#manage-access'));
+    return EnvironmentAccess.query({}, this.getLink('#manage-access'));
   }
   /**
   * Add a new user to the environment.

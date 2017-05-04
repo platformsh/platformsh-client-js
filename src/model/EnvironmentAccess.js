@@ -11,6 +11,7 @@ const roles = [ROLE_ADMIN, ROLE_VIEWER, ROLE_CONTRIBUTOR];
 export default class EnvironmentAccess extends Ressource {
   constructor(environmentAccess, url) {
     super(url, paramDefaults, { }, environmentAccess, ['name', 'ssl']);
+    this.id = '';
     this.user = '';
     this.role = '';
     this.project = '';
@@ -21,7 +22,7 @@ export default class EnvironmentAccess extends Ressource {
   static get(params, url) {
     const { id, ...queryParams } = params;
 
-    return super.get(`${url}/:id`, { name }, paramDefaults, queryParams);
+    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
   }
 
   static query(params, url) {
