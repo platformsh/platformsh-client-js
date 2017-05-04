@@ -9,15 +9,19 @@ const ROLE_CONTRIBUTOR = 'contributor';
 
 const roles = [ROLE_ADMIN, ROLE_VIEWER, ROLE_CONTRIBUTOR];
 
+const creatableField = ['user', 'role', 'email'];
+const modifiableField = ['role'];
+
 export default class EnvironmentAccess extends Ressource {
   constructor(environmentAccess, url) {
-    super(url, paramDefaults, { }, environmentAccess, ['name', 'ssl']);
+    super(url, paramDefaults, { }, environmentAccess, creatableField, modifiableField);
     this.id = '';
     this.user = '';
+    this.email = '';
     this.role = '';
     this.project = '';
     this.environment = '';
-    this._required = ['user', 'role'];
+    this._required = ['role'];
   }
 
   static get(params, url) {
