@@ -387,6 +387,20 @@ export default class Environment extends Ressource {
   }
 
   /**
+  * Remove a user's access to this environment.
+  *
+  * @param string uuid
+  *
+  * @return EnvironmentAccess|false
+  */
+  removeUser(id) {
+    return EnvironmentAccess.get({ id }, this.getLink('#manage-access'))
+      .then(environmentAccess =>
+        environmentAccess && environmentAccess.remove()
+      );
+  }
+
+  /**
   * Get environment metrics.
   *
   * @param string query
