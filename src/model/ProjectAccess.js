@@ -16,6 +16,7 @@ export default class ProjectAccess extends Ressource {
     this._required = ['email'];
     this.id = '';
     this.role = '';
+    this.user = '';
   }
 
   static query(url) {
@@ -29,8 +30,8 @@ export default class ProjectAccess extends Ressource {
   *
   * @return Account
   */
-  static getAccount() {
-    return Account.get(this.id).then(account => {
+  getAccount() {
+    return Account.get({ id: this.id }).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);
       }
