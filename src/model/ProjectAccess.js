@@ -2,6 +2,7 @@ import emailValidator from 'email-validator';
 
 import Ressource from './Ressource';
 import Account from './Account';
+import User from './User';
 
 const paramDefaults = {};
 
@@ -28,14 +29,30 @@ export default class ProjectAccess extends Ressource {
   *
   * @throws \Exception
   *
-  * @return Account
+  * @return Result
   */
   getAccount() {
-    return Account.get({ id: this.id }).then(account => {
+    return Account.get({ id: this.user }).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);
       }
       return account;
+    });
+  }
+
+  /**
+  * Get the user
+  *
+  * @throws \Exception
+  *
+  * @return Result
+  */
+  getUser() {
+    return User.get({ id: this.user }, this._baseUrl).then(user => {
+      if (!user) {
+        throw new Error(`User not found with id: ${this.user}`);
+      }
+      return user;
     });
   }
 
