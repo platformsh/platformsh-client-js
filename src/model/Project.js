@@ -298,6 +298,7 @@ export default class Project extends Ressource {
       json = true;
     }
     const values = {
+      name,
       value,
       is_json: json,
       visible_build: visibleBuild,

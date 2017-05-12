@@ -4,6 +4,7 @@ const paramDefaults = {
   id: 'name'
 };
 const creatableField = [
+  'name',
   'value',
   'is_json',
   'visible_build',
