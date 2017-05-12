@@ -7,6 +7,7 @@ export default class Certificate extends Ressource {
     super(url, paramDefaults, { }, certificate, ['key', 'certificate', 'chain']);
     this.key = '';
     this.certificate = '';
+    this.chain = [];
     this._required = ['key', 'certificate'];
   }
 
