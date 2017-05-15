@@ -61,7 +61,7 @@ export default class Ressource {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, 'GET', queryParams).then(data => {
-      return data.map(d => new this.prototype.constructor(d, _url));
+      return data.map(d => new this.prototype.constructor(d, `${_url}/${d.id}`));
     });
   }
 
@@ -96,7 +96,13 @@ export default class Ressource {
       return Promise.reject(errors);
     }
 
-    const parsedUrl = _urlParser(_url || this._url, this.data, this._paramDefaults);
+    const updateLink = this.getLink('#edit');
+
+    if(!updateLink) {
+      throw new Error('Not allowed to edit');
+    }
+
+    const parsedUrl = _urlParser(_url || updateLink, this.data, this._paramDefaults);
 
     return request(parsedUrl, 'PATCH', pick(data, this._modifiableField)).then(data => {
       return new Result(data, this._url, this.constructor);
@@ -155,9 +161,14 @@ export default class Ressource {
   }
 
   delete() {
-    return request(this._url, 'DELETE', {}).then(result => {
-      return new Result(result, this._url, this.constructor);
-    });
+    const deleteLink = this.getLink('#delete');
+
+    if(!deleteLink) {
+      throw new Error('Not allowed to delete');
+    }
+    return request(deleteLink, 'DELETE', {}).then(result =>
+      new Result(result, this._url, this.constructor)
+    );
   }
 
   copy(data) {

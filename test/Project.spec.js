@@ -469,10 +469,20 @@ describe('Project', () => {
 
   it('Set existing variable', done => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/variables/variableName', {
+      _links: {
+        '#edit': {
+          href: '/api/projects/ffzefzef3/variables/variableName'
+        }
+      },
       id: 1,
       name: 'variableName'
     });
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/variables', [{
+      _links: {
+        '#edit': {
+          href: '/api/projects/ffzefzef3/variables/variableName'
+        }
+      },
       id: 1,
       name: 'variableName'
     }], 'PATCH');

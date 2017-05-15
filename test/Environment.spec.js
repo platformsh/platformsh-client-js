@@ -41,6 +41,9 @@ describe('Environment', () => {
       _links: {
         '#manage-variables': {
           href: '/api/projects/ffzefzef3/environments/1/variables'
+        },
+        '#delete': {
+          href: '/api/projects/ffzefzef3/environments/1'
         }
       },
       id: 1,
