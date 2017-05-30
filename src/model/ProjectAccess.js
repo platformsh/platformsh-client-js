@@ -45,15 +45,12 @@ export default class ProjectAccess extends Ressource {
   *
   * @throws \Exception
   *
-  * @return Result
+  * @return User
   */
   getUser() {
-    return User.get({ id: this.user }, this._baseUrl).then(user => {
-      if (!user) {
-        throw new Error(`User not found with id: ${this.user}`);
-      }
-      return user;
-    });
+    const embeddedUsers = this.getEmbedded('users');
+
+    return new User(embeddedUsers[0]);
   }
 
   /**

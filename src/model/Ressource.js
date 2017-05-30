@@ -213,6 +213,32 @@ export default class Ressource {
   }
 
   /**
+  * Check whether the resource has an embedded.
+  *
+  * @param rel
+  *
+  * @return bool
+  */
+  hasEmbedded(rel) {
+    return this.data._embedded && this.data._embedded[rel] && !!this.data._embedded[rel].length;
+  }
+
+  /**
+  * Get a embedded for a given resource relation.
+  *
+  * @param string rel
+  *
+  * @return array
+  */
+  getEmbedded(rel) {
+    if (!this.hasEmbedded(rel)) {
+      throw new Error(`Embedded not found: ${rel}`);
+    }
+
+    return this.data._embedded[rel];
+  }
+
+  /**
   * Get a link for a given resource relation.
   *
   * @param string rel
