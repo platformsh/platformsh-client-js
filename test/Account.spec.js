@@ -8,7 +8,7 @@ import { setToken } from '../src/api';
 import Account from '../src/model/Account';
 
 describe('Account', () => {
-  const { api_url } = getConfig();
+  const { account_url } = getConfig();
 
   before(function() {
     setToken('testToken');
@@ -20,7 +20,7 @@ describe('Account', () => {
 
   it('Get account', done => {
 
-    fetchMock.mock(`${api_url}/users/1`, {id: 1, email: 'test@test.com'});
+    fetchMock.mock(`${account_url}/users/1`, {id: 1, email: 'test@test.com'});
 
     Account.get({id: 1}).then(account => {
       assert.equal(account.id, 1);
@@ -38,7 +38,7 @@ describe('Account', () => {
       {id: 4, email: 'test4'}
     ];
 
-    fetchMock.mock(`${api_url}/users?id=1&id=2&id=3&id=4`, accounts);
+    fetchMock.mock(`${account_url}/users?id=1&id=2&id=3&id=4`, accounts);
 
     Account.query({id: [1, 2, 3, 4]}).then(accounts => {
       assert.equal(accounts.length, 4);

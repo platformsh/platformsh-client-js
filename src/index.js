@@ -31,9 +31,9 @@ export default class Client {
   getAccountInfo(reset = false) {
     return this.authenticationPromise.then(() => {
       if (!this.getAccountInfoPromise || reset) {
-        const { api_url } = getConfig();
+        const { account_url } = getConfig();
 
-        this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
+        this.getAccountInfoPromise = request(`${account_url}/platform/me`, 'GET');
       }
 
       return this.getAccountInfoPromise;
@@ -56,32 +56,12 @@ export default class Client {
       if(project && project.endpoint) {
         return project.endpoint;
       }
-      const { api_url } = getConfig();
+      const { account_url } = getConfig();
 
-      return request(`${api_url}/projects/${id}`, 'GET').then(result => {
+      return request(`${account_url}/projects/${id}`, 'GET').then(result => {
         return result.endpoint || false;
       });
     });
-  }
-
-  /**
-  * Get a single project at a known location.
-  *
-  * @param string id       The project ID.
-  * @param string hostname The hostname of the Platform.sh regional API,
-  *                         e.g. 'eu.platform.sh' or 'us.platform.sh'.
-  * @param bool   https    Whether to use HTTPS (default: true).
-  *
-  * @internal It's now better to use getProject(). This method will be made
-  *           private in a future release.
-  *
-  * @return Project|false
-  */
-  getProjectDirect(id, hostname, https = true) {
-    const scheme = https ? 'https' : 'http';
-    const projectUrl = `${scheme}://${hostname}/api/projects`;
-
-    return model.Project.get({}, `${projectUrl}/${id}`);
   }
 
   /**
@@ -110,19 +90,8 @@ export default class Client {
   *
   * @return Project|false
   */
-  getProject(id, hostname, https = true) {
-    if (hostname) {
-      return this.getProjectDirect(id, hostname, https);
-    }
-
-    // Use the project locator.
-    return this.locateProject(id).then(endpoint => {
-      if (endpoint) {
-        return model.Project.get({}, endpoint);
-      }
-
-      return false;
-    });
+  getProject(id) {
+    return model.Project.get({ id });
   }
 
   /**
@@ -236,8 +205,8 @@ export default class Client {
       environments,
       user_licenses: users
     };
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return request(`${api_url}/estimate`, 'GET', query);
+    return request(`${account_url}/estimate`, 'GET', query);
   }
 }
