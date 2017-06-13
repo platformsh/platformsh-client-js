@@ -74,4 +74,79 @@ describe('Environment', () => {
       done();
     });
   });
+
+  it('Get ssh key with the ssh link', () => {
+    const environment = new Environment({
+      _links: {
+        self: {
+          href: 'https://test.com/api/projects/ffzefzef3/environments'
+        },
+        ssh: {
+          href: 'ssh://testproject-master-7rqtwti@git.local.c-g.io'
+        }
+      },
+      id: 1
+    }, 'https://test.com/api/projects/ffzefzef3/environments');
+
+    const sshUrl = environment.getSshUrl();
+
+    assert.equal(sshUrl, 'testproject-master-7rqtwti@git.local.c-g.io');
+  });
+
+  it('Get app ssh key with the ssh link', () => {
+    const environment = new Environment({
+      _links: {
+        self: {
+          href: 'https://test.com/api/projects/ffzefzef3/environments'
+        },
+        ssh: {
+          href: 'ssh://testproject-master-7rqtwti@git.local.c-g.io'
+        }
+      },
+      id: 1
+    }, 'https://test.com/api/projects/ffzefzef3/environments');
+
+    const sshUrl = environment.getSshUrl('php');
+
+    assert.equal(sshUrl, 'testproject-master-7rqtwti--php@git.local.c-g.io');
+  });
+
+  it('Get ssh key with the app ssh link', () => {
+    const environment = new Environment({
+      _links: {
+        self: {
+          href: 'https://test.com/api/projects/ffzefzef3/environments'
+        },
+        'pf:ssh:php': {
+          href: 'ssh://testproject-master-7rqtwti--php@git.local.c-g.io'
+        }
+      },
+      id: 1
+    }, 'https://test.com/api/projects/ffzefzef3/environments');
+
+    const sshUrl = environment.getSshUrl('php');
+
+    assert.equal(sshUrl, 'testproject-master-7rqtwti--php@git.local.c-g.io');
+  });
+
+  it('Get ssh key with the app ssh link in priority', () => {
+    const environment = new Environment({
+      _links: {
+        self: {
+          href: 'https://test.com/api/projects/ffzefzef3/environments'
+        },
+        'pf:ssh:php': {
+          href: 'ssh://testproject-master-7rqtwti--php@git.local.c-g.io'
+        },
+        ssh: {
+          href: 'ssh://testproject-master-7rqtwti@git.local.c-g.io'
+        }
+      },
+      id: 1
+    }, 'https://test.com/api/projects/ffzefzef3/environments');
+
+    const sshUrl = environment.getSshUrl('php');
+
+    assert.equal(sshUrl, 'testproject-master-7rqtwti--php@git.local.c-g.io');
+  });
 });

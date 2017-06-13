@@ -1,4 +1,3 @@
-import parse_url from 'parse_url';
 import slugify from 'slugify';
 
 import Ressource from './Ressource';
@@ -10,6 +9,9 @@ import Metric from './Metric';
 
 const paramDefaults = {};
 const modifiableField = ['enable_smtp', 'restrict_robots', 'http_access', 'title'];
+
+const sshRegex = /^ssh:\/\/([a-zA-Z0-9_\-]+)@(.+)$/;
+const sshLinkKeyPrefix = 'pf:ssh:';
 
 export default class Environment extends Ressource {
   constructor(environment, url) {
@@ -59,17 +61,50 @@ export default class Environment extends Ressource {
   * @return string
   */
   getSshUrl(app = '') {
-    if (!this.hasLink('ssh')) {
-      throw new Error(`The environment '${this.id}' does not have an SSH URL. It may be currently inactive, or you may not have permission to SSH.`); // eslint-disable-line max-len
-    }
-    const sshUrl = parse_url(this.getLink('ssh'));
-    const host = sshUrl[3];
-    let user = sshUrl[(sshUrl.indexOf('user') + 1)];
+    const urls = this.getSshUrls();
 
-    if (app) {
-      user += `--${app}`;
+    if (this.hasLink('ssh') && app === '') {
+      return this.convertSshUrl(this.getLink('ssh'));
     }
-    return `${user}@${host}}`;
+
+    if(urls[app]) {
+      return this.convertSshUrl(urls[app]);
+    }
+
+    return this.constructLegacySshUrl(app);
+  }
+
+  constructLegacySshUrl(app) {
+    if(!this.hasLink('ssh')) {
+      if (this.isActive()) {
+        throw new Error(`No SSH URL found for environment '${this.id}'. It is not currently active.`);
+      }
+      throw new Error(`No SSH URL found for environment '${this.id}'. You may not have permission to SSH.`);
+    }
+
+    const suffix = app ? `--${app}` : '';
+
+    return this.convertSshUrl(this.getLink('ssh'), suffix);
+  }
+
+  convertSshUrl(url, username_suffix = '') {
+    const sshUrl = sshRegex.exec(url);
+
+    const host = sshUrl[2];
+    let user = sshUrl[1];
+
+    return `${user}${username_suffix}@${host}`;
+  }
+
+  getSshUrls() {
+    const links = this.data._links;
+
+    return Object.keys(links)
+      .filter(linkKey => (linkKey.indexOf(sshLinkKeyPrefix) === 0))
+      .reduce((sshUrls, linkKey) => {
+        sshUrls[linkKey.substr(sshLinkKeyPrefix.length)] = links[linkKey].href;
+        return sshUrls;
+      }, {});
   }
 
   /**
