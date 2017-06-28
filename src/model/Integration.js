@@ -1,8 +1,10 @@
 import Ressource from './Ressource';
 import {request} from '../api';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
 const types = ['bitbucket', 'hipchat', 'github', 'webhook'];
+const _url = '/projects/:projectId/integrations';
 
 export default class Integration extends Ressource {
   constructor(integration, url) {
@@ -26,14 +28,18 @@ export default class Integration extends Ressource {
     return errors;
   }
 
-  static get(params, url) {
-    const { id, ...queryParams } = params;
+  static get(params, customUrl) {
+    const { projectId, id, ...queryParams } = params;
+    const { api_url } = getConfig();
 
-    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`, { id }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId }, paramDefaults, queryParams);
   }
 
   /**

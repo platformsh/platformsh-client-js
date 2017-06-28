@@ -82,7 +82,7 @@ export default class Project extends Ressource {
   * @return ProjectAccess[]
   */
   getUsers() {
-    return ProjectAccess.query(this.getLink('access'));
+    return ProjectAccess.query({}, this.getLink('access'));
   }
 
   /**

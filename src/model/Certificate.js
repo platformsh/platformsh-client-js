@@ -1,6 +1,8 @@
 import Ressource from './Ressource';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
+const _url = '/projects/:projectId/certificates';
 
 export default class Certificate extends Ressource {
   constructor(certificate, url) {
@@ -17,7 +19,10 @@ export default class Certificate extends Ressource {
     this._required = ['key', 'certificate'];
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId }, paramDefaults, queryParams);
   }
 }
