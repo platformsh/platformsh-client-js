@@ -1,5 +1,4 @@
 import request, { setToken } from './api';
-import model from './model';
 import connector from './authentication/connector';
 import { getConfig, setConfig } from './config';
 import entities from './model';
@@ -77,7 +76,7 @@ export default class Client {
         return false;
       }
 
-      return me.projects.map(project => new model.Project(project, project.endpoint));
+      return me.projects.map(project => new entities.Project(project, project.endpoint));
     });
   }
 
@@ -91,7 +90,7 @@ export default class Client {
   * @return Project|false
   */
   getProject(id) {
-    return model.Project.get({ id });
+    return entities.Project.get({ id });
   }
 
   /**
@@ -103,7 +102,7 @@ export default class Client {
   */
   getSshKeys() {
     return this.getAccountInfo().then(me => {
-      return model.SshKey.wrap(me.ssh_keys);
+      return entities.SshKey.wrap(me.ssh_keys);
     });
   }
 
@@ -116,7 +115,7 @@ export default class Client {
   */
   getSshKey(id) {
     return this.authenticationPromise.then(() => {
-      return model.SshKey.get(id);
+      return entities.SshKey.get(id);
     });
   }
 
@@ -131,7 +130,7 @@ export default class Client {
   addSshKey(value, title) {
     const values = this.cleanRequest({ value, title });
 
-    return new model.SshKey(values).save();
+    return new entities.SshKey(values).save();
   }
 
   /**
@@ -174,7 +173,7 @@ export default class Client {
       activation_callback: activationCallback
     });
 
-    return new model.Subscription(values).save();
+    return new entities.Subscription(values).save();
   }
 
   /**
@@ -185,7 +184,7 @@ export default class Client {
   * @return Subscription|false
   */
   getSubscription(id) {
-    return model.Subscription.get(id);
+    return entities.Subscription.get(id);
   }
 
   /**
