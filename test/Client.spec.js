@@ -50,6 +50,149 @@ describe('Client', () => {
     });
   });
 
+  it('Get environments', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments', [{
+      id: 1,
+      name: 'bestEnv'
+    }]);
+    client.getEnvironments('ffzefzef3').then(environments => {
+      assert.equal(environments.length, 1);
+      assert.equal(environments[0].id, 1);
+      assert.equal(environments[0].name, 'bestEnv');
+      assert.equal(environments[0].constructor.name, 'Environment');
+      done();
+    });
+  });
+
+  it('Get environment', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1', {
+      id: 1,
+      name: 'bestEnv'
+    });
+    client.getEnvironment('ffzefzef3', '1').then(environment => {
+      assert.equal(environment.id, 1);
+      assert.equal(environment.name, 'bestEnv');
+      assert.equal(environment.constructor.name, 'Environment');
+      done();
+    });
+  });
+
+  it('Get activities', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/activities', [{
+      id: 1,
+      completion_percent: 50
+    }]);
+    client.getEnvironmentActivities('ffzefzef3', '1').then(activities => {
+      assert.equal(activities.length, 1);
+      assert.equal(activities[0].id, 1);
+      assert.equal(activities[0].completion_percent, 50);
+      assert.equal(activities[0].constructor.name, 'Activity');
+      done();
+    });
+  });
+
+  it('Get certificates', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/certificates', [{
+      id: 1,
+      key: 'test'
+    }]);
+    client.getCertificates('ffzefzef3').then(certificates => {
+      assert.equal(certificates.length, 1);
+      assert.equal(certificates[0].id, 1);
+      assert.equal(certificates[0].key, 'test');
+      assert.equal(certificates[0].constructor.name, 'Certificate');
+      done();
+    });
+  });
+
+  it('Add certificates', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/certificates', {}, 'POST');
+
+    client.addCertificate('ffzefzef3', 'certif', 'key', 'chain').then(result => {
+      assert.equal(result.constructor.name, 'Result');
+      done();
+    });
+  });
+
+  it('Get domains', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/domains?limit=2', [{id: 1}]);
+
+    client.getDomains('ffzefzef3', 2).then(domains => {
+      assert.equal(domains[0].id, 1);
+      assert.equal(domains[0].constructor.name, 'Domain');
+      done();
+    });
+  });
+
+  it('Get environment users', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/access', [{id: 1}]);
+
+    client.getEnvironmentUsers('ffzefzef3', '1').then(users => {
+      assert.equal(users[0].id, 1);
+      assert.equal(users[0].constructor.name, 'EnvironmentAccess');
+      done();
+    });
+  });
+
+  it('Get project users', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/access', [{id: 1}]);
+
+    client.getProjectUsers('ffzefzef3').then(users => {
+      assert.equal(users[0].id, 1);
+      assert.equal(users[0].constructor.name, 'ProjectAccess');
+      done();
+    });
+  });
+
+  it('Get variables', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/variables?limit=1', [{
+      id: 1,
+      name: 'theVariableName'
+    }]);
+
+    client.getProjectVariables('ffzefzef3', 1).then(activities => {
+      assert.equal(activities[0].constructor.name, 'ProjectLevelVariable');
+      assert.equal(activities[0].id, 1);
+      done();
+    });
+  });
+
+  it('Get environment variables', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/variables?limit=1', [{
+      id: 1,
+      name: 'theVariableName'
+    }]);
+
+    client.getEnvironmentVariables('ffzefzef3', '1', 1).then(activities => {
+      assert.equal(activities[0].constructor.name, 'Variable');
+      assert.equal(activities[0].id, 1);
+      done();
+    });
+  });
+
+  it('Get routes', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/routes', [{
+      id: 1,
+      project: 'ffzefzef3'
+    }]);
+
+    client.getRoutes('ffzefzef3', 1).then(routes => {
+      assert.equal(routes[0].constructor.name, 'Route');
+      assert.equal(routes[0].project, 'ffzefzef3');
+      done();
+    });
+  });
+
+  it('Get environment metrics', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/metrics?q=test', {results: 1});
+
+    client.getEnvironmentMetrics('ffzefzef3', '1', 'test').then(metrics => {
+      assert.equal(metrics.results, 1);
+      assert.equal(metrics.constructor.name, 'Metrics');
+      done();
+    });
+  });
+
   it('Get ssh keys', done => {
     fetchMock.mock(`${account_url}/platform/me`, {
       id: 1,

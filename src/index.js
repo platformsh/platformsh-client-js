@@ -94,6 +94,150 @@ export default class Client {
   }
 
   /**
+  * Get the environments of project projectId
+  *
+  * @param string projectId
+  *
+  * @return Promise Environment[]
+  */
+  getEnvironments(projectId) {
+    return entities.Environment.query({ projectId });
+  }
+
+  /**
+  * Get the environment environmentId of the projectId project
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Environment
+  */
+  getEnvironment(projectId, environmentId) {
+    return entities.Environment.get({ projectId, id: environmentId });
+  }
+
+  /**
+  * Get the activities of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Activity[]
+  */
+  getEnvironmentActivities(projectId, environmentId, type, starts_at) {
+    return entities.Activity.query({ projectId, environmentId, type, starts_at });
+  }
+
+  /**
+  * Get the activities of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Certificate[]
+  */
+  getCertificates(projectId) {
+    return entities.Certificate.query({ projectId });
+  }
+
+  /**
+  * Add certificate to the project projectId
+  * @param string projectId
+  * @param string certificate
+  * @param string key
+  * @param array  chain
+  */
+  addCertificate(projectId, certificate, key, chain = []) {
+    const { api_url } = getConfig();
+    const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
+    const certificateObj = new entities.Certificate({ certificate, key, chain}, certificateUrl);
+
+    return certificateObj.save();
+  }
+
+  /**
+  * Get the domains of the project projectId
+  *
+  * @param string projectId
+  *
+  * @return Promise Domain[]
+  */
+  getDomains(projectId, limit) {
+    return entities.Domain.query({ projectId, limit });
+  }
+
+  /**
+  * Get the accesses of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise EnvironmentAccess[]
+  */
+  getEnvironmentUsers(projectId, environmentId) {
+    return entities.EnvironmentAccess.query({ projectId, environmentId });
+  }
+
+  /**
+   * Get the route configuration.
+   *
+   *
+   * @return Route
+   */
+  getRoutes(projectId, environmentId) {
+    return entities.Route.query({ projectId, environmentId });
+  }
+
+  /**
+  * Get the accesses of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise EnvironmentAccess[]
+  */
+  getProjectUsers(projectId) {
+    return entities.ProjectAccess.query({ projectId });
+  }
+
+  /**
+  * Get a list of variables.
+  *
+  * @param string projectId
+  * @param int limit
+  *
+  * @return ProjectLevelVariable[]
+  */
+  getProjectVariables(projectId, limit) {
+    return entities.ProjectLevelVariable.query({ projectId, limit });
+  }
+
+  /**
+  * Get a list of variables.
+  *
+  * @param string projectId
+  * @param int limit
+  *
+  * @return ProjectLevelVariable[]
+  */
+  getEnvironmentVariables(projectId, environmentId, limit) {
+    return entities.Variable.query({ projectId, environmentId, limit });
+  }
+
+  /**
+  * Get the metrics of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  * @param string q
+  *
+  * @return Promise Metrics[]
+  */
+  getEnvironmentMetrics(projectId, environmentId, q) {
+    return entities.Metrics.get({ projectId, environmentId, q });
+  }
+
+  /**
   * Get the logged-in user's SSH keys.
   *
   * @param bool reset
