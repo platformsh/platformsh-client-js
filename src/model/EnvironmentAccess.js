@@ -1,6 +1,7 @@
 import Ressource from './Ressource';
 import Account from './Account';
 import User from './User';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
 
@@ -12,6 +13,7 @@ const roles = [ROLE_ADMIN, ROLE_VIEWER, ROLE_CONTRIBUTOR];
 
 const creatableField = ['user', 'role', 'email'];
 const modifiableField = ['role'];
+const _url = '/projects/:projectId/environments/:environmentId/access';
 
 export default class EnvironmentAccess extends Ressource {
   constructor(environmentAccess, url) {
@@ -25,14 +27,19 @@ export default class EnvironmentAccess extends Ressource {
     this._required = ['role'];
   }
 
-  static get(params, url) {
-    const { id, ...queryParams } = params;
+  static get(params, customUrl) {
+    const { projectId, environmentId, id, ...queryParams } = params;
+    const { api_url } = getConfig();
+    const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(urlToCall, { id, projectId, environmentId }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, environmentId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId, environmentId }, paramDefaults, queryParams);
   }
 
   update(access) {

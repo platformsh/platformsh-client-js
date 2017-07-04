@@ -25,10 +25,10 @@ const availableRegions = ['eu.platform.sh', 'us.platform.sh'];
 export default class Subscription extends Ressource {
   constructor(subscription) {
     const { id } = subscription;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { id }, subscription, creatableField);
-    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
+    super(`${account_url}${url}`, paramDefaults, { id }, subscription, creatableField);
+    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
     this._required = ['project_region'];
     this.id = '';
     this.status = '';
@@ -50,9 +50,9 @@ export default class Subscription extends Ressource {
 
   static get(params, customUrl) {
     const {id, ...queryParams} = params;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return super.get(customUrl || `${api_url}${url}`, { id }, paramDefaults, queryParams);
+    return super.get(customUrl || `${account_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   static getAvailablePlans() {

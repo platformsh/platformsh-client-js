@@ -1,14 +1,16 @@
 import slugify from 'slugify';
 
+import { getConfig } from '../config';
 import Ressource from './Ressource';
 import Activity from './Activity';
 import Variable from './Variable';
 import Route from './Route';
 import EnvironmentAccess from './EnvironmentAccess';
-import Metric from './Metric';
+import Metrics from './Metrics';
 
 const paramDefaults = {};
 const modifiableField = ['enable_smtp', 'restrict_robots', 'http_access', 'title'];
+const _url = '/projects/:projectId/environments';
 
 const sshRegex = /^ssh:\/\/([a-zA-Z0-9_\-]+)@(.+)$/;
 const sshLinkKeyPrefix = 'pf:ssh:';
@@ -37,14 +39,19 @@ export default class Environment extends Ressource {
     this.is_main = [];
   }
 
-  static get(params, url) {
-    const { id, ...queryParams } = params;
+  static get(params, customUrl) {
+    const { projectId, id, ...queryParams } = params;
+    const { api_url } = getConfig();
+    const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(urlToCall, { projectId, id }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId }, paramDefaults, queryParams);
   }
 
   update(data) {
@@ -441,11 +448,11 @@ export default class Environment extends Ressource {
   * @param string query
   *   InfluxDB query
   *
-  * @return Metric
+  * @return Metrics
   */
   getMetrics(query) {
     const params = query && { q: query };
 
-    return Metric.get(params, `${this.getUri()}/metrics`);
+    return Metrics.get(params, `${this.getUri()}/metrics`);
   }
 }

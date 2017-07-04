@@ -1,6 +1,8 @@
 import Ressource from './Ressource';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
+const _url = '/projects/:projectId/environments/:environmentId/activities';
 
 export default class Activity extends Ressource {
   constructor(activity, url) {
@@ -26,14 +28,18 @@ export default class Activity extends Ressource {
     this.STATE_PENDING = 'pending';
   }
 
-  static get(params, url) {
-    const { id, ...queryParams } = params;
+  static get(params, customUrl) {
+    const { projectId, environmentId, id, ...queryParams } = params;
+    const { api_url } = getConfig();
 
-    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`, { id }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, environmentId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId, environmentId }, paramDefaults, queryParams);
   }
 
   /**

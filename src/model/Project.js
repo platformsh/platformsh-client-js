@@ -3,6 +3,7 @@ import is_scalar from 'is-scalar';
 import parse_url from 'parse_url';
 
 import { createEventSource } from '../api';
+import { getConfig } from '../config';
 
 import Ressource from './Ressource';
 import ProjectAccess from './ProjectAccess';
@@ -15,6 +16,7 @@ import Certificate from './Certificate';
 
 const paramDefaults = {};
 const modifiableField = ['default_domain', 'title'];
+const url = '/projects/:id';
 let _source;
 
 export default class Project extends Ressource {
@@ -33,8 +35,11 @@ export default class Project extends Ressource {
     this.repository = {};
   }
 
-  static get(params, url) {
-    return super.get(url, {}, paramDefaults, params);
+  static get(params, customUrl) {
+    const { id, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.get(customUrl || `${api_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   /**
@@ -77,7 +82,7 @@ export default class Project extends Ressource {
   * @return ProjectAccess[]
   */
   getUsers() {
-    return ProjectAccess.query(this.getLink('access'));
+    return ProjectAccess.query({}, this.getLink('access'));
   }
 
   /**

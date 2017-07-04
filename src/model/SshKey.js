@@ -9,11 +9,11 @@ const url = '/ssh_keys/:id';
 export default class SshKey extends Ressource {
   constructor(sshKey) {
     const { id } = sshKey;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { id }, sshKey, ['title', 'value']);
+    super(`${account_url}${url}`, paramDefaults, { id }, sshKey, ['title', 'value']);
     this._required = ['value'];
-    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
     this.changed = '';
     this.title = '';
     this.key_id = 0;
@@ -23,9 +23,9 @@ export default class SshKey extends Ressource {
 
   static get(params) {
     const {id, ...queryParams} = params;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return super.get(`${api_url}${url}`, { id }, paramDefaults, queryParams);
+    return super.get(`${account_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   /**

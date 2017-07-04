@@ -7,9 +7,9 @@ const paramDefaults = {};
 export default class Account extends Ressource {
   constructor(account) {
     const { id } = account;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { id }, account);
+    super(`${account_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = '';
     this.created_at = '';
@@ -21,14 +21,14 @@ export default class Account extends Ressource {
 
   static get(params, customUrl) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return super.get(customUrl || `${api_url}${url}`, { id }, paramDefaults, queryParams);
+    return super.get(customUrl || `${account_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   static query(params) {
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return super.query(this.getQueryUrl(`${api_url}${url}`), {}, paramDefaults, params);
+    return super.query(this.getQueryUrl(`${account_url}${url}`), {}, paramDefaults, params);
   }
 }

@@ -1,9 +1,11 @@
 import Ressource from './Ressource';
 import Result from './Result';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
 const creatableField = ['name', 'value', 'is_json'];
 const modifialbleField = ['value', 'is_json'];
+const _url = '/projects/:projectId/environments/:environmentId/variables';
 
 export default class Variable extends Ressource {
   constructor(variable, url) {
@@ -20,14 +22,19 @@ export default class Variable extends Ressource {
     this.inherited = false;
   }
 
-  static get(params, url) {
-    const { id, ...queryParams } = params;
+  static get(params, customUrl) {
+    const { projectId, environmentId, id, ...queryParams } = params;
+    const { api_url } = getConfig();
+    const urlToCall = customUrl || `${api_url}${_url}`;
 
-    return super.get(`${url}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(`${urlToCall}/:id`, { id }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, environmentId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId, environmentId }, paramDefaults, queryParams);
   }
 
   /**

@@ -3,6 +3,7 @@ import emailValidator from 'email-validator';
 import Ressource from './Ressource';
 import Account from './Account';
 import User from './User';
+import { getConfig } from '../config';
 
 const paramDefaults = {};
 
@@ -10,6 +11,7 @@ const ROLE_ADMIN = 'admin';
 const ROLE_VIEWER = 'viewer';
 
 const roles = [ROLE_ADMIN, ROLE_VIEWER];
+const _url = '/projects/:projectId/access';
 
 export default class ProjectAccess extends Ressource {
   constructor(projectAccess, url) {
@@ -20,8 +22,11 @@ export default class ProjectAccess extends Ressource {
     this.user = '';
   }
 
-  static query(url) {
-    return super.query(url);
+  static query(params = {}, customUrl) {
+    const { projectId } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId });
   }
 
   /**

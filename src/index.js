@@ -1,5 +1,4 @@
 import request, { setToken } from './api';
-import model from './model';
 import connector from './authentication/connector';
 import { getConfig, setConfig } from './config';
 import entities from './model';
@@ -31,9 +30,9 @@ export default class Client {
   getAccountInfo(reset = false) {
     return this.authenticationPromise.then(() => {
       if (!this.getAccountInfoPromise || reset) {
-        const { api_url } = getConfig();
+        const { account_url } = getConfig();
 
-        this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
+        this.getAccountInfoPromise = request(`${account_url}/platform/me`, 'GET');
       }
 
       return this.getAccountInfoPromise;
@@ -56,32 +55,12 @@ export default class Client {
       if(project && project.endpoint) {
         return project.endpoint;
       }
-      const { api_url } = getConfig();
+      const { account_url } = getConfig();
 
-      return request(`${api_url}/projects/${id}`, 'GET').then(result => {
+      return request(`${account_url}/projects/${id}`, 'GET').then(result => {
         return result.endpoint || false;
       });
     });
-  }
-
-  /**
-  * Get a single project at a known location.
-  *
-  * @param string id       The project ID.
-  * @param string hostname The hostname of the Platform.sh regional API,
-  *                         e.g. 'eu.platform.sh' or 'us.platform.sh'.
-  * @param bool   https    Whether to use HTTPS (default: true).
-  *
-  * @internal It's now better to use getProject(). This method will be made
-  *           private in a future release.
-  *
-  * @return Project|false
-  */
-  getProjectDirect(id, hostname, https = true) {
-    const scheme = https ? 'https' : 'http';
-    const projectUrl = `${scheme}://${hostname}/api/projects`;
-
-    return model.Project.get({}, `${projectUrl}/${id}`);
   }
 
   /**
@@ -97,7 +76,7 @@ export default class Client {
         return false;
       }
 
-      return me.projects.map(project => new model.Project(project, project.endpoint));
+      return me.projects.map(project => new entities.Project(project, project.endpoint));
     });
   }
 
@@ -110,19 +89,152 @@ export default class Client {
   *
   * @return Project|false
   */
-  getProject(id, hostname, https = true) {
-    if (hostname) {
-      return this.getProjectDirect(id, hostname, https);
-    }
+  getProject(id) {
+    return entities.Project.get({ id });
+  }
 
-    // Use the project locator.
-    return this.locateProject(id).then(endpoint => {
-      if (endpoint) {
-        return model.Project.get({}, endpoint);
-      }
+  /**
+  * Get the environments of project projectId
+  *
+  * @param string projectId
+  *
+  * @return Promise Environment[]
+  */
+  getEnvironments(projectId) {
+    return entities.Environment.query({ projectId });
+  }
 
-      return false;
-    });
+  /**
+  * Get the environment environmentId of the projectId project
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Environment
+  */
+  getEnvironment(projectId, environmentId) {
+    return entities.Environment.get({ projectId, id: environmentId });
+  }
+
+  /**
+  * Get the activities of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Activity[]
+  */
+  getEnvironmentActivities(projectId, environmentId, type, starts_at) {
+    return entities.Activity.query({ projectId, environmentId, type, starts_at });
+  }
+
+  /**
+  * Get the activities of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise Certificate[]
+  */
+  getCertificates(projectId) {
+    return entities.Certificate.query({ projectId });
+  }
+
+  /**
+  * Add certificate to the project projectId
+  * @param string projectId
+  * @param string certificate
+  * @param string key
+  * @param array  chain
+  */
+  addCertificate(projectId, certificate, key, chain = []) {
+    const { api_url } = getConfig();
+    const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
+    const certificateObj = new entities.Certificate({ certificate, key, chain}, certificateUrl);
+
+    return certificateObj.save();
+  }
+
+  /**
+  * Get the domains of the project projectId
+  *
+  * @param string projectId
+  *
+  * @return Promise Domain[]
+  */
+  getDomains(projectId, limit) {
+    return entities.Domain.query({ projectId, limit });
+  }
+
+  /**
+  * Get the accesses of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise EnvironmentAccess[]
+  */
+  getEnvironmentUsers(projectId, environmentId) {
+    return entities.EnvironmentAccess.query({ projectId, environmentId });
+  }
+
+  /**
+   * Get the route configuration.
+   *
+   *
+   * @return Route
+   */
+  getRoutes(projectId, environmentId) {
+    return entities.Route.query({ projectId, environmentId });
+  }
+
+  /**
+  * Get the accesses of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Promise EnvironmentAccess[]
+  */
+  getProjectUsers(projectId) {
+    return entities.ProjectAccess.query({ projectId });
+  }
+
+  /**
+  * Get a list of variables.
+  *
+  * @param string projectId
+  * @param int limit
+  *
+  * @return ProjectLevelVariable[]
+  */
+  getProjectVariables(projectId, limit) {
+    return entities.ProjectLevelVariable.query({ projectId, limit });
+  }
+
+  /**
+  * Get a list of variables.
+  *
+  * @param string projectId
+  * @param int limit
+  *
+  * @return ProjectLevelVariable[]
+  */
+  getEnvironmentVariables(projectId, environmentId, limit) {
+    return entities.Variable.query({ projectId, environmentId, limit });
+  }
+
+  /**
+  * Get the metrics of the environment environmentId of the project projectId
+  *
+  * @param string projectId
+  * @param string environmentId
+  * @param string q
+  *
+  * @return Promise Metrics[]
+  */
+  getEnvironmentMetrics(projectId, environmentId, q) {
+    return entities.Metrics.get({ projectId, environmentId, q });
   }
 
   /**
@@ -134,7 +246,7 @@ export default class Client {
   */
   getSshKeys() {
     return this.getAccountInfo().then(me => {
-      return model.SshKey.wrap(me.ssh_keys);
+      return entities.SshKey.wrap(me.ssh_keys);
     });
   }
 
@@ -147,7 +259,7 @@ export default class Client {
   */
   getSshKey(id) {
     return this.authenticationPromise.then(() => {
-      return model.SshKey.get(id);
+      return entities.SshKey.get(id);
     });
   }
 
@@ -162,7 +274,7 @@ export default class Client {
   addSshKey(value, title) {
     const values = this.cleanRequest({ value, title });
 
-    return new model.SshKey(values).save();
+    return new entities.SshKey(values).save();
   }
 
   /**
@@ -205,7 +317,7 @@ export default class Client {
       activation_callback: activationCallback
     });
 
-    return new model.Subscription(values).save();
+    return new entities.Subscription(values).save();
   }
 
   /**
@@ -216,7 +328,7 @@ export default class Client {
   * @return Subscription|false
   */
   getSubscription(id) {
-    return model.Subscription.get(id);
+    return entities.Subscription.get(id);
   }
 
   /**
@@ -236,8 +348,8 @@ export default class Client {
       environments,
       user_licenses: users
     };
-    const { api_url } = getConfig();
+    const { account_url } = getConfig();
 
-    return request(`${api_url}/estimate`, 'GET', query);
+    return request(`${account_url}/estimate`, 'GET', query);
   }
 }

@@ -15,6 +15,36 @@ describe('Environment', () => {
     fetchMock.restore();
   });
 
+  it('Get environments', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments', [{
+      id: 1,
+      name: 'thevar'
+    }]);
+
+    Environment.query({
+      projectId: 'ffzefzef3'
+    }).then(environment => {
+      assert.equal(environment.length, 1);
+      assert.equal(environment[0].id, 1);
+      done();
+    });
+  });
+
+  it('Get environment', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1', {
+      id: 1,
+      name: 'thevar'
+    });
+
+    Environment.get({
+      projectId: 'ffzefzef3',
+      id: '1'
+    }).then(environment => {
+      assert.equal(environment.id, 1);
+      done();
+    });
+  });
+
   it('Get users associated with a project', done => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/1/variables/1', {
       id: 1,

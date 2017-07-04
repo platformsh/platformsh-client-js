@@ -1,4 +1,5 @@
 import Ressource from './Ressource';
+import { getConfig } from '../config';
 
 const paramDefaults = {
   id: 'name'
@@ -17,6 +18,8 @@ const modifiableField = [
   'visible_runtime'
 ];
 
+const _url = '/projects/:projectId/variables';
+
 export default class ProjectLevelVariable extends Ressource {
   constructor(projectLevelVariable, url) {
     super(url, paramDefaults, {}, projectLevelVariable, creatableField, modifiableField);
@@ -30,13 +33,18 @@ export default class ProjectLevelVariable extends Ressource {
     this.updated_at = '';
   }
 
-  static get(params, url) {
-    const { name, ...queryParams } = params;
+  static get(params = {}, customUrl) {
+    const { name, projectId, ...queryParams } = params;
+    const { api_url } = getConfig();
+    const urlToCall = customUrl || `${api_url}${_url}`;
 
-    return super.get(`${url}/:id`, { name }, paramDefaults, queryParams);
+    return super.get(`${urlToCall}/:id`, { name, projectId }, paramDefaults, queryParams);
   }
 
-  static query(params, url) {
-    return super.query(url, {}, paramDefaults, params);
+  static query(params, customUrl) {
+    const { projectId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super.query(customUrl || `${api_url}${_url}`, { projectId }, paramDefaults, queryParams);
   }
 }

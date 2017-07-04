@@ -8,7 +8,7 @@ import { setToken } from '../src/api';
 import Subscription from '../src/model/Subscription';
 
 describe('Subscribe', () => {
-  const { api_url } = getConfig();
+  const { account_url } = getConfig();
 
   beforeEach(function() {
     setToken('testToken');
@@ -21,7 +21,7 @@ describe('Subscribe', () => {
   it('Wait for subscription', done => {
     let onPollCalled = false;
 
-    fetchMock.mock(`${api_url}/subscriptions/1`, {
+    fetchMock.mock(`${account_url}/subscriptions/1`, {
       body: {
         id: 1,
         status: 'active'
@@ -30,7 +30,7 @@ describe('Subscribe', () => {
     const subscription = new Subscription({
       _links: {
         self: {
-          href: `${api_url}/subscriptions/1`
+          href: `${account_url}/subscriptions/1`
         }
       },
       id: 1,
@@ -39,7 +39,7 @@ describe('Subscribe', () => {
     const onPoll = () => {
       onPollCalled = true;
       fetchMock.restore();
-      fetchMock.mock(`${api_url}/subscriptions/1`, {
+      fetchMock.mock(`${account_url}/subscriptions/1`, {
         body: {
           id: 1,
           status: 'active'
