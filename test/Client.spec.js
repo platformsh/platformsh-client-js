@@ -286,4 +286,18 @@ describe('Client', () => {
         done();
       });
   });
+
+  it('Get current deployment informations', done => {
+    fetchMock.mock('https://api.platform.sh/api/projects/ffzefzef3/environments/1/deployments/current', {
+      webapps: {
+        php: {
+        }
+      }
+    });
+    client.getCurrentDeployment('ffzefzef3', '1')
+      .then(deployment => {
+        assert.equal(deployment.constructor.name, 'Deployment');
+        done();
+      });
+  });
 });

@@ -12,6 +12,7 @@ import Metrics from './Metrics';
 import ProjectLevelVariable from './ProjectLevelVariable';
 import Route from './Route';
 import Variable from './Variable';
+import Deployment from './Deployment';
 
 export default {
   Account,
@@ -27,5 +28,6 @@ export default {
   ProjectAccess,
   ProjectLevelVariable,
   Route,
-  Variable
+  Variable,
+  Deployment
 };

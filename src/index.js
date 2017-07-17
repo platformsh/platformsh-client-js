@@ -352,4 +352,16 @@ export default class Client {
 
     return request(`${account_url}/estimate`, 'GET', query);
   }
+
+  /**
+  * Get current deployment informations
+  *
+  * @param string projectId
+  * @param string environmentId
+  *
+  * @return Deployment
+  */
+  getCurrentDeployment(projectId, environmentId) {
+    return entities.Deployment.get({ projectId, environmentId });
+  }
 }
