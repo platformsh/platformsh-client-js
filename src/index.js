@@ -5,6 +5,8 @@ import entities from './model';
 
 export const models = entities;
 
+export const api = request;
+
 export default class Client {
   constructor(authenticationConfig = {}) {
     const { api_token, access_token, ...config } = authenticationConfig;
@@ -12,12 +14,17 @@ export default class Client {
     setConfig(config);
     if(access_token) {
       setToken(access_token);
-      this.authenticationPromise = Promise.resolve();
+      this.authenticationPromise = Promise.resolve(access_token);
     } else {
       this.authenticationPromise = connector(api_token).then(new_access_token => {
         setToken(new_access_token);
+        return new_access_token;
       });
     }
+  }
+
+  getAccessToken() {
+    return this.authenticationPromise;
   }
 
   /**
