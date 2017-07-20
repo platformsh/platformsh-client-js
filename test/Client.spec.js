@@ -20,7 +20,7 @@ describe('Client', () => {
   });
 
   it('Get current Account', done => {
-    fetchMock.mock(`${account_url}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       projects: [
@@ -194,7 +194,7 @@ describe('Client', () => {
   });
 
   it('Get ssh keys', done => {
-    fetchMock.mock(`${account_url}/platform/me`, {
+    fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: 'test',
       'ssh_keys': [{

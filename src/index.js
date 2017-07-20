@@ -37,9 +37,9 @@ export default class Client {
   getAccountInfo(reset = false) {
     return this.authenticationPromise.then(() => {
       if (!this.getAccountInfoPromise || reset) {
-        const { account_url } = getConfig();
+        const { api_url } = getConfig();
 
-        this.getAccountInfoPromise = request(`${account_url}/platform/me`, 'GET');
+        this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
       }
 
       return this.getAccountInfoPromise;
