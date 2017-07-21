@@ -13,6 +13,8 @@ import ProjectLevelVariable from './ProjectLevelVariable';
 import Route from './Route';
 import Variable from './Variable';
 import Deployment from './Deployment';
+import Organization from './Organization';
+import Team from './Team';
 
 export default {
   Account,
@@ -29,5 +31,7 @@ export default {
   ProjectLevelVariable,
   Route,
   Variable,
-  Deployment
+  Deployment,
+  Organization,
+  Team
 };

@@ -371,4 +371,58 @@ export default class Client {
   getCurrentDeployment(projectId, environmentId) {
     return entities.Deployment.get({ projectId, environmentId });
   }
+
+  /**
+  * Get organizations of the logged user
+  *
+  *
+  * @return Organization[]
+  */
+  getOrganizations() {
+    return this.getAccountInfo().then(me => {
+      if(!me) {
+        return false;
+      }
+
+      return me.organizations.map(organization => new entities.Organization(organization));
+    });
+  }
+
+  /**
+  * Get organization
+  *
+  * @param string id
+  *
+  * @return Organization
+  */
+  getOrganization(id) {
+    return entities.Organization.get({id});
+  }
+
+  /**
+  * Get teams of the logged user
+  *
+  *
+  * @return Team[]
+  */
+  getTeams() {
+    return this.getAccountInfo().then(me => {
+      if(!me) {
+        return false;
+      }
+
+      return me.teams.map(team => new entities.Team(team));
+    });
+  }
+
+  /**
+  * Get team
+  *
+  * @param string id
+  *
+  * @return Team
+  */
+  getTeam(id) {
+    return entities.Team.get({ id });
+  }
 }

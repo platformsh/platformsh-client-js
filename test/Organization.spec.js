@@ -1,0 +1,29 @@
+/* global afterEach, before*/
+
+import { assert } from 'chai';
+import fetchMock from 'fetch-mock';
+
+import { setToken } from '../src/api';
+import Organization from '../src/model/Organization';
+
+describe('Organization', () => {
+  before(function() {
+    setToken('testToken');
+  });
+
+  afterEach(function() {
+    fetchMock.restore();
+  });
+
+  it('Get members', done => {
+    fetchMock.mock('https://api.platform.sh/api/platform/organizations/1/members', [{user: '1'}]);
+
+    const organization = new Organization({id: 1});
+
+    organization.getMembers().then(organizationMembers => {
+      assert.equal(organizationMembers[0].user, '1');
+      assert.equal(organizationMembers[0].constructor.name, 'OrganizationMember');
+      done();
+    });
+  });
+});
