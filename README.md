@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/platformsh/platformsh-client-js.svg?branch=master)](https://travis-ci.org/platformsh/platformsh-client-js)
 # Platform.sh API client
 
 This is a isomorphic Javascript library for accessing the Platform.sh API.
