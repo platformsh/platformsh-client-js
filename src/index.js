@@ -425,4 +425,14 @@ export default class Client {
   getTeam(id) {
     return entities.Team.get({ id });
   }
+
+  /**
+  * Get regions
+  *
+  *
+  * @return Region[]
+  */
+  getRegions() {
+    return entities.Region.query();
+  }
 }

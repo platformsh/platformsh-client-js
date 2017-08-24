@@ -15,6 +15,7 @@ import Variable from './Variable';
 import Deployment from './Deployment';
 import Organization from './Organization';
 import Team from './Team';
+import Region from './Region';
 
 export default {
   Account,
@@ -33,5 +34,6 @@ export default {
   Variable,
   Deployment,
   Organization,
-  Team
+  Team,
+  Region
 };

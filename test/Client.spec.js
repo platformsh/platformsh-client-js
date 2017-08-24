@@ -370,4 +370,26 @@ describe('Client', () => {
         done();
       });
   });
+
+  it('Get regions', done => {
+    fetchMock.mock('https://accounts.platform.sh/api/platform/regions', [{
+      available: true,
+      endpoint: 'https://staging.plat.farm/api',
+      id: 'us.platform.sh',
+      label: 'PEPSi Staging',
+      private: false,
+      provider: 'AWS',
+      zone: 'Europe'
+    }]);
+    client.getRegions()
+      .then(regions => {
+        assert.equal(regions[0].id, 'us.platform.sh');
+        assert.equal(regions[0].endpoint, 'https://staging.plat.farm/api');
+        assert.equal(regions[0].available, true);
+        assert.equal(regions[0].label, 'PEPSi Staging');
+        assert.equal(regions[0].zone, 'Europe');
+        assert.equal(regions[0].constructor.name, 'Region');
+        done();
+      });
+  });
 });
