@@ -268,7 +268,7 @@ describe('Client', () => {
     fetchMock.mock(`${account_url}/subscriptions/1`, {
       'project_region': 'region'
     });
-    client.getSubscription({id: '1'})
+    client.getSubscription('1')
       .then(subscription => {
         assert.equal(subscription.project_region, 'region');
         assert.equal(subscription.constructor.name, 'Subscription');

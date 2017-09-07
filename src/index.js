@@ -335,7 +335,7 @@ export default class Client {
   * @return Subscription|false
   */
   getSubscription(id) {
-    return entities.Subscription.get(id);
+    return entities.Subscription.get({ id });
   }
 
   /**
