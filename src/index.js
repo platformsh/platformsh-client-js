@@ -7,6 +7,20 @@ export const models = entities;
 
 export const api = request;
 
+const handler = {
+  get(target, key) {
+    if(key === 'authenticationPromise') {
+      return target.authenticationPromise;
+    } else if(key === 'cleanRequest') {
+      return target.cleanRequest;
+    }
+
+    return (...args) => target.authenticationPromise.then(() =>
+      target[key](...args)
+    );
+  }
+};
+
 export default class Client {
   constructor(authenticationConfig = {}) {
     const { api_token, access_token, ...config } = authenticationConfig;
@@ -21,6 +35,8 @@ export default class Client {
         return new_access_token;
       });
     }
+
+    return new Proxy(this, handler);
   }
 
   getAccessToken() {
@@ -35,15 +51,13 @@ export default class Client {
   * @return promise
   */
   getAccountInfo(reset = false) {
-    return this.authenticationPromise.then(() => {
-      if (!this.getAccountInfoPromise || reset) {
-        const { api_url } = getConfig();
+    if (!this.getAccountInfoPromise || reset) {
+      const { api_url } = getConfig();
 
-        this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
-      }
+      this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
+    }
 
-      return this.getAccountInfoPromise;
-    });
+    return this.getAccountInfoPromise;
   }
 
   /**
@@ -265,9 +279,7 @@ export default class Client {
   * @return SshKey|false
   */
   getSshKey(id) {
-    return this.authenticationPromise.then(() => {
-      return entities.SshKey.get(id);
-    });
+    return entities.SshKey.get(id);
   }
 
   /**
