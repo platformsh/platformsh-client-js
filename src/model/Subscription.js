@@ -55,6 +55,12 @@ export default class Subscription extends Ressource {
     return super.get(customUrl || `${account_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
+  static query(params) {
+    const { account_url } = getConfig();
+
+    return super.query(this.getQueryUrl(`${account_url}${url}`), {}, paramDefaults, params, data => data.subscriptions);
+  }
+
   static getAvailablePlans() {
     return availablePlans;
   }

@@ -351,6 +351,17 @@ export default class Client {
   }
 
   /**
+  * Get a subscriptions.
+  *
+  * @param array filters
+  *
+  * @return Subscriptions[]
+  */
+  getSubscriptions(filter, all) {
+    return entities.Subscription.query({ filter, all: all && 1 });
+  }
+
+  /**
   * Estimate the cost of a subscription.
   *
   * @param string plan         The plan (see Subscription::$availablePlans).

@@ -276,6 +276,37 @@ describe('Client', () => {
       });
   });
 
+  it('Get subscriptions', done => {
+    fetchMock.mock(`${account_url}/platform/subscriptions`, {
+      subscriptions: [{
+        'project_region': 'region'
+      }]
+    });
+    client.getSubscriptions()
+      .then(subscriptions => {
+        assert.equal(subscriptions.length, 1);
+        assert.equal(subscriptions[0].project_region, 'region');
+        assert.equal(subscriptions[0].constructor.name, 'Subscription');
+        done();
+      });
+  });
+
+  it('Get subscriptions with filters', done => {
+    fetchMock.mock(
+      `${account_url}/platform/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`, //eslint-disable-line
+      { subscriptions: [{
+        'project_region': 'region'
+      }]}
+    );
+    client.getSubscriptions([{'project_title': {'value': 'Demo', 'operator': 'Contains'}}])
+      .then(subscriptions => {
+        assert.equal(subscriptions.length, 1);
+        assert.equal(subscriptions[0].project_region, 'region');
+        assert.equal(subscriptions[0].constructor.name, 'Subscription');
+        done();
+      });
+  });
+
   it('Get subscription estimate', done => {
     fetchMock.mock(`${account_url}/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`, {
       key: 'value'
