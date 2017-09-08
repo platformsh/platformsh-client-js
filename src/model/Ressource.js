@@ -57,11 +57,17 @@ export default class Ressource {
     });
   }
 
-  static query(_url, params, paramDefaults, queryParams) {
+  static query(_url, params, paramDefaults, queryParams, transformResultBeforeMap) {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, 'GET', queryParams).then(data => {
-      return data.map(d => new this.prototype.constructor(d, `${_url}/${d.id}`));
+      let dataToMap = data;
+
+      if(transformResultBeforeMap) {
+        dataToMap = transformResultBeforeMap(data);
+      }
+
+      return dataToMap.map(d => new this.prototype.constructor(d, `${_url}/${d.id}`));
     });
   }
 
