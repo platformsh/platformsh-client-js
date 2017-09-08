@@ -1,6 +1,6 @@
 import 'isomorphic-fetch'; // fetch api polyfill
 require('es6-promise').polyfill();
-import param from './queryString';
+import param from 'to-querystring';
 
 let token;
 
