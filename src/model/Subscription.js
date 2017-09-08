@@ -14,7 +14,7 @@ const creatableField = [
   'environments',
   'activation_callback'
 ];
-const url = '/subscriptions/:id';
+const url = '/platform/subscriptions/:id';
 const STATUS_ACTIVE = 'active';
 const STATUS_REQUESTED = 'requested';
 const STATUS_PROVISIONING = 'provisioning';

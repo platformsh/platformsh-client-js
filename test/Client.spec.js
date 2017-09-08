@@ -252,7 +252,7 @@ describe('Client', () => {
   });
 
   it('Create subscription', done => {
-    fetchMock.mock(`${account_url}/subscriptions`, {
+    fetchMock.mock(`${account_url}/platform/subscriptions`, {
       'project_region': 'region'
     }, { method: 'POST'});
     const activationCallback = { uri: 'http://www.google.fr'};
@@ -265,7 +265,7 @@ describe('Client', () => {
   });
 
   it('Get subscription', done => {
-    fetchMock.mock(`${account_url}/subscriptions/1`, {
+    fetchMock.mock(`${account_url}/platform/subscriptions/1`, {
       'project_region': 'region'
     });
     client.getSubscription('1')
