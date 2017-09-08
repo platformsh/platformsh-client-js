@@ -39,7 +39,6 @@ export default class Subscription extends Ressource {
     this.user_licenses = 0;
     this.project_id = '';
     this.project_title = '';
-    this.project_title = '';
     this.project_region = '';
     this.project_region_label = '';
     this.project_ui = '';
