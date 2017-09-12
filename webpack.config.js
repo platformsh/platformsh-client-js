@@ -22,10 +22,13 @@ if (env.mode === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/src/index.js',
+  entry: {
+    [outputFile]:  __dirname + '/src/index.js',
+    'authentication/index':  __dirname + '/src/authentication',
+  },
   output: {
     path: __dirname + '/lib',
-    filename: outputFile,
+    filename: '[name].js',
     library: libraryName,
     libraryTarget: 'umd',
     umdNamedDefine: true

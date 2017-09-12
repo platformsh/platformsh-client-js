@@ -2,7 +2,7 @@ import 'isomorphic-fetch'; // fetch api polyfill
 require('es6-promise').polyfill();
 import param from 'to-querystring';
 
-let token;
+let authenticationPromise;
 
 const defaultHeaders = {
 };
@@ -30,23 +30,26 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
 };
 
 export const authenticatedRequest = (url, method, data = {}, additionalHeaders = {}) => {
-  if(!token) {
-    throw new Error('Token is mandatory');
-  }
+  return authenticationPromise
+    .then(token => {
+      if(!token) {
+        throw new Error('Token is mandatory');
+      }
 
-  const authenticationHeaders = {
-    Authorization: `Bearer ${token}`
-  };
+      const authenticationHeaders = {
+        Authorization: `Bearer ${token}`
+      };
 
-  return request(url, method, data, { ...additionalHeaders, ...authenticationHeaders});
+      return request(url, method, data, { ...additionalHeaders, ...authenticationHeaders});
+    });
 };
 
-export const createEventSource = (url) => {
-  return new window.EventSource(`${url}?access_token=${token}`);
-};
+export const createEventSource = url =>
+  authenticationPromise
+    .then(token => new window.EventSource(`${url}?access_token=${token}`));
 
-export const setToken = newToken => {
-  token = newToken;
+export const setAuthenticationPromise = promise => {
+  authenticationPromise = promise;
 };
 
 export default authenticatedRequest;

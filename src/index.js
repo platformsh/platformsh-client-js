@@ -1,5 +1,5 @@
-import request, { setToken } from './api';
-import connector from './authentication/connector';
+import request from './api';
+import connector from './authentication';
 import { getConfig, setConfig } from './config';
 import entities from './model';
 
@@ -26,15 +26,10 @@ export default class Client {
     const { api_token, access_token, ...config } = authenticationConfig;
 
     setConfig(config);
-    if(access_token) {
-      setToken(access_token);
-      this.authenticationPromise = Promise.resolve(access_token);
-    } else {
-      this.authenticationPromise = connector(api_token).then(new_access_token => {
-        setToken(new_access_token);
-        return new_access_token;
-      });
-    }
+    this.authenticationPromise = connector({
+      access_token,
+      api_token
+    });
 
     return new Proxy(this, handler);
   }

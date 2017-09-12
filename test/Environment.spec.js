@@ -3,12 +3,12 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
-import { setToken } from '../src/api';
+import { setAuthenticationPromise } from '../src/api';
 import Environment from '../src/model/Environment';
 
 describe('Environment', () => {
   before(function() {
-    setToken('testToken');
+    setAuthenticationPromise(Promise.resolve('testToken'));
   });
 
   afterEach(function() {

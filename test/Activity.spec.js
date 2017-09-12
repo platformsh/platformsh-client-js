@@ -4,14 +4,14 @@ import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
 import { getConfig } from '../src/config';
-import { setToken } from '../src/api';
+import { setAuthenticationPromise } from '../src/api';
 import Activity from '../src/model/Activity';
 
 describe('Activity', () => {
   const { account_url } = getConfig();
 
   beforeEach(function() {
-    setToken('testToken');
+    setAuthenticationPromise(Promise.resolve('testToken'));
   });
 
   afterEach(function() {
