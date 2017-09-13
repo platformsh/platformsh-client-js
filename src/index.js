@@ -26,10 +26,7 @@ export default class Client {
     const { api_token, access_token, ...config } = authenticationConfig;
 
     setConfig(config);
-    this.authenticationPromise = connector({
-      access_token,
-      api_token
-    });
+    this.authenticationPromise = connector(authenticationConfig);
 
     return new Proxy(this, handler);
   }
