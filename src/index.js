@@ -7,28 +7,12 @@ export const models = entities;
 
 export const api = request;
 
-const handler = {
-  get(target, key) {
-    if(key === 'authenticationPromise') {
-      return target.authenticationPromise;
-    } else if(key === 'cleanRequest') {
-      return target.cleanRequest;
-    }
-
-    return (...args) => target.authenticationPromise.then(() =>
-      target[key](...args)
-    );
-  }
-};
-
 export default class Client {
   constructor(authenticationConfig = {}) {
     const { api_token, access_token, ...config } = authenticationConfig;
 
     setConfig(config);
     this.authenticationPromise = connector(authenticationConfig);
-
-    return new Proxy(this, handler);
   }
 
   getAccessToken() {
