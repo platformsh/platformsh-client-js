@@ -2,6 +2,9 @@ import 'isomorphic-fetch'; // fetch api polyfill
 require('es6-promise').polyfill();
 import param from 'to-querystring';
 
+import getConfig from './config';
+import authenticate from './authentication';
+
 let authenticationPromise;
 
 const defaultHeaders = {
@@ -26,7 +29,20 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
     requestConfig.body = JSON.stringify(body);
   }
 
-  return fetch(apiUrl, requestConfig).then(data => data.json());
+  return fetch(apiUrl, requestConfig)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else if(response.status === 401) {
+        const config = getConfig();
+
+        if(config.api_token) {
+          authenticate(config);
+        } else {
+          window.location = config.authorization;
+        }
+      }
+    });
 };
 
 export const authenticatedRequest = (url, method, data = {}, additionalHeaders = {}) => {
