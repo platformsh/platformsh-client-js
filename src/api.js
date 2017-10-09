@@ -36,11 +36,7 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
       } else if(response.status === 401) {
         const config = getConfig();
 
-        if(config.api_token) {
-          authenticate(config);
-        } else {
-          window.location = config.authorization;
-        }
+        authenticate(config, true);
       }
     });
 };

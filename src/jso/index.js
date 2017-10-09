@@ -116,7 +116,7 @@ api_storage = new ApiDefaultStorage();
 * childbrowser when the jso context is not receiving the response,
 * instead the response is received on a child browser.
 */
-export const jso_checkfortoken = (providerID, url, callback) => {
+export const jso_checkfortoken = (providerID, url, disableRedirect) => {
   let
     atoken,
     h = window.location.hash,
@@ -196,11 +196,12 @@ export const jso_checkfortoken = (providerID, url, callback) => {
   }
 
   api_storage.saveToken(state.providerID, atoken);
-
-  if (state.location) {
-    window.location = state.location;
-  } else {
-    window.location.hash = '';
+  if(!disableRedirect) {
+    if (state.location) {
+      window.location = state.location;
+    } else {
+      window.location.hash = '';
+    }
   }
 
   log(atoken);
@@ -211,12 +212,60 @@ export const jso_checkfortoken = (providerID, url, callback) => {
     delete internalStates[atoken.state];
   }
 
-  if (typeof callback === 'function') {
-    callback();
-  }
-
   // log(atoken);
 
+};
+
+export const jso_getAuthUrl = (providerid, scopes, callback) => {
+  let
+    state,
+    request,
+    authurl,
+    co;
+
+  if (!config[providerid]) throw new Error(`Could not find configuration for provider ${providerid}`);
+  co = config[providerid];
+
+  log(`About to send an authorization request to [${providerid}]. Config:`);
+  log(co);
+
+  state = uuid();
+  request = {
+    'response_type': 'token'
+  };
+  request.state = state;
+
+  if (callback && typeof callback === 'function') {
+    internalStates[state] = callback;
+  }
+
+  if (co['redirect_uri']) {
+    request['redirect_uri'] = co['redirect_uri'];
+  }
+  if (co['client_id']) {
+    request['client_id'] = co['client_id'];
+  }
+  if (scopes) {
+    request['scope'] = scopes.join(' ');
+  }
+
+  authurl = encodeURL(co.authorization, request);
+
+  // We'd like to cache the hash for not loosing Application state.
+  // With the implciit grant flow, the hash will be replaced with the access
+  // token when we return after authorization.
+  request['location'] = window.location.href;
+  request['providerID'] = providerid;
+  if (scopes) {
+    request['scopes'] = scopes;
+  }
+
+  log(`Saving state [${state}]`);
+  log(JSON.parse(JSON.stringify(request)));
+
+  api_storage.saveState(state, request);
+
+  return authurl;
 };
 
 /*
@@ -272,7 +321,6 @@ const jso_authrequest = (providerid, scopes, callback) => {
 
   api_storage.saveState(state, request);
   api_redirect(authurl);
-
 };
 
 export const jso_ensureTokens = ensure => {
