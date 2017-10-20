@@ -2,7 +2,7 @@ import 'isomorphic-fetch'; // fetch api polyfill
 require('es6-promise').polyfill();
 import param from 'to-querystring';
 
-import getConfig from './config';
+import { getConfig } from './config';
 import authenticate from './authentication';
 
 let authenticationPromise;
@@ -36,7 +36,8 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
       } else if(response.status === 401) {
         const config = getConfig();
 
-        authenticate(config, true);
+        authenticate(config, true)
+          .then(() => request(url, method, data, additionalHeaders));
       }
     });
 };
