@@ -81,14 +81,20 @@ function logInWithRedirect(reset) {
     }
 
     const iframe = createIFrame(jso_getAuthUrl('cg', auth.scope));
+    let attempt = 0;
 
-    const listener = setTimeout(function() {
+    const listener = setInterval(function() {
       let href;
 
       try {
         href = iframe.contentWindow.location.href;
       } catch(err) {
-        setTimeout(listener);
+        if(attempt < 5) {
+          attempt++;
+          return false;
+        }
+
+        clearInterval(listener);
         jso_ensureTokens({'cg': auth.scope});
 
         const token = jso_getToken('cg');
@@ -100,8 +106,8 @@ function logInWithRedirect(reset) {
         return resolve(token);
       }
 
-      if(href.indexOf('access_token') !== -1) {
-        setTimeout(listener);
+      if(href && href.indexOf('access_token') !== -1) {
+        clearInterval(listener);
         jso_checkfortoken(auth.client_id, href, true);
         const token = jso_getToken('cg');
 
