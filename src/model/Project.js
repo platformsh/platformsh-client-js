@@ -33,6 +33,8 @@ export default class Project extends Ressource {
     this.status = '';
     this.endpoint = '';
     this.repository = {};
+    this.region = '';
+    this.region_label = '';
   }
 
   static get(params, customUrl) {
