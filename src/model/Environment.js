@@ -8,8 +8,10 @@ import Route from './Route';
 import EnvironmentAccess from './EnvironmentAccess';
 import Metrics from './Metrics';
 
-const paramDefaults = {};
-const modifiableField = ['enable_smtp', 'restrict_robots', 'http_access', 'title'];
+const paramDefaults = {
+  projectId: 'project'
+};
+const modifiableField = ['parent', 'enable_smtp', 'restrict_robots', 'http_access', 'title'];
 const _url = '/projects/:projectId/environments';
 
 const sshRegex = /^ssh:\/\/([a-zA-Z0-9_\-]+)@(.+)$/;
@@ -17,9 +19,9 @@ const sshLinkKeyPrefix = 'pf:ssh:';
 
 export default class Environment extends Ressource {
   constructor(environment, url) {
-    const { id } = environment;
+    const { id, project } = environment;
 
-    super(url, paramDefaults, { id }, environment, [], modifiableField);
+    super(url, paramDefaults, { id, project }, environment, [], modifiableField);
     this.id = '';
     this.status = '';
     this.head_commit = '';
@@ -44,18 +46,18 @@ export default class Environment extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(urlToCall, { projectId, id }, paramDefaults, queryParams);
+    return super.get(urlToCall, { project: projectId, id }, paramDefaults, queryParams);
   }
 
   static query(params, customUrl) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(customUrl || `${api_url}${_url}`, { projectId }, paramDefaults, queryParams);
+    return super.query(customUrl || `${api_url}${_url}`, { project: projectId }, paramDefaults, queryParams);
   }
 
   update(data) {
-    return super.update(data, `${this._url}/:id`);
+    return super.update(data);
   }
 
   /**
