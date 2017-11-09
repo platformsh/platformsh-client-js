@@ -298,7 +298,7 @@ export default class Ressource {
   *
   * @return array
   */
-  runOperation(op, method = 'POST', body = {}) {
+  runOperation(op, method = 'POST', body) {
     if (!this.operationAvailable(op)) {
       throw new Error(`Oper tion not available: ${op}`);
     }
@@ -313,7 +313,7 @@ export default class Ressource {
   *
   * @return Activity
   */
-  runLongOperation(op, method = 'POST', body = {}) {
+  runLongOperation(op, method = 'POST', body) {
     return this.runOperation(op, method, body).then(data => {
       const result = new Result(data, this.getUri());
       const activities = result.getActivities();

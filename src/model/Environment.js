@@ -173,7 +173,7 @@ export default class Environment extends Ressource {
     if (this.isActive()) {
       throw new Error('Active environments cannot be activated');
     }
-    return this.runLongOperation('activate', '', {});
+    return this.runLongOperation('activate', 'POST', undefined);
   }
 
   /**
@@ -187,7 +187,7 @@ export default class Environment extends Ressource {
     if (!this.isActive()) {
       throw new Error('Inactive environments cannot be deactivated');
     }
-    return this.runLongOperation('deactivate', 'POST', {});
+    return this.runLongOperation('deactivate', 'POST', undefined);
   }
 
   /**

@@ -10,12 +10,12 @@ let authenticationPromise;
 const defaultHeaders = {
 };
 
-export const request = (url, method, data = {}, additionalHeaders = {}) => {
-  let body = {...data};
+export const request = (url, method, data, additionalHeaders = {}) => {
+  let body = data && {...data};
   let apiUrl = url;
 
   if(method === 'GET') {
-    const queryString = param(body);
+    const queryString = param(body || {});
 
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ''}`;
   }
@@ -42,7 +42,7 @@ export const request = (url, method, data = {}, additionalHeaders = {}) => {
     });
 };
 
-export const authenticatedRequest = (url, method, data = {}, additionalHeaders = {}) => {
+export const authenticatedRequest = (url, method, data, additionalHeaders = {}) => {
   return authenticationPromise
     .then(token => {
       if(!token) {
