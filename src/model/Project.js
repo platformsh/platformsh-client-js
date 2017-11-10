@@ -362,7 +362,9 @@ export default class Project extends Ressource {
     if(_source) {
       _source.close();
     }
-    _source = createEventSource(`${this.getUri()}/subscribe`);
-    return _source;
+    return createEventSource(`${this.getUri()}/subscribe`).then(source => {
+      _source = source;
+      return _source;
+    });
   }
 }
