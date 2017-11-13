@@ -31,14 +31,14 @@ export const request = (url, method, data, additionalHeaders = {}) => {
 
   return fetch(apiUrl, requestConfig)
     .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else if(response.status === 401) {
+      if(response.status === 401) {
         const config = getConfig();
 
         authenticate(config, true)
           .then(() => request(url, method, data, additionalHeaders));
       }
+
+      return response.json();
     });
 };
 
