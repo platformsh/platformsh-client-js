@@ -29,17 +29,26 @@ export const request = (url, method, data, additionalHeaders = {}) => {
     requestConfig.body = JSON.stringify(body);
   }
 
-  return fetch(apiUrl, requestConfig)
-    .then(response => {
-      if(response.status === 401) {
-        const config = getConfig();
+  return new Promise((resolve, reject) => {
+    fetch(apiUrl, requestConfig)
+      .then(response => {
+        if(response.status === 401) {
+          const config = getConfig();
 
-        authenticate(config, true)
-          .then(() => request(url, method, data, additionalHeaders));
-      }
+          return authenticate(config, true)
+            .then(() => request(url, method, data, additionalHeaders));
+        }
 
-      return response.json();
-    });
+        if(response.ok) {
+          return resolve(response.json());
+        }
+
+        response.json()
+          .then(error => reject(error))
+          .catch((err) => reject(err)
+        );
+      });
+  });
 };
 
 export const authenticatedRequest = (url, method, data, additionalHeaders = {}) => {

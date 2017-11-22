@@ -65,34 +65,6 @@ describe('Environment', () => {
     });
   });
 
-  it('Set variable with error', done => {
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/1/variables', JSON.stringify({
-      'message': 'The server could not comply with the request since it is either malformed or otherwise incorrect.',
-      'code': '400',
-      'status': 400,
-      'detail': {
-        'name': 'String does not match expected pattern'
-      },
-      'title': 'Bad Request'
-    }), 'POST');
-
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/1/variables/a', {});
-    const environment = new Environment({
-      _links: {
-        '#manage-variables': {
-          href: '/api/projects/ffzefzef3/environments/1/variables'
-        }
-      },
-      id: 1
-    }, 'https://test.com/api/projects/ffzefzef3/environments');
-
-    environment.setVariable('a', 'b', false).then(result => {
-      assert.equal(result.data.code, 400);
-      assert.equal(result.data.detail.name, 'String does not match expected pattern');
-      done();
-    });
-  });
-
   it('Delete environment', done => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/environments/1', {}, 'DELETE');
     const environment = new Environment({

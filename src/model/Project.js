@@ -317,10 +317,15 @@ export default class Project extends Ressource {
       if (variable && variable.name) {
         return variable.update(values);
       }
-      values.name = name;
-      const projectLevelVariable = new ProjectLevelVariable(values, this.getLink('#manage-variables'));
+    }).catch(err => {
+      if(err.code === 404) {
+        values.name = name;
+        const projectLevelVariable = new ProjectLevelVariable(values, this.getLink('#manage-variables'));
 
-      return projectLevelVariable.save();
+        return projectLevelVariable.save();
+      }
+
+      return err;
     });
   }
 

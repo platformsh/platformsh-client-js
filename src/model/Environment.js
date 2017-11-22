@@ -293,11 +293,14 @@ export default class Environment extends Ressource {
         if(existing && existing.id) {
           return existing.update(values);
         }
+      }).catch(err => {
+        if(err.code === 404) {
+          values.name = name;
+          const variable = new Variable(values, this.getLink('#manage-variables'));
 
-        values.name = name;
-        const variable = new Variable(values, this.getLink('#manage-variables'));
-
-        return variable.save();
+          return variable.save();
+        }
+        return err;
       });
   }
 

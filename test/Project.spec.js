@@ -502,28 +502,6 @@ describe('Project', () => {
     });
   });
 
-  it('Set none existing variable', done => {
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3/variables/variableName', {});
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3/variables', [{
-      id: 1,
-      name: 'variableName'
-    }], 'POST');
-    const project = new Project({
-      _links: {
-        self: {
-          href: '/api/projects/ffzefzef3'
-        }
-      },
-      id: 'ffzefzef3',
-      title: 'project title'
-    }, 'https://test.com/api/projects/ffzefzef3');
-
-    project.setVariable('variableName').then(result => {
-      assert.equal(result.constructor.name, 'Result');
-      done();
-    });
-  });
-
   it('Get certificates', done => {
     fetchMock.mock('https://test.com/api/projects/ffzefzef3/certificates', [{}]);
     const project = new Project({
