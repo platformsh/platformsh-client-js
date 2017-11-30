@@ -115,6 +115,10 @@ export default class Ressource {
     });
   }
 
+  updateLocal(data) {
+    return new this.constructor({...this.data, ...data}, this._url);
+  }
+
   /**
   * Get the required properties for creating a new resource.
   *

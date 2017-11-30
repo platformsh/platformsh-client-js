@@ -538,4 +538,22 @@ describe('Project', () => {
       done();
     });
   });
+
+  it('Update the project locally', () => {
+    const project = new Project({
+      _links: {
+        domains: {
+          href: '/api/projects/ffzefzef3/domains'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    const updatedProject = project.updateLocal({ title: 'test'});
+
+    assert.equal(updatedProject.title, 'test');
+    assert.equal(updatedProject.id, 'ffzefzef3');
+    assert.equal(updatedProject.constructor.name, 'Project');
+  });
 });
