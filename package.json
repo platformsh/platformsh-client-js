@@ -5,7 +5,7 @@
   "browser": "lib/client/platform-api.min.js",
   "main": "lib/server/platform-api.min.js",
   "scripts": {
-    "build": "webpack --env.mode=build",
+    "build": "rm -rf ./lib && webpack --env.mode=build",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
     "test": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
     "eslint": "eslint ."
