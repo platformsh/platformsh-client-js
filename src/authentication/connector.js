@@ -5,7 +5,13 @@ import { request } from '../api';
 import { jso_configure, jso_ensureTokens, jso_getToken, jso_getAuthUrl, jso_checkfortoken } from '../jso';
 import { getConfig } from '../config';
 
-const basicAuth = btoa('platform-cli:');
+let basicAuth;
+
+if (isNode) {
+  basicAuth = Buffer.from('platform-cli:', 'latin1').toString('base64');
+} else {
+  basicAuth = btoa('platform-cli:');
+}
 
 function createIFrame(src) {
   let iframe = document.getElementById('logiframe-platformsh');
