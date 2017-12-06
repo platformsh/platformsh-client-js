@@ -17,19 +17,18 @@ if (env.mode === 'build') {
   	},
   	comments: false
   }));
-  outputFile = libraryName + '.min.js';
+  outputFile = '[name].min.js';
 } else {
-  outputFile = libraryName + '.js';
+  outputFile = '[name].js';
 }
 
 var config = {
   entry: {
-    [outputFile]:  __dirname + '/src/index.js',
+    [libraryName]:  __dirname + '/src/index.js',
     'authentication/index':  __dirname + '/src/authentication',
   },
   output: {
-    filename: '[name].js',
-    library: libraryName,
+    filename: outputFile,
   },
   module: {
     rules: [
@@ -54,6 +53,7 @@ var client = merge(config, {
   target: 'web',
   output: {
     path: __dirname + '/lib/client',
+    library: libraryName,
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
