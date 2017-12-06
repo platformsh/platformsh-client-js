@@ -8,6 +8,7 @@ import authenticate from './authentication';
 let authenticationPromise;
 
 const defaultHeaders = {
+  'Content-Type': 'application/json'
 };
 
 export const request = (url, method, data, additionalHeaders = {}) => {
