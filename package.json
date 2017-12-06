@@ -2,7 +2,8 @@
   "name": "platformsh-client",
   "version": "0.1.22",
   "description": "",
-  "main": "lib/platform-api.min.js",
+  "browser": "lib/client/platform-api.min.js",
+  "main": "lib/server/platform-api.min.js",
   "scripts": {
     "build": "webpack --env.mode=build",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
@@ -32,6 +33,7 @@
     "pre-push": "^0.1.1",
     "sinon": "^1.17.6",
     "webpack": "3.5.6",
+    "webpack-merge": "^4.1.1",
     "yargs": "6.6.0"
   },
   "author": "",
