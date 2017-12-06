@@ -35,7 +35,7 @@
     "yargs": "6.6.0"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "atob": "^2.0.3",
     "basename": "^0.1.2",
