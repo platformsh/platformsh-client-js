@@ -1,6 +1,7 @@
 import 'isomorphic-fetch'; // fetch api polyfill
 require('es6-promise').polyfill();
 import param from 'to-querystring';
+import isNode from 'detect-node';
 
 import { getConfig } from './config';
 import authenticate from './authentication';
@@ -8,8 +9,11 @@ import authenticate from './authentication';
 let authenticationPromise;
 
 const defaultHeaders = {
-  'Content-Type': 'application/json'
 };
+
+if(isNode) {
+  defaultHeaders['Content-Type'] = 'application/json';
+}
 
 export const request = (url, method, data, additionalHeaders = {}) => {
   let body = data && {...data};
