@@ -1,13 +1,15 @@
 {
   "name": "platformsh-client",
-  "version": "0.1.22",
+  "version": "0.1.27",
   "description": "",
   "browser": "lib/client/platform-api.min.js",
   "main": "lib/server/platform-api.min.js",
   "scripts": {
     "build": "rm -rf ./lib && webpack --env.mode=build",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
-    "test": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
+    "test": "npm run test-web && npm run test-node",
+    "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
+    "test-node": "mocha -r ./test/.setup-node.js ./test/**/*.spec.js",
     "eslint": "eslint ."
   },
   "devDependencies": {
