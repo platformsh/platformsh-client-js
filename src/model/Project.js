@@ -35,6 +35,10 @@ export default class Project extends Ressource {
     this.repository = {};
     this.region = '';
     this.region_label = '';
+    this.vendor = '';
+    this.vendor_label = '';
+    this.vendor_resources = '';
+    this.vendor_website = '';
   }
 
   static get(params, customUrl) {
