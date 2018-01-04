@@ -556,4 +556,28 @@ describe('Project', () => {
     assert.equal(updatedProject.id, 'ffzefzef3');
     assert.equal(updatedProject.constructor.name, 'Project');
   });
+
+  it('Load the theme', done => {
+    fetchMock.mock('https://test.com/vendor.json', {
+      color: '#FFFFF'
+    }, 'GET');
+    const project = new Project({
+      _links: {
+        self: {
+          href: '/api/projects/ffzefzef3'
+        }
+      },
+      id: 'ffzefzef3',
+      title: 'project title',
+      vendor_resources: 'https://test.com'
+    }, 'https://test.com/api/projects/ffzefzef3');
+
+    project.loadTheme().then(theme => {
+      assert.equal(theme.color, '#FFFFF');
+      assert.equal(theme.logo, 'https://test.com/images/logo.svg');
+      assert.equal(theme.smallLogo, 'https://test.com/images/logo-ui.svg');
+      assert.equal(theme.emailLogo, 'https://test.com/images/logo-email.png');
+      done();
+    });
+  });
 });

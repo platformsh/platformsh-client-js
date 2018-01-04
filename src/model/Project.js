@@ -1,3 +1,4 @@
+import 'isomorphic-fetch'; // fetch api polyfill
 import basename from 'basename';
 import is_scalar from 'is-scalar';
 import parse_url from 'parse_url';
@@ -375,5 +376,20 @@ export default class Project extends Ressource {
       _source = source;
       return _source;
     });
+  }
+
+  /**
+  * Load the theme of the project
+  * That contain colors and logo urls
+  */
+  loadTheme() {
+    return fetch(`${this.vendor_resources}/vendor.json`)
+      .then(response => response.json())
+      .then(theme => ({
+        logo: `${this.vendor_resources}/images/logo.svg`,
+        smallLogo: `${this.vendor_resources}/images/logo-ui.svg`,
+        emailLogo: `${this.vendor_resources}/images/logo-email.png`,
+        ...theme
+      }));
   }
 }
