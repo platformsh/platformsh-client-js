@@ -32,8 +32,11 @@ export default class Ressource {
     }
 
     this.copy(data);
-    this._url = _urlParser(_url, params, paramDefaults);
-    const parsedUrl = parse_url(_url);
+
+    const url = _url || this.getLink('self');
+
+    this._url = _urlParser(url, params, paramDefaults);
+    const parsedUrl = parse_url(url);
 
     if(parsedUrl[1] === 'http' || parsedUrl[1] === 'https') {
       this._baseUrl = `${parsedUrl[1]}:${parsedUrl[2]}${parsedUrl[3]}${parsedUrl[4] ? `:${parsedUrl[4]}` : ''}`;
