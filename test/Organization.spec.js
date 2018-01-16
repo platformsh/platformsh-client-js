@@ -26,4 +26,15 @@ describe('Organization', () => {
       done();
     });
   });
+
+  it('Add member', done => {
+    fetchMock.mock('https://api.platform.sh/api/platform/organizations/1/members', {}, 'POST');
+
+    const organization = new Organization({id: 1}, 'https://api.platform.sh/api/platform/organizations/1');
+
+    organization.addMember({ user: 'test' }).then(result => {
+      assert.equal(result.constructor.name, 'Result');
+      done();
+    });
+  });
 });

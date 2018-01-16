@@ -9,8 +9,9 @@ const creatableField = ['role'];
 export default class TeamMember extends Ressource {
   constructor(teamMember, url) {
     const { teamId } = teamMember;
+    const { api_url } = getConfig();
 
-    super(url, paramDefaults, { teamId }, teamMember, creatableField, creatableField);
+    super(url || `${api_url}${_url}`, paramDefaults, { teamId }, teamMember, creatableField, creatableField);
     this.user = '';// userId
   }
 
