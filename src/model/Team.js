@@ -14,7 +14,8 @@ export default class Team extends Ressource {
     super(url, paramDefaults, {}, team, creatableField, modifiableField);
     this.id = '';
     this.name = '';
-    this.parent = '';
+    this.parent = '';// teamId or null
+    this.organization = '';// organizationId
   }
 
   static get(params = {}, customUrl) {
@@ -32,6 +33,12 @@ export default class Team extends Ressource {
 
   getMembers() {
     return TeamMember.query({ teamId: this.id});
+  }
+
+  addMember(member) {
+    const teamMember = new TeamMember({ ...member, teamId: this.id});
+
+    return teamMember.save();
   }
 
   getLink(rel, absolute = true) {
