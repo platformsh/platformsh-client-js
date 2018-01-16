@@ -35,6 +35,12 @@ export default class Organization extends Ressource {
     return OrganizationMember.query({ organizationId: this.id});
   }
 
+  addMember(member) {
+    const organizationMember = new OrganizationMember({ ...member, organizationId: this.id});
+
+    return organizationMember.save();
+  }
+
   getLink(rel, absolute = true) {
     if (this.hasLink(rel)) {
       return super.getLink(rel, absolute);

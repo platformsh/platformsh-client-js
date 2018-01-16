@@ -8,9 +8,12 @@ const creatableField = ['user', 'role'];
 
 export default class OrganizationMember extends Ressource {
   constructor(organizationMember, url) {
-    super(url, paramDefaults, {}, organizationMember, creatableField, creatableField);
-    this.user = '';
+    const { organizationId } = organizationMember;
+
+    super(url, paramDefaults, { organizationId }, organizationMember, creatableField, creatableField);
+    this.user = '';// User id
     this.role = '';
+    this.organizationId = '';
   }
 
   static get(params = {}, customUrl) {
