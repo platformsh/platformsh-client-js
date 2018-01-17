@@ -402,6 +402,24 @@ describe('Client', () => {
       });
   });
 
+  it('Create team', done => {
+    fetchMock.mock('https://api.platform.sh/api/platform/teams', {}, 'POST');
+    client.createTeam({ name: 'team1' })
+      .then(result => {
+        assert.equal(result.constructor.name, 'Result');
+        done();
+      });
+  });
+
+  it('Create organization', done => {
+    fetchMock.mock('https://api.platform.sh/api/platform/organizations', {}, 'POST');
+    client.createOrganization({ name: 'organization1' })
+      .then(result => {
+        assert.equal(result.constructor.name, 'Result');
+        done();
+      });
+  });
+
   it('Get regions', done => {
     fetchMock.mock('https://accounts.platform.sh/api/platform/regions', [{
       available: true,

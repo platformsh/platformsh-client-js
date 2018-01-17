@@ -11,7 +11,9 @@ const modifiableField = ['name'];
 
 export default class Team extends Ressource {
   constructor(team, url) {
-    super(url, paramDefaults, {}, team, creatableField, modifiableField);
+    const { api_url } = getConfig();
+
+    super(url || `${api_url}${_url}`, paramDefaults, {}, team, creatableField, modifiableField);
     this.id = '';
     this.name = '';
     this.parent = '';// teamId or null

@@ -11,7 +11,9 @@ const modifiableField = ['name', 'display_name'];
 
 export default class Organization extends Ressource {
   constructor(organization, url) {
-    super(url, paramDefaults, {}, organization, creatableField, modifiableField);
+    const { api_url } = getConfig();
+
+    super(url || `${api_url}${_url}`, paramDefaults, {}, organization, creatableField, modifiableField);
     this.id = '';
     this.name = '';
     this.display_name = '';

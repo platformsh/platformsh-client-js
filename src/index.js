@@ -399,6 +399,32 @@ export default class Client {
   }
 
   /**
+  * Create organization
+  *
+  * @param object organization
+  *
+  * @return Organization
+  */
+  createOrganization(organization) {
+    const newOrganization = new entities.Organization(organization);
+
+    return newOrganization.save();
+  }
+
+  /**
+  * Create team
+  *
+  * @param object team
+  *
+  * @return Team
+  */
+  createTeam(team) {
+    const newTeam = new entities.Team(team);
+
+    return newTeam.save();
+  }
+
+  /**
   * Get teams of the logged user
   *
   *
