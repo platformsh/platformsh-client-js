@@ -17,4 +17,4 @@ global.navigator = {
   userAgent: 'node.js'
 };
 
-documentRef = document;
+window.documentRef = document;

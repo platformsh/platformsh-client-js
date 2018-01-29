@@ -1,5 +1,6 @@
 import Ressource from './Ressource';
 import { getConfig } from '../config';
+import request from '../api';
 
 const paramDefaults = {};
 const _url = '/projects/:projectId/environments/:environmentId/activities';
@@ -128,6 +129,60 @@ export default class Activity extends Ressource {
     }
 
     return this.runLongOperation('restore', 'POST', {});
+  }
+
+  getLogAt(start_at, delay) {
+    if(delay) {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(request(this.getLink('log'), 'GET', { start_at })), delay);
+      });
+    }
+
+    return request(this.getLink('log'), 'GET', { start_at });
+  }
+
+  async getLogs(callback) {
+    if(!this.hasLink('log')) {
+      return callback(this.log);
+    }
+
+    let starts_at = 0;
+    let lastResponse;
+    let attempts = 0;
+    let delay = 0;
+
+    while((!lastResponse || !(lastResponse[lastResponse.data.length - 1].seal)) && attempts < 5) {
+      try {
+        const textJsonLog = await this.getLogAt(starts_at, delay);
+
+        if(!textJsonLog || !textJsonLog.length) {
+          delay = 3000;
+          attempts++;
+          continue;
+        }
+
+        delay = 0;
+        attempts = 0;
+        const logs = textJsonLog.split('\n')
+          .filter(line => line.length)
+          .map(log => JSON.parse(log));
+
+        lastResponse = logs[logs.length - 1];
+        starts_at++;
+        callback(logs);
+
+        if(logs[logs.length - 1].seal) {
+          break;
+        }
+      } catch(response) {
+        if(response.status < 500 || response.status > 599) {
+          callback({}, response);
+        }
+
+        delay = 3000;
+        attempts++;
+      }
+    }
   }
 
   /**
