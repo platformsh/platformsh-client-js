@@ -441,4 +441,17 @@ describe('Client', () => {
         done();
       });
   });
+
+  it('Get account', done => {
+    fetchMock.mock('https://accounts.platform.sh/api/platform/users/test', {
+      id: 'test',
+      display_name: 'testdn'
+    });
+    client.getAccount('test')
+      .then(user => {
+        assert.equal(user.id, 'test');
+        assert.equal(user.constructor.name, 'Account');
+        done();
+      });
+  });
 });

@@ -1,7 +1,7 @@
 import Ressource from './Ressource';
 import { getConfig } from '../config';
 
-const url = '/users/:id';
+const url = '/platform/users/:id';
 const paramDefaults = {};
 
 export default class Account extends Ressource {

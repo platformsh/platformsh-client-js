@@ -460,4 +460,14 @@ export default class Client {
   getRegions() {
     return entities.Region.query();
   }
+
+  /**
+  * Get account
+  *
+  *
+  * @return Account
+  */
+  getAccount(id) {
+    return entities.Account.get({ id });
+  }
 }
