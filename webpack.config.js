@@ -63,7 +63,7 @@ var server = merge(config, {
   target: 'node',
   output: {
     path: __dirname + '/lib/server',
-    libraryTarget: 'commonjs',
+    libraryTarget: 'umd',
   },
 });
 
