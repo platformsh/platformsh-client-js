@@ -19,6 +19,10 @@ export default class Client {
     return this.authenticationPromise;
   }
 
+  getConfig() {
+    return getConfig();
+  }
+
   /**
   * Get account information for the logged-in user.
   *
