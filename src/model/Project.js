@@ -29,6 +29,7 @@ export default class Project extends Ressource {
     this.created_at = '';
     this.updated_at = '';
     this.owner = '';
+    this.owner_info = {};
     this.subscription = {};
     this.subscription_id = '';
     this.status = '';
