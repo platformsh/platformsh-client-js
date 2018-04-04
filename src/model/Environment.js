@@ -201,7 +201,7 @@ export default class Environment extends Ressource {
     if (!this.parent) {
       throw new Error('The environment does not have a parent, so it cannot be merged');
     }
-    return this.runLongOperation('merge', 'POST', {});
+    return this.runLongOperation('merge', 'POST');
   }
 
   /**
