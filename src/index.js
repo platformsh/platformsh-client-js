@@ -58,7 +58,7 @@ export default class Client {
       }
       const { account_url } = getConfig();
 
-      return request(`${account_url}/projects/${id}`, 'GET').then(result => {
+      return request(`${account_url}/platform/projects/${id}`, 'GET').then(result => {
         return result.endpoint || false;
       });
     });
