@@ -15,7 +15,7 @@ describe('Activity', () => {
   });
 
   afterEach(function() {
-    // fetchMock.restore();
+    fetchMock.restore();
   });
 
   it('Wait for activity', done => {
@@ -48,6 +48,51 @@ describe('Activity', () => {
       assert.equal(onPollCalled, true);
       assert.equal(onLogCalled, true);
       assert.equal(activity.isComplete(), true);
+      done();
+    });
+  });
+
+  it('Get the logs', (done) => {
+    const activity = new Activity({
+      _links: {
+        self: {
+          href: `${account_url}/projects/1/activities/2`
+        }
+      },
+      id: 1,
+      completion_percent: 0,
+      log: 'The logs'
+    });
+
+    activity.getLogs(function(log) {
+      assert.equal(log, 'The logs');
+      done();
+    });
+  });
+
+  it('Stream the logs', (done) => {
+    fetchMock.mock(`${account_url}/projects/1/activities/2/logs?start_at=0`, {
+      body: `{"_id": 1, "data": {"message": "Building application 'app' (runtime type: php:7.0, tree: 55a9ed1)"}}
+{"_id": 2, "seal": true}`,
+      headers: {'content-type': 'application/x-json-stream'}
+    });
+
+    const activity = new Activity({
+      _links: {
+        self: {
+          href: `${account_url}/projects/1/activities/2`
+        },
+        log: {
+          href: `${account_url}/projects/1/activities/2/logs`
+        }
+      },
+      id: 1,
+      completion_percent: 0
+    });
+
+    activity.getLogs(function(logs) {
+      assert.equal(logs.length, 2);
+      assert.equal(logs[0].data.message, 'Building application \'app\' (runtime type: php:7.0, tree: 55a9ed1)');
       done();
     });
   });

@@ -45,13 +45,19 @@ export const request = (url, method, data, additionalHeaders = {}) => {
         }
 
         if(response.ok) {
-          return resolve(response.json());
+          const headers = response.headers;
+          const type = headers.get('Content-Type');
+
+          if(!type || type === 'application/json') {
+            return resolve(response.json());
+          }
+
+          const text = response.text();
+
+          resolve(text);
         }
 
-        response.json()
-          .then(error => reject(error))
-          .catch((err) => reject(err)
-        );
+        reject(response);
       });
   });
 };
