@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import request from './api';
 import connector from './authentication';
 import { getConfig, setConfig } from './config';
