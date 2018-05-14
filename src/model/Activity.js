@@ -141,48 +141,59 @@ export default class Activity extends Ressource {
     return request(this.getLink('log'), 'GET', { start_at });
   }
 
-  async getLogs(callback) {
-    if(!this.hasLink('log')) {
-      return callback(this.log);
-    }
+  getLogs(callback) {
+    let canceled = false;
 
-    let starts_at = 0;
-    let lastResponse;
-    let attempts = 0;
-    let delay = 0;
+    const cancel = () => {
+      canceled = true;
+    };
 
-    while((!lastResponse || !(lastResponse[lastResponse.data.length - 1].seal)) && attempts < 5) {
-      try {
-        const textJsonLog = await this.getLogAt(starts_at, delay);
-
-        if(!textJsonLog || !textJsonLog.length) {
-          delay = 3000;
-          attempts++;
-          continue;
+    return {
+      cancel,
+      exec: async () => {
+        if(!this.hasLink('log')) {
+          return callback(this.log);
         }
 
-        delay = 0;
-        attempts = 0;
-        const logs = textJsonLog.split('\n')
-          .filter(line => line.length)
-          .map(log => JSON.parse(log));
+        let starts_at = 0;
+        let lastResponse;
+        let attempts = 0;
+        let delay = 0;
 
-        lastResponse = logs[logs.length - 1];
-        starts_at++;
-        callback(logs);
+        while((!lastResponse || !(lastResponse[lastResponse.data.length - 1].seal)) && attempts < 5 && !canceled) {
+          try {
+            const textJsonLog = await this.getLogAt(starts_at, delay);
 
-        if(logs[logs.length - 1].seal) {
-          break;
+            if(!textJsonLog || !textJsonLog.length) {
+              delay = 3000;
+              attempts++;
+              continue;
+            }
+
+            delay = 0;
+            attempts = 0;
+            const logs = textJsonLog.split('\n')
+              .filter(line => line.length)
+              .map(log => JSON.parse(log));
+
+            lastResponse = logs[logs.length - 1];
+            starts_at++;
+            callback(logs);
+
+            if(logs[logs.length - 1].seal) {
+              break;
+            }
+          } catch(response) {
+            if(response.status < 500 || response.status > 599) {
+              callback({}, response);
+            }
+
+            delay = 3000;
+            attempts++;
+          }
         }
-      } catch(response) {
-        if(response.status < 500 || response.status > 599) {
-          callback({}, response);
-        }
-
-        delay = 3000;
-        attempts++;
       }
-    }
+    };
   }
 
   /**
