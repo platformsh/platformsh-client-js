@@ -64,10 +64,12 @@ describe('Activity', () => {
       log: 'The logs'
     });
 
-    activity.getLogs(function(log) {
+    const instance = activity.getLogs(function(log) {
       assert.equal(log, 'The logs');
       done();
     });
+
+    instance.exec();
   });
 
   it('Stream the logs', (done) => {
@@ -90,10 +92,12 @@ describe('Activity', () => {
       completion_percent: 0
     });
 
-    activity.getLogs(function(logs) {
+    const instance = activity.getLogs(function(logs) {
       assert.equal(logs.length, 2);
       assert.equal(logs[0].data.message, 'Building application \'app\' (runtime type: php:7.0, tree: 55a9ed1)');
       done();
     });
+
+    instance.exec();
   });
 });
