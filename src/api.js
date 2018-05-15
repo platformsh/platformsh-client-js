@@ -44,20 +44,24 @@ export const request = (url, method, data, additionalHeaders = {}) => {
             .then(() => request(url, method, data, additionalHeaders));
         }
 
-        if(response.ok) {
-          const headers = response.headers;
-          const type = headers.get('Content-Type');
+        const headers = response.headers;
+        const type = headers.get('Content-Type');
 
+        if(response.ok) {
           if(!type || type === 'application/json') {
             return resolve(response.json());
           }
 
           const text = response.text();
 
-          resolve(text);
+          return resolve(text);
         }
 
-        reject(response);
+        if (!type || type === 'application/json') {
+          return response.json().then(data => reject(data));
+        }
+
+        response.text().then(data => reject(data));
       });
   });
 };
