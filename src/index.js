@@ -1,7 +1,7 @@
-import request from './api';
-import connector from './authentication';
-import { getConfig, setConfig } from './config';
-import entities from './model';
+import request from "./api";
+import connector from "./authentication";
+import { getConfig, setConfig } from "./config";
+import entities from "./model";
 
 export const models = entities;
 
@@ -24,157 +24,169 @@ export default class Client {
   }
 
   /**
-  * Get account information for the logged-in user.
-  *
-  * @param bool reset
-  *
-  * @return promise
-  */
+   * Get account information for the logged-in user.
+   *
+   * @param bool reset
+   *
+   * @return promise
+   */
   getAccountInfo(reset = false) {
     if (!this.getAccountInfoPromise || reset) {
       const { api_url } = getConfig();
 
-      this.getAccountInfoPromise = request(`${api_url}/platform/me`, 'GET');
+      this.getAccountInfoPromise = request(`${api_url}/platform/me`, "GET");
     }
 
     return this.getAccountInfoPromise;
   }
 
   /**
-  * Locate a project by ID.
-  *
-  * @param string id
-  *   The project ID.
-  *
-  * @return string
-  *   The project's API endpoint.
-  */
+   * Locate a project by ID.
+   *
+   * @param string id
+   *   The project ID.
+   *
+   * @return string
+   *   The project's API endpoint.
+   */
   locateProject(id) {
     return this.getProjects().then(projects => {
       const project = projects.find(project => project.id === id);
 
-      if(project && project.endpoint) {
+      if (project && project.endpoint) {
         return project.endpoint;
       }
       const { account_url } = getConfig();
 
-      return request(`${account_url}/platform/projects/${id}`, 'GET').then(result => {
-        return result.endpoint || false;
-      });
+      return request(`${account_url}/platform/projects/${id}`, "GET").then(
+        result => {
+          return result.endpoint || false;
+        }
+      );
     });
   }
 
   /**
-  * Get the logged-in user's projects.
-  *
-  * @param bool reset
-  *
-  * @return Promise Project[]
-  */
+   * Get the logged-in user's projects.
+   *
+   * @param bool reset
+   *
+   * @return Promise Project[]
+   */
   getProjects() {
     return this.getAccountInfo().then(me => {
-      if(!me) {
+      if (!me) {
         return false;
       }
 
-      return me.projects.map(project => new entities.Project(project, project.endpoint));
+      return me.projects.map(
+        project => new entities.Project(project, project.endpoint)
+      );
     });
   }
 
   /**
-  * Get a single project by its ID.
-  *
-  * @param string id
-  * @param string hostname
-  * @param bool   https
-  *
-  * @return Project|false
-  */
+   * Get a single project by its ID.
+   *
+   * @param string id
+   * @param string hostname
+   * @param bool   https
+   *
+   * @return Project|false
+   */
   getProject(id) {
     return entities.Project.get({ id });
   }
 
   /**
-  * Get the environments of project projectId
-  *
-  * @param string projectId
-  *
-  * @return Promise Environment[]
-  */
+   * Get the environments of project projectId
+   *
+   * @param string projectId
+   *
+   * @return Promise Environment[]
+   */
   getEnvironments(projectId) {
     return entities.Environment.query({ projectId });
   }
 
   /**
-  * Get the environment environmentId of the projectId project
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Promise Environment
-  */
+   * Get the environment environmentId of the projectId project
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Promise Environment
+   */
   getEnvironment(projectId, environmentId) {
     return entities.Environment.get({ projectId, id: environmentId });
   }
 
   /**
-  * Get the activities of the environment environmentId of the project projectId
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Promise Activity[]
-  */
+   * Get the activities of the environment environmentId of the project projectId
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Promise Activity[]
+   */
   getEnvironmentActivities(projectId, environmentId, type, starts_at) {
-    return entities.Activity.query({ projectId, environmentId, type, starts_at });
+    return entities.Activity.query({
+      projectId,
+      environmentId,
+      type,
+      starts_at
+    });
   }
 
   /**
-  * Get the activities of the environment environmentId of the project projectId
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Promise Certificate[]
-  */
+   * Get the activities of the environment environmentId of the project projectId
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Promise Certificate[]
+   */
   getCertificates(projectId) {
     return entities.Certificate.query({ projectId });
   }
 
   /**
-  * Add certificate to the project projectId
-  * @param string projectId
-  * @param string certificate
-  * @param string key
-  * @param array  chain
-  */
+   * Add certificate to the project projectId
+   * @param string projectId
+   * @param string certificate
+   * @param string key
+   * @param array  chain
+   */
   addCertificate(projectId, certificate, key, chain = []) {
     const { api_url } = getConfig();
     const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
-    const certificateObj = new entities.Certificate({ certificate, key, chain}, certificateUrl);
+    const certificateObj = new entities.Certificate(
+      { certificate, key, chain },
+      certificateUrl
+    );
 
     return certificateObj.save();
   }
 
   /**
-  * Get the domains of the project projectId
-  *
-  * @param string projectId
-  *
-  * @return Promise Domain[]
-  */
+   * Get the domains of the project projectId
+   *
+   * @param string projectId
+   *
+   * @return Promise Domain[]
+   */
   getDomains(projectId, limit) {
     return entities.Domain.query({ projectId, limit });
   }
 
   /**
-  * Get the accesses of the environment environmentId of the project projectId
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Promise EnvironmentAccess[]
-  */
+   * Get the accesses of the environment environmentId of the project projectId
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Promise EnvironmentAccess[]
+   */
   getEnvironmentUsers(projectId, environmentId) {
     return entities.EnvironmentAccess.query({ projectId, environmentId });
   }
@@ -190,61 +202,61 @@ export default class Client {
   }
 
   /**
-  * Get the accesses of the project projectId
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Promise EnvironmentAccess[]
-  */
+   * Get the accesses of the project projectId
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Promise EnvironmentAccess[]
+   */
   getProjectUsers(projectId) {
     return entities.ProjectAccess.query({ projectId });
   }
 
   /**
-  * Get a list of variables.
-  *
-  * @param string projectId
-  * @param int limit
-  *
-  * @return ProjectLevelVariable[]
-  */
+   * Get a list of variables.
+   *
+   * @param string projectId
+   * @param int limit
+   *
+   * @return ProjectLevelVariable[]
+   */
   getProjectVariables(projectId, limit) {
     return entities.ProjectLevelVariable.query({ projectId, limit });
   }
 
   /**
-  * Get a list of variables.
-  *
-  * @param string projectId
-  * @param int limit
-  *
-  * @return ProjectLevelVariable[]
-  */
+   * Get a list of variables.
+   *
+   * @param string projectId
+   * @param int limit
+   *
+   * @return ProjectLevelVariable[]
+   */
   getEnvironmentVariables(projectId, environmentId, limit) {
     return entities.Variable.query({ projectId, environmentId, limit });
   }
 
   /**
-  * Get the metrics of the environment environmentId of the project projectId
-  *
-  * @param string projectId
-  * @param string environmentId
-  * @param string q
-  *
-  * @return Promise Metrics[]
-  */
+   * Get the metrics of the environment environmentId of the project projectId
+   *
+   * @param string projectId
+   * @param string environmentId
+   * @param string q
+   *
+   * @return Promise Metrics[]
+   */
   getEnvironmentMetrics(projectId, environmentId, q) {
     return entities.Metrics.get({ projectId, environmentId, q });
   }
 
   /**
-  * Get the logged-in user's SSH keys.
-  *
-  * @param bool reset
-  *
-  * @return SshKey[]
-  */
+   * Get the logged-in user's SSH keys.
+   *
+   * @param bool reset
+   *
+   * @return SshKey[]
+   */
   getSshKeys() {
     return this.getAccountInfo().then(me => {
       return entities.SshKey.wrap(me.ssh_keys);
@@ -252,24 +264,24 @@ export default class Client {
   }
 
   /**
-  * Get a single SSH key by its ID.
-  *
-  * @param string|int id
-  *
-  * @return SshKey|false
-  */
+   * Get a single SSH key by its ID.
+   *
+   * @param string|int id
+   *
+   * @return SshKey|false
+   */
   getSshKey(id) {
     return entities.SshKey.get(id);
   }
 
   /**
-  * Add an SSH public key to the logged-in user's account.
-  *
-  * @param string value The SSH key value.
-  * @param string title A title for the key (optional).
-  *
-  * @return Result
-  */
+   * Add an SSH public key to the logged-in user's account.
+   *
+   * @param string value The SSH key value.
+   * @param string title A title for the key (optional).
+   *
+   * @return Result
+   */
   addSshKey(value, title) {
     const values = this.cleanRequest({ value, title });
 
@@ -277,17 +289,17 @@ export default class Client {
   }
 
   /**
-  * Filter a request array to remove null values.
-  *
-  * @param array request
-  *
-  * @return array
-  */
+   * Filter a request array to remove null values.
+   *
+   * @param array request
+   *
+   * @return array
+   */
   cleanRequest(req) {
     let cleanedReq = {};
     const keys = Object.keys(req).filter(key => req[key] !== null);
 
-    for(let i = 0;i < keys.length;i++) {
+    for (let i = 0; i < keys.length; i++) {
       cleanedReq[keys[i]] = req[keys[i]];
     }
 
@@ -295,18 +307,25 @@ export default class Client {
   }
 
   /**
-  * Create a new Platform.sh subscription.
-  *
-  * @param string region  The region. See Subscription::$availableRegions.
-  * @param string plan    The plan. See Subscription::$availablePlans.
-  * @param string title   The project title.
-  * @param int    storage The storage of each environment, in MiB.
-  * @param int    environments The number of available environments.
-  * @param array  activationCallback An activation callback for the subscription.
-  *
-  * @return Subscription
-  */
-  createSubscription(region, plan = 'development', title, storage, environments, activationCallback) {
+   * Create a new Platform.sh subscription.
+   *
+   * @param string region  The region. See Subscription::$availableRegions.
+   * @param string plan    The plan. See Subscription::$availablePlans.
+   * @param string title   The project title.
+   * @param int    storage The storage of each environment, in MiB.
+   * @param int    environments The number of available environments.
+   * @param array  activationCallback An activation callback for the subscription.
+   *
+   * @return Subscription
+   */
+  createSubscription(
+    region,
+    plan = "development",
+    title,
+    storage,
+    environments,
+    activationCallback
+  ) {
     const values = this.cleanRequest({
       project_region: region,
       plan,
@@ -320,37 +339,37 @@ export default class Client {
   }
 
   /**
-  * Get a subscription by its ID.
-  *
-  * @param string|int id
-  *
-  * @return Subscription|false
-  */
+   * Get a subscription by its ID.
+   *
+   * @param string|int id
+   *
+   * @return Subscription|false
+   */
   getSubscription(id) {
     return entities.Subscription.get({ id });
   }
 
   /**
-  * Get a subscriptions.
-  *
-  * @param array filters
-  *
-  * @return Subscriptions[]
-  */
+   * Get a subscriptions.
+   *
+   * @param array filters
+   *
+   * @return Subscriptions[]
+   */
   getSubscriptions(filter, all) {
     return entities.Subscription.query({ filter, all: all && 1 });
   }
 
   /**
-  * Estimate the cost of a subscription.
-  *
-  * @param string plan         The plan (see Subscription::$availablePlans).
-  * @param int    storage      The allowed storage per environment (in MiB).
-  * @param int    environments The number of environments.
-  * @param int    users        The number of users.
-  *
-  * @return array An array containing at least 'total' (a formatted price).
-  */
+   * Estimate the cost of a subscription.
+   *
+   * @param string plan         The plan (see Subscription::$availablePlans).
+   * @param int    storage      The allowed storage per environment (in MiB).
+   * @param int    environments The number of environments.
+   * @param int    users        The number of users.
+   *
+   * @return array An array containing at least 'total' (a formatted price).
+   */
   getSubscriptionEstimate(plan, storage, environments, users) {
     const query = {
       plan,
@@ -360,55 +379,57 @@ export default class Client {
     };
     const { account_url } = getConfig();
 
-    return request(`${account_url}/estimate`, 'GET', query);
+    return request(`${account_url}/estimate`, "GET", query);
   }
 
   /**
-  * Get current deployment informations
-  *
-  * @param string projectId
-  * @param string environmentId
-  *
-  * @return Deployment
-  */
+   * Get current deployment informations
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Deployment
+   */
   getCurrentDeployment(projectId, environmentId) {
     return entities.Deployment.get({ projectId, environmentId });
   }
 
   /**
-  * Get organizations of the logged user
-  *
-  *
-  * @return Organization[]
-  */
+   * Get organizations of the logged user
+   *
+   *
+   * @return Organization[]
+   */
   getOrganizations() {
     return this.getAccountInfo().then(me => {
-      if(!me) {
+      if (!me) {
         return false;
       }
 
-      return me.organizations.map(organization => new entities.Organization(organization));
+      return me.organizations.map(
+        organization => new entities.Organization(organization)
+      );
     });
   }
 
   /**
-  * Get organization
-  *
-  * @param string id
-  *
-  * @return Organization
-  */
+   * Get organization
+   *
+   * @param string id
+   *
+   * @return Organization
+   */
   getOrganization(id) {
-    return entities.Organization.get({id});
+    return entities.Organization.get({ id });
   }
 
   /**
-  * Create organization
-  *
-  * @param object organization
-  *
-  * @return Organization
-  */
+   * Create organization
+   *
+   * @param object organization
+   *
+   * @return Organization
+   */
   createOrganization(organization) {
     const newOrganization = new entities.Organization(organization);
 
@@ -416,12 +437,12 @@ export default class Client {
   }
 
   /**
-  * Create team
-  *
-  * @param object team
-  *
-  * @return Team
-  */
+   * Create team
+   *
+   * @param object team
+   *
+   * @return Team
+   */
   createTeam(team) {
     const newTeam = new entities.Team(team);
 
@@ -429,14 +450,14 @@ export default class Client {
   }
 
   /**
-  * Get teams of the logged user
-  *
-  *
-  * @return Team[]
-  */
+   * Get teams of the logged user
+   *
+   *
+   * @return Team[]
+   */
   getTeams() {
     return this.getAccountInfo().then(me => {
-      if(!me) {
+      if (!me) {
         return false;
       }
 
@@ -445,33 +466,53 @@ export default class Client {
   }
 
   /**
-  * Get team
-  *
-  * @param string id
-  *
-  * @return Team
-  */
+   * Get team
+   *
+   * @param string id
+   *
+   * @return Team
+   */
   getTeam(id) {
     return entities.Team.get({ id });
   }
 
   /**
-  * Get regions
-  *
-  *
-  * @return Region[]
-  */
+   * Get regions
+   *
+   *
+   * @return Region[]
+   */
   getRegions() {
     return entities.Region.query();
   }
 
   /**
-  * Get account
-  *
-  *
-  * @return Account
-  */
+   * Get account
+   *
+   *
+   * @return Account
+   */
   getAccount(id) {
     return entities.Account.get({ id });
+  }
+
+  /**
+   * Get orders
+   *
+   *
+   * @return Account
+   */
+  getOrders(owner) {
+    return entities.Order.query({ filter: { owner } });
+  }
+
+  /**
+   * Get order
+   *
+   *
+   * @return Account
+   */
+  getOrder(id) {
+    return entities.Order.get({ id });
   }
 }
