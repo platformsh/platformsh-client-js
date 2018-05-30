@@ -1,39 +1,46 @@
-import isNode from 'detect-node';
-import 'isomorphic-fetch'; // fetch api polyfill
+import isNode from "detect-node";
+import "isomorphic-fetch"; // fetch api polyfill
 
-import { request } from '../api';
-import { jso_configure, jso_ensureTokens, jso_getToken, jso_getAuthUrl, jso_checkfortoken } from '../jso';
-import { getConfig } from '../config';
+import { request } from "../api";
+import {
+  jso_configure,
+  jso_ensureTokens,
+  jso_getToken,
+  jso_getAuthUrl,
+  jso_checkfortoken,
+  jso_wipe
+} from "../jso";
+import { getConfig } from "../config";
 
 let basicAuth;
 
 if (isNode) {
-  basicAuth = Buffer.from('platform-cli:', 'latin1').toString('base64');
+  basicAuth = Buffer.from("platform-cli:", "latin1").toString("base64");
 } else {
-  basicAuth = btoa('platform-cli:');
+  basicAuth = btoa("platform-cli:");
 }
 
 function createIFrame(src) {
-  let iframe = document.getElementById('logiframe-platformsh');
+  let iframe = document.getElementById("logiframe-platformsh");
 
-  if(iframe) {
+  if (iframe) {
     return iframe;
   }
 
-  iframe = document.createElement('iframe');
+  iframe = document.createElement("iframe");
 
-  iframe.id = 'logiframe-platformsh';
-  iframe.style.display = 'none';
-  iframe.setAttribute('sandbox', 'allow-same-origin');
+  iframe.id = "logiframe-platformsh";
+  iframe.style.display = "none";
+  iframe.setAttribute("sandbox", "allow-same-origin");
   iframe.src = src;
   document.body.appendChild(iframe);
 
   iframe.contentWindow.onerror = function(msg, url, line) {
-    console.log('MSG');
+    console.log("MSG");
     console.log(msg);
     console.log(url);
     console.log(line);
-    if (msg === '[IFRAME ERROR MESSAGE]') {
+    if (msg === "[IFRAME ERROR MESSAGE]") {
       return true;
     }
   };
@@ -42,19 +49,18 @@ function createIFrame(src) {
 }
 
 function removeIFrame() {
-  let iframe = document.getElementById('logiframe-platformsh');
+  let iframe = document.getElementById("logiframe-platformsh");
 
-  if(!iframe) {
+  if (!iframe) {
     return false;
   }
 
   document.body.removeChild(iframe);
-
 }
 
 function logInWithToken(token) {
   const credentials = {
-    grant_type: 'api_token',
+    grant_type: "api_token",
     api_token: token
   };
   const headers = {
@@ -62,8 +68,12 @@ function logInWithToken(token) {
   };
   const { authentication_url } = getConfig();
 
-  return request(`${authentication_url}/oauth2/token`, 'POST', credentials, headers)
-          .then(session => session.access_token);
+  return request(
+    `${authentication_url}/oauth2/token`,
+    "POST",
+    credentials,
+    headers
+  ).then(session => session.access_token);
 }
 
 function logInWithRedirect(reset) {
@@ -71,7 +81,7 @@ function logInWithRedirect(reset) {
     const auth = getConfig();
 
     if (!auth.client_id) {
-      reject('Client_id in AUTH_CONFIG is mandatory');
+      reject("Client_id in AUTH_CONFIG is mandatory");
     }
     // ensure that there is an access token, redirecting to auth if needed
     if (!auth.redirect_uri) {
@@ -79,14 +89,16 @@ function logInWithRedirect(reset) {
       auth.redirect_uri = window.location.origin;
     }
 
-    jso_configure({'cg': auth});
-    const storedToken = jso_getToken('cg');
+    jso_configure({ cg: auth });
+    const storedToken = jso_getToken("cg");
 
-    if(storedToken && !reset) {
+    if (storedToken && !reset) {
       return resolve(storedToken);
     }
 
-    const iframe = createIFrame(jso_getAuthUrl('cg', auth.scope));
+    jso_wipe();
+
+    const iframe = createIFrame(jso_getAuthUrl("cg", auth.scope));
     let attempt = 0;
 
     const listener = setInterval(function() {
@@ -94,29 +106,21 @@ function logInWithRedirect(reset) {
 
       try {
         href = iframe.contentWindow.location.href;
-      } catch(err) {
-        if(attempt < 5) {
+      } catch (err) {
+        if (attempt < 5) {
           attempt++;
           return false;
         }
 
         clearInterval(listener);
-        jso_ensureTokens({'cg': auth.scope});
-
-        const token = jso_getToken('cg');
-
-        if(!token) {
-          reject('No token found');
-        }
         removeIFrame();
-        return resolve(token);
+        return jso_ensureTokens({ cg: auth.scope }, true);
       }
 
-      if(href && href.indexOf('access_token') !== -1) {
+      if (href && href.indexOf("access_token") !== -1) {
         clearInterval(listener);
         jso_checkfortoken(auth.client_id, href, true);
-        const token = jso_getToken('cg');
-
+        const token = jso_getToken("cg");
         removeIFrame();
         resolve(token);
       }
@@ -125,7 +129,7 @@ function logInWithRedirect(reset) {
 }
 
 export default (token, reset) => {
-  if(isNode) {
+  if (isNode) {
     return logInWithToken(token);
   }
 
