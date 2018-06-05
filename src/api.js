@@ -38,36 +38,37 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   }
 
   return new Promise((resolve, reject) => {
-    fetch(apiUrl, requestConfig).then(response => {
-      if (response.status === 401) {
-        const config = getConfig();
-
-        const promise = authenticate(config, true);
-        setAuthenticationPromise(promise);
-        return resolve(
-          authenticatedRequest(url, method, data, additionalHeaders)
-        );
-      }
-
-      const headers = response.headers;
-      const type = headers.get("Content-Type");
-
-      if (response.ok) {
-        if (!type || type === "application/json") {
-          return resolve(response.json());
+    fetch(apiUrl, requestConfig)
+      .then(response => {
+        if (response.status === 401) {
+          const config = getConfig();
+          authenticate(config, true).then(t => {
+            resolve(authenticatedRequest(url, method, data, additionalHeaders));
+          });
         }
 
-        const text = response.text();
+        const headers = response.headers;
+        const type = headers.get("Content-Type");
 
-        return resolve(text);
-      }
+        if (response.ok) {
+          if (!type || type === "application/json") {
+            return resolve(response.json());
+          }
 
-      if (!type || type === "application/json") {
-        return response.json().then(data => reject(data));
-      }
+          const text = response.text();
 
-      response.text().then(data => reject(data));
-    });
+          return resolve(text);
+        }
+
+        if (!type || type === "application/json") {
+          return response.json().then(data => reject(data));
+        }
+
+        response.text().then(data => reject(data));
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
@@ -82,8 +83,22 @@ export const authenticatedRequest = (
       throw new Error("Token is mandatory");
     }
 
+    console.log(`authenticatedRequest token ${token}`);
+    // Same calc in the jso lib
+    const currentDate = Math.round(new Date().getTime() / 1000.0);
+    const tokenExpirationDate = token.expires;
+
+    if (currentDate >= tokenExpirationDate) {
+      const config = getConfig();
+      console.log("Token expiration detected");
+
+      return authenticate(config, true).then(t => {
+        return authenticatedRequest(url, method, data, additionalHeaders);
+      });
+    }
+
     const authenticationHeaders = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token["access_token"]}`
     };
 
     return request(url, method, data, {
@@ -95,7 +110,8 @@ export const authenticatedRequest = (
 
 export const createEventSource = url =>
   authenticationPromise.then(
-    token => new window.EventSource(`${url}?access_token=${token}`)
+    token =>
+      new window.EventSource(`${url}?access_token=${token["access_token"]}`)
   );
 
 export default authenticatedRequest;

@@ -395,7 +395,7 @@ export const jso_getToken = (providerid, scopes) => {
 
   if (!token) return null;
   if (!token["access_token"]) return null;
-  return token["access_token"];
+  return token;
 };
 
 export const jso_registerRedirectHandler = callback => {

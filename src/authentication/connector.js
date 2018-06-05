@@ -73,7 +73,7 @@ function logInWithToken(token) {
     "POST",
     credentials,
     headers
-  ).then(session => session.access_token);
+  ).then(session => session);
 }
 
 function logInWithRedirect(reset) {
