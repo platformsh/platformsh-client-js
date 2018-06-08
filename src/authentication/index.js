@@ -7,7 +7,7 @@ export default ({ api_token, access_token, ...config }, reset) => {
   let promise;
 
   if (access_token) {
-    promise = Promise.resolve({ access_token, expires: 999999999999 });
+    promise = Promise.resolve({ access_token, expires: -1 });
   } else {
     promise = connector(api_token, reset);
   }

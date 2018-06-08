@@ -88,7 +88,7 @@ export const authenticatedRequest = (
     const currentDate = Math.round(new Date().getTime() / 1000.0);
     const tokenExpirationDate = token.expires;
 
-    if (currentDate >= tokenExpirationDate) {
+    if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
       const config = getConfig();
       console.log("Token expiration detected");
 
