@@ -79,7 +79,7 @@ const encodeURL = (url, params) => {
 * Returns epoch, seconds since 1970.
 * Used for calculation of expire times.
 */
-const epoch = () => Math.round(new Date().getTime() / 1000.0);
+export const epoch = () => Math.round(new Date().getTime() / 1000.0);
 
 const parseQueryString = qs => {
   let e,

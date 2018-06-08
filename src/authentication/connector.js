@@ -8,7 +8,8 @@ import {
   jso_getToken,
   jso_getAuthUrl,
   jso_checkfortoken,
-  jso_wipe
+  jso_wipe,
+  epoch
 } from "../jso";
 import { getConfig } from "../config";
 
@@ -73,7 +74,14 @@ function logInWithToken(token) {
     "POST",
     credentials,
     headers
-  ).then(session => session);
+  ).then(session => {
+    const expires = epoch() + session.expires_in;
+
+    return {
+      expires,
+      ...session
+    };
+  });
 }
 
 function logInWithRedirect(reset) {
