@@ -9,9 +9,10 @@ export const api = request;
 
 export default class Client {
   constructor(authenticationConfig = {}) {
+    setConfig(authenticationConfig);
+
     const { api_token, access_token, ...config } = authenticationConfig;
 
-    setConfig(config);
     this.authenticationPromise = connector(authenticationConfig);
   }
 

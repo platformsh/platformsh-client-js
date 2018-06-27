@@ -2,8 +2,7 @@ import api, { setAuthenticationPromise } from "../api";
 import { setConfig } from "../config";
 import connector from "./connector";
 
-export default ({ api_token, access_token, ...config }, reset) => {
-  setConfig(config);
+export default ({ api_token, access_token }, reset) => {
   let promise;
 
   if (access_token) {
