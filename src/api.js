@@ -53,11 +53,12 @@ export const request = (url, method, data, additionalHeaders = {}) => {
         if (response.ok) {
           if (!type || type === "application/json") {
             return resolve(response.json());
+          } else if (type === "application/x-json-stream") {
+            const text = response.text();
+            return resolve(text);
           }
 
-          const text = response.text();
-
-          return resolve(text);
+          return resolve(response);
         }
 
         if (!type || type === "application/json") {
