@@ -24,7 +24,7 @@ describe("Client", () => {
   it("Get current Account", done => {
     fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
-      name: "test",
+      display_name: "test",
       projects: [
         {
           id: "ffzefzef",
@@ -34,7 +34,7 @@ describe("Client", () => {
       ]
     });
     client.getAccountInfo().then(me => {
-      assert.equal(me.name, "test");
+      assert.equal(me.display_name, "test");
       done();
     });
   });

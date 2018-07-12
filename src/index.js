@@ -33,9 +33,7 @@ export default class Client {
    */
   getAccountInfo(reset = false) {
     if (!this.getAccountInfoPromise || reset) {
-      const { api_url } = getConfig();
-
-      this.getAccountInfoPromise = request(`${api_url}/platform/me`, "GET");
+      this.getAccountInfoPromise = entities.Me.get();
     }
 
     return this.getAccountInfoPromise;

@@ -17,6 +17,7 @@ import Organization from "./Organization";
 import Team from "./Team";
 import Region from "./Region";
 import Order from "./Order";
+import Me from "./Me";
 
 export default {
   Account,
@@ -37,5 +38,6 @@ export default {
   Organization,
   Team,
   Region,
-  Order
+  Order,
+  Me
 };
