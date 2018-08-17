@@ -104,7 +104,7 @@ export default class EnvironmentAccess extends Ressource {
    *
    * @throws \Exception
    *
-   * @return Result
+   * @return User
    */
   getUser() {
     const embeddedUsers = this.getEmbedded("users");
