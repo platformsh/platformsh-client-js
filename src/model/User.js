@@ -1,15 +1,15 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/api/users/:id";
+const _url = "/api/users";
 const paramDefaults = {};
 
 export default class User extends Ressource {
-  constructor(account, baseUrl, modifiableField = []) {
+  constructor(account, url = `${_url}/:id`, modifiableField = []) {
     const { id } = account;
 
-    super(baseUrl, paramDefaults, { id }, account, [], modifiableField);
-    this._queryUrl = Ressource.getQueryUrl(baseUrl);
+    super(url, paramDefaults, { id }, account, [], modifiableField);
+    this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
     this.created_at = "";
     this.updated_at = "";
@@ -18,21 +18,23 @@ export default class User extends Ressource {
     this.email = "";
   }
 
-  static get(params, _url) {
+  static get(params, customUrl) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super.get(
-      _url || `${api_url}${url}`,
+      customUrl || `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params, baseUrl) {
+  static query(params, customUrl) {
+    const { api_url } = getConfig();
+
     return super.query(
-      this.getQueryUrl(`${baseUrl}${url}`),
+      this.getQueryUrl(customUrl || `${api_url}${_url}`),
       {},
       paramDefaults,
       params
