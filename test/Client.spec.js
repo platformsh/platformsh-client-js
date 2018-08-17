@@ -263,7 +263,7 @@ describe("Client", () => {
   });
 
   it("Get ssh key", done => {
-    fetchMock.mock(`${account_url}/ssh_keys/theId`, {
+    fetchMock.mock(`${account_url}/platform/ssh_keys/theId`, {
       changed: "2017-03-13T17:38:49+01:00"
     });
     client.getSshKey({ id: "theId" }).then(sshkey => {
@@ -275,7 +275,7 @@ describe("Client", () => {
 
   it("Add a bad ssh key", done => {
     fetchMock.mock(
-      `${account_url}/ssh_keys`,
+      `${account_url}/platform/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
@@ -289,7 +289,7 @@ describe("Client", () => {
 
   it("Add a ssh key", done => {
     fetchMock.mock(
-      `${account_url}/ssh_keys`,
+      `${account_url}/platform/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
