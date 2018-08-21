@@ -53,7 +53,7 @@ describe("Me", () => {
       ]
     });
 
-    fetchMock.patch(`${api_url}/platform/me`, {
+    fetchMock.patch(`${api_url}/platform/profiles/1`, {
       id: 1,
       email: "test@test.com",
       picture: "testNewPic"
