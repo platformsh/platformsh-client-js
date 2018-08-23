@@ -16,6 +16,7 @@ export default class User extends Ressource {
     this.has_key = false;
     this.display_name = "";
     this.email = "";
+    this.username = "";
   }
 
   static get(params, customUrl) {

@@ -4,7 +4,7 @@ import { getConfig } from "../config";
 
 const url = "/platform/me";
 const paramDefaults = {};
-const modifiableField = ["picture"];
+const modifiableField = ["picture", "email", "display_name", "username"];
 
 export default class Me extends User {
   constructor(account) {
