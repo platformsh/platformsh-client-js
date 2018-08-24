@@ -13,7 +13,8 @@ const modifiableField = [
   "plaintext",
   "company_role",
   "company_type",
-  "website"
+  "website",
+  "ssh_keys"
 ];
 
 export default class Me extends User {
