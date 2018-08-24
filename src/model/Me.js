@@ -4,7 +4,17 @@ import { getConfig } from "../config";
 
 const url = "/platform/me";
 const paramDefaults = {};
-const modifiableField = ["picture", "email", "display_name", "username"];
+const modifiableField = [
+  "picture",
+  "email",
+  "display_name",
+  "username",
+  "newsletter",
+  "plaintext",
+  "company_role",
+  "company_type",
+  "website"
+];
 
 export default class Me extends User {
   constructor(account) {
@@ -16,6 +26,11 @@ export default class Me extends User {
     this.organizations = [];
     this.teams = [];
     this.picture = "";
+    this.newsletter = "";
+    this.plaintext = "";
+    this.website = "";
+    this.company_role = "";
+    this.company_type = "";
   }
 
   static get() {
