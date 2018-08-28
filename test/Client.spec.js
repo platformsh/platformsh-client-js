@@ -299,7 +299,7 @@ describe("Client", () => {
       "ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB"; // eslint-disable-line max-len
 
     client.addSshKey(validSshKey, "titleofsshkey").then(result => {
-      assert.equal(result.constructor.name, "Result");
+      assert.equal(result.constructor.name, "SshKey");
       done();
     });
   });

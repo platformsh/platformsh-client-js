@@ -38,6 +38,16 @@ export default class SshKey extends Ressource {
   }
 
   /**
+   * Override Ressource.save() so that it returns an SshKey and not a Result.
+   *
+   * @return object
+   */
+  async save() {
+    let sshKey = await super.save();
+    return new SshKey(sshKey.data);
+  }
+
+  /**
    * @inheritdoc
    */
   checkProperty(property, value) {
