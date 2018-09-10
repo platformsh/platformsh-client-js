@@ -296,7 +296,9 @@ export default class Client {
    */
   cleanRequest(req) {
     let cleanedReq = {};
-    const keys = Object.keys(req).filter(key => req[key] !== null);
+    const keys = Object.keys(req).filter(
+      key => req[key] !== null && typeof req[key] !== "undefined"
+    );
 
     for (let i = 0; i < keys.length; i++) {
       cleanedReq[keys[i]] = req[keys[i]];
