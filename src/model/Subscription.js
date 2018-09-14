@@ -1,63 +1,81 @@
-import isUrl from 'is-url';
+import isUrl from "is-url";
 
-import Ressource from './Ressource';
-import Account from './Account';
-import Project from './Project';
-import { getConfig } from '../config';
+import Ressource from "./Ressource";
+import Account from "./Account";
+import Project from "./Project";
+import { getConfig } from "../config";
 
 const paramDefaults = {};
 const creatableField = [
-  'project_region',
-  'plan',
-  'project_title',
-  'storage',
-  'environments',
-  'activation_callback'
+  "project_region",
+  "plan",
+  "project_title",
+  "storage",
+  "environments",
+  "activation_callback"
 ];
-const url = '/platform/subscriptions/:id';
-const STATUS_ACTIVE = 'active';
-const STATUS_REQUESTED = 'requested';
-const STATUS_PROVISIONING = 'provisioning';
+const url = "/platform/subscriptions/:id";
+const STATUS_ACTIVE = "active";
+const STATUS_REQUESTED = "requested";
+const STATUS_PROVISIONING = "provisioning";
 
-const availablePlans = ['development', 'standard', 'medium', 'large'];
-const availableRegions = ['eu.platform.sh', 'us.platform.sh'];
+const availablePlans = ["development", "standard", "medium", "large"];
+const availableRegions = ["eu.platform.sh", "us.platform.sh"];
 
 export default class Subscription extends Ressource {
   constructor(subscription) {
     const { id } = subscription;
     const { account_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, subscription, creatableField);
+    super(
+      `${account_url}${url}`,
+      paramDefaults,
+      { id },
+      subscription,
+      creatableField
+    );
     this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
-    this._required = ['project_region'];
-    this.id = '';
-    this.status = '';
-    this.owner = '';
-    this.plan = '';
+    this._required = ["project_region"];
+    this.id = "";
+    this.status = "";
+    this.owner = "";
+    this.owner_info = "";
+    this.plan = "";
     this.environments = 0;
     this.storage = 0;
     this.user_licenses = 0;
-    this.project_id = '';
-    this.project_title = '';
-    this.project_region = '';
-    this.project_region_label = '';
-    this.project_ui = '';
-    this.STATUS_FAILED = 'provisioning Failure';
-    this.STATUS_SUSPENDED = 'suspended';
-    this.STATUS_DELETED = 'deleted';
+    this.project_id = "";
+    this.project_title = "";
+    this.project_region = "";
+    this.project_region_label = "";
+    this.project_ui = "";
+    this.STATUS_FAILED = "provisioning Failure";
+    this.STATUS_SUSPENDED = "suspended";
+    this.STATUS_DELETED = "deleted";
   }
 
   static get(params, customUrl) {
-    const {id, ...queryParams} = params;
+    const { id, ...queryParams } = params;
     const { account_url } = getConfig();
 
-    return super.get(customUrl || `${account_url}${url}`, { id }, paramDefaults, queryParams);
+    return super.get(
+      customUrl || `${account_url}${url}`,
+      { id },
+      paramDefaults,
+      queryParams
+    );
   }
 
   static query(params) {
     const { account_url } = getConfig();
 
-    return super.query(this.getQueryUrl(`${account_url}${url}`), {}, paramDefaults, params, data => data.subscriptions);
+    return super.query(
+      this.getQueryUrl(`${account_url}${url}`),
+      {},
+      paramDefaults,
+      params,
+      data => data.subscriptions
+    );
   }
 
   static getAvailablePlans() {
@@ -81,12 +99,12 @@ export default class Subscription extends Ressource {
 
     return new Promise(resolve => {
       const interval = setInterval(() => {
-        if(!this.isPending()) {
+        if (!this.isPending()) {
           resolve(this);
           return clearInterval(interval);
         }
         this.refresh().then(() => {
-          if(onPoll) {
+          if (onPoll) {
             onPoll(this);
           }
         });
@@ -95,18 +113,18 @@ export default class Subscription extends Ressource {
   }
 
   /**
-  * @inheritdoc
-  */
+   * @inheritdoc
+   */
   checkProperty(property, value) {
     const errors = {};
 
-    if (property === 'storage' && value < 1024) {
-      errors[property] = 'Storage must be at least 1024 MiB';
-    } else if (property === 'activation_callback') {
-      if(!value.uri) {
+    if (property === "storage" && value < 1024) {
+      errors[property] = "Storage must be at least 1024 MiB";
+    } else if (property === "activation_callback") {
+      if (!value.uri) {
         errors[property] = "A 'uri' key is required in the activation callback";
       } else if (!isUrl(value.uri)) {
-        errors[property] = 'Invalid URI in activation callback';
+        errors[property] = "Invalid URI in activation callback";
       }
     }
 
@@ -114,20 +132,20 @@ export default class Subscription extends Ressource {
   }
 
   /**
-  * Check whether the subscription is pending (requested or provisioning).
-  *
-  * @return bool
-  */
+   * Check whether the subscription is pending (requested or provisioning).
+   *
+   * @return bool
+   */
   isPending() {
     const status = this.getStatus();
 
     return status === STATUS_PROVISIONING || status === STATUS_REQUESTED;
   }
   /**
-  * Find whether the subscription is active.
-  *
-  * @return bool
-  */
+   * Find whether the subscription is active.
+   *
+   * @return bool
+   */
   isActive() {
     return this.getStatus() === STATUS_ACTIVE;
   }
@@ -150,7 +168,7 @@ export default class Subscription extends Ressource {
    */
   getOwner() {
     const id = this.owner;
-    const url = this.makeAbsoluteUrl('/api/users', this.getLink('project'));
+    const url = this.makeAbsoluteUrl("/api/users", this.getLink("project"));
 
     return Account.get({ id }, url);
   }
@@ -161,10 +179,10 @@ export default class Subscription extends Ressource {
    * @return Project|false
    */
   getProject() {
-    if (!this.hasLink('project') && !this.isActive()) {
-      throw new Error('Inactive subscriptions do not have projects.');
+    if (!this.hasLink("project") && !this.isActive()) {
+      throw new Error("Inactive subscriptions do not have projects.");
     }
-    const url = this.getLink('project');
+    const url = this.getLink("project");
 
     return Project.get({}, url);
   }
@@ -177,19 +195,19 @@ export default class Subscription extends Ressource {
   }
 
   /**
-  * @inheritdoc
-  */
+   * @inheritdoc
+   */
   operationAvailable(op) {
-    if (op === 'edit') {
+    if (op === "edit") {
       return true;
     }
     return super.operationAvailable(op);
   }
   /**
-  * @inheritdoc
-  */
+   * @inheritdoc
+   */
   getLink(rel, absolute = false) {
-    if(rel === '#edit') {
+    if (rel === "#edit") {
       return this.getUri(absolute);
     }
     return super.getLink(rel, absolute);
