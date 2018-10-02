@@ -1,25 +1,25 @@
-import emailValidator from 'email-validator';
+import emailValidator from "email-validator";
 
-import Ressource from './Ressource';
-import Account from './Account';
-import User from './User';
-import { getConfig } from '../config';
+import Ressource from "./Ressource";
+import Account from "./Account";
+import User from "./User";
+import { getConfig } from "../config";
 
 const paramDefaults = {};
 
-const ROLE_ADMIN = 'admin';
-const ROLE_VIEWER = 'viewer';
+const ROLE_ADMIN = "admin";
+const ROLE_VIEWER = "viewer";
 
 const roles = [ROLE_ADMIN, ROLE_VIEWER];
-const _url = '/projects/:projectId/access';
+const _url = "/projects/:projectId/access";
 
 export default class ProjectAccess extends Ressource {
   constructor(projectAccess, url) {
-    super(url, paramDefaults, {}, projectAccess, ['role', 'user', 'email']);
-    this._required = ['email'];
-    this.id = '';
-    this.role = '';
-    this.user = '';
+    super(url, paramDefaults, {}, projectAccess, ["role", "user", "email"]);
+    this._required = ["email"];
+    this.id = "";
+    this.role = "";
+    this.user = "";
   }
 
   static query(params = {}, customUrl) {
@@ -30,12 +30,12 @@ export default class ProjectAccess extends Ressource {
   }
 
   /**
-  * Get the account information for this user.
-  *
-  * @throws \Exception
-  *
-  * @return Result
-  */
+   * Get the account information for this user.
+   *
+   * @throws \Exception
+   *
+   * @return Result
+   */
   getAccount() {
     return Account.get({ id: this.user }).then(account => {
       if (!account) {
@@ -46,27 +46,27 @@ export default class ProjectAccess extends Ressource {
   }
 
   /**
-  * Get the user
-  *
-  * @throws \Exception
-  *
-  * @return User
-  */
+   * Get the user
+   *
+   * @throws \Exception
+   *
+   * @return User
+   */
   getUser() {
-    const embeddedUsers = this.getEmbedded('users');
+    const embeddedUsers = this.getEmbedded("users");
 
     return new User(embeddedUsers[0]);
   }
 
   /**
-  * @inheritdoc
-  */
+   * @inheritdoc
+   */
   checkProperty(property, value) {
     let errors = {};
 
-    if(property === 'email' && !emailValidator.validate(value)) {
+    if (property === "email" && !emailValidator.validate(value)) {
       errors[property] = `Invalid email address: '${value}'`;
-    } else if(property === 'role' && roles.indexOf(value) === -1) {
+    } else if (property === "role" && roles.indexOf(value) === -1) {
       errors[property] = `Invalid role: '${value}'`;
     }
     return errors;

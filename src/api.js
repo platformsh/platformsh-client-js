@@ -84,7 +84,6 @@ export const authenticatedRequest = (
       throw new Error("Token is mandatory");
     }
 
-    console.log(`authenticatedRequest token ${token}`);
     // Same calc in the jso lib
     const currentDate = Math.round(new Date().getTime() / 1000.0);
     const tokenExpirationDate = token.expires;

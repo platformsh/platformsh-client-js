@@ -201,9 +201,11 @@ export default class Ressource {
     }
     const url = this._queryUrl || this._url;
 
-    return request(url, "POST", pick(this, this._creatableField)).then(data => {
-      return new Result(data, url, this.constructor);
-    });
+    return request(url, "POST", pick(this.data, this._creatableField)).then(
+      data => {
+        return new Result(data, url, this.constructor);
+      }
+    );
   }
 
   delete() {

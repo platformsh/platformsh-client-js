@@ -9,17 +9,17 @@ export default class ApiDefaultStorage {
 
   */
   saveState(state, obj) {
-    localStorage.setItem('state-' + state, JSON.stringify(obj));
+    localStorage.setItem("state-" + state, JSON.stringify(obj));
   }
 
   /**
-  * getStage()  returns the state object, but also removes it.
-  * @type {Object}
-  */
+   * getStage()  returns the state object, but also removes it.
+   * @type {Object}
+   */
   getState(state) {
-    var obj = JSON.parse(localStorage.getItem('state-' + state));
+    var obj = JSON.parse(localStorage.getItem("state-" + state));
 
-    localStorage.removeItem('state-' + state);
+    localStorage.removeItem("state-" + state);
     return obj;
   }
 
@@ -31,7 +31,7 @@ export default class ApiDefaultStorage {
     var i;
 
     if (!token.scopes) return false;
-    for(i = 0; i < token.scopes.length; i++) {
+    for (i = 0; i < token.scopes.length; i++) {
       if (token.scopes[i] === scope) return true;
     }
     return false;
@@ -42,21 +42,22 @@ export default class ApiDefaultStorage {
   * are expired, and the ones that do not meet a scopes requirement.
   */
   filterTokens(tokens, scopes) {
-    var i, j,
+    var i,
+      j,
       result = [],
       now = Math.round(new Date().getTime() / 1000.0),
       usethis;
 
     if (!scopes) scopes = [];
 
-    for(i = 0; i < tokens.length; i++) {
+    for (i = 0; i < tokens.length; i++) {
       usethis = true;
 
       // Filter out expired tokens. Tokens that is expired in 1 second from now.
-      if (tokens[i].expires && tokens[i].expires < (now + 1)) usethis = false;
+      if (tokens[i].expires && tokens[i].expires < now + 1) usethis = false;
 
       // Filter out this token if not all scope requirements are met
-      for(j = 0; j < scopes.length; j++) {
+      for (j = 0; j < scopes.length; j++) {
         if (!this.hasScope(tokens[i], scopes[j])) usethis = false;
       }
 
@@ -74,20 +75,19 @@ export default class ApiDefaultStorage {
   * scopes: an array with the scopes (not string)
   */
   saveTokens(provider, tokens) {
-    localStorage.setItem('tokens-' + provider, JSON.stringify(tokens));
+    localStorage.setItem("tokens-" + provider, JSON.stringify(tokens));
   }
 
   getTokens(provider) {
-    var tokens = JSON.parse(localStorage.getItem('tokens-' + provider));
+    var tokens = JSON.parse(localStorage.getItem("tokens-" + provider));
 
     if (!tokens) tokens = [];
 
-    console.log('Token received', tokens);
     return tokens;
   }
 
   wipeTokens(provider) {
-    localStorage.removeItem('tokens-' + provider);
+    localStorage.removeItem("tokens-" + provider);
   }
 
   /*
