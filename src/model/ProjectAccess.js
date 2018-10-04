@@ -11,11 +11,13 @@ const ROLE_ADMIN = "admin";
 const ROLE_VIEWER = "viewer";
 
 const roles = [ROLE_ADMIN, ROLE_VIEWER];
+const createField = ["role", "user", "email"];
+const modifiableField = ["role"];
 const _url = "/projects/:projectId/access";
 
 export default class ProjectAccess extends Ressource {
   constructor(projectAccess, url) {
-    super(url, paramDefaults, {}, projectAccess, ["role", "user", "email"]);
+    super(url, paramDefaults, {}, projectAccess, createField, modifiableField);
     this._required = ["email"];
     this.id = "";
     this.role = "";
