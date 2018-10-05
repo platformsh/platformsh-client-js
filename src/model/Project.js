@@ -323,7 +323,6 @@ export default class Project extends Ressource {
   ) {
     // If value isn't a scalar, assume it's supposed to be JSON.
     if (!is_scalar(value)) {
-      value = JSON.parse(value);
       json = true;
     }
     const values = {
