@@ -49,9 +49,13 @@ export const request = (url, method, data, additionalHeaders = {}) => {
 
         const headers = response.headers;
         const type = headers.get("Content-Type");
+        const isJson =
+          !type ||
+          type === "application/json" ||
+          type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
-          if (!type || type === "application/json") {
+          if (isJson) {
             return resolve(response.json());
           } else if (type === "application/x-json-stream") {
             const text = response.text();
@@ -61,7 +65,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           return resolve(response);
         }
 
-        if (!type || type === "application/json") {
+        if (isJson) {
           return response.json().then(data => reject(data));
         }
 
