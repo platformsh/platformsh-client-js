@@ -143,7 +143,7 @@ export default class Project extends Ressource {
     if (this.hasLink(rel)) {
       return super.getLink(rel, absolute);
     }
-    if (rel === "self") {
+    if (rel === "self" || rel === "#edit") {
       return this.endpoint;
     }
     if (rel === "#ui") {
