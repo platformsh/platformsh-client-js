@@ -317,9 +317,10 @@ export default class Project extends Ressource {
   setVariable(
     name,
     value,
-    json = false,
-    visibleBuild = true,
-    visibleRuntime = true
+    is_json = false,
+    is_sensitive = false,
+    visible_build = true,
+    visible_runtime = true
   ) {
     // If value isn't a scalar, assume it's supposed to be JSON.
     if (!is_scalar(value)) {
@@ -328,9 +329,10 @@ export default class Project extends Ressource {
     const values = {
       name,
       value,
-      is_json: json,
-      visible_build: visibleBuild,
-      visible_runtime: visibleRuntime
+      is_json,
+      is_sensitive,
+      visible_build,
+      visible_runtime
     };
 
     return this.getVariable(name)
