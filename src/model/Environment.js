@@ -313,10 +313,23 @@ export default class Environment extends Ressource {
    *
    * @return Result
    */
-  setVariable(name, value, isJson = false) {
-    let encodedValue = value;
 
-    const values = { value: encodedValue, is_json: isJson };
+  setVariable(
+    name,
+    value,
+    is_json = false,
+    is_enabled = true,
+    is_inheritable = true,
+    is_sensitive = false
+  ) {
+    const values = {
+      name,
+      value,
+      is_json,
+      is_enabled,
+      is_inheritable,
+      is_sensitive
+    };
 
     return this.getVariable(name)
       .then(existing => {

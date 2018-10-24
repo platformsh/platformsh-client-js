@@ -3,8 +3,21 @@ import Result from "./Result";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
-const creatableField = ["name", "value", "is_json"];
-const modifialbleField = ["value", "is_json"];
+const creatableField = [
+  "name",
+  "value",
+  "is_json",
+  "is_sensitive",
+  "is_inheritable",
+  "is_enabled"
+];
+const modifialbleField = [
+  "value",
+  "is_json",
+  "is_sensitive",
+  "is_inheritable",
+  "is_enabled"
+];
 const _url = "/projects/:projectId/environments/:environmentId/variables";
 
 export default class Variable extends Ressource {
@@ -16,10 +29,12 @@ export default class Variable extends Ressource {
     this.environment = "";
     this.value = "";
     this.is_enabled = false;
-    this.is_json = true;
     this.created_at = "";
     this.updated_at = "";
     this.inherited = false;
+    this.is_json = "";
+    this.is_sensitive = "";
+    this.is_inheritable = true;
   }
 
   static get(params, customUrl) {
