@@ -106,33 +106,8 @@ function logInWithRedirect(reset) {
 
     jso_wipe();
 
-    const iframe = createIFrame(jso_getAuthUrl("cg", auth.scope));
-    let attempt = 0;
-
-    const listener = setInterval(function() {
-      let href;
-
-      try {
-        href = iframe.contentWindow.location.href;
-      } catch (err) {
-        if (attempt < 5) {
-          attempt++;
-          return false;
-        }
-
-        clearInterval(listener);
-        removeIFrame();
-        return jso_ensureTokens({ cg: auth.scope }, true);
-      }
-
-      if (href && href.indexOf("access_token") !== -1) {
-        clearInterval(listener);
-        jso_checkfortoken(auth.client_id, href, true);
-        const token = jso_getToken("cg");
-        removeIFrame();
-        resolve(token);
-      }
-    }, 1000);
+    removeIFrame();
+    return jso_ensureTokens({ cg: auth.scope }, true);
   });
 }
 

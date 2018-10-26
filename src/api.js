@@ -83,33 +83,37 @@ export const authenticatedRequest = (
   data,
   additionalHeaders = {}
 ) => {
-  return authenticationPromise.then(token => {
-    if (!token) {
-      throw new Error("Token is mandatory");
-    }
+  return authenticationPromise
+    .then(token => {
+      if (!token) {
+        throw new Error("Token is mandatory");
+      }
 
-    // Same calc in the jso lib
-    const currentDate = Math.round(new Date().getTime() / 1000.0);
-    const tokenExpirationDate = token.expires;
+      // Same calc in the jso lib
+      const currentDate = Math.round(new Date().getTime() / 1000.0);
+      const tokenExpirationDate = token.expires;
 
-    if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
-      const config = getConfig();
-      console.log("Token expiration detected");
+      if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
+        const config = getConfig();
+        console.log("Token expiration detected");
 
-      return authenticate(config, true).then(t => {
-        return authenticatedRequest(url, method, data, additionalHeaders);
+        return authenticate(config, true).then(t => {
+          return authenticatedRequest(url, method, data, additionalHeaders);
+        });
+      }
+
+      const authenticationHeaders = {
+        Authorization: `Bearer ${token["access_token"]}`
+      };
+
+      return request(url, method, data, {
+        ...additionalHeaders,
+        ...authenticationHeaders
       });
-    }
-
-    const authenticationHeaders = {
-      Authorization: `Bearer ${token["access_token"]}`
-    };
-
-    return request(url, method, data, {
-      ...additionalHeaders,
-      ...authenticationHeaders
+    })
+    .catch(error => {
+      throw new Error(error);
     });
-  });
 };
 
 export const createEventSource = url =>
