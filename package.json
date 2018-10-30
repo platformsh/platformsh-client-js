@@ -11,7 +11,7 @@
     "test-web": "mocha --compilers js:babel-core/register -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
     "test-node": "mocha --compilers js:babel-core/register -r ./test/.setup-node.js ./test/**/*.spec.js",
     "eslint": "eslint .",
-    "precommit": "lint-staged",
+    "precommit": "lint-staged && npm run build",
     "prepush": "npm test"
   },
   "devDependencies": {
