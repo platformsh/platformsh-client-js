@@ -41,6 +41,7 @@ export default class Project extends Ressource {
     this.vendor_label = "";
     this.vendor_resources = "";
     this.vendor_website = "";
+    this.default_domain = "";
   }
 
   static get(params, customUrl) {
