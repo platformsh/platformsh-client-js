@@ -1,6 +1,6 @@
 {
   "name": "platformsh-client",
-  "version": "0.1.81",
+  "version": "0.1.82",
   "description": "",
   "browser": "lib/client/platform-api.js",
   "main": "lib/server/platform-api.js",
