@@ -12,7 +12,7 @@ const creatableField = [
   "project_title",
   "storage",
   "environments",
-  "activation_callback"
+  "options_url"
 ];
 const url = "/platform/subscriptions/:id";
 const STATUS_ACTIVE = "active";

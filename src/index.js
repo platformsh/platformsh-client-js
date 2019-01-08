@@ -325,7 +325,7 @@ export default class Client {
     title,
     storage,
     environments,
-    activationCallback
+    optionsUrl
   ) {
     const values = this.cleanRequest({
       project_region: region,
@@ -333,7 +333,7 @@ export default class Client {
       project_title: title,
       storage,
       environments,
-      activation_callback: activationCallback
+      options_url: optionsUrl
     });
 
     return new entities.Subscription(values).save();
@@ -359,6 +359,23 @@ export default class Client {
    */
   getSubscriptions(filter, all) {
     return entities.Subscription.query({ filter, all: all && 1 });
+  }
+
+  /**
+   * Initalize the environment for a new subscription
+   *
+   * @param string projectId
+   * @param object options
+   * @param string environmentId
+   */
+  initializeEnvironment(projectId, options, environmentId = "master") {
+    const { api_url } = getConfig();
+
+    return request(
+      `${api_url}/projects/${projectId}/environments/${environmentId}/initialize`,
+      "POST",
+      options
+    );
   }
 
   /**
