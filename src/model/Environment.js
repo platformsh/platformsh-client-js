@@ -133,7 +133,7 @@ export default class Environment extends Ressource {
     const host = sshUrl[2];
     let user = sshUrl[1];
 
-    return `ssh://${user}${username_suffix}@${host}`;
+    return `${user}${username_suffix}@${host}`;
   }
 
   getSshUrls() {
@@ -147,7 +147,7 @@ export default class Environment extends Ressource {
       }, {});
 
     if (Object.keys(sshUrls).length === 0) {
-      sshUrls["ssh"] = this.constructLegacySshUrl();
+      sshUrls["ssh"] = `ssh://${this.constructLegacySshUrl()}`;
     }
 
     return sshUrls;
