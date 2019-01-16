@@ -133,7 +133,7 @@ export default class Environment extends Ressource {
     const host = sshUrl[2];
     let user = sshUrl[1];
 
-    return `${user}${username_suffix}@${host}`;
+    return `ssh://${user}${username_suffix}@${host}`;
   }
 
   getSshUrls() {
