@@ -106,7 +106,7 @@ export default class Environment extends Ressource {
     return this.constructLegacySshUrl(app);
   }
 
-  constructLegacySshUrl(app) {
+  constructLegacySshUrl() {
     if (!this.hasLink("ssh")) {
       if (this.isActive()) {
         throw new Error(
@@ -122,9 +122,7 @@ export default class Environment extends Ressource {
       );
     }
 
-    const suffix = app ? `--${app}` : "";
-
-    return this.convertSshUrl(this.getLink("ssh"), suffix);
+    return this.getLink("ssh");
   }
 
   convertSshUrl(url, username_suffix = "") {
@@ -139,12 +137,18 @@ export default class Environment extends Ressource {
   getSshUrls() {
     const links = this.data._links;
 
-    return Object.keys(links)
+    const sshUrls = Object.keys(links)
       .filter(linkKey => linkKey.indexOf(sshLinkKeyPrefix) === 0)
       .reduce((sshUrls, linkKey) => {
         sshUrls[linkKey.substr(sshLinkKeyPrefix.length)] = links[linkKey].href;
         return sshUrls;
       }, {});
+
+    if (Object.keys(sshUrls).length === 0) {
+      sshUrls["ssh"] = this.constructLegacySshUrl();
+    }
+
+    return sshUrls;
   }
 
   /**
