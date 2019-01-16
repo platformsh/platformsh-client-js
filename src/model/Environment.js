@@ -106,7 +106,7 @@ export default class Environment extends Ressource {
     return this.constructLegacySshUrl(app);
   }
 
-  constructLegacySshUrl() {
+  constructLegacySshUrl(app = "") {
     if (!this.hasLink("ssh")) {
       if (this.isActive()) {
         throw new Error(
@@ -122,7 +122,9 @@ export default class Environment extends Ressource {
       );
     }
 
-    return this.getLink("ssh");
+    const suffix = app ? `--${app}` : "";
+
+    return this.convertSshUrl(this.getLink("ssh"), suffix);
   }
 
   convertSshUrl(url, username_suffix = "") {
