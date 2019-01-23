@@ -40,6 +40,10 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   return new Promise((resolve, reject) => {
     fetch(apiUrl, requestConfig)
       .then(response => {
+        if (response.status === 404) {
+          return reject(`${response.url} not found`);
+        }
+
         if (response.status === 401) {
           const config = getConfig();
           authenticate(config, true).then(t => {
