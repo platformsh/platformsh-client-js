@@ -107,21 +107,6 @@ export default class Environment extends Ressource {
   }
 
   constructLegacySshUrl(app = "") {
-    if (!this.hasLink("ssh")) {
-      if (this.isActive()) {
-        throw new Error(
-          `No SSH URL found for environment '${
-            this.id
-          }'. It is not currently active.`
-        );
-      }
-      throw new Error(
-        `No SSH URL found for environment '${
-          this.id
-        }'. You may not have permission to SSH.`
-      );
-    }
-
     const suffix = app ? `--${app}` : "";
 
     return this.convertSshUrl(this.getLink("ssh"), suffix);
@@ -137,8 +122,11 @@ export default class Environment extends Ressource {
   }
 
   getSshUrls() {
-    const links = this.data._links;
+    if (!this.hasLink("ssh")) {
+      return;
+    }
 
+    const links = this.data._links;
     const sshUrls = Object.keys(links)
       .filter(linkKey => linkKey.indexOf(sshLinkKeyPrefix) === 0)
       .reduce((sshUrls, linkKey) => {
