@@ -64,16 +64,6 @@ export const request = (url, method, data, additionalHeaders = {}) => {
 
           return resolve(response);
         }
-
-        if (isJson) {
-          return response
-            .json()
-            .then(data => reject(data))
-            .catch(error => {
-              console.log(error);
-            });
-        }
-        return response.text().then(data => reject(data));
       })
       .catch(err => {
         reject(err);
