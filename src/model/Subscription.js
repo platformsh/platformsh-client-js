@@ -14,6 +14,9 @@ const creatableField = [
   "environments",
   "options_url"
 ];
+
+const modifiableField = ["plan", "environments", "storage"];
+
 const url = "/platform/subscriptions/:id";
 const STATUS_ACTIVE = "active";
 const STATUS_REQUESTED = "requested";
@@ -32,8 +35,10 @@ export default class Subscription extends Ressource {
       paramDefaults,
       { id },
       subscription,
-      creatableField
+      creatableField,
+      modifiableField
     );
+
     this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
     this._required = ["project_region"];
     this.id = "";
