@@ -533,4 +533,15 @@ export default class Client {
   getOrder(id) {
     return entities.Order.get({ id });
   }
+
+  /**
+   * Get a users cardonfile
+   *
+   * @return Promise
+   */
+  getCardOnFile() {
+    const { api_url } = getConfig();
+    const card = request(`${api_url}/platform/cardonfile`, "GET");
+    return card;
+  }
 }
