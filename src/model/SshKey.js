@@ -54,6 +54,7 @@ export default class SshKey extends Ressource {
    * @return string
    */
   getLink(rel, absolute = false) {
+    console.log("getLink");
     if (rel === "#delete") {
       const { api_url } = getConfig();
       return _urlParser(`${api_url}${url}`, { id: this.key_id });
