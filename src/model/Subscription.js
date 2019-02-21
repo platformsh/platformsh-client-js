@@ -208,13 +208,15 @@ export default class Subscription extends Ressource {
     }
     return super.operationAvailable(op);
   }
+
   /**
    * @inheritdoc
    */
   getLink(rel, absolute = false) {
-    if (rel === "#edit") {
+    if (rel === "#edit" || rel === "#delete") {
       return this.getUri(absolute);
     }
+
     return super.getLink(rel, absolute);
   }
 

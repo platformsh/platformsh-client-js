@@ -55,14 +55,17 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
-          if (isJson) {
-            return resolve(response.json());
-          } else if (type === "application/x-json-stream") {
-            const text = response.text();
-            return resolve(text);
-          }
-
-          return resolve(response);
+          return resolve(
+            response.text().then(text => {
+              let body;
+              try {
+                body = JSON.parse(text);
+              } catch (err) {
+                body = text;
+              }
+              return body;
+            })
+          );
         }
 
         if (isJson) {

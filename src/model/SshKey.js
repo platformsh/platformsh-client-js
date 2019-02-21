@@ -1,10 +1,11 @@
 import atob from "atob";
 
 import Ressource from "./Ressource";
+import _urlParser from "../urlParser";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
-const url = "/platform/ssh_keys/:id";
+const url = "/v1/ssh_keys/:id";
 
 export default class SshKey extends Ressource {
   constructor(sshKey) {
@@ -45,6 +46,19 @@ export default class SshKey extends Ressource {
   async save() {
     let sshKey = await super.save();
     return new SshKey(sshKey.data);
+  }
+
+  /**
+   * Override Ressource.getLink() so that it returns an SshKey and not a Result.
+   *
+   * @return string
+   */
+  getLink(rel, absolute = false) {
+    if (rel === "#delete") {
+      const { api_url } = getConfig();
+      return _urlParser(`${api_url}${url}`, { id: this.key_id });
+    }
+    return super.getLink(rel, absolute);
   }
 
   /**
