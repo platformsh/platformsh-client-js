@@ -95,6 +95,10 @@ export const authenticatedRequest = (
       throw new Error("Token is mandatory");
     }
 
+    if (!additionalHeaders.hasOwnProperty("Content-Type")) {
+      additionalHeaders["Content-Type"] = "application/json";
+    }
+
     // Same calc in the jso lib
     const currentDate = Math.round(new Date().getTime() / 1000.0);
     const tokenExpirationDate = token.expires;
