@@ -4,6 +4,7 @@ import Ressource from "./Ressource";
 import Account from "./Account";
 import Project from "./Project";
 import { getConfig } from "../config";
+import { request } from "../api";
 
 const paramDefaults = {};
 const creatableField = [
@@ -17,7 +18,7 @@ const creatableField = [
 
 const modifiableField = ["plan", "environments", "storage"];
 
-const url = "/platform/subscriptions/:id";
+const url = "/v1/subscriptions/:id";
 const STATUS_ACTIVE = "active";
 const STATUS_REQUESTED = "requested";
 const STATUS_PROVISIONING = "provisioning";
@@ -28,10 +29,10 @@ const availableRegions = ["eu.platform.sh", "us.platform.sh"];
 export default class Subscription extends Ressource {
   constructor(subscription) {
     const { id } = subscription;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     super(
-      `${account_url}${url}`,
+      `${api_url}${url}`,
       paramDefaults,
       { id },
       subscription,
@@ -39,7 +40,7 @@ export default class Subscription extends Ressource {
       modifiableField
     );
 
-    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
     this._required = ["project_region"];
     this.id = "";
     this.status = "";
@@ -61,10 +62,10 @@ export default class Subscription extends Ressource {
 
   static get(params, customUrl) {
     const { id, ...queryParams } = params;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${account_url}${url}`,
+      customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
@@ -72,10 +73,10 @@ export default class Subscription extends Ressource {
   }
 
   static query(params) {
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super.query(
-      this.getQueryUrl(`${account_url}${url}`),
+      this.getQueryUrl(`${api_url}${url}`),
       {},
       paramDefaults,
       params,
@@ -190,6 +191,22 @@ export default class Subscription extends Ressource {
     const url = this.getLink("project");
 
     return Project.get({}, url);
+  }
+
+  /**
+   * Get the project associated with this subscription.
+   *
+   * @return Project|false
+   */
+  getEstimate() {
+    const params = {
+      plan: this.plan,
+      storage: this.storage,
+      environments: this.environments,
+      user_licenses: this.users_licenses
+    };
+
+    return request(`${this._queryUrl}/${this.id}/estimate`, "GET", params);
   }
 
   /**

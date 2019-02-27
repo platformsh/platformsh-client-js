@@ -395,9 +395,9 @@ export default class Client {
       environments,
       user_licenses: users
     };
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
-    return request(`${account_url}/estimate`, "GET", query);
+    return request(`${api_url}/v1/subscriptions/estimate`, "GET", query);
   }
 
   /**
