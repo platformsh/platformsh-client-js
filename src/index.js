@@ -544,4 +544,34 @@ export default class Client {
     const card = request(`${api_url}/platform/cardonfile`, "GET");
     return card;
   }
+
+  /**
+   * Get a users profile.
+   *
+   * @param {string} id - UUID of the user.
+   * @return Promise
+   */
+  getUserProfile(id) {
+    const { api_url } = getConfig();
+    const profile = request(`${api_url}/platform/profiles/${id}`, "GET");
+    return profile;
+  }
+
+  /**
+   * Update a user's profile.
+   *
+   * @param {string} id - UUID of the user.
+   * @param {obj} data - fields to update on the profile
+   *
+   * @return Promise
+   */
+  updateUserProfile(id, data) {
+    const { api_url } = getConfig();
+    const updatedProfile = request(
+      `${api_url}/platform/profiles/${id}`,
+      "PATCH",
+      data
+    );
+    return updatedProfile;
+  }
 }
