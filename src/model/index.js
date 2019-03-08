@@ -1,4 +1,5 @@
 import Account from "./Account";
+import Address from "./Address";
 import Project from "./Project";
 import SshKey from "./SshKey";
 import Subscription from "./Subscription";
@@ -21,6 +22,7 @@ import Me from "./Me";
 
 export default {
   Account,
+  Address,
   Project,
   SshKey,
   Subscription,
