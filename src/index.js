@@ -325,7 +325,8 @@ export default class Client {
     title,
     storage,
     environments,
-    optionsUrl
+    optionsUrl,
+    vendor
   ) {
     const values = this.cleanRequest({
       project_region: region,
@@ -333,7 +334,8 @@ export default class Client {
       project_title: title,
       storage,
       environments,
-      options_url: optionsUrl
+      options_url: optionsUrl,
+      vendor
     });
 
     return new entities.Subscription(values).save();
