@@ -13,7 +13,8 @@ const creatableField = [
   "project_title",
   "storage",
   "environments",
-  "options_url"
+  "options_url",
+  "vendor"
 ];
 
 const modifiableField = ["plan", "environments", "storage"];
@@ -55,6 +56,7 @@ export default class Subscription extends Ressource {
     this.project_region = "";
     this.project_region_label = "";
     this.project_ui = "";
+    this.vendor = "";
     this.STATUS_FAILED = "provisioning Failure";
     this.STATUS_SUSPENDED = "suspended";
     this.STATUS_DELETED = "deleted";
