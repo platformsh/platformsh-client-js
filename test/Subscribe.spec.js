@@ -1,30 +1,30 @@
 /* global beforeEach, afterEach*/
 
-import { assert } from 'chai';
-import fetchMock from 'fetch-mock';
+import { assert } from "chai";
+import fetchMock from "fetch-mock";
 
-import { getConfig } from '../src/config';
-import { setAuthenticationPromise } from '../src/api';
-import Subscription from '../src/model/Subscription';
+import { getConfig } from "../src/config";
+import { setAuthenticationPromise } from "../src/api";
+import Subscription from "../src/model/Subscription";
 
-describe('Subscribe', () => {
+describe("Subscribe", () => {
   const { account_url } = getConfig();
 
   beforeEach(function() {
-    setAuthenticationPromise(Promise.resolve('testToken'));
+    setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
   afterEach(function() {
     fetchMock.restore();
   });
 
-  it('Wait for subscription', done => {
+  it("Wait for subscription", done => {
     let onPollCalled = false;
 
     fetchMock.mock(`${account_url}/subscriptions/1`, {
       body: {
         id: 1,
-        status: 'active'
+        status: "active"
       }
     });
     const subscription = new Subscription({
@@ -34,7 +34,7 @@ describe('Subscribe', () => {
         }
       },
       id: 1,
-      status: 'requested'
+      status: "requested"
     });
     const onPoll = () => {
       onPollCalled = true;
@@ -42,7 +42,7 @@ describe('Subscribe', () => {
       fetchMock.mock(`${account_url}/subscriptions/1`, {
         body: {
           id: 1,
-          status: 'active'
+          status: "active"
         }
       });
     };
@@ -54,20 +54,23 @@ describe('Subscribe', () => {
     });
   });
 
-  it('Get subscription project', done => {
-    fetchMock.mock('https://test.com/api/projects/ffzefzef3', {id: 1, title: 'theproject'});
+  it("Get subscription project", done => {
+    fetchMock.mock("https://test.com/api/projects/ffzefzef3", {
+      id: 1,
+      title: "theproject"
+    });
     const subscription = new Subscription({
       _links: {
         project: {
-          href: 'https://test.com/api/projects/ffzefzef3'
+          href: "https://test.com/api/projects/ffzefzef3"
         }
       },
       id: 1,
-      status: 'active'
+      status: "active"
     });
 
     subscription.getProject().then(project => {
-      assert.equal(project.title, 'theproject');
+      assert.equal(project.title, "theproject");
       done();
     });
   });

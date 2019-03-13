@@ -8,7 +8,7 @@ import Client from "../src";
 
 describe("Client", () => {
   let client;
-  const { account_url, authentication_url, api_url } = getConfig();
+  const { authentication_url, api_url } = getConfig();
 
   beforeEach(function() {
     fetchMock.mock(`${authentication_url}/oauth2/token`, {
@@ -263,7 +263,7 @@ describe("Client", () => {
   });
 
   it("Get ssh key", done => {
-    fetchMock.mock(`${account_url}/platform/ssh_keys/theId`, {
+    fetchMock.mock(`${api_url}/v1/ssh_keys/theId`, {
       changed: "2017-03-13T17:38:49+01:00"
     });
     client.getSshKey({ id: "theId" }).then(sshkey => {
@@ -275,7 +275,7 @@ describe("Client", () => {
 
   it("Add a bad ssh key", done => {
     fetchMock.mock(
-      `${account_url}/platform/ssh_keys`,
+      `${api_url}/v1/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
@@ -289,7 +289,7 @@ describe("Client", () => {
 
   it("Add a ssh key", done => {
     fetchMock.mock(
-      `${account_url}/platform/ssh_keys`,
+      `${api_url}/v1/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
@@ -316,7 +316,7 @@ describe("Client", () => {
 
   it("Create subscription", done => {
     fetchMock.mock(
-      `${account_url}/platform/subscriptions`,
+      `${api_url}/v1/subscriptions`,
       {
         project_region: "region"
       },
@@ -340,7 +340,7 @@ describe("Client", () => {
   });
 
   it("Get subscription", done => {
-    fetchMock.mock(`${account_url}/platform/subscriptions/1`, {
+    fetchMock.mock(`${api_url}/v1/subscriptions/1`, {
       project_region: "region"
     });
     client.getSubscription("1").then(subscription => {
@@ -351,7 +351,7 @@ describe("Client", () => {
   });
 
   it("Get subscriptions", done => {
-    fetchMock.mock(`${account_url}/platform/subscriptions`, {
+    fetchMock.mock(`${api_url}/v1/subscriptions`, {
       subscriptions: [
         {
           project_region: "region"
@@ -368,7 +368,7 @@ describe("Client", () => {
 
   it("Get subscriptions with filters", done => {
     fetchMock.mock(
-      `${account_url}/platform/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`, //eslint-disable-line
+      `${api_url}/v1/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`, //eslint-disable-line
       {
         subscriptions: [
           {
@@ -391,7 +391,7 @@ describe("Client", () => {
 
   it("Get subscription estimate", done => {
     fetchMock.mock(
-      `${account_url}/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`,
+      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`,
       {
         key: "value"
       }
@@ -545,64 +545,61 @@ describe("Client", () => {
   });
 
   it("Get orders", done => {
-    fetchMock.mock(
-      "https://accounts.platform.sh/api/platform/orders?filter[owner]=1",
-      {
-        commerce_order: [
-          {
-            id: "803635",
-            status: "recurring_open",
-            owner: "126517",
-            address: {
-              country: "FR",
-              administrative_area: "",
-              sub_administrative_area: null,
-              locality: "Montpellier",
-              dependent_locality: "",
-              postal_code: "34000",
-              thoroughfare: "256 rue de Thor",
-              premise: "",
-              sub_premise: null,
-              organisation_name: null,
-              name_line: "Yann Autissier",
-              first_name: "Yann",
-              last_name: "Autissier",
-              data: null
+    fetchMock.mock(`${api_url}/v1/orders?filter[owner]=1`, {
+      commerce_order: [
+        {
+          id: "803635",
+          status: "recurring_open",
+          owner: "126517",
+          address: {
+            country: "FR",
+            administrative_area: "",
+            sub_administrative_area: null,
+            locality: "Montpellier",
+            dependent_locality: "",
+            postal_code: "34000",
+            thoroughfare: "256 rue de Thor",
+            premise: "",
+            sub_premise: null,
+            organisation_name: null,
+            name_line: "Yann Autissier",
+            first_name: "Yann",
+            last_name: "Autissier",
+            data: null
+          },
+          vat_number: null,
+          billing_period_start: "1525125600",
+          billing_period_end: "1527803999",
+          total: 4.23,
+          components: {
+            base_price: {
+              display_title: "Subtotal",
+              amount: 13.53,
+              currency: "EUR"
             },
-            vat_number: null,
-            billing_period_start: "1525125600",
-            billing_period_end: "1527803999",
-            total: 4.23,
-            components: {
-              base_price: {
-                display_title: "Subtotal",
-                amount: 13.53,
-                currency: "EUR"
-              },
-              "vat|fr_standard|20_2014": {
-                display_title: "20% VAT",
-                amount: 0.7,
-                currency: "EUR"
-              },
-              voucher: {
-                display_title: "Voucher",
-                amount: -10,
-                currency: "EUR"
-              }
+            "vat|fr_standard|20_2014": {
+              display_title: "20% VAT",
+              amount: 0.7,
+              currency: "EUR"
             },
-            currency: "EUR",
-            invoice_url: null
-          }
-        ],
-        count: 57593,
-        _links: {
-          self: {
-            title: "Self",
-            href: "http://accounts.psh.local/api/platform/orders"
-          }
+            voucher: {
+              display_title: "Voucher",
+              amount: -10,
+              currency: "EUR"
+            }
+          },
+          currency: "EUR",
+          invoice_url: null
+        }
+      ],
+      count: 57593,
+      _links: {
+        self: {
+          title: "Self",
+          href: "http://accounts.psh.local/api/platform/orders"
         }
       }
-    );
+    });
     client.getOrders("1").then(orders => {
       assert.equal(orders.length, 1);
       assert.equal(orders[0].constructor.name, "Order");
@@ -612,7 +609,7 @@ describe("Client", () => {
 
   it("Get order", done => {
     fetchMock.mock(
-      "https://accounts.platform.sh/api/platform/orders/1",
+      `${api_url}/v1/orders/1`,
       JSON.stringify({
         id: "31619",
         status: "invoiced",
