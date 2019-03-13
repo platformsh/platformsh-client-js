@@ -517,6 +517,26 @@ export default class Client {
   }
 
   /**
+   * Get address
+   *
+   *
+   * @return Address
+   */
+  getAddress(id) {
+    return entities.Address.get({ id });
+  }
+
+  /**
+   * Update address
+   *
+   *
+   * @return Address
+   */
+  saveAddress(address) {
+    return entities.Address.update({ address });
+  }
+
+  /**
    * Get orders
    *
    *
