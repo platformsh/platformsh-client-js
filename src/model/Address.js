@@ -13,7 +13,27 @@ export default class Address extends Ressource {
     const { id } = account;
     const { account_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, account);
+    const _modifiableField = [
+      "country",
+      "name_line",
+      "premise",
+      "sub_premise",
+      "thoroughfare",
+      "administrative_area",
+      "sub_administrative_area",
+      "locality",
+      "dependent_locality",
+      "postal_code"
+    ];
+
+    super(
+      `${account_url}${url}`,
+      paramDefaults,
+      { id },
+      account,
+      [],
+      _modifiableField
+    );
     this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
     console.log(this._queryUrl);
     this.id = "";
@@ -27,19 +47,6 @@ export default class Address extends Ressource {
     this.locality = "";
     this.dependent_locality = "";
     this.postal_code = "";
-
-    this._modifiableField = [
-      "country",
-      "name_line",
-      "premise",
-      "sub_premise",
-      "thoroughfare",
-      "administrative_area",
-      "sub_administrative_area",
-      "locality",
-      "dependent_locality",
-      "postal_code"
-    ];
   }
 
   static getQueryUrl(_url, id) {
@@ -70,9 +77,11 @@ export default class Address extends Ressource {
     );
   }
 
-  update(address) {
+  update(address, id, customUrl) {
     const { account_url } = getConfig();
-    const url = Address.getQueryUrl(`${account_url}${url}`, this.id);
-    super.update(address, url);
+    super.update(
+      address,
+      Address.getQueryUrl(customUrl || `${account_url}${url}`, id)
+    );
   }
 }
