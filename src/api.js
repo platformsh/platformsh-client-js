@@ -47,6 +47,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           });
         }
 
+        const imageTypes = ["image/gif", "image/jpeg", "image/png"];
         const headers = response.headers;
         const type = headers.get("Content-Type");
         const isJson =
@@ -55,7 +56,12 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
+          if (imageTypes.includes(type)) {
+            return resolve(response);
+          }
           return resolve(
+            // This ensures that a response with type of JSON is actually valid
+            // JSON before returning it.
             response.text().then(text => {
               let body;
               try {

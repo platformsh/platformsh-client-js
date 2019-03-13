@@ -1,24 +1,24 @@
 /* global beforeEach, afterEach*/
 
-import { assert } from 'chai';
-import fetchMock from 'fetch-mock';
+import { assert } from "chai";
+import fetchMock from "fetch-mock";
 
-import { getConfig } from '../src/config';
-import { setAuthenticationPromise } from '../src/api';
-import Activity from '../src/model/Activity';
+import { getConfig } from "../src/config";
+import { setAuthenticationPromise } from "../src/api";
+import Activity from "../src/model/Activity";
 
-describe('Activity', () => {
+describe("Activity", () => {
   const { account_url } = getConfig();
 
   beforeEach(function() {
-    setAuthenticationPromise(Promise.resolve('testToken'));
+    setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
   afterEach(function() {
     fetchMock.restore();
   });
 
-  it('Wait for activity', done => {
+  it("Wait for activity", done => {
     let onPollCalled = false;
     let onLogCalled = false;
     const url = `${account_url}/projects/1/activities/2`;
@@ -52,7 +52,7 @@ describe('Activity', () => {
     });
   });
 
-  it('Get the logs', (done) => {
+  it("Get the logs", done => {
     const activity = new Activity({
       _links: {
         self: {
@@ -61,22 +61,22 @@ describe('Activity', () => {
       },
       id: 1,
       completion_percent: 0,
-      log: 'The logs'
+      log: "The logs"
     });
 
     const instance = activity.getLogs(function(log) {
-      assert.equal(log, 'The logs');
+      assert.equal(log, "The logs");
       done();
     });
 
     instance.exec();
   });
 
-  it('Stream the logs', (done) => {
+  it("Stream the logs", done => {
     fetchMock.mock(`${account_url}/projects/1/activities/2/logs?start_at=0`, {
       body: `{"_id": 1, "data": {"message": "Building application 'app' (runtime type: php:7.0, tree: 55a9ed1)"}}
 {"_id": 2, "seal": true}`,
-      headers: {'content-type': 'application/x-json-stream'}
+      headers: { "content-type": "application/x-json-stream" }
     });
 
     const activity = new Activity({
@@ -94,7 +94,10 @@ describe('Activity', () => {
 
     const instance = activity.getLogs(function(logs) {
       assert.equal(logs.length, 2);
-      assert.equal(logs[0].data.message, 'Building application \'app\' (runtime type: php:7.0, tree: 55a9ed1)');
+      assert.equal(
+        logs[0].data.message,
+        "Building application 'app' (runtime type: php:7.0, tree: 55a9ed1)"
+      );
       done();
     });
 

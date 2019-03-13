@@ -325,7 +325,8 @@ export default class Client {
     title,
     storage,
     environments,
-    optionsUrl
+    optionsUrl,
+    vendor
   ) {
     const values = this.cleanRequest({
       project_region: region,
@@ -333,7 +334,8 @@ export default class Client {
       project_title: title,
       storage,
       environments,
-      options_url: optionsUrl
+      options_url: optionsUrl,
+      vendor
     });
 
     return new entities.Subscription(values).save();
@@ -563,5 +565,35 @@ export default class Client {
     const { api_url } = getConfig();
     const card = request(`${api_url}/platform/cardonfile`, "GET");
     return card;
+  }
+
+  /**
+   * Get a users profile.
+   *
+   * @param {string} id - UUID of the user.
+   * @return Promise
+   */
+  getUserProfile(id) {
+    const { api_url } = getConfig();
+    const profile = request(`${api_url}/platform/profiles/${id}`, "GET");
+    return profile;
+  }
+
+  /**
+   * Update a user's profile.
+   *
+   * @param {string} id - UUID of the user.
+   * @param {obj} data - fields to update on the profile
+   *
+   * @return Promise
+   */
+  updateUserProfile(id, data) {
+    const { api_url } = getConfig();
+    const updatedProfile = request(
+      `${api_url}/platform/profiles/${id}`,
+      "PATCH",
+      data
+    );
+    return updatedProfile;
   }
 }

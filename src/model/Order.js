@@ -1,15 +1,15 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/platform/orders/:id";
+const url = "/v1/orders/:id";
 const paramDefaults = {};
 
 export default class Order extends Ressource {
   constructor(account) {
     const { id } = account;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, account);
+    super(`${api_url}${url}`, paramDefaults, { id }, account);
     this.id = "";
     this.status = "";
     this.owner = "";
