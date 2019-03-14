@@ -70,11 +70,9 @@ export default class Ressource {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams).then(data => {
-      if (data !== undefined) {
-        return new this.prototype.constructor(data, _url);
-      } else {
-        return undefined;
-      }
+      return typeof data === "undefined"
+        ? undefined
+        : new this.prototype.constructor(data, _url);
     });
   }
 

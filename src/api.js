@@ -43,7 +43,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
         if (response.status === 401) {
           const config = getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
-          if (config.access_token === undefined) {
+          if (typeof config.access_token === "undefined") {
             authenticate(config, true).then(t => {
               resolve(
                 authenticatedRequest(url, method, data, additionalHeaders)
