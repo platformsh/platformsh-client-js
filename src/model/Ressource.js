@@ -70,7 +70,11 @@ export default class Ressource {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams).then(data => {
-      return new this.prototype.constructor(data, _url);
+      if (data !== undefined) {
+        return new this.prototype.constructor(data, _url);
+      } else {
+        return undefined;
+      }
     });
   }
 
@@ -354,6 +358,7 @@ export default class Ressource {
     }
     return request(this.getLink(`#${op}`), method, body);
   }
+
   /**
    * Run a long-running operation.
    *
