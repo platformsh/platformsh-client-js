@@ -1,5 +1,4 @@
 import api, { setAuthenticationPromise } from "../api";
-import { setConfig } from "../config";
 import connector from "./connector";
 
 export default ({ api_token, access_token }, reset) => {
