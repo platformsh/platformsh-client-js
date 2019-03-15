@@ -18,6 +18,7 @@ export default class Account extends Ressource {
     this.display_name = "";
     this.email = "";
     this.picture = "";
+    this.roles = "";
   }
 
   static get(params, customUrl) {
