@@ -73,11 +73,11 @@ export default class Address extends Ressource {
     );
   }
 
-  update(address, id, customUrl) {
+  update(address, id) {
     const { account_url } = getConfig();
     super.update(
       address,
-      Address.getQueryUrl(customUrl || `${account_url}${url}`, id)
+      Address.getQueryUrl(`${account_url}${url}`, id)
     );
   }
 }
