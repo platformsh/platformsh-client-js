@@ -1,9 +1,6 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
-import pick from "object.pick";
-import Result from "./Result";
 
 const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
@@ -13,22 +10,7 @@ export default class Address extends Ressource {
     const { id } = account;
     const { account_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, account);
-    this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
-    console.log(this._queryUrl);
-    this.id = "";
-    this.country = "";
-    this.name_line = "";
-    this.premise = "";
-    this.sub_premise = "";
-    this.thoroughfare = "";
-    this.administrative_area = "";
-    this.sub_administrative_area = "";
-    this.locality = "";
-    this.dependent_locality = "";
-    this.postal_code = "";
-
-    this._modifiableField = [
+    const _modifiableField = [
       "country",
       "name_line",
       "premise",
@@ -40,6 +22,27 @@ export default class Address extends Ressource {
       "dependent_locality",
       "postal_code"
     ];
+
+    super(
+      `${account_url}${url}`,
+      paramDefaults,
+      { id },
+      account,
+      [],
+      _modifiableField
+    );
+    this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
+    this.id = "";
+    this.country = "";
+    this.name_line = "";
+    this.premise = "";
+    this.sub_premise = "";
+    this.thoroughfare = "";
+    this.administrative_area = "";
+    this.sub_administrative_area = "";
+    this.locality = "";
+    this.dependent_locality = "";
+    this.postal_code = "";
   }
 
   static getQueryUrl(_url, id) {
@@ -70,9 +73,11 @@ export default class Address extends Ressource {
     );
   }
 
-  update(address) {
+  update(address, id) {
     const { account_url } = getConfig();
-    const url = Address.getQueryUrl(`${account_url}${url}`, this.id);
-    super.update(address, url);
+    super.update(
+      address,
+      Address.getQueryUrl(`${account_url}${url}`, id)
+    );
   }
 }
