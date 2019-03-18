@@ -28,14 +28,9 @@ export default class SshKey extends Ressource {
 
   static get(params) {
     const { id, ...queryParams } = params;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
-    return super.get(
-      `${account_url}${url}`,
-      { id },
-      paramDefaults,
-      queryParams
-    );
+    return super.get(`${api_url}${url}`, { id }, paramDefaults, queryParams);
   }
 
   /**

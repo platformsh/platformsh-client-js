@@ -116,16 +116,12 @@ export default class Environment extends Ressource {
     const sshUrl = sshRegex.exec(url);
 
     const host = sshUrl[2];
-    let user = sshUrl[1];
+    const user = sshUrl[1];
 
     return `${user}${username_suffix}@${host}`;
   }
 
   getSshUrls() {
-    if (!this.hasLink("ssh")) {
-      return;
-    }
-
     const links = this.data._links;
     const sshUrls = Object.keys(links)
       .filter(linkKey => linkKey.indexOf(sshLinkKeyPrefix) === 0)
@@ -134,7 +130,7 @@ export default class Environment extends Ressource {
         return sshUrls;
       }, {});
 
-    if (Object.keys(sshUrls).length === 0) {
+    if (this.hasLink("ssh") && Object.keys(sshUrls).length === 0) {
       sshUrls["ssh"] = `ssh://${this.constructLegacySshUrl()}`;
     }
 

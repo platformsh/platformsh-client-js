@@ -6,7 +6,7 @@ const url = "/platform/me";
 const paramDefaults = {};
 const modifiableField = [
   "picture",
-  "email",
+  "mail",
   "display_name",
   "username",
   "newsletter",
@@ -32,6 +32,7 @@ export default class Me extends User {
     this.website = "";
     this.company_role = "";
     this.company_type = "";
+    this.mail = "";
   }
 
   static get() {

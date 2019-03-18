@@ -42,11 +42,17 @@ export const request = (url, method, data, additionalHeaders = {}) => {
       .then(response => {
         if (response.status === 401) {
           const config = getConfig();
-          authenticate(config, true).then(t => {
-            resolve(authenticatedRequest(url, method, data, additionalHeaders));
-          });
+          // Prevent an endless loop which happens in case of re-authentication with the access token.
+          if (typeof config.access_token === "undefined") {
+            authenticate(config, true).then(t => {
+              resolve(
+                authenticatedRequest(url, method, data, additionalHeaders)
+              );
+            });
+          }
         }
 
+        const imageTypes = ["image/gif", "image/jpeg", "image/png"];
         const headers = response.headers;
         const type = headers.get("Content-Type");
         const isJson =
@@ -55,7 +61,12 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
+          if (imageTypes.includes(type)) {
+            return resolve(response);
+          }
           return resolve(
+            // This ensures that a response with type of JSON is actually valid
+            // JSON before returning it.
             response.text().then(text => {
               let body;
               try {
