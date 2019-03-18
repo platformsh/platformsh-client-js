@@ -35,7 +35,6 @@ export default class Address extends Ressource {
       _modifiableField
     );
     this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
-    console.log(this._queryUrl);
     this.id = "";
     this.country = "";
     this.name_line = "";
