@@ -1,9 +1,6 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
-import pick from "object.pick";
-import Result from "./Result";
 
 const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
