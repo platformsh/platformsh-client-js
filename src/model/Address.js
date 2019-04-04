@@ -51,10 +51,10 @@ export default class Address extends Ressource {
 
   static get(params, customUrl) {
     const { id, ...queryParams } = params;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super.get(
-      this.getQueryUrl(customUrl || `${account_url}${url}`, id),
+      this.getQueryUrl(customUrl || `${api_url}${url}`, id),
       { id },
       paramDefaults,
       queryParams
@@ -62,11 +62,11 @@ export default class Address extends Ressource {
   }
 
   static query(params) {
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
     const { id } = params;
 
     return super.query(
-      this.getQueryUrl(`${account_url}${url}`, id),
+      this.getQueryUrl(`${api_url}${url}`, id),
       {},
       paramDefaults,
       params
@@ -74,10 +74,7 @@ export default class Address extends Ressource {
   }
 
   update(address, id) {
-    const { account_url } = getConfig();
-    super.update(
-      address,
-      Address.getQueryUrl(`${account_url}${url}`, id)
-    );
+    const { api_url } = getConfig();
+    super.update(address, Address.getQueryUrl(`${api_url}${url}`, id));
   }
 }
