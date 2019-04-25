@@ -390,13 +390,22 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getSubscriptionEstimate(plan, storage, environments, users) {
+  getSubscriptionEstimate(
+    plan,
+    storage,
+    environments,
+    user_licenses,
+    format = null,
+    country_code = null
+  ) {
     const query = {
       plan,
       storage,
       environments,
-      user_licenses: users
+      user_licenses
     };
+    if (format) query.format = format;
+    if (country_code) query.country_code = country_code;
     const { api_url } = getConfig();
 
     return request(`${api_url}/v1/subscriptions/estimate`, "GET", query);
