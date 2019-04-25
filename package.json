@@ -62,7 +62,7 @@
     "basename": "^0.1.2",
     "detect-node": "^2.0.4",
     "email-validator": "^1.0.7",
-    "es6-promise": "^4.2.6",
+    "es6-promise": "4.2.6",
     "is-scalar": "^1.0.2",
     "is-url": "^1.2.2",
     "isomorphic-fetch": "^2.2.1",
