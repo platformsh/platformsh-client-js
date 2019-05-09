@@ -4,7 +4,7 @@ import Ressource from "./Ressource";
 import Account from "./Account";
 import Project from "./Project";
 import { getConfig } from "../config";
-import { request } from "../api";
+import { authenticatedRequest } from "../api";
 
 const paramDefaults = {};
 const creatableField = [
@@ -196,7 +196,7 @@ export default class Subscription extends Ressource {
   }
 
   /**
-   * Get the project associated with this subscription.
+   * Get estimate associated with this subscription.
    *
    * @return Project|false
    */
@@ -208,7 +208,11 @@ export default class Subscription extends Ressource {
       user_licenses: this.users_licenses
     };
 
-    return request(`${this._queryUrl}/${this.id}/estimate`, "GET", params);
+    return authenticatedRequest(
+      `${this._queryUrl}/${this.id}/estimate`,
+      "GET",
+      params
+    );
   }
 
   /**
