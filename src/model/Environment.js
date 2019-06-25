@@ -45,6 +45,8 @@ export default class Environment extends Ressource {
     this.title = "";
     this.created_at = "";
     this.updated_at = "";
+    this.last_active_at = "";
+    this.last_backup_at = "";
     this.project = "";
     this.is_dirty = false;
     this.enable_smtp = false;
