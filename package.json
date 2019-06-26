@@ -38,7 +38,7 @@
     "husky": "^0.14.3",
     "jsdom": "^9.6.0",
     "lint-staged": "^7.3.0",
-    "mocha": "6.0.2",
+    "mocha": "^6.0.2",
     "mock-local-storage": "^1.1.8",
     "prettier": "1.13.4",
     "sinon": "^1.17.6",
