@@ -150,7 +150,7 @@ function logInWithRedirect(reset) {
 
 export default (token, reset) => {
   if (isNode) {
-    return logInWithToken(token);
+    return logInWithToken(token).catch(e => new Error(e));
   }
 
   return logInWithRedirect(reset);
