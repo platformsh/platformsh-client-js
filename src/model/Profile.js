@@ -3,6 +3,22 @@ import { getConfig } from "../config";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
+const createableField = [
+  "id",
+  "display_name",
+  "email",
+  "username",
+  "picture",
+  "company_type",
+  "company_role",
+  "company_name",
+  "website_url",
+  "new_ui",
+  "ui_colorscheme",
+  "ui_contrast",
+  "default_catalog",
+  "marketing"
+];
 const modifiableField = [
   "display_name",
   "email",
@@ -20,9 +36,18 @@ const modifiableField = [
 ];
 
 export default class Profile extends Ressource {
-  constructor(id) {
+  constructor(profile) {
     const { api_url } = getConfig();
-    super(`${api_url}${url}`, {}, { id }, [], modifiableField);
+    const { id } = profile;
+
+    super(
+      `${api_url}${url}`,
+      paramDefaults,
+      {},
+      profile,
+      createableField,
+      modifiableField
+    );
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
     this.display_name = "";
