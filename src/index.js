@@ -583,9 +583,7 @@ export default class Client {
    * @return Promise
    */
   getUserProfile(id) {
-    const { api_url } = getConfig();
-    const profile = request(`${api_url}/platform/profiles/${id}`, "GET");
-    return profile;
+    return entities.Profile.get({ id });
   }
 
   /**
