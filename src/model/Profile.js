@@ -44,7 +44,6 @@ export default class Profile extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    debugger;
     return super.get(
       customUrl || `${api_url}${url}`,
       { id },
