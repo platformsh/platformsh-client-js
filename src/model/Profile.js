@@ -76,4 +76,8 @@ export default class Profile extends Ressource {
       queryParams
     );
   }
+
+  update(data) {
+    return super.update(data, this.getLink("self"));
+  }
 }
