@@ -601,6 +601,7 @@ export default class Client {
       "PATCH",
       data
     );
-    return updatedProfile;
+
+    return new entities.Profile(updatedProfile);
   }
 }
