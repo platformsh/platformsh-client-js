@@ -594,9 +594,9 @@ export default class Client {
    *
    * @return Promise
    */
-  updateUserProfile(id, data) {
+  async updateUserProfile(id, data) {
     const { api_url } = getConfig();
-    const updatedProfile = request(
+    const updatedProfile = await request(
       `${api_url}/platform/profiles/${id}`,
       "PATCH",
       data
