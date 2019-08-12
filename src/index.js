@@ -587,6 +587,24 @@ export default class Client {
   }
 
   /**
+   * Get a streaming log
+   *
+   * @param {obj} activity - Activity for the log.
+   * @return Promise
+   */
+  async getStreamingLog(activity) {
+    const accessToken = await this.getAccessToken();
+    const logUrl = `${activity.getLink("log")}`;
+
+    return fetch(logUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `${accessToken.token_type} ${accessToken.access_token}`
+      }
+    });
+  }
+
+  /**
    * Update a user's profile.
    *
    * @param {string} id - UUID of the user.
