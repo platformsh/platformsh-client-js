@@ -594,7 +594,7 @@ export default class Client {
    */
   async getStreamingLog(activity) {
     const accessToken = await this.getAccessToken();
-    const logUrl = `${activity.getLink("log")}`;
+    const logUrl = `${activity.getLink("log")}?max_items=0&max_delay=1000`;
 
     return fetch(logUrl, {
       method: "GET",
