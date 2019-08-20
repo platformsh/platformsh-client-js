@@ -25,11 +25,16 @@ export default class Project extends Ressource {
     super(url, paramDefaults, {}, project, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
+    this.cluster = "";
+    this.cluster_label = "";
     this.title = "";
     this.created_at = "";
     this.updated_at = "";
+    this.name = "";
     this.owner = "";
     this.owner_info = {};
+    this.plan = "";
+    this.plan_uri = "";
     this.subscription = {};
     this.subscription_id = "";
     this.status = "";
