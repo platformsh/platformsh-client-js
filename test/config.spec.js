@@ -13,5 +13,6 @@ describe("Configuration", () => {
     });
     config = getConfig();
     assert.equal(config.client_id, "test");
+    assert.equal(config.verbose, false);
   });
 });

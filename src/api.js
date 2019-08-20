@@ -21,6 +21,7 @@ if (isNode) {
 export const request = (url, method, data, additionalHeaders = {}) => {
   let body = data && { ...data };
   let apiUrl = url;
+  const config = getConfig();
 
   if (method === "GET") {
     const queryString = param(body || {});
@@ -28,9 +29,15 @@ export const request = (url, method, data, additionalHeaders = {}) => {
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ""}`;
   }
 
+  const headers = { ...defaultHeaders, ...additionalHeaders };
+
+  if (!headers.hasOwnProperty("Accept") && config.verbose) {
+    headers["Accept"] = "application/json;verbose=true";
+  }
+
   const requestConfig = {
     method,
-    headers: { ...defaultHeaders, ...additionalHeaders }
+    headers
   };
 
   if (method !== "GET" && method !== "HEAD" && body) {
@@ -41,7 +48,6 @@ export const request = (url, method, data, additionalHeaders = {}) => {
     fetch(apiUrl, requestConfig)
       .then(response => {
         if (response.status === 401) {
-          const config = getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           if (typeof config.access_token === "undefined") {
             authenticate(config, true).then(t => {
