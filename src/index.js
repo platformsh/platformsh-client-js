@@ -419,8 +419,8 @@ export default class Client {
    *
    * @return Deployment
    */
-  getCurrentDeployment(projectId, environmentId) {
-    return entities.Deployment.get({ projectId, environmentId });
+  getCurrentDeployment(projectId, environmentId, params) {
+    return entities.Deployment.get({ projectId, environmentId, ...params });
   }
 
   /**
