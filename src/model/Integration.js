@@ -3,7 +3,7 @@ import {request} from '../api';
 import { getConfig } from '../config';
 
 const paramDefaults = {};
-const types = ['bitbucket', 'hipchat', 'github', 'webhook'];
+const types = ['bitbucket', 'bitbucket_server', 'github', 'gitlab', 'hipchat', 'webhook', 'health.email', 'health.pagerduty', 'health.slack', 'script'];
 const _url = '/projects/:projectId/integrations';
 
 export default class Integration extends Ressource {
