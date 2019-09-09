@@ -319,16 +319,17 @@ export default class Client {
    *
    * @return Subscription
    */
-  createSubscription(
-    region,
-    plan = "development",
-    title,
-    storage,
-    environments,
-    optionsUrl,
-    vendor,
-    optionsCustom
-  ) {
+  createSubscription(config) {
+    const {
+      region,
+      plan = "development",
+      title,
+      storage,
+      environments,
+      optionsUrl,
+      vendor,
+      optionsCustom
+    } = config;
     const values = this.cleanRequest({
       project_region: region,
       plan,
