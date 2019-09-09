@@ -319,15 +319,17 @@ export default class Client {
    *
    * @return Subscription
    */
-  createSubscription(
-    region,
-    plan = "development",
-    title,
-    storage,
-    environments,
-    optionsUrl,
-    vendor
-  ) {
+  createSubscription(config) {
+    const {
+      region,
+      plan = "development",
+      title,
+      storage,
+      environments,
+      optionsUrl,
+      vendor,
+      optionsCustom
+    } = config;
     const values = this.cleanRequest({
       project_region: region,
       plan,
@@ -335,7 +337,8 @@ export default class Client {
       storage,
       environments,
       options_url: optionsUrl,
-      vendor
+      vendor,
+      options_custom: optionsCustom
     });
 
     return new entities.Subscription(values).save();

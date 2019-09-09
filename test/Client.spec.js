@@ -325,14 +325,14 @@ describe("Client", () => {
     const activationCallback = { uri: "http://www.google.fr" };
 
     client
-      .createSubscription(
-        "region",
-        "development",
-        "title",
-        "storage",
-        "environments",
+      .createSubscription({
+        region: "region",
+        plan: "development",
+        title: "title",
+        storage: "storage",
+        environments: "environments",
         activationCallback
-      )
+      })
       .then(result => {
         assert.equal(result.constructor.name, "Result");
         done();

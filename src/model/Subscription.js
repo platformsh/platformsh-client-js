@@ -14,7 +14,8 @@ const creatableField = [
   "storage",
   "environments",
   "options_url",
-  "vendor"
+  "vendor",
+  "options_custom"
 ];
 
 const modifiableField = ["plan", "environments", "storage"];
