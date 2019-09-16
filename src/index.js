@@ -627,4 +627,14 @@ export default class Client {
 
     return new entities.Profile(updatedProfile);
   }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @param {string} name - name of the registry item.
+   * @return Promise
+   */
+  getRegistryItem(name) {
+    return entities.Registry.get({ name });
+  }
 }

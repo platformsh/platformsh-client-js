@@ -20,6 +20,7 @@ import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
 import Profile from "./Profile";
+import Registry from "./Registry";
 
 export default {
   Account,
@@ -43,5 +44,6 @@ export default {
   Region,
   Order,
   Me,
-  Profile
+  Profile,
+  Registry
 };
