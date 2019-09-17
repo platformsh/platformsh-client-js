@@ -631,6 +631,23 @@ export default class Client {
   /**
    * Get a item from the registry.
    *
+   * @return Promise
+   */
+  getRegistry() {
+    const { api_url } = getConfig();
+    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+      return typeof data === "undefined"
+        ? undefined
+        : Object.entries(data).reduce((items, [key, value]) => {
+            items[key] = new entities.Registry(value);
+            return items;
+          }, {});
+    });
+  }
+
+  /**
+   * Get a item from the registry.
+   *
    * @param {string} name - name of the registry item.
    * @return Promise
    */
