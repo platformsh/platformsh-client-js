@@ -631,4 +631,78 @@ export default class Client {
 
     return new entities.Profile(updatedProfile);
   }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @return Promise
+   */
+  getSetupRegistry() {
+    const { api_url } = getConfig();
+    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+      return typeof data === "undefined"
+        ? undefined
+        : Object.entries(data).reduce((items, [key, value]) => {
+            items[key] = new entities.SetupRegistry(value);
+            return items;
+          }, {});
+    });
+  }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @param {string} name - name of the registry item.
+   * @return Promise
+   */
+  getSetupRegistryItem(name) {
+    return entities.SetupRegistry.get({ name });
+  }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @param {string} name - name of the registry item.
+   * @return Promise
+   */
+  getSetupConfig(settings) {
+    return entities.SetupConfig.get(settings);
+  }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @return Promise
+   */
+  getSetupRegistry() {
+    const { api_url } = getConfig();
+    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+      return typeof data === "undefined"
+        ? undefined
+        : Object.entries(data).reduce((items, [key, value]) => {
+            items[key] = new entities.SetupRegistry(value);
+            return items;
+          }, {});
+    });
+  }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @param {string} name - name of the registry item.
+   * @return Promise
+   */
+  getSetupRegistryItem(name) {
+    return entities.SetupRegistry.get({ name });
+  }
+
+  /**
+   * Get a item from the registry.
+   *
+   * @param {string} name - name of the registry item.
+   * @return Promise
+   */
+  getSetupConfig(settings) {
+    return entities.SetupConfig.get(settings);
+  }
 }
