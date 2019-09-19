@@ -7,11 +7,9 @@ const _url = "/platform/setup/registry";
 const paramDefaults = {};
 // /api/platform/setup/registry\?service\=redis-persistent
 
-export default class Registry extends Ressource {
-  constructor(account, url = `${_url}?service=:name`, modifiableField = []) {
-    const { id } = account;
-
-    super(url, paramDefaults, { id }, account, [], modifiableField);
+export default class SetupRegistry extends Ressource {
+  constructor(registry, url = `${_url}?service=:name`, modifiableField = []) {
+    super(url, paramDefaults, {}, registry, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.description = "";
     this.repo_name = "";

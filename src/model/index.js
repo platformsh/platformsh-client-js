@@ -20,7 +20,8 @@ import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
 import Profile from "./Profile";
-import Registry from "./Registry";
+import SetupRegistry from "./SetupRegistry";
+import SetupConfig from "./SetupConfig";
 
 export default {
   Account,
@@ -45,5 +46,6 @@ export default {
   Order,
   Me,
   Profile,
-  Registry
+  SetupRegistry,
+  SetupConfig
 };
