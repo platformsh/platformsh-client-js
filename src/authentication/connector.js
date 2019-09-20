@@ -1,6 +1,6 @@
-import isNode from "detect-node";
 import "isomorphic-fetch"; // fetch api polyfill
 
+import isNode from "detect-node";
 import { request } from "../api";
 import {
   jso_configure,
@@ -12,14 +12,9 @@ import {
   epoch
 } from "../jso";
 import { getConfig } from "../config";
+import { base64Encoder } from "../utils";
 
-let basicAuth;
-
-if (isNode) {
-  basicAuth = Buffer.from("platform-cli:", "latin1").toString("base64");
-} else {
-  basicAuth = btoa("platform-cli:");
-}
+const basicAuth = base64Encoder("platform-cli:");
 
 function createIFrame(src) {
   let iframe = document.getElementById("logiframe-platformsh");

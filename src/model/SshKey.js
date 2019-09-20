@@ -1,7 +1,7 @@
 import atob from "atob";
 
 import Ressource from "./Ressource";
-import _urlParser from "../urlParser";
+import { urlParser } from "../utils";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
@@ -51,7 +51,7 @@ export default class SshKey extends Ressource {
   getLink(rel, absolute = false) {
     if (rel === "#delete") {
       const { api_url } = getConfig();
-      return _urlParser(`${api_url}${url}`, { id: this.key_id });
+      return urlParser(`${api_url}${url}`, { id: this.key_id });
     }
     return super.getLink(rel, absolute);
   }

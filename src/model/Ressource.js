@@ -1,7 +1,7 @@
 import pick from "object.pick";
 import parse_url from "parse_url";
 
-import _urlParser from "../urlParser";
+import { urlParser } from "../utils";
 import request from "../api";
 import Result from "./Result";
 
@@ -47,7 +47,7 @@ export default class Ressource {
 
     const url = _url || this.getLink("self");
 
-    this._url = _urlParser(url, params, paramDefaults);
+    this._url = urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
 
     if (parsedUrl[1] === "http" || parsedUrl[1] === "https") {
@@ -67,7 +67,7 @@ export default class Ressource {
   }
 
   static get(_url, params, paramDefaults, queryParams) {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+    const parsedUrl = urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams).then(data => {
       return typeof data === "undefined"
@@ -83,7 +83,7 @@ export default class Ressource {
     queryParams,
     transformResultBeforeMap
   ) {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+    const parsedUrl = urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams).then(data => {
       let dataToMap = data;
@@ -138,7 +138,7 @@ export default class Ressource {
       }
     }
 
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       _url || updateLink,
       this.data,
       this._paramDefaults

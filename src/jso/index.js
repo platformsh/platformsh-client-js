@@ -1,4 +1,5 @@
 import ApiDefaultStorage from "./ApiDefaultStorage";
+import { base64Decoder, base64Encoder } from "../utils";
 
 let config = {},
   default_lifetime = 3600,
@@ -145,7 +146,10 @@ export const jso_checkfortoken = (providerID, url, disableRedirect) => {
   atoken = parseQueryString(h);
 
   if (atoken.state) {
-    state = api_storage.getState(atoken.state);
+    const decodedState = JSON.parse(
+      base64Decoder(decodeURIComponent(atoken.state))
+    );
+    state = api_storage.getState(decodedState.id);
   } else {
     if (!providerID) {
       throw new Error(
@@ -239,7 +243,6 @@ export const jso_getAuthUrl = (providerid, scopes, callback) => {
   request = {
     response_type: "token"
   };
-  request.state = state;
 
   if (callback && typeof callback === "function") {
     internalStates[state] = callback;
@@ -255,12 +258,16 @@ export const jso_getAuthUrl = (providerid, scopes, callback) => {
     request["scope"] = scopes.join(" ");
   }
 
+  const location = window.location.href;
+
+  request.state = base64Encoder(JSON.stringify({ id: state, location }));
+
   authurl = encodeURL(co.authorization, request);
 
   // We'd like to cache the hash for not loosing Application state.
   // With the implciit grant flow, the hash will be replaced with the access
   // token when we return after authorization.
-  request["location"] = window.location.href;
+  request["location"] = location;
   request["providerID"] = providerid;
   if (scopes) {
     request["scopes"] = scopes;
@@ -291,8 +298,6 @@ const jso_authrequest = (providerid, scopes, callback) => {
   request = {
     response_type: "token"
   };
-  request.state = state;
-
   if (callback && typeof callback === "function") {
     internalStates[state] = callback;
   }
@@ -307,12 +312,16 @@ const jso_authrequest = (providerid, scopes, callback) => {
     request["scope"] = scopes.join(" ");
   }
 
+  const location = window.location.href;
+
+  request.state = base64Encoder(JSON.stringify({ id: state, location }));
+
   authurl = encodeURL(co.authorization, request);
 
   // We'd like to cache the hash for not loosing Application state.
   // With the implciit grant flow, the hash will be replaced with the access
   // token when we return after authorization.
-  request["location"] = window.location.href;
+  request["location"] = location;
   request["providerID"] = providerid;
   if (scopes) {
     request["scopes"] = scopes;

@@ -1,6 +1,6 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../utils";
 
 const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
@@ -46,7 +46,7 @@ export default class Address extends Ressource {
   }
 
   static getQueryUrl(_url, id) {
-    return _urlParser(_url, { id });
+    return urlParser(_url, { id });
   }
 
   static get(params, customUrl) {
