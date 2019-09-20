@@ -14,7 +14,7 @@ import {
 import { getConfig } from "../config";
 import { base64Encoder } from "../utils";
 
-const basicAuth = base64Encoder("platform-cli:");
+const basicAuth = base64Encoder("platform-api-user:");
 
 function createIFrame(src) {
   let iframe = document.getElementById("logiframe-platformsh");
