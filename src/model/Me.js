@@ -24,6 +24,7 @@ export default class Me extends User {
 
     this.projects = [];
     this.ssh_keys = [];
+    this.roles = [];
     this.organizations = [];
     this.teams = [];
     this.picture = "";
@@ -33,6 +34,7 @@ export default class Me extends User {
     this.company_role = "";
     this.company_type = "";
     this.mail = "";
+    this.trial = false;
   }
 
   static get() {
