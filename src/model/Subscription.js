@@ -47,7 +47,6 @@ export default class Subscription extends Ressource {
     this.id = "";
     this.status = "";
     this.owner = "";
-    this.owner_info = "";
     this.plan = "";
     this.environments = 0;
     this.storage = 0;
@@ -61,6 +60,7 @@ export default class Subscription extends Ressource {
     this.STATUS_FAILED = "provisioning Failure";
     this.STATUS_SUSPENDED = "suspended";
     this.STATUS_DELETED = "deleted";
+    this.owner_info = {};
   }
 
   static get(params, customUrl) {
