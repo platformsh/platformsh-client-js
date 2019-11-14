@@ -9,6 +9,7 @@ import Certificate from "./Certificate";
 import Comment from "./Comment";
 import Domain from "./Domain";
 import EnvironmentAccess from "./EnvironmentAccess";
+import EnvironmentBackup from "./EnvironmentBackup";
 import ProjectAccess from "./ProjectAccess";
 import Metrics from "./Metrics";
 import ProjectLevelVariable from "./ProjectLevelVariable";
@@ -50,6 +51,7 @@ export default {
   Comment,
   Domain,
   EnvironmentAccess,
+  EnvironmentBackup,
   Metrics,
   ProjectAccess,
   ProjectLevelVariable,
