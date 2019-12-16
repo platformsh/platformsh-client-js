@@ -1,5 +1,5 @@
 import request from "./api";
-import connector from "./authentication";
+import connector, { wipeToken } from "./authentication";
 import { getConfig, setConfig } from "./config";
 import entities from "./model";
 
@@ -22,6 +22,10 @@ export default class Client {
 
   getConfig() {
     return getConfig();
+  }
+
+  wipeToken() {
+    wipeToken();
   }
 
   /**

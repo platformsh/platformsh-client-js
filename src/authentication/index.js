@@ -1,6 +1,8 @@
 import api, { setAuthenticationPromise } from "../api";
 import connector from "./connector";
 
+import { jso_wipe } from "../jso";
+
 export default ({ api_token, access_token }, reset) => {
   let promise;
 
@@ -15,3 +17,5 @@ export default ({ api_token, access_token }, reset) => {
 };
 
 export const authenticatedRequest = api;
+
+export const wipeToken = jso_wipe;
