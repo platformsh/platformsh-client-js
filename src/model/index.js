@@ -16,6 +16,8 @@ import Variable from "./Variable";
 import Deployment from "./Deployment";
 import Organization from "./Organization";
 import Team from "./Team";
+import Ticket from "./Ticket";
+import TicketPriority from "./TicketPriority";
 import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
@@ -63,5 +65,7 @@ export default {
   Tree,
   Blob,
   TwoFactorAuthentication,
-  ConnectedAccount
+  ConnectedAccount,
+  Ticket,
+  TicketPriority
 };

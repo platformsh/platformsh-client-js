@@ -854,4 +854,38 @@ export default class Client {
   getConnectedAccounts(userId) {
     return entities.ConnectedAccount.query(userId);
   }
+
+  /**
+   * Get a list of Zendesk tickets based on the settings.
+   *
+   * @param {object} settings - Filters and settings.
+   * @return Promise
+   */
+  async getTickets(settings) {
+    return entities.Ticket.query(settings).then(tickets => {
+      return tickets.data;
+    });
+  }
+
+  /**
+   * Get a list of available priorities for the subscription ID.
+   *
+   * @param {string|number} subscription_id
+   * @return Promise
+   */
+  async getTicketPriorities(subscription_id) {
+    const priorities = await entities.TicketPriority.get({ subscription_id });
+    return priorities.map(priority => new entities.TicketPriority(priority));
+  }
+
+  /**
+   * Open a Zendesk ticket
+   *
+   * @param {object} ticket
+   * @return Promise
+   */
+  async openTicket(ticket) {
+    const response = await entities.Ticket.open(ticket);
+    return response;
+  }
 }
