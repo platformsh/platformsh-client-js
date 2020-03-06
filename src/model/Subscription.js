@@ -18,7 +18,7 @@ const creatableField = [
   "options_custom"
 ];
 
-const modifiableField = ["plan", "environments", "storage"];
+const modifiableField = ["plan", "environments", "storage", "big_dev"];
 
 const url = "/v1/subscriptions/:id";
 const STATUS_ACTIVE = "active";
