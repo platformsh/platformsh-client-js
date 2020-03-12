@@ -35,7 +35,7 @@ const modifiableField = [
   "marketing"
 ];
 
-export default class Profile extends Ressource {
+export default class AccountsProfile extends Ressource {
   constructor(profile) {
     const { api_url } = getConfig();
     const { id } = profile;

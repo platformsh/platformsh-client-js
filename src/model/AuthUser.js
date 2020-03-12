@@ -1,41 +1,30 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/platform/profiles/:id";
+const url = "/users/:id";
 const paramDefaults = {};
+
 const createableField = [
-  "id",
-  "display_name",
-  "email",
   "username",
-  "picture",
-  "company_type",
-  "company_role",
-  "company_name",
-  "website_url",
-  "new_ui",
-  "ui_colorscheme",
-  "ui_contrast",
-  "default_catalog",
-  "marketing"
-];
-const modifiableField = [
-  "display_name",
+  "first_name",
+  "last_name",
   "email",
-  "username",
   "picture",
-  "company_type",
-  "company_role",
-  "company_name",
-  "website_url",
-  "new_ui",
-  "ui_colorscheme",
-  "ui_contrast",
-  "default_catalog",
-  "marketing"
+  "website",
+  "country",
+  "company"
 ];
 
-export default class Profile extends Ressource {
+const modifiableField = [
+  "first_name",
+  "last_name",
+  "username",
+  "picture",
+  "company",
+  "website"
+];
+
+export default class AuthUser extends Ressource {
   constructor(profile) {
     const { api_url } = getConfig();
     const { id } = profile;
@@ -44,25 +33,25 @@ export default class Profile extends Ressource {
       `${api_url}${url}`,
       paramDefaults,
       {},
-      profile,
+      user,
       createableField,
       modifiableField
     );
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
-    this.display_name = "";
-    this.email = "";
     this.username = "";
+    this.first_name = "";
+    this.last_name = "";
+    this.email = "";
+    this.email_verified = "";
     this.picture = "";
-    this.company_type = "";
-    this.company_role = "";
-    this.company_name = "";
-    this.website_url = "";
-    this.new_ui = "";
-    this.ui_colorscheme = "";
-    this.ui_contrast = "";
-    this.default_catalog = "";
-    this.marketing = "";
+    this.website = "";
+    this.country = "";
+    this.company = "";
+    this.mfa_enabled = "";
+    this.deactivated = "";
+    this.created_at = "";
+    this.updated_at = "";
   }
 
   static get(params, customUrl) {
