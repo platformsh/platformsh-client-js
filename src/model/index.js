@@ -19,7 +19,7 @@ import Team from "./Team";
 import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
-import Profile from "./Profile";
+import AccountsProfile from "./AccountsProfile";
 import SetupRegistry from "./SetupRegistry";
 import SetupConfig from "./SetupConfig";
 
@@ -45,7 +45,7 @@ export default {
   Region,
   Order,
   Me,
-  Profile,
+  AccountsProfile,
   SetupRegistry,
   SetupConfig
 };
