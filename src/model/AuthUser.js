@@ -25,9 +25,9 @@ const modifiableField = [
 ];
 
 export default class AuthUser extends Ressource {
-  constructor(profile) {
+  constructor(user) {
     const { api_url } = getConfig();
-    const { id } = profile;
+    const { id } = user;
 
     super(
       `${api_url}${url}`,
@@ -67,6 +67,6 @@ export default class AuthUser extends Ressource {
   }
 
   update(data) {
-    return super.update(data, this.getLink("self"));
+    return super.update(data, this._url);
   }
 }

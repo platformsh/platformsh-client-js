@@ -590,7 +590,7 @@ export default class Client {
    * @return Promise
    */
   getUserProfile(id) {
-    return entities.Profile.get({ id });
+    return entities.AccountsProfile.get({ id });
   }
 
   /**
@@ -629,7 +629,7 @@ export default class Client {
       data
     );
 
-    return new entities.Profile(updatedProfile);
+    return new entities.AccountsProfile(updatedProfile);
   }
 
   /**
@@ -704,5 +704,15 @@ export default class Client {
    */
   getSetupConfig(settings) {
     return entities.SetupConfig.get(settings);
+  }
+
+  /**
+   * Get a user from Auth API.
+   *
+   * @param { string } id - UUID of the user.
+   * @return Promise
+   */
+  getUser(id) {
+    return entities.AuthUser.get({ id });
   }
 }
