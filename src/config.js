@@ -6,7 +6,7 @@ const getConfigDefault = (baseUrl = DEFAULT_ACCOUNT_URL, api_url = DEFAULT_API_U
   'account_url': `${baseUrl}/api`,
   api_url,
   'authentication_url': baseUrl,
-  scope: ['account'],
+  scope: [],
   authorization: `${baseUrl}/oauth2/authorize`,
   'logout_url': `${baseUrl}/user/logout`
 });
