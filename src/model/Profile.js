@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/platform/profiles/:id";
+const url = "/v1/profiles/:id";
 const paramDefaults = {};
 const createableField = [
   "id",
