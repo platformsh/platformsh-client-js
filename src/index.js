@@ -89,6 +89,26 @@ export default class Client {
   }
 
   /**
+   * Get the activities of the project projectId
+   *
+   * @param string projectId
+   * @param string types
+   * @param string starts_at
+   *
+   * @return Promise Activity[]
+   */
+  getProjectActivities(projectId, types, starts_at) {
+    const params = { type: types, starts_at, projectId };
+
+    const { api_url } = getConfig();
+
+    return entities.Activity.query(
+      params,
+      `${api_url}/projects/:projectId/activities`
+    );
+  }
+
+  /**
    * Get a single project by its ID.
    *
    * @param string id
