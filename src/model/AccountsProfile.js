@@ -21,7 +21,6 @@ const createableField = [
 ];
 const modifiableField = [
   "display_name",
-  "email",
   "username",
   "picture",
   "company_type",
