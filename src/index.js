@@ -89,26 +89,6 @@ export default class Client {
   }
 
   /**
-   * Get the activities of the project projectId
-   *
-   * @param string projectId
-   * @param string types
-   * @param string starts_at
-   *
-   * @return Promise Activity[]
-   */
-  getProjectActivities(projectId, types, starts_at) {
-    const params = { type: types, starts_at, projectId };
-
-    const { api_url } = getConfig();
-
-    return entities.Activity.query(
-      params,
-      `${api_url}/projects/:projectId/activities`
-    );
-  }
-
-  /**
    * Get a single project by its ID.
    *
    * @param string id
@@ -734,5 +714,41 @@ export default class Client {
    */
   getUser(id) {
     return entities.AuthUser.get({ id });
+  }
+
+  /**
+   * Update a user's profile.
+   *
+   * @param {string} id - UUID of the user.
+   * @param {obj} data - fields to update on the profile
+   *
+   * @return Promise
+   */
+  async updateAuthUser(id, data) {
+    const { api_url } = getConfig();
+    const updatedProfile = await request(
+      `${api_url}/users/${id}`,
+      "PATCH",
+      data
+    );
+
+    return new entities.AuthUser(updatedProfile);
+  }
+
+  /**
+   * Get the UUID for a user based on their username
+   *
+   * @param {string} string - username of the user.
+   *
+   * @return string
+   */
+  async getUserIdFromUsername(username) {
+    const { api_url } = getConfig();
+
+    const user = await request(
+      `${api_url}/v1/profiles?filter[username]=${username}`
+    );
+
+    return new entities.AccountsProfile(user.profiles[0]);
   }
 }
