@@ -751,4 +751,24 @@ export default class Client {
 
     return new entities.AccountsProfile(user.profiles[0]);
   }
+
+  /**
+   * Get the activities of the project projectId
+   *
+   * @param string projectId
+   * @param string types
+   * @param string starts_at
+   *
+   * @return Promise Activity[]
+   */
+  getProjectActivities(projectId, types, starts_at) {
+    const params = { type: types, starts_at, projectId };
+
+    const { api_url } = getConfig();
+
+    return entities.Activity.query(
+      params,
+      `${api_url}/projects/:projectId/activities`
+    );
+  }
 }
