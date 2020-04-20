@@ -1,5 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
+import request from "../api";
+import _urlParser from "../urlParser";
 
 const url = "/users/:id";
 const paramDefaults = {};
@@ -66,7 +68,10 @@ export default class AuthUser extends Ressource {
     );
   }
 
-  update(data) {
-    return super.update(data, this._url);
+  static update(id, data) {
+    const { api_url } = getConfig();
+    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+    const updatedProfile = request(endpoint, "PATCH", data);
+    return updatedProfile;
   }
 }

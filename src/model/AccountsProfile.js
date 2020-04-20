@@ -76,7 +76,10 @@ export default class AccountsProfile extends Ressource {
     );
   }
 
-  update(data) {
-    return super.update(data, this.getLink("self"));
+  static update(id, data) {
+    const { api_url } = getConfig();
+    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+    const updatedProfile = request(endpoint, "PATCH", data);
+    return updatedProfile;
   }
 }
