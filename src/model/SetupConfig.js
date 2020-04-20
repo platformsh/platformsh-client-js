@@ -5,17 +5,9 @@ import request from "../api";
 
 const _url = "/platform/setup/config";
 const paramDefaults = {};
-// /api/platform/setup/registry\?service\=redis-persistent
 
 export default class SetupConfig extends Ressource {
   constructor(setupConfig, url = `${_url}?service=:service&format=:format`) {
-    // _url
-    //   paramDefaults,
-    //   params,
-    //   data = {},
-    //   _creatableField = [],
-    //   _modifiableField = []
-    // ) {
     super(url, paramDefaults, {}, setupConfig, []);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.app = "";
