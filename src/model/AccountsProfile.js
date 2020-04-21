@@ -1,5 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
+import request from "../api";
+import _urlParser from "../urlParser";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -79,7 +81,20 @@ export default class AccountsProfile extends Ressource {
   static update(id, data) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
-    const updatedProfile = request(endpoint, "PATCH", data);
-    return updatedProfile;
+    return (async () => {
+      const updatedProfile = await request(endpoint, "PATCH", data);
+      return new AccountsProfile(updatedProfile);
+    })();
+  }
+
+  static getUserIdFromUsername(username) {
+    const { api_url } = getConfig();
+
+    return (async () => {
+      const user = await request(
+        `${api_url}/v1/profiles?filter[username]=${username}`
+      );
+      return new AccountsProfile(user.profiles[0]);
+    })();
   }
 }
