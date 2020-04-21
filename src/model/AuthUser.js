@@ -71,7 +71,9 @@ export default class AuthUser extends Ressource {
   static update(id, data) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
-    const updatedProfile = request(endpoint, "PATCH", data);
-    return updatedProfile;
+    return (async () => {
+      const updatedProfile = await request(endpoint, "PATCH", data);
+      return new AuthUser(updatedProfile);
+    })();
   }
 }

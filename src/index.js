@@ -717,25 +717,6 @@ export default class Client {
   }
 
   /**
-   * Update a user's profile.
-   *
-   * @param {string} id - UUID of the user.
-   * @param {obj} data - fields to update on the profile
-   *
-   * @return Promise
-   */
-  async updateAuthUser(id, data) {
-    const { api_url } = getConfig();
-    const updatedProfile = await request(
-      `${api_url}/users/${id}`,
-      "PATCH",
-      data
-    );
-
-    return new entities.AuthUser(updatedProfile);
-  }
-
-  /**
    * Get the UUID for a user based on their username
    *
    * @param {string} string - username of the user.
