@@ -33,4 +33,23 @@ describe("AuthUser", () => {
       done();
     });
   });
+
+  it("Update AuthUser", done => {
+    fetchMock.mock(
+      `${api_url}/users/1`,
+      {
+        email: "test@test.com",
+        website: "https://example.com"
+      },
+      "POST"
+    );
+
+    AuthUser.update(1, {
+      email: "test@test.com",
+      website: "https://example.com"
+    }).then(result => {
+      assert.equal(result.constructor.name, "AuthUser");
+      done();
+    });
+  });
 });
