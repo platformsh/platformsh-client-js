@@ -93,8 +93,6 @@ export default class AccountsProfile extends Ressource {
       `${api_url}/v1/profiles?filter[username]=${username}`
     );
 
-    console.log(user);
-
     return new AccountsProfile(user.profiles[0]);
   }
 }
