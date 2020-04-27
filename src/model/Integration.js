@@ -45,7 +45,7 @@ export default class Integration extends Ressource {
 
     return super.get(
       customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
-      { id },
+      { projectId, id },
       paramDefaults,
       queryParams
     );
