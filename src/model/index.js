@@ -23,6 +23,7 @@ import AccountsProfile from "./AccountsProfile";
 import SetupRegistry from "./SetupRegistry";
 import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";
+import Integration from "./Integration";
 
 export default {
   Account,
@@ -49,5 +50,6 @@ export default {
   AccountsProfile,
   SetupRegistry,
   SetupConfig,
-  AuthUser
+  AuthUser,
+  Integration
 };
