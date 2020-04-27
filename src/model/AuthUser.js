@@ -75,4 +75,12 @@ export default class AuthUser extends Ressource {
     const updatedProfile = await request(endpoint, "PATCH", data);
     return new AuthUser(updatedProfile);
   }
+
+  static async updateEmailAddress(id, emailAddress) {
+    const { api_url } = getConfig();
+    const endpoint = `${api_url}${_urlParser(url, { id })}/emailaddress`;
+    return await request(endpoint, "POST", {
+      email_address: emailAddress
+    });
+  }
 }
