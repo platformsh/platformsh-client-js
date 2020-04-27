@@ -867,6 +867,10 @@ export default class Client {
     });
   }
 
+  updateTicketStatus(ticketId, status) {
+    return entities.Ticket.patch(ticketId, { status }).then(ticket => ticket);
+  }
+
   /**
    * Get a list of available priorities for the subscription ID.
    *
@@ -878,6 +882,25 @@ export default class Client {
     return priorities.map(priority => new entities.TicketPriority(priority));
   }
 
+  async getTicketAttachments(ticketId) {
+    const response = await entities.Ticket.getAttachments(ticketId);
+    const attachments = response.data.attachments;
+    return Object.entries(attachments || {}).map(([filename, attachment]) => ({
+      filename: filename,
+      url: attachment.uri,
+      contentType: attachment.content_type
+    }));
+  }
+
+  async getAllTicketAttachments(ticketId) {
+    const response = await entities.Ticket.getAllAttachments(ticketId);
+    return response.map(attachment => ({
+      filename: attachment.filename,
+      url: attachment.uri,
+      contentType: attachment.content_type
+    }));
+  }
+
   /**
    * Open a Zendesk ticket
    *
@@ -887,5 +910,48 @@ export default class Client {
   async openTicket(ticket) {
     const response = await entities.Ticket.open(ticket);
     return response;
+  }
+
+  /**
+   * Load comments for a ticket
+   *
+   * @param {string} ticketId
+   * @return Promise
+   */
+  async loadComments(ticketId, params) {
+    const { data } = await entities.Comment.query(ticketId, params);
+    const page = params.page || 1;
+    const PAGE_SIZE = 50;
+    const pages = Math.ceil(data.count / PAGE_SIZE);
+    const isPreviousToLastPage = page === pages - 1;
+    const isLastPage = page === pages;
+
+    if (isPreviousToLastPage && data.count % PAGE_SIZE === 1) {
+      delete data._links.next;
+    }
+
+    data.count = data.count - 1;
+
+    if (isLastPage) {
+      data.comments = data.comments.slice(0, -1);
+    }
+
+    return {
+      ...data,
+      comments: data.comments.map(comment => ({
+        ...comment,
+        attachments: Object.values(comment.attachments || {}).map(
+          attachment => ({
+            filename: attachment.file_name,
+            url: attachment.uri,
+            contentType: attachment.content_type
+          })
+        )
+      }))
+    };
+  }
+
+  async sendComment(comment) {
+    return entities.Comment.send(comment);
   }
 }

@@ -6,6 +6,7 @@ import Subscription from "./Subscription";
 import Activity from "./Activity";
 import Environment from "./Environment";
 import Certificate from "./Certificate";
+import Comment from "./Comment";
 import Domain from "./Domain";
 import EnvironmentAccess from "./EnvironmentAccess";
 import ProjectAccess from "./ProjectAccess";
@@ -42,6 +43,7 @@ export default {
   Activity,
   Environment,
   Certificate,
+  Comment,
   Domain,
   EnvironmentAccess,
   Metrics,
