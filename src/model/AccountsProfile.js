@@ -78,23 +78,23 @@ export default class AccountsProfile extends Ressource {
     );
   }
 
-  static update(id, data) {
+  static async update(id, data) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
-    return (async () => {
-      const updatedProfile = await request(endpoint, "PATCH", data);
-      return new AccountsProfile(updatedProfile);
-    })();
+
+    const updatedProfile = await request(endpoint, "PATCH", data);
+    return new AccountsProfile(updatedProfile);
   }
 
-  static getUserIdFromUsername(username) {
+  static async getUserIdFromUsername(username) {
     const { api_url } = getConfig();
 
-    return (async () => {
-      const user = await request(
-        `${api_url}/v1/profiles?filter[username]=${username}`
-      );
-      return new AccountsProfile(user.profiles[0]);
-    })();
+    const user = await request(
+      `${api_url}/v1/profiles?filter[username]=${username}`
+    );
+
+    console.log(user);
+
+    return new AccountsProfile(user.profiles[0]);
   }
 }
