@@ -254,6 +254,29 @@ export default class Client {
   }
 
   /**
+   * Get the integrations of project projectId
+   *
+   * @param string projectId
+   *
+   * @return Promise Integration[]
+   */
+  getIntegrations(projectId) {
+    return entities.Integration.query({ projectId });
+  }
+
+  /**
+   * Get the integration integrationId of the projectId project
+   *
+   * @param string projectId
+   * @param string integrationId
+   *
+   * @return Promise Integration
+   */
+  getIntegration(projectId, IntegrationId) {
+    return entities.Integration.get({ projectId, id: intgerationId });
+  }
+
+  /**
    * Get the logged-in user's SSH keys.
    *
    * @param bool reset
