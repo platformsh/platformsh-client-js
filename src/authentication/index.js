@@ -1,15 +1,19 @@
 import api, { setAuthenticationPromise } from "../api";
-import connector from "./connector";
+import connector, { logInWithPopUp } from "./connector";
 
 import { jso_wipe } from "../jso";
 
-export default ({ api_token, access_token }, reset) => {
+export default ({ api_token, access_token, popupMode }, reset) => {
   let promise;
 
   if (access_token) {
     promise = Promise.resolve({ access_token, expires: -1 });
   } else {
-    promise = connector(api_token, reset);
+    if (popupMode) {
+      promise = logInWithPopUp(reset);
+    } else {
+      promise = connector(api_token, reset);
+    }
   }
 
   setAuthenticationPromise(promise);

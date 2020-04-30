@@ -54,7 +54,6 @@ export default class Integration extends Ressource {
   static query(params, customUrl) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
-    debugger;
 
     return super.query(
       customUrl || `${api_url}${_url}`,
