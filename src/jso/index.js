@@ -339,8 +339,10 @@ export const jso_ensureTokens = (ensure, reset) => {
     if (token === null || reset) {
       // Set the redirect URI to redirect the user when he will come back to the app after the authentication
       const redirect_uri = localStorage.getItem("auth-redirect-uri");
+      const location = window.location;
+      const uri = `${location.pathname}${location.search}${location.hash}`;
       if (!redirect_uri) {
-        localStorage.setItem("auth-redirect-uri", window.location.pathname);
+        localStorage.setItem("auth-redirect-uri", uri);
       }
 
       jso_authrequest(providerid, scopes);
