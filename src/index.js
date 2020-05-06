@@ -142,9 +142,8 @@ export default class Client {
   }
 
   /**
-   * Get the activities of the environment environmentId of the project projectId
+   * Get the certificates of project projectId
    *
-   * @param string projectId
    * @param string environmentId
    *
    * @return Promise Certificate[]
