@@ -276,6 +276,27 @@ export default class Client {
   }
 
   /**
+   * Get the activities of the integration integrationId of the project projectId
+   *
+   * @param string projectId
+   * @param string integrationId
+   *
+   * @return Promise Activity[]
+   */
+  getIntegrationActivities(projectId, integrationId, type, starts_at) {
+    const { api_url } = getConfig();
+
+    const url = `${api_url}/projects/${projectId}/integrations/${integrationId}/activities`;
+    return entities.Activity.query(
+      {
+        type,
+        starts_at
+      },
+      url
+    );
+  }
+
+  /**
    * Get the logged-in user's SSH keys.
    *
    * @param bool reset
