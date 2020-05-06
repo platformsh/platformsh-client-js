@@ -1,4 +1,5 @@
 import Ressource from "./Ressource";
+import Activity from "./Activity";
 import { request } from "../api";
 import { getConfig } from "../config";
 
@@ -54,7 +55,6 @@ export default class Integration extends Ressource {
   static query(params, customUrl) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
-    debugger;
 
     return super.query(
       customUrl || `${api_url}${_url}`,
@@ -62,6 +62,35 @@ export default class Integration extends Ressource {
       paramDefaults,
       queryParams
     );
+  }
+
+  /**
+   * Get a single integration activity.
+   *
+   * @param string id
+   *
+   * @return Activity|false
+   */
+  getActivity(id) {
+    return Activity.get({ id }, `${this.getUri()}/activities`);
+  }
+
+  /**
+   * Get a list of integration activities.
+   *
+   * @param int    limit
+   *   Limit the number of activities to return.
+   * @param string type
+   *   Filter activities by type.
+   * @param int    startsAt
+   *   A UNIX timestamp for the maximum created date of activities to return.
+   *
+   * @return Activity[]
+   */
+  getActivities(type, starts_at) {
+    const params = { type, starts_at };
+
+    return Activity.query(params, `${this.getUri()}/activities`);
   }
 
   /**
