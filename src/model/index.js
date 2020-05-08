@@ -24,6 +24,7 @@ import SetupRegistry from "./SetupRegistry";
 import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";
 import Integration from "./Integration";
+import ApiToken from "./ApiToken";
 
 export default {
   Account,
@@ -51,5 +52,6 @@ export default {
   SetupRegistry,
   SetupConfig,
   AuthUser,
-  Integration
+  Integration,
+  ApiToken
 };
