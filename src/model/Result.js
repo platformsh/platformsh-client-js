@@ -29,7 +29,7 @@ export default class Result {
       return [];
     }
     // Workaround the cycle dependency with webpack Ressource->Result->Activity->Ressouce...
-    const Activity = require("./Activity");
+    const Activity = require("./Activity").default;
 
     return this.data._embedded.activities.map(
       activity => new Activity(activity, this._url)
