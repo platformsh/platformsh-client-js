@@ -29,6 +29,7 @@ import Commit from "./git/Commit";
 import Tree from "./git/Tree";
 import Blob from "./git/Blob";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
+import ConnectedAccount from "./ConnectedAccount";
 
 export default {
   Account,
@@ -61,5 +62,6 @@ export default {
   Commit,
   Tree,
   Blob,
-  TwoFactorAuthentication
+  TwoFactorAuthentication,
+  ConnectedAccount
 };

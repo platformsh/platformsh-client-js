@@ -843,4 +843,15 @@ export default class Client {
   resetRecoveryCodes(userId) {
     return entities.TwoFactorAuthentication.reset(userId);
   }
+
+  /*
+   * Get connected accounts for a user
+   *
+   * @param {string} id - id of the user.
+   *
+   * @return Promise ConnectedAccounts[]
+   */
+  getConnectedAccounts(userId) {
+    return entities.ConnectedAccount.query(userId);
+  }
 }

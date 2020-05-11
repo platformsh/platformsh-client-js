@@ -73,7 +73,7 @@ export default class Ressource {
     return request(parsedUrl, "GET", queryParams).then(data => {
       return typeof data === "undefined"
         ? undefined
-        : new this.prototype.constructor(data, _url, params);
+        : new this.prototype.constructor(data, parsedUrl, params);
     });
   }
 
@@ -94,7 +94,7 @@ export default class Ressource {
       }
 
       return dataToMap.map(
-        d => new this.prototype.constructor(d, `${_url}/${d.id}`)
+        d => new this.prototype.constructor(d, `${parsedUrl}/${d.id}`)
       );
     });
   }
