@@ -137,7 +137,11 @@ function logInWithRedirect(reset) {
 
         clearInterval(listener);
         removeIFrame();
-        return jso_ensureTokens({ cg: auth.scope }, true);
+        return jso_ensureTokens(
+          { cg: auth.scope },
+          true,
+          auth.onBeforeRedirect
+        );
       }
 
       if (href && href.indexOf("access_token") !== -1) {
