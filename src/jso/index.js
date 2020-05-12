@@ -372,7 +372,7 @@ const jso_authrequest = (providerid, scopes, callback) => {
   api_redirect(authurl);
 };
 
-export const jso_ensureTokens = (ensure, reset) => {
+export const jso_ensureTokens = (ensure, reset, onBeforeRedirect) => {
   let providerid, scopes, token;
 
   for (providerid in ensure) {
@@ -384,12 +384,16 @@ export const jso_ensureTokens = (ensure, reset) => {
     log(token);
 
     if (token === null || reset) {
-      // Set the redirect URI to redirect the user when he will come back to the app after the authentication
-      const redirect_uri = localStorage.getItem("auth-redirect-uri");
       const location = window.location;
       const uri = `${location.pathname}${location.search}${location.hash}`;
-      if (!redirect_uri) {
-        localStorage.setItem("auth-redirect-uri", uri);
+      if (onBeforeRedirect) {
+        onBeforeRedirect(uri);
+      } else {
+        // Set the redirect URI to redirect the user when he will come back to the app after the authentication
+        const redirect_uri = localStorage.getItem("auth-redirect-uri");
+        if (!redirect_uri) {
+          localStorage.setItem("auth-redirect-uri", uri);
+        }
       }
 
       jso_authrequest(providerid, scopes);
