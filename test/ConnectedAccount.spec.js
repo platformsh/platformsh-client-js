@@ -49,4 +49,19 @@ describe("Connected Account", () => {
       done();
     });
   });
+
+  it("Delete connected account", done => {
+    fetchMock.mock(`${api_url}/users/user_id/connections/1`, {
+      provider: "github",
+      subject: "1"
+    });
+
+    fetchMock.mock(`${api_url}/users/user_id/connections/1`, {}, "DELETE");
+
+    ConnectedAccount.get("user_id", "1").then(account => {
+      account.delete().then(result => {
+        done();
+      });
+    });
+  });
 });

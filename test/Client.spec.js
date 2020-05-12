@@ -666,6 +666,7 @@ describe("Client", () => {
         ]
       })
     );
+
     client.getOrder("1").then(order => {
       assert.equal(order.id, "31619");
       assert.equal(order.constructor.name, "Order");
@@ -714,6 +715,23 @@ describe("Client", () => {
 
       const response = await client.resetRecoveryCodes("1");
       assert.deepEqual(response, ["22222"]);
+    });
+  });
+  it("Get connected accounts", done => {
+    const connectedAccounts = [
+      { provider: "github", subject: "1" },
+      { provider: "bitbucket", subject: "2" },
+      { provider: "google", subject: "1" }
+    ];
+
+    fetchMock.mock(`${api_url}/users/1/connections`, connectedAccounts);
+
+    client.getConnectedAccounts("1").then(connectedAccount => {
+      assert.equal(connectedAccount.length, 3);
+      assert.equal(connectedAccount[1].provider, "bitbucket");
+      assert.equal(connectedAccount[1].subject, "2");
+      assert.equal(connectedAccount[0].constructor.name, "ConnectedAccount");
+      done();
     });
   });
 });
