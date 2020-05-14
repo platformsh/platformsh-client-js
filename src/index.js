@@ -11,8 +11,6 @@ export default class Client {
   constructor(authenticationConfig = {}) {
     setConfig(authenticationConfig);
 
-    const { api_token, access_token, ...config } = authenticationConfig;
-
     this.authenticationPromise = connector(authenticationConfig);
   }
 

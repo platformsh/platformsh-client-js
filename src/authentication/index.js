@@ -3,7 +3,10 @@ import connector, { logInWithPopUp } from "./connector";
 
 import { jso_wipe } from "../jso";
 
-export default ({ api_token, access_token, popupMode }, reset) => {
+export default (
+  { api_token, access_token, provider = "cg", popupMode },
+  reset
+) => {
   let promise;
 
   if (access_token) {
@@ -12,7 +15,7 @@ export default ({ api_token, access_token, popupMode }, reset) => {
     if (popupMode) {
       promise = logInWithPopUp(reset);
     } else {
-      promise = connector(api_token, reset);
+      promise = connector(api_token, reset, { provider });
     }
   }
 
