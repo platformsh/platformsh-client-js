@@ -25,6 +25,7 @@ import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";
 import Integration from "./Integration";
 import ApiToken from "./ApiToken";
+import TwoFactorAuthentication from "./TwoFactorAuthentication";
 
 export default {
   Account,
@@ -53,5 +54,6 @@ export default {
   SetupConfig,
   AuthUser,
   Integration,
-  ApiToken
+  ApiToken,
+  TwoFactorAuthentication
 };
