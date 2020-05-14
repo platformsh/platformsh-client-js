@@ -1,4 +1,5 @@
 import isNode from "detect-node";
+import { OAuth2PopupFlow } from "oauth2-popup-flow";
 import "isomorphic-fetch"; // fetch api polyfill
 
 import { request } from "../api";
@@ -7,8 +8,10 @@ import {
   jso_ensureTokens,
   jso_getToken,
   jso_getAuthUrl,
+  jso_getAuthRequest,
   jso_checkfortoken,
   jso_wipe,
+  jso_wipeStates,
   epoch
 } from "../jso";
 import { getConfig } from "../config";
@@ -134,7 +137,11 @@ function logInWithRedirect(reset) {
 
         clearInterval(listener);
         removeIFrame();
-        return jso_ensureTokens({ cg: auth.scope }, true);
+        return jso_ensureTokens(
+          { cg: auth.scope },
+          true,
+          auth.onBeforeRedirect
+        );
       }
 
       if (href && href.indexOf("access_token") !== -1) {
@@ -147,6 +154,64 @@ function logInWithRedirect(reset) {
     }, 500);
   });
 }
+
+export const logInWithPopUp = async reset => {
+  if (localStorage.getItem("redirectFallBack") === "true") {
+    localStorage.removeItem("redirectFallBack");
+    return await logInWithRedirect();
+  }
+
+  const authConfig = getConfig();
+
+  console.log({
+    authorizationUri: authConfig.authorization,
+    clientId: authConfig.client_id,
+    redirectUri: authConfig.redirect_uri,
+    scope: authConfig.scope
+  });
+
+  jso_configure({ cg: authConfig }, {}, true);
+
+  const storedToken = jso_getToken("cg");
+
+  if (storedToken && !reset) {
+    return storedToken;
+  }
+
+  const request = jso_getAuthRequest("cg", authConfig.scope);
+
+  const auth = new OAuth2PopupFlow({
+    authorizationUri: authConfig.authorization,
+    clientId: authConfig.client_id,
+    redirectUri: authConfig.redirect_uri,
+    scope: authConfig.scope,
+    accessTokenStorageKey: `raw-token-${request.providerID}`,
+    additionalAuthorizationParameters: {
+      state: request.state
+    },
+    afterResponse: r => {
+      // Check that the redirect response state is valid
+      jso_checkfortoken(auth.client_id, undefined, true);
+    }
+  });
+
+  const resp = auth.handleRedirect();
+
+  // Open the popup and wait for
+  const popupResp = await auth.tryLoginPopup();
+
+  // If the popup fail, fallback to redirect
+  if (popupResp === "POPUP_FAILED") {
+    localStorage.setItem("redirectFallBack", "true");
+    return await logInWithRedirect();
+  }
+
+  // Authentication in the popup is successfull
+  // Remove all the states in the localStorage
+  jso_wipeStates();
+
+  return jso_getToken("cg");
+};
 
 export default (token, reset) => {
   if (isNode) {

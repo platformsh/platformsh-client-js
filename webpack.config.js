@@ -1,5 +1,5 @@
 var webpack = require("webpack");
-var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const TerserPlugin = require("terser-webpack-plugin");
 var path = require("path");
 var env = require("yargs").argv.env;
 var merge = require("webpack-merge");
@@ -11,16 +11,6 @@ var plugins = [],
 let additionalSettings = {};
 
 if (env.mode === "build") {
-  plugins.push(
-    new UglifyJsPlugin({
-      minimize: true,
-      compress: {
-        warnings: false,
-        drop_console: true
-      },
-      comments: false
-    })
-  );
   outputFile = "[name].js";
 } else {
   outputFile = "[name].js";
@@ -30,6 +20,7 @@ if (env.mode === "build") {
 }
 
 var config = {
+  mode: "development",
   entry: {
     [libraryName]: __dirname + "/src/index.js",
     "authentication/index": __dirname + "/src/authentication"
@@ -53,6 +44,21 @@ var config = {
   plugins: plugins,
   ...additionalSettings
 };
+
+if (env.mode === "build") {
+  config.mode = "production";
+  config.optimization = {
+    noEmitOnErrors: true,
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true
+      })
+    ],
+    removeEmptyChunks: true
+  };
+}
 
 var client = merge(config, {
   target: "web",

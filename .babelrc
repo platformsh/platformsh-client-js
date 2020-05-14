@@ -1,9 +1,4 @@
 {
-  "presets": ["env"],
-  "plugins": ["babel-plugin-add-module-exports", "transform-object-rest-spread", "transform-async-to-generator", ["transform-runtime", {
-      "helpers": false,
-      "polyfill": false,
-      "regenerator": true,
-      "moduleName": "babel-runtime"
-    }]]
+  "presets": ["@babel/preset-env"],
+  "plugins": ["@babel/plugin-transform-runtime"]
 }

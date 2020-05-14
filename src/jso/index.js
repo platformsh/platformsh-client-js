@@ -274,6 +274,53 @@ export const jso_getAuthUrl = (providerid, scopes, callback) => {
   return authurl;
 };
 
+export const jso_getAuthRequest = (providerid, scopes, callback) => {
+  let state, request, co;
+
+  if (!config[providerid])
+    throw new Error(`Could not find configuration for provider ${providerid}`);
+  co = config[providerid];
+
+  log(`About to send an authorization request to [${providerid}]. Config:`);
+  log(co);
+
+  state = uuid();
+  request = {
+    response_type: "token"
+  };
+  request.state = state;
+
+  if (callback && typeof callback === "function") {
+    internalStates[state] = callback;
+  }
+
+  if (co["redirect_uri"]) {
+    request["redirect_uri"] = co["redirect_uri"];
+  }
+  if (co["client_id"]) {
+    request["client_id"] = co["client_id"];
+  }
+  if (scopes) {
+    request["scope"] = scopes.join(" ");
+  }
+
+  // We'd like to cache the hash for not loosing Application state.
+  // With the implciit grant flow, the hash will be replaced with the access
+  // token when we return after authorization.
+  request["location"] = window.location.href;
+  request["providerID"] = providerid;
+  if (scopes) {
+    request["scopes"] = scopes;
+  }
+
+  log(`Saving state [${state}]`);
+  log(JSON.parse(JSON.stringify(request)));
+
+  api_storage.saveState(state, request);
+
+  return request;
+};
+
 /*
 * A config object contains:
 */
@@ -325,7 +372,7 @@ const jso_authrequest = (providerid, scopes, callback) => {
   api_redirect(authurl);
 };
 
-export const jso_ensureTokens = (ensure, reset) => {
+export const jso_ensureTokens = (ensure, reset, onBeforeRedirect) => {
   let providerid, scopes, token;
 
   for (providerid in ensure) {
@@ -337,12 +384,16 @@ export const jso_ensureTokens = (ensure, reset) => {
     log(token);
 
     if (token === null || reset) {
-      // Set the redirect URI to redirect the user when he will come back to the app after the authentication
-      const redirect_uri = localStorage.getItem("auth-redirect-uri");
       const location = window.location;
       const uri = `${location.pathname}${location.search}${location.hash}`;
-      if (!redirect_uri) {
-        localStorage.setItem("auth-redirect-uri", uri);
+      if (onBeforeRedirect) {
+        onBeforeRedirect(uri);
+      } else {
+        // Set the redirect URI to redirect the user when he will come back to the app after the authentication
+        const redirect_uri = localStorage.getItem("auth-redirect-uri");
+        if (!redirect_uri) {
+          localStorage.setItem("auth-redirect-uri", uri);
+        }
       }
 
       jso_authrequest(providerid, scopes);
@@ -366,14 +417,16 @@ export const jso_findDefaultEntry = c => {
   if (i === 1) return k;
 };
 
-export const jso_configure = (c, opts) => {
+export const jso_configure = (c, opts, popupMode) => {
   config = c;
   setOptions(opts);
   try {
     let def = jso_findDefaultEntry(c);
 
-    log("jso_configure() about to check for token for this entry", def);
-    jso_checkfortoken(def);
+    if (!popupMode) {
+      log("jso_configure() about to check for token for this entry", def);
+      jso_checkfortoken(def);
+    }
   } catch (e) {
     log("Error when retrieving token from hash: " + e);
     window.location.hash = "";
@@ -412,4 +465,12 @@ export const jso_registerRedirectHandler = callback => {
 
 export const jso_registerStorageHandler = object => {
   api_storage = object;
+};
+
+export const jso_wipeStates = () => {
+  for (var key in localStorage) {
+    if (key.startsWith("state-")) {
+      localStorage.removeItem(key);
+    }
+  }
 };
