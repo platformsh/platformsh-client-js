@@ -801,8 +801,8 @@ export default class Client {
    *
    * @param {string} userId User identifier
    *
-   * @returns {Promise<TFASetupInfo>} Promise that returns the information
-   * required to enroll the user
+   * @returns {Promise<{qr_code, secret, issuer, account_name}>} Promise that
+   * returns the information required to enroll the user if resolves
    */
   getTFA(userId) {
     return entities.TwoFactorAuthentication.get(userId);
