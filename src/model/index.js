@@ -25,6 +25,9 @@ import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";
 import Integration from "./Integration";
 import ApiToken from "./ApiToken";
+import Commit from "./git/Commit";
+import Tree from "./git/Tree";
+import Blob from "./git/Blob";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 
 export default {
@@ -55,5 +58,7 @@ export default {
   AuthUser,
   Integration,
   ApiToken,
-  TwoFactorAuthentication
+  Commit,
+  Tree,
+  Blob
 };
