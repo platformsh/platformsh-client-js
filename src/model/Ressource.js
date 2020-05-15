@@ -46,6 +46,7 @@ export default class Ressource {
     this.copy(data);
 
     const url = _url || this.getLink("self");
+    this._params = params;
 
     this._url = _urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
@@ -72,7 +73,7 @@ export default class Ressource {
     return request(parsedUrl, "GET", queryParams).then(data => {
       return typeof data === "undefined"
         ? undefined
-        : new this.prototype.constructor(data, _url);
+        : new this.prototype.constructor(data, _url, params);
     });
   }
 

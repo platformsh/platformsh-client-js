@@ -25,6 +25,9 @@ import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";
 import Integration from "./Integration";
 import ApiToken from "./ApiToken";
+import Commit from "./git/Commit";
+import Tree from "./git/Tree";
+import Blob from "./git/Blob";
 
 export default {
   Account,
@@ -53,5 +56,8 @@ export default {
   SetupConfig,
   AuthUser,
   Integration,
-  ApiToken
+  ApiToken,
+  Commit,
+  Tree,
+  Blob
 };

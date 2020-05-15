@@ -5,6 +5,7 @@ import fetchMock from "fetch-mock";
 
 import { setAuthenticationPromise } from "../src/api";
 import Environment from "../src/model/Environment";
+import { getConfig } from "../src/config";
 
 describe("Environment", () => {
   before(function() {
@@ -551,5 +552,58 @@ describe("Environment", () => {
     const sshUrl = environment.getSshUrl("php");
 
     assert.equal(sshUrl, "testproject-master-7rqtwti--php@git.local.c-g.io");
+  });
+
+  it("Get ssh key with the app ssh link in priority", done => {
+    const environment = new Environment(
+      {
+        _links: {
+          self: {
+            href: "https://test.com/api/projects/ffzefzef3/environments"
+          },
+          "pf:ssh:php": {
+            href: "ssh://testproject-master-7rqtwti--php@git.local.c-g.io"
+          },
+          ssh: {
+            href: "ssh://testproject-master-7rqtwti@git.local.c-g.io"
+          }
+        },
+        id: 1,
+        head_commit: "shastring",
+        project: "ffzefzef3"
+      },
+      "https://test.com/api/projects/ffzefzef3/environments"
+    );
+
+    const { api_url } = getConfig();
+
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/git/commits/shastring`, {
+      id: "shastring",
+      _links: {
+        self: {
+          href:
+            "https://region.platform.sh/api/projects/ffzefzef3/git/commits/shastring"
+        }
+      },
+      sha: "shastring",
+      author: {
+        date: "2020-05-13T10:45:01-04:00",
+        name: "author name",
+        email: "author@email.com"
+      },
+      committer: {
+        date: "2020-05-13T10:45:01-04:00",
+        name: "committer name",
+        email: "author@email.com"
+      },
+      message: "the message\n",
+      tree: "shatree",
+      parents: ["shaparent"]
+    });
+
+    environment.getHeadCommit().then(c => {
+      assert.equal(c.sha, "shastring");
+      done();
+    });
   });
 });

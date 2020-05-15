@@ -7,6 +7,7 @@ import Variable from "./Variable";
 import Route from "./Route";
 import EnvironmentAccess from "./EnvironmentAccess";
 import Metrics from "./Metrics";
+import Commit from "./git/Commit";
 
 const paramDefaults = {
   projectId: "project"
@@ -502,5 +503,17 @@ export default class Environment extends Ressource {
     const params = query && { q: query };
 
     return Metrics.get(params, `${this.getUri()}/metrics`);
+  }
+
+  /**
+   * Get head commit.
+   *
+   * @param string project id
+   * @param string head commit sha
+   *
+   * @return Commit
+   */
+  getHeadCommit() {
+    return Commit.get(this.project, this.head_commit);
   }
 }
