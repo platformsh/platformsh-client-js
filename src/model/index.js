@@ -28,6 +28,7 @@ import ApiToken from "./ApiToken";
 import Commit from "./git/Commit";
 import Tree from "./git/Tree";
 import Blob from "./git/Blob";
+import TwoFactorAuthentication from "./TwoFactorAuthentication";
 
 export default {
   Account,

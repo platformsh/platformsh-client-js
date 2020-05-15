@@ -8,18 +8,18 @@ export default class ApiDefaultStorage {
   * scopes
 
   */
-  saveState(state, obj) {
-    localStorage.setItem("state-" + state, JSON.stringify(obj));
+  saveState(state, providerId, obj) {
+    localStorage.setItem(`state-${providerId}-${state}`, JSON.stringify(obj));
   }
 
   /**
    * getStage()  returns the state object, but also removes it.
    * @type {Object}
    */
-  getState(state) {
-    var obj = JSON.parse(localStorage.getItem("state-" + state));
+  getState(state, providerId) {
+    var obj = JSON.parse(localStorage.getItem(`state-${providerId}-${state}`));
 
-    localStorage.removeItem("state-" + state);
+    localStorage.removeItem(`state-${providerId}-${state}`);
     return obj;
   }
 
@@ -75,11 +75,11 @@ export default class ApiDefaultStorage {
   * scopes: an array with the scopes (not string)
   */
   saveTokens(provider, tokens) {
-    localStorage.setItem("tokens-" + provider, JSON.stringify(tokens));
+    localStorage.setItem(`tokens-${provider}`, JSON.stringify(tokens));
   }
 
   getTokens(provider) {
-    var tokens = JSON.parse(localStorage.getItem("tokens-" + provider));
+    var tokens = JSON.parse(localStorage.getItem(`tokens-${provider}`));
 
     if (!tokens) tokens = [];
 
@@ -87,7 +87,7 @@ export default class ApiDefaultStorage {
   }
 
   wipeTokens(provider) {
-    localStorage.removeItem("tokens-" + provider);
+    localStorage.removeItem(`tokens-${provider}`);
   }
 
   /*
