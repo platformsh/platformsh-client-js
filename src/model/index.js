@@ -60,5 +60,6 @@ export default {
   ApiToken,
   Commit,
   Tree,
-  Blob
+  Blob,
+  TwoFactorAuthentication
 };
