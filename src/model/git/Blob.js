@@ -14,6 +14,7 @@ export default class Blob extends Ressource {
 
     this.id = "";
     this.type = "blob";
+    this.path = "";
     this.sha = "";
     this.size = "";
     this.encoding = "";
@@ -29,9 +30,9 @@ export default class Blob extends Ressource {
   async getInstance() {
     const { api_url } = getConfig();
 
-    const blob = await super.get(`${api_url}${this._url}`, {
-      sha: this.sha
-    });
+    const blob = await Blob.get(this._params.projectId, this._params.sha);
+
+    blob.path = this.path;
 
     return blob;
   }

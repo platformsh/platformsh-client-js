@@ -78,15 +78,20 @@ describe("Tree", () => {
     Tree.get("projectid", "shastring").then(tree => {
       assert.equal(tree.sha, "shastring");
       assert.equal(tree.tree.length, 2);
-      tree.tree[1].getRawContent().then(c => {
-        assert.equal(c, "awesome file");
-        tree.tree[0].getInstance().then(t => {
-          assert.equal(t.tree.length, 1);
-          assert.equal(t.sha, "shastringfolder");
-          done();
+
+      const blob = tree.tree[1].getInstance().then(b => {
+        assert.equal(b.path, "file2.js");
+        tree.tree[1].getRawContent().then(c => {
+          assert.equal(c, "awesome file");
+          tree.tree[0].getInstance().then(t => {
+            assert.equal(t.tree.length, 1);
+            assert.equal(t.path, "folder1");
+            assert.equal(t.sha, "shastringfolder");
+            done();
+          });
         });
+        assert.equal(tree.constructor.name, "Tree");
       });
-      assert.equal(tree.constructor.name, "Tree");
     });
   });
 });

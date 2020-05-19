@@ -25,6 +25,7 @@ export default class Tree extends Ressource {
     this.id = "";
     this.type = "tree";
     this.sha = "";
+    this.path = "";
     this.tree = [];
   }
 
@@ -33,14 +34,7 @@ export default class Tree extends Ressource {
 
     const tree = await super.get(`${api_url}${_url}`, { projectId, sha });
 
-    tree.tree = tree.tree.map(o => {
-      switch (o.type) {
-        case "tree":
-          return new Tree(o, undefined, { projectId, sha: o.sha });
-        case "blob":
-          return new Blob(o, undefined, { projectId, sha: o.sha });
-      }
-    });
+    tree.tree = bind(tree.tree, projectId);
 
     return tree;
   }
@@ -50,14 +44,9 @@ export default class Tree extends Ressource {
 
     const tree = await Tree.get(this._params.projectId, this.sha);
 
-    tree.tree = tree.tree.map(o => {
-      switch (o.type) {
-        case "tree":
-          return new Tree(o, this._url, this._params);
-        case "blob":
-          return new Blob(o, this._url, this._params);
-      }
-    });
+    tree.path = this.path;
+
+    tree.tree = bind(tree.tree, this._params.projectId);
 
     return tree;
   }
