@@ -6,6 +6,9 @@ import fetchMock from "fetch-mock";
 import { getConfig } from "../src/config";
 import Client from "../src";
 
+const _fetch = (url, data, ...params) =>
+  fetchMock.mock(url, JSON.stringify(data), ...params);
+
 describe("Client", () => {
   let client;
   const { authentication_url, api_url } = getConfig();
@@ -667,6 +670,50 @@ describe("Client", () => {
       assert.equal(order.id, "31619");
       assert.equal(order.constructor.name, "Order");
       done();
+    });
+  });
+
+  describe("Two Factor Authentication", () => {
+    it("Get TFA", async () => {
+      _fetch(`${api_url}/users/1/totp`, {
+        account_name: "//issuer.url.com:user@name.com",
+        issuer: "https://issuer.url.com",
+        qr_code: "data:image/png;base64,iVBORw0I=",
+        secret: "XYZ"
+      });
+
+      const response = await client.getTFA("1");
+      assert.equal(response.secret, "XYZ");
+    });
+
+    it("Enroll TFA", async () => {
+      _fetch(`${api_url}/users/1/totp`, ["123"], "POST");
+
+      const response = await client.enrollTFA("1", "XYZ", "000000");
+      const params = fetchMock.lastOptions().body;
+      assert.deepEqual(response, ["123"]);
+      assert.deepEqual(JSON.parse(params), {
+        secret: "XYZ",
+        passcode: "000000"
+      });
+    });
+
+    it("Disable TFA", async () => {
+      _fetch(`${api_url}/users/1/totp`, null, "DELETE");
+
+      try {
+        await client.disableTFA("1");
+        assert.ok(true);
+      } catch (e) {
+        assert.fail();
+      }
+    });
+
+    it("Reset recovery codes", async () => {
+      _fetch(`${api_url}/users/1/codes`, ["22222"], "POST");
+
+      const response = await client.resetRecoveryCodes("1");
+      assert.deepEqual(response, ["22222"]);
     });
   });
 });
