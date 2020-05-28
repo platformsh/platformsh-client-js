@@ -134,6 +134,30 @@ export const authenticatedRequest = (
   });
 };
 
+export const getAuthenticationHeaders = async () => {
+  let token = await authenticationPromise;
+
+  if (!token) {
+    throw new Error("Token is mandatory");
+  }
+
+  // Same calc in the jso lib
+  const currentDate = Math.round(new Date().getTime() / 1000.0);
+  const tokenExpirationDate = token.expires;
+
+  if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
+    const config = getConfig();
+    console.log("Token expiration detected");
+
+    await authenticate(config, true);
+    token = await authenticationPromise;
+  }
+
+  return {
+    Authorization: `Bearer ${token["access_token"]}`
+  };
+};
+
 export const createEventSource = url =>
   authenticationPromise.then(
     token =>

@@ -1,6 +1,7 @@
 import Ressource from "./Ressource";
+import "isomorphic-fetch";
 import { getConfig } from "../config";
-import request from "../api";
+import request, { getAuthenticationHeaders } from "../api";
 import _urlParser from "../urlParser";
 
 const url = "/platform/profiles/:id";
@@ -94,5 +95,29 @@ export default class AccountsProfile extends Ressource {
     );
 
     return new AccountsProfile(user.profiles[0]);
+  }
+
+  static async updateProfilePicture(userId, picture) {
+    const { api_url } = getConfig();
+    const headers = await getAuthenticationHeaders();
+    let body = { file: picture };
+
+    if (typeof FormData !== "undefined") {
+      body = new FormData();
+      body.append("file", picture);
+    }
+
+    const response = await fetch(`${api_url}/v1/profile/${userId}/picture`, {
+      method: "POST",
+      headers,
+      body
+    });
+
+    return response.json();
+  }
+
+  static async deleteProfilePicture(userId) {
+    const { api_url } = getConfig();
+    return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
   }
 }
