@@ -113,7 +113,13 @@ export default class AccountsProfile extends Ressource {
       body
     });
 
-    return response.json();
+    const data = await response.json();
+
+    if (response.ok) {
+      return data;
+    } else {
+      throw new Error(data?.title || JSON.stringify(data));
+    }
   }
 
   static async deleteProfilePicture(userId) {
