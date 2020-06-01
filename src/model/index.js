@@ -6,6 +6,7 @@ import Subscription from "./Subscription";
 import Activity from "./Activity";
 import Environment from "./Environment";
 import Certificate from "./Certificate";
+import Comment from "./Comment";
 import Domain from "./Domain";
 import EnvironmentAccess from "./EnvironmentAccess";
 import ProjectAccess from "./ProjectAccess";
@@ -16,6 +17,8 @@ import Variable from "./Variable";
 import Deployment from "./Deployment";
 import Organization from "./Organization";
 import Team from "./Team";
+import Ticket from "./Ticket";
+import TicketPriority from "./TicketPriority";
 import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
@@ -40,6 +43,7 @@ export default {
   Activity,
   Environment,
   Certificate,
+  Comment,
   Domain,
   EnvironmentAccess,
   Metrics,
@@ -63,5 +67,7 @@ export default {
   Tree,
   Blob,
   TwoFactorAuthentication,
-  ConnectedAccount
+  ConnectedAccount,
+  Ticket,
+  TicketPriority
 };
