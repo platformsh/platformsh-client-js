@@ -5,6 +5,7 @@ import isNode from "detect-node";
 
 import { getConfig } from "./config";
 import authenticate from "./authentication";
+import { epoch } from "./jso/index.js";
 
 let authenticationPromise;
 
@@ -95,42 +96,21 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   });
 };
 
-export const authenticatedRequest = (
+export const authenticatedRequest = async (
   url,
   method,
   data,
   additionalHeaders = {}
 ) => {
-  return authenticationPromise.then(token => {
-    if (!token) {
-      throw new Error("Token is mandatory");
-    }
+  const authenticationHeaders = await getAuthenticationHeaders();
 
-    if (!additionalHeaders.hasOwnProperty("Content-Type")) {
-      additionalHeaders["Content-Type"] = "application/json";
-    }
+  if (!additionalHeaders.hasOwnProperty("Content-Type")) {
+    additionalHeaders["Content-Type"] = "application/json";
+  }
 
-    // Same calc in the jso lib
-    const currentDate = Math.round(new Date().getTime() / 1000.0);
-    const tokenExpirationDate = token.expires;
-
-    if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
-      const config = getConfig();
-      console.log("Token expiration detected");
-
-      return authenticate(config, true).then(t => {
-        return authenticatedRequest(url, method, data, additionalHeaders);
-      });
-    }
-
-    const authenticationHeaders = {
-      Authorization: `Bearer ${token["access_token"]}`
-    };
-
-    return request(url, method, data, {
-      ...additionalHeaders,
-      ...authenticationHeaders
-    });
+  return request(url, method, data, {
+    ...additionalHeaders,
+    ...authenticationHeaders
   });
 };
 
@@ -141,8 +121,7 @@ export const getAuthenticationHeaders = async () => {
     throw new Error("Token is mandatory");
   }
 
-  // Same calc in the jso lib
-  const currentDate = Math.round(new Date().getTime() / 1000.0);
+  const currentDate = epoch();
   const tokenExpirationDate = token.expires;
 
   if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
