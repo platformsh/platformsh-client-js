@@ -990,7 +990,8 @@ export default class Client {
    * Updates the user profile picture
    *
    * @param {string} userId User identifier
-   * @param {File} picture File object to be uploaded
+   * @param {FormData} FormData object containign picture File object to be
+   * uploaded.
    *
    * @returns {Promise<{url: string}>} Promise that returns the url to the new
    * profile picture

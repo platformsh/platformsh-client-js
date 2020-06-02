@@ -5,7 +5,6 @@ import isNode from "detect-node";
 
 import { getConfig } from "./config";
 import authenticate from "./authentication";
-import { epoch } from "./jso/index.js";
 
 let authenticationPromise;
 
@@ -18,6 +17,9 @@ const defaultHeaders = {};
 if (isNode) {
   defaultHeaders["Content-Type"] = "application/json";
 }
+
+const isFormData = data =>
+  typeof FormData !== "undefined" && data instanceof FormData;
 
 export const request = (url, method, data, additionalHeaders = {}) => {
   let body = data && { ...data };
@@ -35,7 +37,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   };
 
   if (method !== "GET" && method !== "HEAD" && body) {
-    requestConfig.body = JSON.stringify(body);
+    requestConfig.body = isFormData(data) ? data : JSON.stringify(body);
   }
 
   return new Promise((resolve, reject) => {
@@ -96,45 +98,46 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   });
 };
 
-export const authenticatedRequest = async (
+export const authenticatedRequest = (
   url,
   method,
   data,
   additionalHeaders = {}
 ) => {
-  const authenticationHeaders = await getAuthenticationHeaders();
+  return authenticationPromise.then(token => {
+    if (!token) {
+      throw new Error("Token is mandatory");
+    }
 
-  if (!additionalHeaders.hasOwnProperty("Content-Type")) {
-    additionalHeaders["Content-Type"] = "application/json";
-  }
+    if (
+      !additionalHeaders.hasOwnProperty("Content-Type") &&
+      !isFormData(data)
+    ) {
+      additionalHeaders["Content-Type"] = "application/json";
+    }
 
-  return request(url, method, data, {
-    ...additionalHeaders,
-    ...authenticationHeaders
+    // Same calc in the jso lib
+    const currentDate = Math.round(new Date().getTime() / 1000.0);
+    const tokenExpirationDate = token.expires;
+
+    if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
+      const config = getConfig();
+      console.log("Token expiration detected");
+
+      return authenticate(config, true).then(t => {
+        return authenticatedRequest(url, method, data, additionalHeaders);
+      });
+    }
+
+    const authenticationHeaders = {
+      Authorization: `Bearer ${token["access_token"]}`
+    };
+
+    return request(url, method, data, {
+      ...additionalHeaders,
+      ...authenticationHeaders
+    });
   });
-};
-
-export const getAuthenticationHeaders = async () => {
-  let token = await authenticationPromise;
-
-  if (!token) {
-    throw new Error("Token is mandatory");
-  }
-
-  const currentDate = epoch();
-  const tokenExpirationDate = token.expires;
-
-  if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
-    const config = getConfig();
-    console.log("Token expiration detected");
-
-    await authenticate(config, true);
-    token = await authenticationPromise;
-  }
-
-  return {
-    Authorization: `Bearer ${token["access_token"]}`
-  };
 };
 
 export const createEventSource = url =>
