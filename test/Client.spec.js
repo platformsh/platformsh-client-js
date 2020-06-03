@@ -734,4 +734,25 @@ describe("Client", () => {
       done();
     });
   });
+
+  describe("Profile pictures", () => {
+    it("Delete", async () => {
+      _fetch(`${api_url}/v1/profile/1/picture`, null, "DELETE");
+
+      try {
+        await client.deleteProfilePicture("1");
+        assert.ok(true);
+      } catch (e) {
+        assert.fail();
+      }
+    });
+
+    it("Update", async () => {
+      _fetch(`${api_url}/v1/profile/1/picture`, { url: "xyz" }, "POST");
+
+      const response = await client.updateProfilePicture(1, {});
+
+      assert.deepEqual(response, { url: "xyz" });
+    });
+  });
 });

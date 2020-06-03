@@ -95,4 +95,14 @@ export default class AccountsProfile extends Ressource {
 
     return new AccountsProfile(user.profiles[0]);
   }
+
+  static updateProfilePicture(userId, picture) {
+    const { api_url } = getConfig();
+    return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
+  }
+
+  static async deleteProfilePicture(userId) {
+    const { api_url } = getConfig();
+    return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
+  }
 }

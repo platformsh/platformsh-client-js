@@ -18,6 +18,9 @@ if (isNode) {
   defaultHeaders["Content-Type"] = "application/json";
 }
 
+const isFormData = data =>
+  typeof FormData !== "undefined" && data instanceof FormData;
+
 export const request = (url, method, data, additionalHeaders = {}) => {
   let body = data && { ...data };
   let apiUrl = url;
@@ -34,7 +37,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
   };
 
   if (method !== "GET" && method !== "HEAD" && body) {
-    requestConfig.body = JSON.stringify(body);
+    requestConfig.body = isFormData(data) ? data : JSON.stringify(body);
   }
 
   return new Promise((resolve, reject) => {
@@ -106,7 +109,10 @@ export const authenticatedRequest = (
       throw new Error("Token is mandatory");
     }
 
-    if (!additionalHeaders.hasOwnProperty("Content-Type")) {
+    if (
+      !additionalHeaders.hasOwnProperty("Content-Type") &&
+      !isFormData(data)
+    ) {
       additionalHeaders["Content-Type"] = "application/json";
     }
 

@@ -985,4 +985,29 @@ export default class Client {
   async sendComment(comment) {
     return entities.Comment.send(comment);
   }
+
+  /**
+   * Updates the user profile picture
+   *
+   * @param {string} userId User identifier
+   * @param {FormData} FormData object containign picture File object to be
+   * uploaded.
+   *
+   * @returns {Promise<{url: string}>} Promise that returns the url to the new
+   * profile picture
+   */
+  updateProfilePicture(userId, picture) {
+    return entities.AccountsProfile.updateProfilePicture(userId, picture);
+  }
+
+  /**
+   * Deletes the user profile picture.
+   *
+   * @param {string} userId User identifier
+   *
+   * @returns {Promise} Resolves if the picture was deleted.
+   */
+  deleteProfilePicture(userId) {
+    return entities.AccountsProfile.deleteProfilePicture(userId);
+  }
 }
