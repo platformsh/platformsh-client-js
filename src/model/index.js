@@ -30,6 +30,7 @@ import Tree from "./git/Tree";
 import Blob from "./git/Blob";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import ConnectedAccount from "./ConnectedAccount";
+import PaymentSource from "./PaymentSource";
 
 export default {
   Account,
@@ -63,5 +64,6 @@ export default {
   Tree,
   Blob,
   TwoFactorAuthentication,
-  ConnectedAccount
+  ConnectedAccount,
+  PaymentSource
 };
