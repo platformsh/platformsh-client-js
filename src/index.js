@@ -660,7 +660,7 @@ export default class Client {
    * rejects otherwise
    */
   deletePaymentSource(uuid) {
-    return entities.PayementSource.delete(uuid);
+    return entities.PaymentSource.delete(uuid);
   }
 
   /**
