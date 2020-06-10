@@ -75,6 +75,6 @@ export default class Address extends Ressource {
 
   update(address, id) {
     const { api_url } = getConfig();
-    super.update(address, Address.getQueryUrl(`${api_url}${url}`, id));
+    return super.update(address, Address.getQueryUrl(`${api_url}${url}`, id));
   }
 }
