@@ -1067,4 +1067,23 @@ export default class Client {
   deleteProfilePicture(userId) {
     return entities.AccountsProfile.deleteProfilePicture(userId);
   }
+
+  /**
+   * Create an invitation
+   *
+   * @param {string} email
+   * @param {string} projectId
+   * @param {string} role project role
+   * @param {array} Environments Array of environment object id/role
+   *
+   * @returns {Promise} Promise that return an inivitation.
+   */
+  createInvitation(email, projectId, role, environments) {
+    return new entities.Invitation({
+      email,
+      projectId,
+      environments,
+      role
+    }).save();
+  }
 }
