@@ -625,6 +625,63 @@ export default class Client {
   }
 
   /**
+   * Get payment source.
+   *
+   * @param string owner The UUID of the owner.
+   *
+   * @return Promise
+   */
+  getPaymentSource(owner) {
+    return entities.PaymentSource.get(owner);
+  }
+
+  /**
+   * Add a new payement source to user's account.
+   *
+   * @param string source_type The type of the payment source: credit-card /
+   * stripe_sepa_debit.
+   * @param string token The token returns by Stripe.
+   * @param string email The email linked to the payment source.
+   *
+   * @return Result
+   */
+  addPaymentSource(source_type, token, email) {
+    const values = this.cleanRequest({ source_type, token, email });
+
+    return new entities.PaymentSource(values).save();
+  }
+
+  /**
+   * Delete payment source for the owner.
+   *
+   * @param {string} uuid The UUID of the owner of the payment source.
+   *
+   * @return {Promise} It resolves if the payment source is deleted,
+   * rejects otherwise
+   */
+  deletePaymentSource(uuid) {
+    return entities.PaymentSource.delete(uuid);
+  }
+
+  /**
+   * Get payment source allowed.
+   *
+   * @return Promise
+   */
+  getPaymentSourcesAllowed() {
+    return entities.PaymentSource.getAllowed();
+  }
+
+  /**
+   * Create a Setupt Intent
+   *
+   * @return Promise: { client_secret, public_key }
+   */
+  createPaymentSourceIntent() {
+    return entities.PaymentSource.intent();
+  }
+
+  /**
    * Get a users profile.
    *
    * @param {string} id - UUID of the user.
