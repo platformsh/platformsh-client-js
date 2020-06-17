@@ -3,7 +3,7 @@
 
 This is a isomorphic Javascript library for accessing the Platform.sh API.
 
-Our API is not stable yet. We recommend you use the Platform.sh CLI for most purposes.
+Our API is not stable yet. We recommend you use [the Platform.sh CLI](https://github.com/platformsh/platformsh-cli) for most purposes.
 
 ## Install
 
