@@ -638,15 +638,15 @@ export default class Client {
   /**
    * Add a new payement source to user's account.
    *
-   * @param string source_type The type of the payment source: credit-card /
+   * @param string type The type of the payment source: credit-card /
    * stripe_sepa_debit.
    * @param string token The token returns by Stripe.
    * @param string email The email linked to the payment source.
    *
    * @return Result
    */
-  addPaymentSource(source_type, token, email) {
-    const values = this.cleanRequest({ source_type, token, email });
+  addPaymentSource(type, token, email) {
+    const values = this.cleanRequest({ type, token, email });
 
     return new entities.PaymentSource(values).save();
   }
