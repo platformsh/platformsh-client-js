@@ -6,7 +6,7 @@ import request from "../api";
 
 const url = "/platform/payment_source";
 const paramDefaults = {};
-const creatableField = ["source_type", "token", "email"];
+const creatableField = ["type", "token", "email"];
 
 export default class PaymentSource extends Ressource {
   constructor(paymentSource) {
@@ -33,11 +33,6 @@ export default class PaymentSource extends Ressource {
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
         if (typeof data === undefined) return {};
-        // if (data.payment_sources) {
-        //   return data.payment_sources.map(
-        //     ps => new this.prototype.constructor(this.formatDetails(ps))
-        //   );
-        // }
         return new this.prototype.constructor(
           this.formatDetails(data.payment_source)
         );

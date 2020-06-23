@@ -145,7 +145,7 @@ describe("PaymentSource", () => {
     );
 
     const ps = new PaymentSource({
-      source_type: "credit-card",
+      type: "credit-card",
       token: "string",
       email: "email@domain.com"
     });
