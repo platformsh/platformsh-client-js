@@ -113,4 +113,12 @@ export default class ApiDefaultStorage {
     if (tokens.length < 1) return null;
     return tokens[0];
   }
+
+  saveCodeVerifier(provider, codeVerifier) {
+    localStorage.setItem(`${provider}-code-verifier`, codeVerifier);
+  }
+
+  getCodeVerifier(provider) {
+    return localStorage.getItem(`${provider}-code-verifier`);
+  }
 }

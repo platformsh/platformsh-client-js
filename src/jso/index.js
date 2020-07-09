@@ -22,7 +22,7 @@ const log = msg => {
   if (!console) return;
   if (!console.log) return;
 
-  // console.log('LOG(), Arguments', arguments, msg)
+  // console.log("LOG(), Arguments", arguments, msg);
   if (arguments.length > 1) {
     console.log(arguments);
   } else {
@@ -59,7 +59,7 @@ const setOptions = opts => {
 * Takes an URL as input and a params object.
 * Each property in the params is added to the url as query string parameters
 */
-const encodeURL = (url, params) => {
+export const encodeURL = (url, params) => {
   let res = url;
   let k,
     i = 0;
@@ -110,6 +110,75 @@ api_redirect = url => {
 
 api_storage = new ApiDefaultStorage();
 
+export const jso_getCodeVerifier = provider => {
+  return api_storage.getCodeVerifier(provider);
+};
+
+export const jso_saveCodeVerifier = (provider, codeVerifier) => {
+  api_storage.saveCodeVerifier(provider, codeVerifier);
+};
+
+/*
+* Decide when this token should expire.
+* Priority fallback:
+* 1. Access token expires_in
+* 2. Life time in config (may be false = permanent...)
+* 3. Specific permanent scope.
+* 4. Default library lifetime:
+*/
+export const set_token_expiration = (atoken, co) => {
+  const now = epoch();
+  if (atoken["expires_in"]) {
+    atoken["expires"] = now + parseInt(atoken["expires_in"], 10);
+  } else if (co["default_lifetime"] === false) {
+    // Token is permanent.
+  } else if (co["default_lifetime"]) {
+    atoken["expires"] = now + co["default_lifetime"];
+  } else if (co["permanent_scope"]) {
+    if (!api_storage.hasScope(atoken, co["permanent_scope"])) {
+      atoken["expires"] = now + default_lifetime;
+    }
+  } else {
+    atoken["expires"] = now + default_lifetime;
+  }
+
+  return atoken;
+};
+
+const getTokenOauthRedirectResponse = url => {
+  let h = window.location.hash;
+
+  // If a url is provided
+  if (url) {
+    if (url.indexOf("#") === -1) return;
+    h = url.substring(url.indexOf("#"));
+  }
+
+  return parseQueryString(h.substring(1));
+};
+
+const getCodeOauthRedirectResponse = url => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.has("code")) {
+    return false;
+  }
+
+  return {
+    code: urlParams.get("code"),
+    state: urlParams.get("state")
+  };
+};
+
+export const jso_checkforcode = url => {
+  const oauthResponse = getCodeOauthRedirectResponse(url);
+
+  if (!oauthResponse.code) {
+    return false;
+  }
+
+  return oauthResponse;
+};
+
 /**
  * Check if the hash contains an access token.
  * And if it do, extract the state, compare with
@@ -120,29 +189,11 @@ api_storage = new ApiDefaultStorage();
  * instead the response is received on a child browser.
  */
 export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
-  let atoken,
-    h = window.location.hash,
-    now = epoch(),
-    state,
-    co;
+  let atoken, state, co;
 
   log(`jso_checkfortoken(${clientId})`);
 
-  // If a url is provided
-  if (url) {
-    // log('Hah, I got the url and it ' + url);
-    if (url.indexOf("#") === -1) return;
-    h = url.substring(url.indexOf("#"));
-    // log('Hah, I got the hash and it is ' +  h);
-  }
-
-  /*
-  * Start with checking if there is a token in the hash
-  */
-  if (h.length < 2) return;
-  if (h.indexOf("access_token") === -1) return;
-  h = h.substring(1);
-  atoken = parseQueryString(h);
+  atoken = getTokenOauthRedirectResponse(url);
 
   if (atoken.state) {
     state = api_storage.getState(atoken.state, provider);
@@ -171,27 +222,7 @@ export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
   }
   log(`Checking atoken ${atoken} and co `, co);
 
-  /*
-  * Decide when this token should expire.
-  * Priority fallback:
-  * 1. Access token expires_in
-  * 2. Life time in config (may be false = permanent...)
-  * 3. Specific permanent scope.
-  * 4. Default library lifetime:
-  */
-  if (atoken["expires_in"]) {
-    atoken["expires"] = now + parseInt(atoken["expires_in"], 10);
-  } else if (co["default_lifetime"] === false) {
-    // Token is permanent.
-  } else if (co["default_lifetime"]) {
-    atoken["expires"] = now + co["default_lifetime"];
-  } else if (co["permanent_scope"]) {
-    if (!api_storage.hasScope(atoken, co["permanent_scope"])) {
-      atoken["expires"] = now + default_lifetime;
-    }
-  } else {
-    atoken["expires"] = now + default_lifetime;
-  }
+  atoken = set_token_expiration(atoken, co);
 
   /*
   * Handle scopes for this token
@@ -221,60 +252,32 @@ export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
     internalStates[atoken.state]();
     delete internalStates[atoken.state];
   }
-
-  // log(atoken);
 };
 
-export const jso_getAuthUrl = (providerid, scopes, callback) => {
+export const jso_getAuthUrl = (providerid, scopes, codeChallenge) => {
   let state, request, authurl, co;
-
   if (!config[providerid])
     throw new Error(`Could not find configuration for provider ${providerid}`);
   co = config[providerid];
 
-  log(`About to send an authorization request to [${providerid}]. Config:`);
-  log(co);
+  request = jso_getAuthRequest(providerid, scopes, "", "");
 
-  state = uuid();
-  request = {
-    response_type: "token"
-  };
-  request.state = state;
-
-  if (callback && typeof callback === "function") {
-    internalStates[state] = callback;
-  }
-
-  if (co["redirect_uri"]) {
-    request["redirect_uri"] = co["redirect_uri"];
-  }
-  if (co["client_id"]) {
-    request["client_id"] = co["client_id"];
-  }
-  if (scopes) {
-    request["scope"] = scopes.join(" ");
+  if (codeChallenge) {
+    request["code_challenge"] = codeChallenge;
+    request["code_challenge_method"] = "S256";
   }
 
   authurl = encodeURL(co.authorization, request);
 
-  // We'd like to cache the hash for not loosing Application state.
-  // With the implciit grant flow, the hash will be replaced with the access
-  // token when we return after authorization.
-  request["location"] = window.location.href;
-  request["providerID"] = providerid;
-  if (scopes) {
-    request["scopes"] = scopes;
-  }
-
-  log(`Saving state [${state}]`);
-  log(JSON.parse(JSON.stringify(request)));
-
-  api_storage.saveState(state, providerid, request);
-
   return authurl;
 };
 
-export const jso_getAuthRequest = (providerid, scopes, callback) => {
+export const jso_getAuthRequest = (
+  providerid,
+  scopes,
+  response_mode,
+  prompt
+) => {
   let state, request, co;
 
   if (!config[providerid])
@@ -290,10 +293,6 @@ export const jso_getAuthRequest = (providerid, scopes, callback) => {
   };
   request.state = state;
 
-  if (callback && typeof callback === "function") {
-    internalStates[state] = callback;
-  }
-
   if (co["redirect_uri"]) {
     request["redirect_uri"] = co["redirect_uri"];
   }
@@ -302,6 +301,23 @@ export const jso_getAuthRequest = (providerid, scopes, callback) => {
   }
   if (scopes) {
     request["scope"] = scopes.join(" ");
+  }
+  if (co["response_mode"]) {
+    request["response_mode"] = co["response_mode"];
+  }
+  if (co["response_type"]) {
+    request["response_type"] = co["response_type"];
+  }
+  if (co["prompt"]) {
+    request["prompt"] = co["prompt"];
+  }
+
+  if (response_mode !== undefined) {
+    request["response_mode"] = response_mode;
+  }
+
+  if (prompt !== undefined) {
+    request["prompt"] = prompt;
   }
 
   // We'd like to cache the hash for not loosing Application state.
@@ -324,55 +340,20 @@ export const jso_getAuthRequest = (providerid, scopes, callback) => {
 /*
 * A config object contains:
 */
-const jso_authrequest = (providerid, scopes, callback) => {
-  let state, request, authurl, co;
+const jso_authrequest = (providerid, scopes, codeChallenge) => {
+  let state, request, authurl;
 
-  if (!config[providerid])
-    throw new Error(`Could not find configuration for provider ${providerid}`);
-  co = config[providerid];
+  authurl = jso_getAuthUrl(providerid, scopes, codeChallenge);
 
-  log(`About to send an authorization request to [${providerid}]. Config:`);
-  log(co);
-
-  state = uuid();
-  request = {
-    response_type: "token"
-  };
-  request.state = state;
-
-  if (callback && typeof callback === "function") {
-    internalStates[state] = callback;
-  }
-
-  if (co["redirect_uri"]) {
-    request["redirect_uri"] = co["redirect_uri"];
-  }
-  if (co["client_id"]) {
-    request["client_id"] = co["client_id"];
-  }
-  if (scopes) {
-    request["scope"] = scopes.join(" ");
-  }
-
-  authurl = encodeURL(co.authorization, request);
-
-  // We'd like to cache the hash for not loosing Application state.
-  // With the implciit grant flow, the hash will be replaced with the access
-  // token when we return after authorization.
-  request["location"] = window.location.href;
-  request["providerID"] = providerid;
-  if (scopes) {
-    request["scopes"] = scopes;
-  }
-
-  log(`Saving state [${state}]`);
-  log(JSON.parse(JSON.stringify(request)));
-
-  api_storage.saveState(state, providerid, request);
   api_redirect(authurl);
 };
 
-export const jso_ensureTokens = (ensure, reset, onBeforeRedirect) => {
+export const jso_ensureTokens = (
+  ensure,
+  reset,
+  onBeforeRedirect,
+  codeChallenge
+) => {
   let providerid, scopes, token;
 
   for (providerid in ensure) {
@@ -396,7 +377,7 @@ export const jso_ensureTokens = (ensure, reset, onBeforeRedirect) => {
         }
       }
 
-      jso_authrequest(providerid, scopes);
+      jso_authrequest(providerid, scopes, codeChallenge);
     }
   }
   return true;
@@ -423,7 +404,7 @@ export const jso_configure = (c, opts, popupMode) => {
   try {
     let def = jso_findDefaultEntry(c);
 
-    if (!popupMode) {
+    if (!popupMode && c[def].response_type === "token") {
       log("jso_configure() about to check for token for this entry", def);
       jso_checkfortoken(c[def].client_id, def);
     }
@@ -451,6 +432,10 @@ export const jso_wipe = () => {
   }
 };
 
+export const jso_saveToken = (providerID, atoken) => {
+  api_storage.saveToken(providerID, atoken);
+};
+
 export const jso_getToken = (providerid, scopes) => {
   let token = api_storage.getToken(providerid, scopes);
 
@@ -473,4 +458,25 @@ export const jso_wipeStates = () => {
       localStorage.removeItem(key);
     }
   }
+};
+
+const base64URLEncode = data => {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(data)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+export const generatePKCE = async () => {
+  const array = new Uint32Array(80);
+  window.crypto.getRandomValues(array);
+  const codeVerifier = base64URLEncode(array);
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const codeChallenge = base64URLEncode(
+    await crypto.subtle.digest("SHA-256", data)
+  );
+
+  return { codeVerifier, codeChallenge };
 };
