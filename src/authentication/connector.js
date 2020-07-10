@@ -328,6 +328,7 @@ const logInWithWebMessageAndPKCE = async reset => {
         }
 
         localStorage.removeItem(`state-${req.providerID}-${req.state}`);
+        window.removeEventListener("message", receiveMessage, false);
 
         clearTimeout(timeout);
 
