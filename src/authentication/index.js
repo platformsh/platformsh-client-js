@@ -1,7 +1,12 @@
-import api, { setAuthenticationPromise } from "../api";
+import api, {
+  setAuthenticationPromise,
+  getAuthenticationPromise
+} from "../api";
 import connector, { logInWithPopUp } from "./connector";
 
 import { jso_wipe } from "../jso";
+
+let authenticationInProgress = false;
 
 export default (
   {
@@ -16,6 +21,12 @@ export default (
 ) => {
   let promise;
 
+  if (authenticationInProgress) {
+    return getAuthenticationPromise();
+  }
+
+  authenticationInProgress = true;
+
   if (access_token) {
     promise = Promise.resolve({ access_token, expires: -1 });
   } else {
@@ -28,6 +39,11 @@ export default (
   }
 
   setAuthenticationPromise(promise);
+
+  promise.then(() => {
+    authenticationInProgress = false;
+  });
+
   return promise;
 };
 

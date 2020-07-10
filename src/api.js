@@ -12,6 +12,10 @@ export const setAuthenticationPromise = promise => {
   authenticationPromise = promise;
 };
 
+export const getAuthenticationPromise = () => {
+  return authenticationPromise;
+};
+
 const defaultHeaders = {};
 
 if (isNode) {
@@ -47,7 +51,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           const config = getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           if (typeof config.access_token === "undefined") {
-            authenticate(config, true).then(t => {
+            return authenticate(config, true).then(t => {
               resolve(
                 authenticatedRequest(url, method, data, additionalHeaders)
               );
