@@ -1,22 +1,35 @@
-import Ressource from './Ressource';
-import { getConfig } from '../config';
+import Ressource from "./Ressource";
+import { getConfig } from "../config";
 
 const paramDefaults = {};
-const creatableAndModifiableField = ['route', 'to', 'type', 'upstream', 'cache'];
-const _url = '/projects/:projectId/environments/:environmentId/routes';
+const creatableAndModifiableField = [
+  "route",
+  "to",
+  "type",
+  "upstream",
+  "cache"
+];
+const _url = "/projects/:projectId/environments/:environmentId/routes";
 
 export default class Route extends Ressource {
   constructor(route, url) {
-    super(url, paramDefaults, { }, route, creatableAndModifiableField, creatableAndModifiableField);
-    this.id = '';
-    this.project = '';
-    this.environment = '';
+    super(
+      url,
+      paramDefaults,
+      {},
+      route,
+      creatableAndModifiableField,
+      creatableAndModifiableField
+    );
+    this.id = "";
+    this.project = "";
+    this.environment = "";
     this.route = {};
     this.cache = {};
     this.ssi = [];
-    this.upstream = '';
-    this.to = '';
-    this.type = '';
+    this.upstream = "";
+    this.to = "";
+    this.type = "";
   }
 
   static get(params, customUrl) {
@@ -24,13 +37,23 @@ export default class Route extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(urlToCall, { id, projectId, environmentId }, paramDefaults, queryParams);
+    return super.get(
+      urlToCall,
+      { id, projectId, environmentId },
+      paramDefaults,
+      queryParams
+    );
   }
 
   static query(params, customUrl) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(customUrl || `${api_url}${_url}`, { projectId, environmentId }, paramDefaults, queryParams);
+    return super.query(
+      customUrl || `${api_url}${_url}`,
+      { projectId, environmentId },
+      paramDefaults,
+      queryParams
+    );
   }
 }

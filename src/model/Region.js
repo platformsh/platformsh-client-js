@@ -1,7 +1,7 @@
-import Ressource from './Ressource';
-import { getConfig } from '../config';
+import Ressource from "./Ressource";
+import { getConfig } from "../config";
 
-const url = '/platform/regions';
+const url = "/platform/regions";
 const paramDefaults = {};
 
 export default class Region extends Ressource {
@@ -11,13 +11,13 @@ export default class Region extends Ressource {
 
     super(`${account_url}${url}`, paramDefaults, { id }, region);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = '';
+    this.id = "";
     this.available = false;
-    this.endpoint = '';
-    this.label = '';
+    this.endpoint = "";
+    this.label = "";
     this.private = true;
-    this.provider = '';
-    this.zone = '';
+    this.provider = "";
+    this.zone = "";
   }
 
   static query(params) {
