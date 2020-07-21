@@ -158,7 +158,9 @@ const getTokenOauthRedirectResponse = url => {
 };
 
 const getCodeOauthRedirectResponse = url => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(
+    url ? `?${url.split("?")[1]}` : window.location.search
+  );
   if (!urlParams.has("code")) {
     return false;
   }
