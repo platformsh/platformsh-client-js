@@ -118,11 +118,30 @@ const getTokenWithAuthorizationCode = async (
   });
 
   if (resp.status !== 200) {
-    return reject(resp);
+    throw resp;
   }
 
   return await resp.json();
 };
+
+async function authorizationCodeCallback(config, codeVerifier, code, state) {
+  const atoken = await getTokenWithAuthorizationCode(
+    config.authentication_url,
+    config.client_id,
+    config.redirect_uri,
+    codeVerifier,
+    code
+  );
+
+  set_token_expiration(atoken, config);
+
+  jso_saveToken(config.provider, atoken);
+
+  localStorage.removeItem(`state-${config.provider}-${state}`);
+  localStorage.removeItem(`${config.provider}-code-verifier`);
+
+  return atoken;
+}
 
 function logInWithRedirect(reset) {
   console.log("In redirect...");
@@ -165,24 +184,15 @@ function logInWithRedirect(reset) {
       const oauthResp = jso_checkforcode();
 
       if (oauthResp) {
-        // Get token with the code
-        const codeVerifier = jso_getCodeVerifier(auth.provider);
-
-        const atoken = await getTokenWithAuthorizationCode(
-          auth.authentication_url,
-          auth.client_id,
-          auth.redirect_uri,
-          codeVerifier,
-          oauthResp.code
+        const codeVerifier = jso_getCodeVerifier(config.provider);
+        return resolve(
+          await authorizationCodeCallback(
+            auth,
+            codeVerifier,
+            oauthResp.code,
+            req.state
+          )
         );
-
-        set_token_expiration(atoken, auth);
-
-        jso_saveToken(req.providerID, atoken);
-
-        localStorage.removeItem(`state-${req.providerID}-${req.state}`);
-
-        return resolve(atoken);
       }
 
       pkce = await generatePKCE();
@@ -250,22 +260,15 @@ function logInWithRedirect(reset) {
         if (auth.response_type === "code") {
           // Check for code
           const oauthResp = jso_checkforcode(href);
-          // Get token with the code
-          const atoken = await getTokenWithAuthorizationCode(
-            auth.authentication_url,
-            auth.client_id,
-            auth.redirect_uri,
-            pkce.codeVerifier,
-            oauthResp.code
+
+          return resolve(
+            await authorizationCodeCallback(
+              auth,
+              pkce.codeVerifier,
+              oauthResp.code,
+              req.state
+            )
           );
-
-          set_token_expiration(atoken, auth);
-
-          localStorage.removeItem(`state-${req.providerID}-${req.state}`);
-
-          jso_saveToken(req.providerID, atoken);
-
-          return resolve(atoken);
         }
         jso_checkfortoken(auth.client_id, auth.provider, href, true);
         const token = jso_getToken(auth.provider);
@@ -302,6 +305,20 @@ const logInWithWebMessageAndPKCE = async reset => {
       jso_wipe();
       removeIFrame();
 
+      // If we come from a redirect
+      const oauthResp = jso_checkforcode();
+      if (oauthResp) {
+        const codeVerifier = jso_getCodeVerifier(auth.provider);
+        return resolve(
+          await authorizationCodeCallback(
+            auth,
+            codeVerifier,
+            oauthResp.code,
+            oauthResp.state
+          )
+        );
+      }
+
       const req = jso_getAuthRequest(auth.provider, auth.scope);
 
       const pkce = await generatePKCE();
@@ -334,21 +351,14 @@ const logInWithWebMessageAndPKCE = async reset => {
 
         const code = data.payload;
 
-        const atoken = await getTokenWithAuthorizationCode(
-          auth.authentication_url,
-          auth.client_id,
-          auth.redirect_uri,
-          pkce.codeVerifier,
-          code
+        return resolve(
+          await authorizationCodeCallback(
+            auth,
+            pkce.codeVerifier,
+            code,
+            req.state
+          )
         );
-
-        set_token_expiration(atoken, auth);
-
-        jso_saveToken(req.providerID, atoken);
-
-        removeIFrame();
-
-        return resolve(atoken);
       }
 
       window.addEventListener("message", receiveMessage, false);
