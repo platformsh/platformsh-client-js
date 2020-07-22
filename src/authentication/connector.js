@@ -309,14 +309,17 @@ const logInWithWebMessageAndPKCE = async reset => {
       const oauthResp = jso_checkforcode();
       if (oauthResp) {
         const codeVerifier = jso_getCodeVerifier(auth.provider);
-        return resolve(
-          await authorizationCodeCallback(
-            auth,
-            codeVerifier,
-            oauthResp.code,
-            oauthResp.state
-          )
-        );
+
+        if (codeVerifier) {
+          return resolve(
+            await authorizationCodeCallback(
+              auth,
+              codeVerifier,
+              oauthResp.code,
+              oauthResp.state
+            )
+          );
+        }
       }
 
       const req = jso_getAuthRequest(auth.provider, auth.scope);
