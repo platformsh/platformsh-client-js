@@ -257,6 +257,16 @@ export default class Environment extends Ressource {
   backup() {
     return this.runLongOperation("backup");
   }
+
+  /**
+   * Redeploy the current environment
+   *
+   * @return Activity
+   */
+  redeploy() {
+    return this.runLongOperation("redeploy");
+  }
+
   /**
    * Get a single environment activity.
    *
