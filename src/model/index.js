@@ -34,6 +34,7 @@ import Blob from "./git/Blob";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import ConnectedAccount from "./ConnectedAccount";
 import PaymentSource from "./PaymentSource";
+import Voucher from "./Voucher";
 import Invitation from "./Invitation";
 
 export default {
@@ -73,5 +74,6 @@ export default {
   PaymentSource,
   Ticket,
   TicketPriority,
+  Voucher,
   Invitation
 };
