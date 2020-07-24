@@ -26,6 +26,12 @@ export default class Client {
     wipeToken();
   }
 
+  reAuthenticate() {
+    this.authenticationPromise = connector(getConfig(), true);
+
+    return this.authenticationPromise;
+  }
+
   /**
    * Get account information for the logged-in user.
    *
