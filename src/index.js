@@ -620,6 +620,16 @@ export default class Client {
   }
 
   /**
+   * Get vouchers
+   *
+   *
+   * @return Voucher
+   */
+  getVouchers(uuid) {
+    return entities.Voucher.get({ uuid });
+  }
+
+  /**
    * Get a users cardonfile
    *
    * @return Promise
