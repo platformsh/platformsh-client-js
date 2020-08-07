@@ -1094,12 +1094,13 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an inivitation.
    */
-  createInvitation(email, projectId, role, environments) {
+  createInvitation(email, projectId, role, environments, force = false) {
     return new entities.Invitation({
       email,
       projectId,
       environments,
-      role
+      role,
+      force
     }).save();
   }
 }
