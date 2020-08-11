@@ -423,36 +423,34 @@ describe("Client", () => {
   });
 
   it("Get organizations", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/me", {
-      organizations: [
-        {
-          id: "1",
-          name: "org1",
-          display_name: "the organization",
-          owner: "10"
-        }
-      ]
-    });
+    fetchMock.mock("https://api.platform.sh/api/organizations", [
+      {
+        id: "1",
+        name: "org1",
+        label: "the organization",
+        owner: "10"
+      }
+    ]);
     client.getOrganizations().then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
-      assert.equal(organizations[0].display_name, "the organization");
+      assert.equal(organizations[0].label, "the organization");
       assert.equal(organizations[0].constructor.name, "Organization");
       done();
     });
   });
 
   it("Get organization", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/organizations/1", {
+    fetchMock.mock("https://api.platform.sh/api/organizations/1", {
       id: "1",
       name: "org1",
-      display_name: "the organization",
+      label: "the organization",
       owner: "10"
     });
     client.getOrganization("1").then(organization => {
       assert.equal(organization.id, "1");
       assert.equal(organization.name, "org1");
-      assert.equal(organization.display_name, "the organization");
+      assert.equal(organization.label, "the organization");
       assert.equal(organization.constructor.name, "Organization");
       done();
     });
@@ -501,11 +499,7 @@ describe("Client", () => {
   });
 
   it("Create organization", done => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/platform/organizations",
-      {},
-      "POST"
-    );
+    fetchMock.mock("https://api.platform.sh/api/organizations", {}, "POST");
     client.createOrganization({ name: "organization1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
       done();

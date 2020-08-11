@@ -2,7 +2,7 @@ import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
-const _url = "/platform/organizations/:organizationId/members";
+const _url = "/organizations/:organizationId/members";
 
 const creatableField = ["user", "role"];
 

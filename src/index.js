@@ -2,6 +2,7 @@ import request from "./api";
 import connector, { wipeToken } from "./authentication";
 import { getConfig, setConfig } from "./config";
 import entities from "./model";
+import Organization from "./model/Organization";
 
 export const models = entities;
 
@@ -484,15 +485,7 @@ export default class Client {
    * @return Organization[]
    */
   getOrganizations() {
-    return this.getAccountInfo().then(me => {
-      if (!me) {
-        return false;
-      }
-
-      return me.organizations.map(
-        organization => new entities.Organization(organization)
-      );
-    });
+    return entities.Organization.query();
   }
 
   /**
