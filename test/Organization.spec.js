@@ -16,10 +16,9 @@ describe("Organization", () => {
   });
 
   it("Get members", done => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/platform/organizations/1/members",
-      [{ user: "1" }]
-    );
+    fetchMock.mock("https://api.platform.sh/api/organizations/1/members", [
+      { user: "1" }
+    ]);
 
     const organization = new Organization({ id: 1 });
 
@@ -35,14 +34,14 @@ describe("Organization", () => {
 
   it("Add member", done => {
     fetchMock.mock(
-      "https://api.platform.sh/api/platform/organizations/1/members",
+      "https://api.platform.sh/api/organizations/1/members",
       {},
       "POST"
     );
 
     const organization = new Organization(
       { id: 1 },
-      "https://api.platform.sh/api/platform/organizations/1"
+      "https://api.platform.sh/api/organizations/1"
     );
 
     organization.addMember({ user: "test" }).then(result => {

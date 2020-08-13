@@ -4,10 +4,10 @@ import { getConfig } from "../config";
 import OrganizationMember from "./OrganizationMember";
 
 const paramDefaults = {};
-const _url = "/platform/organizations";
+const _url = "/organizations";
 
-const creatableField = ["name", "display_name", "owner"];
-const modifiableField = ["name", "display_name"];
+const creatableField = ["name", "label", "owner"];
+const modifiableField = ["name", "label"];
 
 export default class Organization extends Ressource {
   constructor(organization, url) {
@@ -23,7 +23,7 @@ export default class Organization extends Ressource {
     );
     this.id = "";
     this.name = "";
-    this.display_name = "";
+    this.label = "";
     this.owner = "";
   }
 
