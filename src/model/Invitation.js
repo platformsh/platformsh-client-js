@@ -4,7 +4,7 @@ import request from "../api";
 
 const _url = "/projects/:projectId/invitations";
 
-const creatableField = ["projectId", "environments", "role", "email"];
+const creatableField = ["projectId", "environments", "role", "email", "force"];
 
 export default class Invitation extends Ressource {
   constructor(invitation, url) {
@@ -26,6 +26,7 @@ export default class Invitation extends Ressource {
     this.state = "";
     this.email = "";
     this.role = "";
+    this.force = false;
   }
 
   static get(projectId, id) {
