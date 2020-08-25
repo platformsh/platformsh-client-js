@@ -86,7 +86,7 @@ export default class AccountsProfile extends Ressource {
     return new AccountsProfile(updatedProfile);
   }
 
-  static async getUserIdFromUsername(username) {
+  static async getUserByUsername(username) {
     const { api_url } = getConfig();
 
     const user = await request(
