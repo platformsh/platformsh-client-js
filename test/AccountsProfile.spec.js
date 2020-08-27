@@ -51,7 +51,7 @@ describe("AccountsProfile", () => {
       ]
     });
 
-    AccountsProfile.getUserIdFromUsername("alice").then(user => {
+    AccountsProfile.getUserByUsername("alice").then(user => {
       assert.equal(user.id, 1);
       assert.equal(user.email, "test@test.com");
       assert.equal(user.constructor.name, "AccountsProfile");
