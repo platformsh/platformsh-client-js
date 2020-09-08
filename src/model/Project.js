@@ -16,7 +16,7 @@ import Activity from "./Activity";
 import Certificate from "./Certificate";
 
 const paramDefaults = {};
-const modifiableField = ["default_domain", "title"];
+const modifiableField = ["default_domain", "title", "timezone"];
 const url = "/projects/:id";
 let _source;
 
