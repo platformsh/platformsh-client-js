@@ -23,7 +23,7 @@ describe("PaymentSource", () => {
       count: 1,
       payment_source: {
         id: "12345",
-        source_type: "credit-card",
+        type: "credit-card",
         name: "Bob",
         number: "XXXX-XXXX-XXXX-4242",
         data: {
@@ -37,7 +37,7 @@ describe("PaymentSource", () => {
     PaymentSource.get().then(paymentSource => {
       assert.equal(paymentSource.constructor.name, "PaymentSource");
       assert.equal(paymentSource.id, "12345");
-      assert.equal(paymentSource.source_type, "credit-card");
+      assert.equal(paymentSource.type, "credit-card");
       assert.equal(paymentSource.name, "Bob");
       assert.equal(paymentSource.number, "XXXX-XXXX-XXXX-4242");
       assert.equal(paymentSource.card.type, "visa");
@@ -52,7 +52,7 @@ describe("PaymentSource", () => {
       count: 1,
       payment_source: {
         id: "67890",
-        source_type: "stripe_sepa_debit",
+        type: "stripe_sepa_debit",
         name: "Bob",
         number: "DE** **** 3000",
         data: {
@@ -64,7 +64,7 @@ describe("PaymentSource", () => {
     PaymentSource.get().then(paymentSource => {
       assert.equal(paymentSource.constructor.name, "PaymentSource");
       assert.equal(paymentSource.id, "67890");
-      assert.equal(paymentSource.source_type, "stripe_sepa_debit");
+      assert.equal(paymentSource.type, "stripe_sepa_debit");
       assert.equal(paymentSource.name, "Bob");
       assert.equal(paymentSource.number, "DE** **** 3000");
       assert.equal(paymentSource.mandate.mandate_reference, "84H2QIORBDUQR9BR");
@@ -139,7 +139,7 @@ describe("PaymentSource", () => {
       `${api_url}/platform/payment_source`,
       {
         id: "12345",
-        source_type: "credit-card"
+        type: "credit-card"
       },
       "POST"
     );
