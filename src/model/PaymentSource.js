@@ -14,7 +14,7 @@ export default class PaymentSource extends Ressource {
 
     super(`${api_url}${url}`, paramDefaults, {}, paymentSource, creatableField);
     this.id = "";
-    this.source_type = "";
+    this.type = "";
     this.name = "";
     this.number = "";
     this.card = "";
@@ -90,7 +90,7 @@ export default class PaymentSource extends Ressource {
    * @return PaymentSource
    */
   static formatDetails(paymentSource) {
-    switch (paymentSource.source_type) {
+    switch (paymentSource.type) {
       case "credit-card":
         paymentSource.card = paymentSource.data;
         break;
