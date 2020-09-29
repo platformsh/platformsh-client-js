@@ -277,7 +277,7 @@ export default class Client {
    * @return Promise Integration
    */
   getIntegration(projectId, integrationId) {
-    return entities.Integration.get({ projectId, id: intgerationId });
+    return entities.Integration.get({ projectId, id: integrationId });
   }
 
   /**
