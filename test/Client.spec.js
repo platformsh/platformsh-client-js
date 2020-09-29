@@ -749,4 +749,32 @@ describe("Client", () => {
       assert.deepEqual(response, { url: "xyz" });
     });
   });
+
+  describe("Integrations", () => {
+    it("Get integrations", done => {
+      fetchMock.mock(
+        "https://api.platform.sh/api/projects/ffzefzef3/integrations",
+        [{ id: 1 }, { id: 2 }]
+      );
+
+      client.getIntegrations("ffzefzef3").then(integrations => {
+        assert.equal(integrations[0].id, 1);
+        assert.equal(integrations[0].constructor.name, "Integration");
+        done();
+      });
+    });
+
+    it("Get integration", done => {
+      fetchMock.mock(
+        "https://api.platform.sh/api/projects/ffzefzef3/integrations/qwerty",
+        { id: "qwerty" }
+      );
+
+      client.getIntegration("ffzefzef3", "qwerty").then(integration => {
+        assert.equal(integration.id, "qwerty");
+        assert.equal(integration.constructor.name, "Integration");
+        done();
+      });
+    });
+  });
 });
