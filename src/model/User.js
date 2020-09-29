@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const _url = "/api/users";
+const _url = "/users";
 const paramDefaults = {};
 
 export default class User extends Ressource {

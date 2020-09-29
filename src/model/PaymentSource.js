@@ -4,7 +4,7 @@ import Result from "./Result";
 import _urlParser from "../urlParser";
 import request from "../api";
 
-const url = "/platform/payment_source";
+const url = "/payment_source";
 const paramDefaults = {};
 const creatableField = ["type", "token", "email"];
 

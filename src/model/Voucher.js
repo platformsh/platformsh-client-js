@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/v1/vouchers";
+const url = "/vouchers";
 const paramDefaults = {};
 
 export default class Voucher extends Ressource {

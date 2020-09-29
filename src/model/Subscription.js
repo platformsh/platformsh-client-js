@@ -20,7 +20,7 @@ const creatableField = [
 
 const modifiableField = ["plan", "environments", "storage", "big_dev"];
 
-const url = "/v1/subscriptions/:id";
+const url = "/subscriptions/:id";
 const STATUS_ACTIVE = "active";
 const STATUS_REQUESTED = "requested";
 const STATUS_PROVISIONING = "provisioning";
@@ -177,7 +177,7 @@ export default class Subscription extends Ressource {
    */
   getOwner() {
     const id = this.owner;
-    const url = this.makeAbsoluteUrl("/api/users", this.getLink("project"));
+    const url = this.makeAbsoluteUrl("/users", this.getLink("project"));
 
     return Account.get({ id }, url);
   }

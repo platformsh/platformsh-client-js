@@ -1,5 +1,5 @@
 const DEFAULT_ACCOUNT_URL = "https://accounts.platform.sh";
-const DEFAULT_API_URL = "https://api.platform.sh/api";
+const DEFAULT_API_URL = "https://api.platform.sh";
 
 const getConfigDefault = (
   baseUrl = DEFAULT_ACCOUNT_URL,
@@ -7,7 +7,7 @@ const getConfigDefault = (
 ) => ({
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
-  account_url: `${baseUrl}/api`,
+  account_url: `${baseUrl}`,
   api_url,
   authentication_url: baseUrl,
   scope: [],

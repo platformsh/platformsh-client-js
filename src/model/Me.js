@@ -2,7 +2,7 @@ import User from "./User";
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/platform/me";
+const url = "/me";
 const paramDefaults = {};
 const modifiableField = [
   "picture",
@@ -46,7 +46,7 @@ export default class Me extends User {
   async update(data) {
     const { api_url } = getConfig();
 
-    const result = await super.update(data, `${api_url}/platform/profiles/:id`);
+    const result = await super.update(data, `${api_url}/profiles/:id`);
 
     return new Me(result.data); // Account API does not return a Result
   }

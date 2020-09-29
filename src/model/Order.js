@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/v1/orders/:id";
+const url = "/orders/:id";
 const paramDefaults = {};
 
 export default class Order extends Ressource {

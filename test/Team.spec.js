@@ -16,9 +16,7 @@ describe("Team", () => {
   });
 
   it("Get members", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/teams/1/members", [
-      { user: "1" }
-    ]);
+    fetchMock.mock("https://api.platform.sh/teams/1/members", [{ user: "1" }]);
 
     const team = new Team({ id: 1 });
 
@@ -30,16 +28,9 @@ describe("Team", () => {
   });
 
   it("Add member", done => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/platform/teams/1/members",
-      {},
-      "POST"
-    );
+    fetchMock.mock("https://api.platform.sh/teams/1/members", {}, "POST");
 
-    const team = new Team(
-      { id: 1 },
-      "https://api.platform.sh/api/platform/teams/1"
-    );
+    const team = new Team({ id: 1 }, "https://api.platform.sh/teams/1");
 
     team.addMember({ user: "test" }).then(result => {
       assert.equal(result.constructor.name, "Result");

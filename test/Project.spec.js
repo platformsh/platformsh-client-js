@@ -16,7 +16,7 @@ describe("Project", () => {
   });
 
   it("Get users associated with a project", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/access", [
+    fetchMock.mock("https://test.com/projects/ffzefzef3/access", [
       { id: 1, role: "r1" },
       { id: 2, role: "r2" }
     ]);
@@ -24,11 +24,11 @@ describe("Project", () => {
       {
         _links: {
           access: {
-            href: "/api/projects/ffzefzef3/access"
+            href: "/projects/ffzefzef3/access"
           }
         }
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getUsers().then(projectAccess => {
@@ -44,13 +44,13 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
     const gitUrl = project.getGitUrl();
 
@@ -59,7 +59,7 @@ describe("Project", () => {
 
   it("Add user in a project", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/access",
+      "https://test.com/projects/ffzefzef3/access",
       {
         _embedded: {
           activities: [
@@ -76,19 +76,19 @@ describe("Project", () => {
       {
         _links: {
           access: {
-            href: "/api/projects/ffzefzef3/access"
+            href: "/projects/ffzefzef3/access"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addUser("test@test.com", "admin").then(result => {
       assert.equal(result.constructor.name, "Result");
       assert.equal(
-        result.getActivities("https://test.com/api/projects/ffzefzef3")[0]
+        result.getActivities("https://test.com/projects/ffzefzef3")[0]
           .constructor.name,
         "Activity"
       );
@@ -98,7 +98,7 @@ describe("Project", () => {
 
   it("Add user in a project with bad role", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/access",
+      "https://test.com/projects/ffzefzef3/access",
       {
         _embedded: {
           activities: [
@@ -115,13 +115,13 @@ describe("Project", () => {
       {
         _links: {
           access: {
-            href: "/api/projects/ffzefzef3/access"
+            href: "/projects/ffzefzef3/access"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addUser("test@test.com", "role").catch(err => {
@@ -132,7 +132,7 @@ describe("Project", () => {
 
   it("Add user in a project with bad email and role", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/access",
+      "https://test.com/projects/ffzefzef3/access",
       {
         _embedded: {
           activities: [
@@ -149,13 +149,13 @@ describe("Project", () => {
       {
         _links: {
           access: {
-            href: "/api/projects/ffzefzef3/access"
+            href: "/projects/ffzefzef3/access"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addUser("test@test", "role").catch(err => {
@@ -166,20 +166,20 @@ describe("Project", () => {
   });
 
   it("Get environment", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/environments/1", {
+    fetchMock.mock("https://test.com/projects/ffzefzef3/environments/1", {
       id: 1
     });
     const project = new Project(
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getEnvironment(1).then(environment => {
@@ -189,21 +189,20 @@ describe("Project", () => {
   });
 
   it("Get environments", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments?limit=2",
-      [{ id: 1 }]
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/environments?limit=2", [
+      { id: 1 }
+    ]);
     const project = new Project(
       {
         _links: {
           environments: {
-            href: "/api/projects/ffzefzef3/environments"
+            href: "/projects/ffzefzef3/environments"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getEnvironments(2).then(environments => {
@@ -214,16 +213,16 @@ describe("Project", () => {
   });
 
   it("Get environments without _links", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/environments", [
+    fetchMock.mock("https://test.com/projects/ffzefzef3/environments", [
       { id: 1 }
     ]);
     const project = new Project(
       {
-        endpoint: "https://test.com/api/projects/ffzefzef3",
+        endpoint: "https://test.com/projects/ffzefzef3",
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getEnvironments().then(environments => {
@@ -234,20 +233,20 @@ describe("Project", () => {
   });
 
   it("Get domains", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/domains?limit=2", [
+    fetchMock.mock("https://test.com/projects/ffzefzef3/domains?limit=2", [
       { id: 1 }
     ]);
     const project = new Project(
       {
         _links: {
           domains: {
-            href: "/api/projects/ffzefzef3/domains"
+            href: "/projects/ffzefzef3/domains"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getDomains(2).then(domains => {
@@ -258,24 +257,21 @@ describe("Project", () => {
   });
 
   it("Get domain", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/domains/domainName",
-      {
-        id: 1,
-        name: "domainName"
-      }
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/domains/domainName", {
+      id: 1,
+      name: "domainName"
+    });
     const project = new Project(
       {
         _links: {
           domains: {
-            href: "/api/projects/ffzefzef3/domains"
+            href: "/projects/ffzefzef3/domains"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getDomain("domainName").then(domain => {
@@ -286,22 +282,18 @@ describe("Project", () => {
   });
 
   it("Add domain", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/domains",
-      {},
-      "POST"
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/domains", {}, "POST");
     const project = new Project(
       {
         _links: {
           domains: {
-            href: "/api/projects/ffzefzef3/domains"
+            href: "/projects/ffzefzef3/domains"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addDomain("domainName").then(result => {
@@ -311,21 +303,20 @@ describe("Project", () => {
   });
 
   it("Get integrations", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/integrations?limit=2",
-      [{}]
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/integrations?limit=2", [
+      {}
+    ]);
     const project = new Project(
       {
         _links: {
           integrations: {
-            href: "/api/projects/ffzefzef3/integrations"
+            href: "/projects/ffzefzef3/integrations"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getIntegrations(2).then(integrations => {
@@ -336,20 +327,20 @@ describe("Project", () => {
   });
 
   it("Get integration", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/integrations/1", {
+    fetchMock.mock("https://test.com/projects/ffzefzef3/integrations/1", {
       id: 1
     });
     const project = new Project(
       {
         _links: {
           integrations: {
-            href: "/api/projects/ffzefzef3/integrations"
+            href: "/projects/ffzefzef3/integrations"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getIntegration(1).then(integration => {
@@ -361,7 +352,7 @@ describe("Project", () => {
 
   it("Add integration", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/integrations",
+      "https://test.com/projects/ffzefzef3/integrations",
       {},
       "POST"
     );
@@ -369,13 +360,13 @@ describe("Project", () => {
       {
         _links: {
           integrations: {
-            href: "/api/projects/ffzefzef3/integrations"
+            href: "/projects/ffzefzef3/integrations"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addIntegration("bitbucket").then(result => {
@@ -386,7 +377,7 @@ describe("Project", () => {
 
   it("Add integration with bad type", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/integrations",
+      "https://test.com/projects/ffzefzef3/integrations",
       {},
       "POST"
     );
@@ -394,13 +385,13 @@ describe("Project", () => {
       {
         _links: {
           integrations: {
-            href: "/api/projects/ffzefzef3/integrations"
+            href: "/projects/ffzefzef3/integrations"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addIntegration("test").catch(err => {
@@ -410,20 +401,20 @@ describe("Project", () => {
   });
 
   it("Get activity", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/activities/1", {
+    fetchMock.mock("https://test.com/projects/ffzefzef3/activities/1", {
       id: 1
     });
     const project = new Project(
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getActivity(1).then(activity => {
@@ -438,7 +429,7 @@ describe("Project", () => {
       "?type=theType&starts_at=2017-03-21T09%3A06%3A30.550116%2B00%3A00";
 
     fetchMock.mock(
-      `https://test.com/api/projects/ffzefzef3/activities${queryString}`,
+      `https://test.com/projects/ffzefzef3/activities${queryString}`,
       [
         {
           id: 1
@@ -449,13 +440,13 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project
@@ -472,14 +463,14 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title",
         status: "suspended"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     assert.equal(project.isSuspended(), true);
@@ -488,7 +479,7 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
@@ -497,7 +488,7 @@ describe("Project", () => {
           suspended: true
         }
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     assert.equal(project.isSuspended(), true);
@@ -508,14 +499,14 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title",
         status: "ok"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     assert.equal(project.isSuspended(), false);
@@ -524,7 +515,7 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
@@ -533,33 +524,30 @@ describe("Project", () => {
           suspended: false
         }
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     assert.equal(project.isSuspended(), false);
   });
 
   it("Get variables", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/variables?limit=1",
-      [
-        {
-          id: 1,
-          name: "theVariableName"
-        }
-      ]
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/variables?limit=1", [
+      {
+        id: 1,
+        name: "theVariableName"
+      }
+    ]);
     const project = new Project(
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getVariables(1).then(activities => {
@@ -571,7 +559,7 @@ describe("Project", () => {
 
   it("Get variable", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/variables/theVariableName",
+      "https://test.com/projects/ffzefzef3/variables/theVariableName",
       {
         id: 1,
         name: "theVariableName"
@@ -581,13 +569,13 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getVariable("theVariableName").then(activitie => {
@@ -599,11 +587,11 @@ describe("Project", () => {
 
   it("Set existing variable", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/variables/variableName",
+      "https://test.com/projects/ffzefzef3/variables/variableName",
       {
         _links: {
           "#edit": {
-            href: "/api/projects/ffzefzef3/variables/variableName"
+            href: "/projects/ffzefzef3/variables/variableName"
           }
         },
         id: 1,
@@ -611,12 +599,12 @@ describe("Project", () => {
       }
     );
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/variables",
+      "https://test.com/projects/ffzefzef3/variables",
       [
         {
           _links: {
             "#edit": {
-              href: "/api/projects/ffzefzef3/variables/variableName"
+              href: "/projects/ffzefzef3/variables/variableName"
             }
           },
           id: 1,
@@ -629,13 +617,13 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.setVariable("variableName").then(result => {
@@ -645,20 +633,18 @@ describe("Project", () => {
   });
 
   it("Get certificates", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3/certificates", [
-      {}
-    ]);
+    fetchMock.mock("https://test.com/projects/ffzefzef3/certificates", [{}]);
     const project = new Project(
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.getCertificates().then(certificates => {
@@ -670,7 +656,7 @@ describe("Project", () => {
 
   it("Add certificate", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/certificates",
+      "https://test.com/projects/ffzefzef3/certificates",
       {},
       "POST"
     );
@@ -678,13 +664,13 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.addCertificate("certif", "key", "chain").then(result => {
@@ -698,13 +684,13 @@ describe("Project", () => {
       {
         _links: {
           domains: {
-            href: "/api/projects/ffzefzef3/domains"
+            href: "/projects/ffzefzef3/domains"
           }
         },
         id: "ffzefzef3",
         title: "project title"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     const updatedProject = project.updateLocal({ title: "test" });
@@ -726,14 +712,14 @@ describe("Project", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3"
+            href: "/projects/ffzefzef3"
           }
         },
         id: "ffzefzef3",
         title: "project title",
         vendor_resources: "https://test.com"
       },
-      "https://test.com/api/projects/ffzefzef3"
+      "https://test.com/projects/ffzefzef3"
     );
 
     project.loadTheme().then(theme => {

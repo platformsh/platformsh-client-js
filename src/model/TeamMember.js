@@ -2,7 +2,7 @@ import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
-const _url = "/platform/teams/:teamId/members";
+const _url = "/teams/:teamId/members";
 
 const creatableField = ["role"];
 

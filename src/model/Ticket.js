@@ -2,7 +2,7 @@ import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import request from "../api";
 
-const url = "/v1/tickets";
+const url = "/tickets";
 const paramDefaults = {};
 
 export default class Ticket extends Ressource {
@@ -23,14 +23,14 @@ export default class Ticket extends Ressource {
 
   static getAttachments(ticketId) {
     const { api_url } = getConfig();
-    const url = `/v1/comments/${ticketId}/description`;
+    const url = `/comments/${ticketId}/description`;
 
     return super.get(`${api_url}${url}`, {}, paramDefaults, {});
   }
 
   static getAllAttachments(ticketId) {
     const { api_url } = getConfig();
-    const url = `/v1/comments/${ticketId}/attachments`;
+    const url = `/comments/${ticketId}/attachments`;
 
     return request(`${api_url}${url}`, "GET");
   }

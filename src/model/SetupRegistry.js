@@ -3,9 +3,9 @@ import { getConfig } from "../config";
 import _urlParser from "../urlParser";
 import request from "../api";
 
-const _url = "/platform/setup/registry";
+const _url = "/setup/registry";
 const paramDefaults = {};
-// /api/platform/setup/registry\?service\=redis-persistent
+// /setup/registry\?service\=redis-persistent
 
 export default class SetupRegistry extends Ressource {
   constructor(registry, url = `${_url}?service=:name`, modifiableField = []) {

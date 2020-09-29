@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/platform/regions";
+const url = "/regions";
 const paramDefaults = {};
 
 export default class Region extends Ressource {

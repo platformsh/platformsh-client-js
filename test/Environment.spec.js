@@ -17,15 +17,12 @@ describe("Environment", () => {
   });
 
   it("Get environments", done => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments",
-      [
-        {
-          id: 1,
-          name: "thevar"
-        }
-      ]
-    );
+    fetchMock.mock("https://api.platform.sh/projects/ffzefzef3/environments", [
+      {
+        id: 1,
+        name: "thevar"
+      }
+    ]);
 
     Environment.query({
       projectId: "ffzefzef3"
@@ -38,7 +35,7 @@ describe("Environment", () => {
 
   it("Get environment", done => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1",
+      "https://api.platform.sh/projects/ffzefzef3/environments/1",
       {
         id: 1,
         name: "thevar"
@@ -56,7 +53,7 @@ describe("Environment", () => {
 
   it("Get variable", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/variables/1",
+      "https://test.com/projects/ffzefzef3/environments/1/variables/1",
       {
         id: 1,
         name: "thevar"
@@ -66,12 +63,12 @@ describe("Environment", () => {
       {
         _links: {
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           }
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      "https://test.com/projects/ffzefzef3/environments"
     );
 
     environment.getVariable(1).then(variable => {
@@ -82,7 +79,7 @@ describe("Environment", () => {
 
   it("Delete environment", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1",
+      "https://test.com/projects/ffzefzef3/environments/1",
       {},
       "DELETE"
     );
@@ -90,16 +87,16 @@ describe("Environment", () => {
       {
         _links: {
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#delete": {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           }
         },
         id: 1,
         status: "inactive"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      "https://test.com/projects/ffzefzef3/environments/1"
     );
 
     environment.delete().then(() => {
@@ -109,7 +106,7 @@ describe("Environment", () => {
 
   it("Activate environment", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/activate",
+      "https://test.com/projects/ffzefzef3/environments/1/activate",
       {
         _embedded: {
           activities: [
@@ -118,7 +115,7 @@ describe("Environment", () => {
               _links: {
                 self: {
                   href:
-                    "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                    "https://admin.local.c-g.io/projects/test_project/activities/kwfj7emjcltpm",
                   meta: {
                     get: {
                       responses: {
@@ -254,19 +251,19 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           },
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#activate": {
-            href: "/api/projects/ffzefzef3/environments/1/activate"
+            href: "/projects/ffzefzef3/environments/1/activate"
           }
         },
         id: 1,
         status: "inactive"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      "https://test.com/projects/ffzefzef3/environments/1"
     );
 
     environment.activate().then(() => {
@@ -276,7 +273,7 @@ describe("Environment", () => {
 
   it("Deactivate environment", done => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/deactivate",
+      "https://test.com/projects/ffzefzef3/environments/1/deactivate",
       {
         _embedded: {
           activities: [
@@ -285,7 +282,7 @@ describe("Environment", () => {
               _links: {
                 self: {
                   href:
-                    "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                    "https://admin.local.c-g.io/projects/test_project/activities/kwfj7emjcltpm",
                   meta: {
                     get: {
                       responses: {
@@ -421,19 +418,19 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           },
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#deactivate": {
-            href: "/api/projects/ffzefzef3/environments/1/deactivate"
+            href: "/projects/ffzefzef3/environments/1/deactivate"
           }
         },
         id: 1,
         status: "active"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      "https://test.com/projects/ffzefzef3/environments/1"
     );
 
     environment.deactivate().then(() => {
@@ -442,23 +439,20 @@ describe("Environment", () => {
   });
 
   it("Get metrics", done => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/metrics",
-      {
-        results: {}
-      }
-    );
+    fetchMock.mock("https://test.com/projects/ffzefzef3/environments/metrics", {
+      results: {}
+    });
 
     const environment = new Environment(
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: "https://test.com/projects/ffzefzef3/environments"
           }
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      "https://test.com/projects/ffzefzef3/environments"
     );
 
     environment.getMetrics().then(metrics => {

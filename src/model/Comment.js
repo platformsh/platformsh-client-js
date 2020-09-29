@@ -2,7 +2,7 @@ import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import request from "../api";
 
-const url = "/v1/comments";
+const url = "/comments";
 const paramDefaults = {};
 
 export default class Comment extends Ressource {

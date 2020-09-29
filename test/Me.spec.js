@@ -19,7 +19,7 @@ describe("Me", () => {
   });
 
   it("Get me", done => {
-    fetchMock.get(`${api_url}/platform/me`, {
+    fetchMock.get(`${api_url}/me`, {
       id: 1,
       display_name: "test",
       email: "test@test.com",
@@ -27,7 +27,7 @@ describe("Me", () => {
         {
           id: "ffzefzef",
           name: "greatProject",
-          endpoint: "http://test.com/api/projects/ffzefzef"
+          endpoint: "http://test.com/projects/ffzefzef"
         }
       ]
     });
@@ -41,19 +41,19 @@ describe("Me", () => {
   });
 
   it("Get and update me", done => {
-    fetchMock.get(`${api_url}/platform/me`, {
+    fetchMock.get(`${api_url}/me`, {
       id: 1,
       display_name: "test",
       projects: [
         {
           id: "ffzefzef",
           name: "greatProject",
-          endpoint: "http://test.com/api/projects/ffzefzef"
+          endpoint: "http://test.com/projects/ffzefzef"
         }
       ]
     });
 
-    fetchMock.patch(`${api_url}/platform/profiles/1`, {
+    fetchMock.patch(`${api_url}/profiles/1`, {
       id: 1,
       email: "test@test.com",
       picture: "testNewPic"

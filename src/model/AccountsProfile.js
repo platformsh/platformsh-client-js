@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import request from "../api";
 import _urlParser from "../urlParser";
 
-const url = "/platform/profiles/:id";
+const url = "/profiles/:id";
 const paramDefaults = {};
 const createableField = [
   "id",
@@ -90,7 +90,7 @@ export default class AccountsProfile extends Ressource {
     const { api_url } = getConfig();
 
     const user = await request(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${api_url}/profiles?filter[username]=${username}`
     );
 
     return new AccountsProfile(user.profiles[0]);
@@ -98,11 +98,11 @@ export default class AccountsProfile extends Ressource {
 
   static updateProfilePicture(userId, picture) {
     const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
+    return request(`${api_url}/profile/${userId}/picture`, "POST", picture);
   }
 
   static async deleteProfilePicture(userId) {
     const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
+    return request(`${api_url}/profile/${userId}/picture`, "DELETE");
   }
 }
