@@ -16,13 +16,55 @@ const types = [
   "health.slack",
   "script"
 ];
+const fields = [
+  "addon_credentials",
+  "app_credentials",
+  "base_url",
+  "category",
+  "channel",
+  "from_address",
+  "license_key",
+  "project",
+  "recipients",
+  "repository",
+  "resync_pull_requests",
+  "room",
+  "routing_key",
+  "shared_key",
+  "script",
+  "token",
+  "url",
+  "username",
+
+  "events",
+  "environments",
+  "excluded_environments",
+  "states",
+
+  "build_draft_pull_requests",
+  "build_merge_requests",
+  "build_pull_requests",
+  "build_pull_requests_post_merge",
+  "build_wip_merge_requests",
+  "fetch_branches",
+  "merge_requests_clone_parent_data",
+  "prune_branches",
+  "pull_requests_clone_parent_data"
+];
 const _url = "/projects/:projectId/integrations";
 
 export default class Integration extends Ressource {
   constructor(integration, url) {
     const { id } = integration;
 
-    super(url, paramDefaults, { id }, integration, ["type"]);
+    super(
+      url,
+      paramDefaults,
+      { id },
+      integration,
+      fields.concat("type"),
+      fields
+    );
     this._required = ["type"];
     this.id = "";
     this.type = "";
