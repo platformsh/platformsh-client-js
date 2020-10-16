@@ -92,12 +92,7 @@ export default class SshKey extends Ressource {
       return false;
     }
 
-    debugger;
-    if (
-      ["ssh-rsa", "ssh-dsa", "ssh-ed25519", "ssh-ecdsa"].indexOf(type) === -1 ||
-      !key
-    ) {
-      debugger;
+    if (["ssh-rsa", "ssh-ed25519", "ssh-ecdsa"].indexOf(type) === -1 || !key) {
       return false;
     }
     return true;
