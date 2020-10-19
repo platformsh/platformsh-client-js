@@ -21,6 +21,7 @@ export default class Invitation extends Ressource {
     );
 
     this.id = "";
+    this.owner = {};
     this.projectId = "";
     this.environments = [];
     this.state = "";
@@ -39,7 +40,7 @@ export default class Invitation extends Ressource {
     const { api_url } = getConfig();
 
     return super.query(`${api_url}${_url}`, { projectId }, {}, {}, data =>
-      data.map(d => ({ projectId: d.projectId, ...d }))
+      data.map(d => ({ projectId, ...d }))
     );
   }
 

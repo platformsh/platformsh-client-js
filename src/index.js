@@ -1087,13 +1087,29 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an inivitation.
    */
-  createInvitation(email, projectId, role, environments, force = false) {
-    return new entities.Invitation({
+  async createInvitation(email, projectId, role, environments, force = false) {
+    const invitation = new entities.Invitation({
       email,
       projectId,
       environments,
       role,
       force
-    }).save();
+    });
+
+    const res = await invitation.save();
+    invitation.id = res.data.id;
+
+    return invitation;
+  }
+  /**
+   * Get project invitations list
+   *
+   * @param {string} projectId
+   * @param {string} id
+   *
+   * @returns {Promise} Promise that return an inivitations list.
+   */
+  getInvitations(projectId) {
+    return entities.Invitation.query(projectId);
   }
 }

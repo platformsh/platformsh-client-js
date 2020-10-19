@@ -42,6 +42,7 @@ describe("Invitation", () => {
     Invitation.query("project_id").then(invitation => {
       assert.equal(invitation.length, 3);
       assert.equal(invitation[1].id, "2");
+      assert.equal(invitation[1].projectId, "project_id");
       assert.equal(invitation[1].state, "pending");
       assert.equal(invitation[0].constructor.name, "Invitation");
       done();
