@@ -14,6 +14,7 @@ const types = [
   "health.email",
   "health.pagerduty",
   "health.slack",
+  "health.webhook",
   "script"
 ];
 const fields = [
