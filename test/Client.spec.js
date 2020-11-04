@@ -777,4 +777,46 @@ describe("Client", () => {
       });
     });
   });
+
+  describe("Invitations", done => {
+    it("Get invitations", async () => {
+      const invitationsMock = [
+        { state: "pending", id: "1" },
+        { state: "pending", id: "2" },
+        { state: "pending", id: "3" }
+      ];
+
+      fetchMock.mock(
+        `${api_url}/projects/project_id/invitations`,
+        invitationsMock
+      );
+
+      const invitations = await client.getInvitations("project_id");
+
+      assert.equal(invitations.length, 3);
+      assert.equal(invitations[1].id, "2");
+      assert.equal(invitations[1].state, "pending");
+      assert.equal(invitations[0].constructor.name, "Invitation");
+    });
+
+    it("Create invitation", async () => {
+      fetchMock.mock(
+        `${api_url}/projects/project_id/invitations`,
+        {
+          id: "invitation-id"
+        },
+        "POST"
+      );
+
+      const invitation = await client.createInvitation(
+        "test@psh.com",
+        "project_id",
+        "view",
+        []
+      );
+
+      assert.equal(invitation.id, "invitation-id");
+      assert.equal(invitation.constructor.name, "Invitation");
+    });
+  });
 });
