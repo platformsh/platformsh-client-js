@@ -1085,7 +1085,7 @@ export default class Client {
    * @param {string} role project role
    * @param {array} Environments Array of environment object id/role
    *
-   * @returns {Promise} Promise that return an inivitation.
+   * @returns {Promise} Promise that return a Result.
    */
   async createInvitation(email, projectId, role, environments, force = false) {
     const invitation = new entities.Invitation({
@@ -1096,10 +1096,7 @@ export default class Client {
       force
     });
 
-    const res = await invitation.save();
-    invitation.id = res.data.id;
-
-    return invitation;
+    return await invitation.save();
   }
   /**
    * Get project invitations list

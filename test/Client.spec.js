@@ -5,6 +5,7 @@ import fetchMock from "fetch-mock";
 
 import { getConfig } from "../src/config";
 import Client from "../src";
+import Invitation from "../src/model/Invitation";
 
 const _fetch = (url, data, ...params) =>
   fetchMock.mock(url, JSON.stringify(data), ...params);
@@ -808,12 +809,14 @@ describe("Client", () => {
         "POST"
       );
 
-      const invitation = await client.createInvitation(
+      const res = await client.createInvitation(
         "test@psh.com",
         "project_id",
         "view",
         []
       );
+
+      const invitation = new Invitation(res.data);
 
       assert.equal(invitation.id, "invitation-id");
       assert.equal(invitation.constructor.name, "Invitation");
