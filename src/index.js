@@ -958,6 +958,16 @@ export default class Client {
   }
 
   /**
+   * Return a list of available categories for a ticket
+   *
+   * @return Promise<Category[]>
+   */
+  async getTicketCategories() {
+    const categories = await entities.TicketCategory.get();
+    return categories.map(priority => new entities.TicketCategory(priority));
+  }
+
+  /**
    * Get the ticket attachments.
    *
    * @param {number|string} ticketId
