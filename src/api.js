@@ -68,7 +68,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
-          if (imageTypes.includes(type)) {
+          if (imageTypes.includes(type) || response.status === 202) {
             return resolve(response);
           }
           return resolve(
