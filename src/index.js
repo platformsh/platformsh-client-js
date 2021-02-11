@@ -715,7 +715,7 @@ export default class Client {
     return fetch(logUrl, {
       method: "GET",
       headers: {
-        Authorization: `${accessToken.token_type} ${accessToken.access_token}`
+        Authorization: `Bearer ${accessToken.access_token}`
       }
     });
   }
