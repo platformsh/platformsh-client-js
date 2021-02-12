@@ -5,6 +5,7 @@ import fetchMock from "fetch-mock";
 
 import { getConfig } from "../src/config";
 import Client from "../src";
+import Invitation from "../src/model/Invitation";
 
 const _fetch = (url, data, ...params) =>
   fetchMock.mock(url, JSON.stringify(data), ...params);
@@ -423,36 +424,34 @@ describe("Client", () => {
   });
 
   it("Get organizations", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/me", {
-      organizations: [
-        {
-          id: "1",
-          name: "org1",
-          display_name: "the organization",
-          owner: "10"
-        }
-      ]
-    });
+    fetchMock.mock("https://api.platform.sh/api/organizations", [
+      {
+        id: "1",
+        name: "org1",
+        label: "the organization",
+        owner: "10"
+      }
+    ]);
     client.getOrganizations().then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
-      assert.equal(organizations[0].display_name, "the organization");
+      assert.equal(organizations[0].label, "the organization");
       assert.equal(organizations[0].constructor.name, "Organization");
       done();
     });
   });
 
   it("Get organization", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/organizations/1", {
+    fetchMock.mock("https://api.platform.sh/api/organizations/1", {
       id: "1",
       name: "org1",
-      display_name: "the organization",
+      label: "the organization",
       owner: "10"
     });
     client.getOrganization("1").then(organization => {
       assert.equal(organization.id, "1");
       assert.equal(organization.name, "org1");
-      assert.equal(organization.display_name, "the organization");
+      assert.equal(organization.label, "the organization");
       assert.equal(organization.constructor.name, "Organization");
       done();
     });
@@ -501,11 +500,7 @@ describe("Client", () => {
   });
 
   it("Create organization", done => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/platform/organizations",
-      {},
-      "POST"
-    );
+    fetchMock.mock("https://api.platform.sh/api/organizations", {}, "POST");
     client.createOrganization({ name: "organization1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
       done();
@@ -753,6 +748,78 @@ describe("Client", () => {
       const response = await client.updateProfilePicture(1, {});
 
       assert.deepEqual(response, { url: "xyz" });
+    });
+  });
+
+  describe("Integrations", () => {
+    it("Get integrations", done => {
+      fetchMock.mock(
+        "https://api.platform.sh/api/projects/ffzefzef3/integrations",
+        [{ id: 1 }, { id: 2 }]
+      );
+
+      client.getIntegrations("ffzefzef3").then(integrations => {
+        assert.equal(integrations[0].id, 1);
+        assert.equal(integrations[0].constructor.name, "Integration");
+        done();
+      });
+    });
+
+    it("Get integration", done => {
+      fetchMock.mock(
+        "https://api.platform.sh/api/projects/ffzefzef3/integrations/qwerty",
+        { id: "qwerty" }
+      );
+
+      client.getIntegration("ffzefzef3", "qwerty").then(integration => {
+        assert.equal(integration.id, "qwerty");
+        assert.equal(integration.constructor.name, "Integration");
+        done();
+      });
+    });
+  });
+
+  describe("Invitations", done => {
+    it("Get invitations", async () => {
+      const invitationsMock = [
+        { state: "pending", id: "1" },
+        { state: "pending", id: "2" },
+        { state: "pending", id: "3" }
+      ];
+
+      fetchMock.mock(
+        `${api_url}/projects/project_id/invitations`,
+        invitationsMock
+      );
+
+      const invitations = await client.getInvitations("project_id");
+
+      assert.equal(invitations.length, 3);
+      assert.equal(invitations[1].id, "2");
+      assert.equal(invitations[1].state, "pending");
+      assert.equal(invitations[0].constructor.name, "Invitation");
+    });
+
+    it("Create invitation", async () => {
+      fetchMock.mock(
+        `${api_url}/projects/project_id/invitations`,
+        {
+          id: "invitation-id"
+        },
+        "POST"
+      );
+
+      const res = await client.createInvitation(
+        "test@psh.com",
+        "project_id",
+        "view",
+        []
+      );
+
+      const invitation = new Invitation(res.data);
+
+      assert.equal(invitation.id, "invitation-id");
+      assert.equal(invitation.constructor.name, "Invitation");
     });
   });
 });

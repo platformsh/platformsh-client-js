@@ -25,7 +25,13 @@ if (isNode) {
 const isFormData = data =>
   typeof FormData !== "undefined" && data instanceof FormData;
 
-export const request = (url, method, data, additionalHeaders = {}) => {
+export const request = (
+  url,
+  method,
+  data,
+  additionalHeaders = {},
+  retryNumber = 0
+) => {
   let body = data && { ...data };
   let apiUrl = url;
 
@@ -50,10 +56,17 @@ export const request = (url, method, data, additionalHeaders = {}) => {
         if (response.status === 401) {
           const config = getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
-          if (typeof config.access_token === "undefined") {
+          // We want to retry only once, trying to renew the token.
+          if (typeof config.access_token === "undefined" && retryNumber < 2) {
             return authenticate(config, true).then(t => {
               resolve(
-                authenticatedRequest(url, method, data, additionalHeaders)
+                authenticatedRequest(
+                  url,
+                  method,
+                  data,
+                  additionalHeaders,
+                  retryNumber + 1
+                )
               );
             });
           }
@@ -68,7 +81,7 @@ export const request = (url, method, data, additionalHeaders = {}) => {
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
-          if (imageTypes.includes(type)) {
+          if (imageTypes.includes(type) || response.status === 202) {
             return resolve(response);
           }
           return resolve(
@@ -106,7 +119,8 @@ export const authenticatedRequest = (
   url,
   method,
   data,
-  additionalHeaders = {}
+  additionalHeaders = {},
+  retryNumber = 0
 ) => {
   return authenticationPromise.then(token => {
     if (!token) {
@@ -129,7 +143,13 @@ export const authenticatedRequest = (
       console.log("Token expiration detected");
 
       return authenticate(config, true).then(t => {
-        return authenticatedRequest(url, method, data, additionalHeaders);
+        return authenticatedRequest(
+          url,
+          method,
+          data,
+          additionalHeaders,
+          retryNumber + 1
+        );
       });
     }
 
@@ -137,10 +157,16 @@ export const authenticatedRequest = (
       Authorization: `Bearer ${token["access_token"]}`
     };
 
-    return request(url, method, data, {
-      ...additionalHeaders,
-      ...authenticationHeaders
-    });
+    return request(
+      url,
+      method,
+      data,
+      {
+        ...additionalHeaders,
+        ...authenticationHeaders
+      },
+      retryNumber
+    );
   });
 };
 

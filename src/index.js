@@ -2,6 +2,7 @@ import request from "./api";
 import connector, { wipeToken } from "./authentication";
 import { getConfig, setConfig } from "./config";
 import entities from "./model";
+import Organization from "./model/Organization";
 
 export const models = entities;
 
@@ -276,7 +277,7 @@ export default class Client {
    * @return Promise Integration
    */
   getIntegration(projectId, integrationId) {
-    return entities.Integration.get({ projectId, id: intgerationId });
+    return entities.Integration.get({ projectId, id: integrationId });
   }
 
   /**
@@ -484,15 +485,7 @@ export default class Client {
    * @return Organization[]
    */
   getOrganizations() {
-    return this.getAccountInfo().then(me => {
-      if (!me) {
-        return false;
-      }
-
-      return me.organizations.map(
-        organization => new entities.Organization(organization)
-      );
-    });
+    return entities.Organization.query();
   }
 
   /**
@@ -722,7 +715,7 @@ export default class Client {
     return fetch(logUrl, {
       method: "GET",
       headers: {
-        Authorization: `${accessToken.token_type} ${accessToken.access_token}`
+        Authorization: `Bearer ${accessToken.access_token}`
       }
     });
   }
@@ -965,6 +958,16 @@ export default class Client {
   }
 
   /**
+   * Return a list of available categories for a ticket
+   *
+   * @return Promise<Category[]>
+   */
+  async getTicketCategories() {
+    const categories = await entities.TicketCategory.get();
+    return categories.map(priority => new entities.TicketCategory(priority));
+  }
+
+  /**
    * Get the ticket attachments.
    *
    * @param {number|string} ticketId
@@ -1092,14 +1095,28 @@ export default class Client {
    * @param {string} role project role
    * @param {array} Environments Array of environment object id/role
    *
-   * @returns {Promise} Promise that return an inivitation.
+   * @returns {Promise} Promise that return a Result.
    */
-  createInvitation(email, projectId, role, environments) {
-    return new entities.Invitation({
+  async createInvitation(email, projectId, role, environments, force = false) {
+    const invitation = new entities.Invitation({
       email,
       projectId,
       environments,
-      role
-    }).save();
+      role,
+      force
+    });
+
+    return await invitation.save();
+  }
+  /**
+   * Get project invitations list
+   *
+   * @param {string} projectId
+   * @param {string} id
+   *
+   * @returns {Promise} Promise that return an inivitations list.
+   */
+  getInvitations(projectId) {
+    return entities.Invitation.query(projectId);
   }
 }

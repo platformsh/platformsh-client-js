@@ -19,6 +19,7 @@ import Organization from "./Organization";
 import Team from "./Team";
 import Ticket from "./Ticket";
 import TicketPriority from "./TicketPriority";
+import TicketCategory from "./TicketCategory";
 import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
@@ -74,6 +75,7 @@ export default {
   PaymentSource,
   Ticket,
   TicketPriority,
+  TicketCategory,
   Voucher,
   Invitation
 };

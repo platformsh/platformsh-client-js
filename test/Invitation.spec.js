@@ -42,6 +42,7 @@ describe("Invitation", () => {
     Invitation.query("project_id").then(invitation => {
       assert.equal(invitation.length, 3);
       assert.equal(invitation[1].id, "2");
+      assert.equal(invitation[1].projectId, "project_id");
       assert.equal(invitation[1].state, "pending");
       assert.equal(invitation[0].constructor.name, "Invitation");
       done();
@@ -50,8 +51,8 @@ describe("Invitation", () => {
 
   it("Delete invitation", done => {
     fetchMock.mock(`${api_url}/projects/project_id/invitations/1`, {
-      provider: "github",
-      subject: "1"
+      id: "1",
+      projectId: "projectId"
     });
 
     fetchMock.mock(
@@ -78,5 +79,40 @@ describe("Invitation", () => {
     });
 
     invitation.save().then(() => done());
+  });
+
+  it("Create and delete invitation", async () => {
+    fetchMock.mock(
+      `${api_url}/projects/project_id/invitations`,
+      {
+        id: "1"
+      },
+      "POST"
+    );
+
+    fetchMock.mock(
+      `${api_url}/projects/project_id/invitations/1`,
+      {},
+      "DELETE"
+    );
+
+    const invitation = new Invitation({
+      projectId: "project_id",
+      environments: [],
+      role: "view",
+      inviteeEmail: "test@psh.com"
+    });
+
+    const res = await invitation.save();
+
+    const invit = new Invitation({
+      id: res.data.id,
+      projectId: "project_id",
+      environments: [],
+      role: "view",
+      inviteeEmail: "test@psh.com"
+    });
+
+    await invit.delete();
   });
 });

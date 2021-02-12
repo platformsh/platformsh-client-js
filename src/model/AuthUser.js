@@ -83,4 +83,11 @@ export default class AuthUser extends Ressource {
       email_address: emailAddress
     });
   }
+  static async getUserByUsername(username) {
+    const { api_url } = getConfig();
+
+    const user = await request(`${api_url}/users/username=${username}`);
+
+    return new AuthUser(user);
+  }
 }
