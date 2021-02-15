@@ -66,11 +66,9 @@ export default class Client {
       }
       const { account_url } = getConfig();
 
-      return request(`${account_url}/platform/projects/${id}`, "GET").then(
-        result => {
-          return result.endpoint || false;
-        }
-      );
+      return request(`${account_url}/projects/${id}`, "GET").then(result => {
+        return result.endpoint || false;
+      });
     });
   }
 
@@ -463,7 +461,7 @@ export default class Client {
     if (country_code) query.country_code = country_code;
     const { api_url } = getConfig();
 
-    return request(`${api_url}/v1/subscriptions/estimate`, "GET", query);
+    return request(`${api_url}/subscriptions/estimate`, "GET", query);
   }
 
   /**
@@ -629,7 +627,7 @@ export default class Client {
    */
   getCardOnFile() {
     const { api_url } = getConfig();
-    const card = request(`${api_url}/platform/cardonfile`, "GET");
+    const card = request(`${api_url}/cardonfile`, "GET");
     return card;
   }
 
@@ -731,7 +729,7 @@ export default class Client {
   async updateUserProfile(id, data) {
     const { api_url } = getConfig();
     const updatedProfile = await request(
-      `${api_url}/platform/profiles/${id}`,
+      `${api_url}/profiles/${id}`,
       "PATCH",
       data
     );
@@ -746,7 +744,7 @@ export default class Client {
    */
   getSetupRegistry() {
     const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+    return request(`${api_url}/setup/registry`, "POST").then(data => {
       return typeof data === "undefined"
         ? undefined
         : Object.entries(data).reduce((items, [key, value]) => {
@@ -783,7 +781,7 @@ export default class Client {
    */
   getSetupRegistry() {
     const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+    return request(`${api_url}/setup/registry`, "POST").then(data => {
       return typeof data === "undefined"
         ? undefined
         : Object.entries(data).reduce((items, [key, value]) => {
@@ -834,7 +832,7 @@ export default class Client {
     const { api_url } = getConfig();
 
     const user = await request(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${api_url}/profiles?filter[username]=${username}`
     );
 
     return new entities.AccountsProfile(user.profiles[0]);

@@ -19,7 +19,7 @@ describe("PaymentSource", () => {
   });
 
   it("Get PaymentSource", done => {
-    fetchMock.mock(`${api_url}/platform/payment_source`, {
+    fetchMock.mock(`${api_url}/payment_source`, {
       count: 1,
       payment_source: {
         id: "12345",
@@ -48,7 +48,7 @@ describe("PaymentSource", () => {
   });
 
   it("Get PaymentSource SEPA", done => {
-    fetchMock.mock(`${api_url}/platform/payment_source`, {
+    fetchMock.mock(`${api_url}/payment_source`, {
       count: 1,
       payment_source: {
         id: "67890",
@@ -74,7 +74,7 @@ describe("PaymentSource", () => {
 
   it("Get PaymentSource return 404", done => {
     fetchMock.mock(
-      `${api_url}/platform/payment_source`,
+      `${api_url}/payment_source`,
       {},
       {
         title: "No sources on file.",
@@ -90,7 +90,7 @@ describe("PaymentSource", () => {
   });
 
   it("Get PaymentSource filter by uuid", done => {
-    fetchMock.mock(`${api_url}/platform/payment_source?owner=uuid`, {
+    fetchMock.mock(`${api_url}/payment_source?owner=uuid`, {
       count: 1,
       payment_source: {
         id: "12345"
@@ -105,7 +105,7 @@ describe("PaymentSource", () => {
   });
 
   it("Get PaymentSource with empty answer", done => {
-    fetchMock.mock(`${api_url}/platform/payment_source`, {
+    fetchMock.mock(`${api_url}/payment_source`, {
       count: 0,
       payment_source: {}
     });
@@ -117,7 +117,7 @@ describe("PaymentSource", () => {
   });
 
   it("Get PaymentSource allowed", done => {
-    fetchMock.mock(`${api_url}/platform/payment_source/allowed`, {
+    fetchMock.mock(`${api_url}/payment_source/allowed`, {
       count: 2,
       payment_sources: [
         { id: "12345", label: "credit-card" },
@@ -136,7 +136,7 @@ describe("PaymentSource", () => {
 
   it("Create payment source", done => {
     const mock = fetchMock.mock(
-      `${api_url}/platform/payment_source`,
+      `${api_url}/payment_source`,
       {
         id: "12345",
         type: "credit-card"
@@ -158,7 +158,7 @@ describe("PaymentSource", () => {
 
   it("Delete payment source", done => {
     const mock = fetchMock.mock(
-      `${api_url}/platform/payment_source`,
+      `${api_url}/payment_source`,
       {},
       {
         method: "DELETE",
@@ -174,7 +174,7 @@ describe("PaymentSource", () => {
 
   it("Create setup intent", done => {
     const mock = fetchMock.mock(
-      `${api_url}/platform/payment_source/intent`,
+      `${api_url}/payment_source/intent`,
       {
         client_secret: "qwerty",
         public_key: "azerty"

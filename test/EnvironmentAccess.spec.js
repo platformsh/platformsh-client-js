@@ -18,14 +18,14 @@ describe("Environment Access", () => {
 
   it("Get environment access", async () => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/access",
+      "https://test.com/projects/ffzefzef3/environments/1/access",
       [
         {
           id: "alice",
           _links: {
             self: {
               href:
-                "https://test.com/api/projects/ffzefzef3/environments/1/access/alice",
+                "https://test.com/projects/ffzefzef3/environments/1/access/alice",
               meta: {
                 get: {
                   responses: {
@@ -77,12 +77,12 @@ describe("Environment Access", () => {
       {
         _links: {
           "#manage-access": {
-            href: "/api/projects/ffzefzef3/environments/1/access"
+            href: "/projects/ffzefzef3/environments/1/access"
           }
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      "https://test.com/projects/ffzefzef3/environments"
     );
 
     const accesses = await environment.getUsers();

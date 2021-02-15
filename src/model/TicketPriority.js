@@ -1,7 +1,7 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 
-const url = "/v1/tickets/priority";
+const url = "/tickets/priority";
 const paramDefaults = {};
 
 export default class TicketPriority extends Ressource {

@@ -19,7 +19,7 @@ describe("Account", () => {
   });
 
   it("Get account", done => {
-    fetchMock.mock(`${account_url}/platform/users/1`, {
+    fetchMock.mock(`${account_url}/users/1`, {
       id: 1,
       email: "test@test.com"
     });
@@ -40,10 +40,7 @@ describe("Account", () => {
       { id: 4, email: "test4" }
     ];
 
-    fetchMock.mock(
-      `${account_url}/platform/users?id=1&id=2&id=3&id=4`,
-      accounts
-    );
+    fetchMock.mock(`${account_url}/users?id=1&id=2&id=3&id=4`, accounts);
 
     Account.query({ id: [1, 2, 3, 4] }).then(accounts => {
       assert.equal(accounts.length, 4);

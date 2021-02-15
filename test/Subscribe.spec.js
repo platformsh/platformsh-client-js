@@ -55,14 +55,14 @@ describe("Subscribe", () => {
   });
 
   it("Get subscription project", done => {
-    fetchMock.mock("https://test.com/api/projects/ffzefzef3", {
+    fetchMock.mock("https://test.com/projects/ffzefzef3", {
       id: 1,
       title: "theproject"
     });
     const subscription = new Subscription({
       _links: {
         project: {
-          href: "https://test.com/api/projects/ffzefzef3"
+          href: "https://test.com/projects/ffzefzef3"
         }
       },
       id: 1,

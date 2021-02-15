@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import _urlParser from "../urlParser";
 import request from "../api";
 
-const _url = "/platform/setup/config";
+const _url = "/setup/config";
 const paramDefaults = {};
 
 export default class SetupConfig extends Ressource {

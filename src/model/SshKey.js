@@ -5,7 +5,7 @@ import _urlParser from "../urlParser";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
-const url = "/v1/ssh_keys/:id";
+const url = "/ssh_keys/:id";
 
 export default class SshKey extends Ressource {
   constructor(sshKey) {

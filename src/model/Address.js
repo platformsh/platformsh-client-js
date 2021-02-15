@@ -2,7 +2,7 @@ import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
 
-const url = "/v1/profiles/:id/address";
+const url = "/profiles/:id/address";
 const paramDefaults = {};
 
 export default class Address extends Ressource {
