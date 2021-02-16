@@ -61,6 +61,7 @@ export default class Subscription extends Ressource {
     this.STATUS_SUSPENDED = "suspended";
     this.STATUS_DELETED = "deleted";
     this.owner_info = {};
+    this.organization = "";
   }
 
   static get(params, customUrl) {
