@@ -27,17 +27,17 @@ const modifiableField = [
 ];
 
 export default class AuthUser extends Ressource {
-  constructor(user) {
-    const { api_url } = getConfig();
+  constructor(user, customUrl, params, config) {
     const { id } = user;
 
     super(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       paramDefaults,
       {},
       user,
       createableField,
-      modifiableField
+      modifiableField,
+      config
     );
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
@@ -56,37 +56,46 @@ export default class AuthUser extends Ressource {
     this.updated_at = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static async update(id, data) {
-    const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+  static async update(id, data, config) {
+    const conf = super.getConfig(config);
+    const endpoint = `${conf.api_url}${_urlParser(url, { id })}`;
 
-    const updatedProfile = await request(endpoint, "PATCH", data);
-    return new AuthUser(updatedProfile);
+    const updatedProfile = await request(endpoint, "PATCH", data, conf);
+    return new AuthUser(updatedProfile, conf);
   }
 
-  static async updateEmailAddress(id, emailAddress) {
-    const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}/emailaddress`;
-    return await request(endpoint, "POST", {
-      email_address: emailAddress
-    });
+  static async updateEmailAddress(id, emailAddress, config) {
+    const conf = super.getConfig(config);
+    const endpoint = `${conf.api_url}${_urlParser(url, { id })}/emailaddress`;
+    return await request(
+      endpoint,
+      "POST",
+      {
+        email_address: emailAddress
+      },
+      conf
+    );
   }
-  static async getUserByUsername(username) {
-    const { api_url } = getConfig();
+  static async getUserByUsername(username, config) {
+    const conf = super.getConfig(config);
 
-    const user = await request(`${api_url}/users/username=${username}`);
+    const user = await request(
+      `${conf.api_url}/users/username=${username}`,
+      "GET",
+      {},
+      conf
+    );
 
     return new AuthUser(user);
   }

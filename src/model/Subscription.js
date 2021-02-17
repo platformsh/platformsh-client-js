@@ -29,20 +29,20 @@ const availablePlans = ["development", "standard", "medium", "large"];
 const availableRegions = ["eu.platform.sh", "us.platform.sh"];
 
 export default class Subscription extends Ressource {
-  constructor(subscription) {
+  constructor(subscription, customUrl, params, config) {
     const { id } = subscription;
-    const { api_url } = getConfig();
 
     super(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       paramDefaults,
       { id },
       subscription,
       creatableField,
-      modifiableField
+      modifiableField,
+      config
     );
 
-    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(`:api_url${url}`);
     this._required = ["project_region"];
     this.id = "";
     this.status = "";
@@ -63,25 +63,21 @@ export default class Subscription extends Ressource {
     this.owner_info = {};
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
-
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params) {
-    const { api_url } = getConfig();
-
+  static query(params, config) {
     return super.query(
-      this.getQueryUrl(`${api_url}${url}`),
+      this.getQueryUrl(`:api_url${url}`),
       {},
-      paramDefaults,
+      super.getConfig(config),
       params,
       data => data.subscriptions
     );
@@ -179,7 +175,7 @@ export default class Subscription extends Ressource {
     const id = this.owner;
     const url = this.makeAbsoluteUrl("/api/users", this.getLink("project"));
 
-    return Account.get({ id }, url);
+    return Account.get({ id }, url, this.getConfig());
   }
 
   /**
@@ -193,7 +189,7 @@ export default class Subscription extends Ressource {
     }
     const url = this.getLink("project");
 
-    return Project.get({}, url);
+    return Project.get({}, url, this.getConfig());
   }
 
   /**
@@ -212,7 +208,8 @@ export default class Subscription extends Ressource {
     return authenticatedRequest(
       `${this._queryUrl}/${this.id}/estimate`,
       "GET",
-      params
+      params,
+      this.getConfig()
     );
   }
 

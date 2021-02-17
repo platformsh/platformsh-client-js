@@ -9,10 +9,16 @@ const paramDefaults = {};
 const creatableField = ["type", "token", "email"];
 
 export default class PaymentSource extends Ressource {
-  constructor(paymentSource) {
-    const { api_url } = getConfig();
-
-    super(`${api_url}${url}`, paramDefaults, {}, paymentSource, creatableField);
+  constructor(paymentSource, customUrl, params, config) {
+    super(
+      `:api_url${url}`,
+      paramDefaults,
+      {},
+      paymentSource,
+      creatableField,
+      [],
+      config
+    );
     this.id = "";
     this.type = "";
     this.name = "";
@@ -21,16 +27,14 @@ export default class PaymentSource extends Ressource {
     this.mandate = "";
   }
 
-  static get(queryParams = {}, customUrl) {
-    const { api_url } = getConfig();
-
+  static get(queryParams = {}, customUrl, config) {
+    const conf = super.getConfig(config);
     const parsedUrl = _urlParser(
-      customUrl || `${api_url}${url}`,
-      paramDefaults,
+      customUrl || `${conf.api_url}${url}`,
       queryParams
     );
 
-    return request(parsedUrl, "GET", queryParams)
+    return request(parsedUrl, "GET", queryParams, conf)
       .then(data => {
         if (typeof data === undefined) return {};
         return new this.prototype.constructor(
@@ -40,13 +44,11 @@ export default class PaymentSource extends Ressource {
       .catch(err => new this.prototype.constructor());
   }
 
-  static query(params = {}, customUrl) {
-    const { api_url } = getConfig();
-
+  static query(params = {}, customUrl, config) {
     return super.query(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       params
     );
   }
@@ -56,9 +58,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return Result
    */
-  static delete(params) {
-    const { api_url } = getConfig();
-    return request(`${api_url}${url}`, "DELETE", params);
+  static delete(params, config) {
+    const cnf = super.getConfig(config);
+    return request(`${cnf.api_url}${url}`, "DELETE", params, cnf);
   }
 
   /**
@@ -67,9 +69,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return PaymentSource allowd []
    */
-  static getAllowed() {
-    const { api_url } = getConfig();
-    return request(`${api_url}${url}/allowed`, "GET");
+  static getAllowed(config) {
+    const cnf = super.getConfig(config);
+    return request(`${cnf.api_url}${url}/allowed`, "GET", {}, cnf);
   }
 
   /**
@@ -77,9 +79,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return SetupIntent
    */
-  static intent() {
-    const { api_url } = getConfig();
-    return request(`${api_url}${url}/intent`, "POST");
+  static intent(config) {
+    const cnf = super.getConfig(config);
+    return request(`${cnf.api_url}${url}/intent`, "POST", {}, cnf);
   }
 
   /**

@@ -6,10 +6,8 @@ import request from "../../api";
 const _url = "/projects/:projectId/git/commits/:sha";
 
 export default class Commit extends Ressource {
-  constructor(commit, url, params) {
-    const { api_url } = getConfig();
-
-    super(url, {}, params, commit, [], []);
+  constructor(commit, url, params, config) {
+    super(url, {}, params, commit, [], [], config);
 
     this.id = "";
     this.sha = "";
@@ -20,13 +18,15 @@ export default class Commit extends Ressource {
     this.parents = [];
   }
 
-  static get(projectId, sha) {
-    const { api_url } = getConfig();
-
-    return super.get(`${api_url}${_url}`, { projectId, sha });
+  static get(projectId, sha, config) {
+    return super.get(
+      `:api_url${_url}`,
+      { projectId, sha },
+      super.getConfig(config)
+    );
   }
 
   getTree(projectId = this._params.projectId) {
-    return Tree.get(projectId, this.tree);
+    return Tree.get(projectId, this.tree, this.getConfig());
   }
 }

@@ -8,16 +8,21 @@ const paramDefaults = {};
 const url = "/v1/ssh_keys/:id";
 
 export default class SshKey extends Ressource {
-  constructor(sshKey) {
+  constructor(sshKey, customUrl, params, config) {
     const { id } = sshKey;
     const { api_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { id }, sshKey, [
-      "title",
-      "value"
-    ]);
+    super(
+      `:api_url${url}`,
+      paramDefaults,
+      { id },
+      sshKey,
+      ["title", "value"],
+      [],
+      config
+    );
     this._required = ["value"];
-    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(`:api_url${url}`);
     this.changed = "";
     this.id = "";
     this.title = "";
@@ -26,11 +31,15 @@ export default class SshKey extends Ressource {
     this.value = "";
   }
 
-  static get(params) {
+  static get(params, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
-    return super.get(`${api_url}${url}`, { id }, paramDefaults, queryParams);
+    return super.get(
+      `:api_url${url}`,
+      { id },
+      super.getConfig(config),
+      queryParams
+    );
   }
 
   /**
@@ -40,7 +49,7 @@ export default class SshKey extends Ressource {
    */
   async save() {
     let sshKey = await super.save();
-    return new SshKey(sshKey.data);
+    return new SshKey(sshKey.data, "", {}, this.getConfig());
   }
 
   /**
@@ -50,7 +59,7 @@ export default class SshKey extends Ressource {
    */
   getLink(rel, absolute = false) {
     if (rel === "#delete") {
-      const { api_url } = getConfig();
+      const { api_url } = this.getConfig();
       return _urlParser(`${api_url}${url}`, { id: this.key_id });
     }
     return super.getLink(rel, absolute);

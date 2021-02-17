@@ -8,8 +8,14 @@ const paramDefaults = {};
 // /api/platform/setup/registry\?service\=redis-persistent
 
 export default class SetupRegistry extends Ressource {
-  constructor(registry, url = `${_url}?service=:name`, modifiableField = []) {
-    super(url, paramDefaults, {}, registry, [], modifiableField);
+  constructor(
+    registry,
+    url = `${_url}?service=:name`,
+    params,
+    config,
+    modifiableField = []
+  ) {
+    super(url, paramDefaults, {}, registry, [], modifiableField, config);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.description = "";
     this.repo_name = "";
@@ -23,13 +29,13 @@ export default class SetupRegistry extends Ressource {
     this.versions = {};
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { name, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const url = customUrl || `${api_url}${_url}?service=:name`;
+    const cnf = super.getConfig(config);
+    const url = customUrl || `${cnf.api_url}${_url}?service=:name`;
     const parsedUrl = _urlParser(url, params);
 
-    return request(parsedUrl, "POST", queryParams).then(data => {
+    return request(parsedUrl, "POST", queryParams, cnf).then(data => {
       return typeof data === "undefined"
         ? undefined
         : new this.prototype.constructor(data, _url);

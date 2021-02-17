@@ -7,43 +7,41 @@ const _url = "/organizations/:organizationId/members";
 const creatableField = ["user", "role"];
 
 export default class OrganizationMember extends Ressource {
-  constructor(organizationMember, url) {
+  constructor(organizationMember, url, params, config) {
     const { organizationId } = organizationMember;
-    const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url || `:api_url${_url}`,
       paramDefaults,
       { organizationId },
       organizationMember,
       creatableField,
-      creatableField
+      creatableField,
+      config
     );
     this.user = ""; // User id
     this.role = "";
     this.organizationId = "";
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { organizationId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl || `:api_url}${_url}/:id`,
       { organizationId, id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { organizationId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { organizationId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

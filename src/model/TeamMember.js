@@ -7,41 +7,39 @@ const _url = "/platform/teams/:teamId/members";
 const creatableField = ["role"];
 
 export default class TeamMember extends Ressource {
-  constructor(teamMember, url) {
+  constructor(teamMember, url, params, config) {
     const { teamId } = teamMember;
-    const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url || `:api_url${_url}`,
       paramDefaults,
       { teamId },
       teamMember,
       creatableField,
-      creatableField
+      creatableField,
+      config
     );
     this.user = ""; // userId
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { teamId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl || `:api_url}${_url}/:id`,
       { teamId, id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { teamId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { teamId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

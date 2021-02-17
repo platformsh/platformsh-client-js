@@ -12,14 +12,15 @@ const creatableAndModifiableField = [
 const _url = "/projects/:projectId/environments/:environmentId/routes";
 
 export default class Route extends Ressource {
-  constructor(route, url) {
+  constructor(route, url, config) {
     super(
       url,
       paramDefaults,
       {},
       route,
       creatableAndModifiableField,
-      creatableAndModifiableField
+      creatableAndModifiableField,
+      config
     );
     this.id = "";
     this.project = "";
@@ -32,27 +33,25 @@ export default class Route extends Ressource {
     this.type = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, environmentId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
+    const urlToCall = customUrl ? `${customUrl}/:id` : `:api_url${_url}/:id`;
 
     return super.get(
       urlToCall,
       { id, projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

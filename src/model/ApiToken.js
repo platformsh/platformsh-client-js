@@ -18,12 +18,10 @@ const createableField = [
 const modifiableField = [""];
 
 export default class ApiToken extends Ressource {
-  constructor(data, params) {
-    const { api_url } = getConfig();
-
-    super(`${api_url}${url}`, params, {}, data, createableField);
+  constructor(data, params, config) {
+    super(`:api_url${url}`, params, {}, data, createableField, [], config);
     this._queryUrl = _urlParser(
-      Ressource.getQueryUrl(`${api_url}${url}`),
+      Ressource.getQueryUrl(`:api_url${url}`),
       params
     );
     this.id = "";
@@ -33,33 +31,31 @@ export default class ApiToken extends Ressource {
     this.token = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params) {
-    const { api_url } = getConfig();
+  static query(params, config) {
     const { userId } = params;
 
     return super.query(
-      Ressource.getQueryUrl(`${api_url}${url}`, userId),
+      Ressource.getQueryUrl(`:api_url${url}`, userId),
       params,
-      paramDefaults
+      super.getConfig(config)
     );
   }
 
   delete(params) {
     const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
 
-    return request(url, "DELETE", params).then(
+    return request(url, "DELETE", params, this.getConfig()).then(
       result => new Result(result, this._url, this.constructor)
     );
   }

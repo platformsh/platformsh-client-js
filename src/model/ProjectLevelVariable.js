@@ -23,14 +23,15 @@ const modifiableField = [
 const _url = "/projects/:projectId/variables";
 
 export default class ProjectLevelVariable extends Ressource {
-  constructor(projectLevelVariable, url) {
+  constructor(projectLevelVariable, url, params, config) {
     super(
       url,
       paramDefaults,
       {},
       projectLevelVariable,
       creatableField,
-      modifiableField
+      modifiableField,
+      config
     );
     this.id = "";
     this.name = "";
@@ -43,27 +44,25 @@ export default class ProjectLevelVariable extends Ressource {
     this.updated_at = "";
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { name, projectId, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const urlToCall = customUrl || `${api_url}${_url}`;
+    const urlToCall = customUrl || `:api_url${_url}`;
 
     return super.get(
-      `${urlToCall}/:id`,
+      `${urlToCall}/:name`,
       { name, projectId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

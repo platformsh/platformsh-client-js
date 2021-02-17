@@ -6,9 +6,8 @@ const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
 
 export default class Address extends Ressource {
-  constructor(account) {
+  constructor(account, config) {
     const { id } = account;
-    const { account_url } = getConfig();
 
     const _modifiableField = [
       "country",
@@ -24,14 +23,15 @@ export default class Address extends Ressource {
     ];
 
     super(
-      `${account_url}${url}`,
+      `:account_url${url}`,
       paramDefaults,
       { id },
       account,
       [],
-      _modifiableField
+      _modifiableField,
+      config
     );
-    this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
+    this._queryUrl = Address.getQueryUrl(`${conf.account_url}${url}`, id);
     this.id = "";
     this.country = "";
     this.name_line = "";
@@ -49,32 +49,30 @@ export default class Address extends Ressource {
     return _urlParser(_url, { id });
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      this.getQueryUrl(customUrl || `${api_url}${url}`, id),
+      this.getQueryUrl(customUrl || `:api_url${url}`, id),
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
   static query(params) {
-    const { api_url } = getConfig();
     const { id } = params;
 
     return super.query(
-      this.getQueryUrl(`${api_url}${url}`, id),
+      this.getQueryUrl(`:api_url${url}`, id),
       {},
-      paramDefaults,
+      super.getConfig(config),
       params
     );
   }
 
   update(address, id) {
-    const { api_url } = getConfig();
+    const { api_url } = this.getConfig();
     return super.update(address, Address.getQueryUrl(`${api_url}${url}`, id));
   }
 }

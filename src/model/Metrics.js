@@ -5,19 +5,18 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/metrics";
 
 export default class Metrics extends Ressource {
-  constructor(metrics, url) {
-    super(url, paramDefaults, {}, metrics);
+  constructor(metrics, url, config) {
+    super(url, paramDefaults, {}, metrics, [], [], config);
     this.results = {};
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

@@ -27,3 +27,18 @@ export const setConfig = newConfig => {
 export const getConfig = () => {
   return config;
 };
+
+export default class Config {
+  constructor(newConfig) {
+    this.set(newConfig);
+  }
+
+  set(updatedConfig) {
+    const config = {
+      ...getConfigDefault(newConfig.base_url, newConfig.api_url),
+      ...updatedConfig
+    };
+
+    Object.assign(this, config);
+  }
+}

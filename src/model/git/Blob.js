@@ -7,10 +7,8 @@ import request from "../../api";
 const _url = "/projects/:projectId/git/blobs/:sha";
 
 export default class Blob extends Ressource {
-  constructor(blob, url = _url, params) {
-    const { api_url } = getConfig();
-
-    super(url, {}, params, blob, [], []);
+  constructor(blob, url = _url, params, config) {
+    super(url, {}, params, blob, [], [], config);
 
     this.id = "";
     this.type = "blob";
@@ -21,16 +19,20 @@ export default class Blob extends Ressource {
     this.content = "";
   }
 
-  static get(projectId, sha) {
-    const { api_url } = getConfig();
-
-    return super.get(`${api_url}${_url}`, { projectId, sha });
+  static get(projectId, sha, config) {
+    return super.get(
+      `:api_url${_url}`,
+      { projectId, sha },
+      super.getConfig(config)
+    );
   }
 
   async getInstance() {
-    const { api_url } = getConfig();
-
-    const blob = await Blob.get(this._params.projectId, this._params.sha);
+    const blob = await Blob.get(
+      this._params.projectId,
+      this._params.sha,
+      this.getConfig()
+    );
 
     blob.path = this.path;
 
@@ -55,9 +57,14 @@ export default class Blob extends Ressource {
    */
   async getRawContent() {
     if (!this.encoding) {
-      const blob = await Blob.get(this._params.projectId, this._params.sha);
+      const config = this.getConfig();
+      const blob = await Blob.get(
+        this._params.projectId,
+        this._params.sha,
+        config
+      );
 
-      return blob.getRawContent();
+      return blob.getRawContent(config);
     }
 
     if (this.encoding === "base64") {

@@ -6,12 +6,11 @@ import _urlParser from "../urlParser";
 const url = "/users/:userId/totp";
 const paramDefaults = {};
 
-export default class Account extends Ressource {
-  constructor(account) {
-    const { id } = account;
-    const { api_url } = getConfig();
+export default class TwoFactorAuthentication extends Ressource {
+  constructor(tfa, customUrl, params, config) {
+    const { id } = tfa;
 
-    super(`${api_url}${url}`, paramDefaults, { id }, account);
+    super(`:api_url${url}`, paramDefaults, { id }, tfa, [], [], config);
     this._queryUrl = Ressource.getQueryUrl(url);
 
     this.issuer = "";
@@ -20,26 +19,27 @@ export default class Account extends Ressource {
     this.qr_code = "";
   }
 
-  static get(userId) {
-    const { api_url } = getConfig();
-    return super.get(`${api_url}${url}`, { userId }, paramDefaults, {});
+  static get(userId, config) {
+    return super.get(`:api_url${url}`, { userId }, super.getConfig(config), {});
   }
 
-  static enroll(userId, secret, passcode) {
-    const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}${url}`, { userId });
-    return request(endpoint, "POST", { secret, passcode });
+  static enroll(userId, secret, passcode, config) {
+    const cnf = super.getConfig(config);
+    const endpoint = _urlParser(`${cnf.api_url}${url}`, { userId });
+    return request(endpoint, "POST", { secret, passcode }, cnf);
   }
 
-  static reset(userId) {
-    const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}/users/:userId/codes`, { userId });
-    return request(endpoint, "POST");
+  static reset(userId, config) {
+    const cnf = super.getConfig(config);
+    const endpoint = _urlParser(`${cnf.api_url}/users/:userId/codes`, {
+      userId
+    });
+    return request(endpoint, "POST", {}, cnf);
   }
 
-  static delete(userId) {
-    const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}${url}`, { userId });
-    return request(endpoint, "DELETE");
+  static delete(userId, config) {
+    const cnf = super.getConfig(config);
+    const endpoint = _urlParser(`${cnf.api_url}${url}`, { userId });
+    return request(endpoint, "DELETE", {}, cnf);
   }
 }

@@ -1,6 +1,6 @@
 import request from "./api";
 import connector, { wipeToken } from "./authentication";
-import { getConfig, setConfig } from "./config";
+import Config, { setConfig, getConfig } from "./config";
 import entities from "./model";
 import Organization from "./model/Organization";
 
@@ -9,10 +9,14 @@ export const models = entities;
 export const api = request;
 
 export default class Client {
-  constructor(authenticationConfig = {}) {
-    setConfig(authenticationConfig);
+  constructor(config = {}) {
+    if (config.no_singleton) {
+      this.config = new Config(config);
+    } else {
+      setConfig(config);
+    }
 
-    this.authenticationPromise = connector(authenticationConfig);
+    this.authenticationPromise = connector(config);
   }
 
   getAccessToken() {
@@ -20,7 +24,7 @@ export default class Client {
   }
 
   getConfig() {
-    return getConfig();
+    return this.config || getConfig();
   }
 
   wipeToken() {
@@ -28,7 +32,7 @@ export default class Client {
   }
 
   reAuthenticate() {
-    this.authenticationPromise = connector(getConfig(), true);
+    this.authenticationPromise = connector(this.getConfig(), true);
 
     return this.authenticationPromise;
   }
@@ -42,7 +46,7 @@ export default class Client {
    */
   getAccountInfo(reset = false) {
     if (!this.getAccountInfoPromise || reset) {
-      this.getAccountInfoPromise = entities.Me.get();
+      this.getAccountInfoPromise = entities.Me.get(this.getConfig());
     }
 
     return this.getAccountInfoPromise;
@@ -64,13 +68,16 @@ export default class Client {
       if (project && project.endpoint) {
         return project.endpoint;
       }
-      const { account_url } = getConfig();
+      const conf = this.getConfig();
 
-      return request(`${account_url}/platform/projects/${id}`, "GET").then(
-        result => {
-          return result.endpoint || false;
-        }
-      );
+      return request(
+        `${conf.account_url}/platform/projects/${id}`,
+        "GET",
+        {},
+        conf
+      ).then(result => {
+        return result.endpoint || false;
+      });
     });
   }
 
@@ -103,7 +110,7 @@ export default class Client {
    * @return Project|false
    */
   getProject(id) {
-    return entities.Project.get({ id });
+    return entities.Project.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -114,7 +121,7 @@ export default class Client {
    * @return Promise Environment[]
    */
   getEnvironments(projectId) {
-    return entities.Environment.query({ projectId });
+    return entities.Environment.query({ projectId }, "", this.getConfig());
   }
 
   /**
@@ -126,7 +133,11 @@ export default class Client {
    * @return Promise Environment
    */
   getEnvironment(projectId, environmentId) {
-    return entities.Environment.get({ projectId, id: environmentId });
+    return entities.Environment.get(
+      { projectId, id: environmentId },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -138,12 +149,16 @@ export default class Client {
    * @return Promise Activity[]
    */
   getEnvironmentActivities(projectId, environmentId, type, starts_at) {
-    return entities.Activity.query({
-      projectId,
-      environmentId,
-      type,
-      starts_at
-    });
+    return entities.Activity.query(
+      {
+        projectId,
+        environmentId,
+        type,
+        starts_at
+      },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -154,7 +169,7 @@ export default class Client {
    * @return Promise Certificate[]
    */
   getCertificates(projectId) {
-    return entities.Certificate.query({ projectId });
+    return entities.Certificate.query({ projectId }, "", this.getConfig());
   }
 
   /**
@@ -165,11 +180,12 @@ export default class Client {
    * @param array  chain
    */
   addCertificate(projectId, certificate, key, chain = []) {
-    const { api_url } = getConfig();
-    const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
+    const conf = getConfig();
+    const certificateUrl = `${conf.api_url}/projects/${projectId}/certificates`;
     const certificateObj = new entities.Certificate(
       { certificate, key, chain },
-      certificateUrl
+      certificateUrl,
+      conf
     );
 
     return certificateObj.save();
@@ -183,7 +199,7 @@ export default class Client {
    * @return Promise Domain[]
    */
   getDomains(projectId, limit) {
-    return entities.Domain.query({ projectId, limit });
+    return entities.Domain.query({ projectId, limit }, "", this.getConfig());
   }
 
   /**
@@ -195,7 +211,11 @@ export default class Client {
    * @return Promise EnvironmentAccess[]
    */
   getEnvironmentUsers(projectId, environmentId) {
-    return entities.EnvironmentAccess.query({ projectId, environmentId });
+    return entities.EnvironmentAccess.query(
+      { projectId, environmentId },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -205,7 +225,11 @@ export default class Client {
    * @return Route
    */
   getRoutes(projectId, environmentId) {
-    return entities.Route.query({ projectId, environmentId });
+    return entities.Route.query(
+      { projectId, environmentId },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -217,7 +241,7 @@ export default class Client {
    * @return Promise EnvironmentAccess[]
    */
   getProjectUsers(projectId) {
-    return entities.ProjectAccess.query({ projectId });
+    return entities.ProjectAccess.query({ projectId }, "", this.getConfig());
   }
 
   /**
@@ -229,7 +253,11 @@ export default class Client {
    * @return ProjectLevelVariable[]
    */
   getProjectVariables(projectId, limit) {
-    return entities.ProjectLevelVariable.query({ projectId, limit });
+    return entities.ProjectLevelVariable.query(
+      { projectId, limit },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -241,7 +269,11 @@ export default class Client {
    * @return ProjectLevelVariable[]
    */
   getEnvironmentVariables(projectId, environmentId, limit) {
-    return entities.Variable.query({ projectId, environmentId, limit });
+    return entities.Variable.query(
+      { projectId, environmentId, limit },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -254,7 +286,11 @@ export default class Client {
    * @return Promise Metrics[]
    */
   getEnvironmentMetrics(projectId, environmentId, q) {
-    return entities.Metrics.get({ projectId, environmentId, q });
+    return entities.Metrics.get(
+      { projectId, environmentId, q },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -265,7 +301,7 @@ export default class Client {
    * @return Promise Integration[]
    */
   getIntegrations(projectId) {
-    return entities.Integration.query({ projectId });
+    return entities.Integration.query({ projectId }, "", this.getConfig());
   }
 
   /**
@@ -277,7 +313,11 @@ export default class Client {
    * @return Promise Integration
    */
   getIntegration(projectId, integrationId) {
-    return entities.Integration.get({ projectId, id: integrationId });
+    return entities.Integration.get(
+      { projectId, id: integrationId },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -289,15 +329,18 @@ export default class Client {
    * @return Promise Activity[]
    */
   getIntegrationActivities(projectId, integrationId, type, starts_at) {
-    const { api_url } = getConfig();
+    const cnf = this.getConfig();
 
-    const url = `${api_url}/projects/${projectId}/integrations/${integrationId}/activities`;
+    const url = `${
+      cnf.api_url
+    }/projects/${projectId}/integrations/${integrationId}/activities`;
     return entities.Activity.query(
       {
         type,
         starts_at
       },
-      url
+      url,
+      cnf
     );
   }
 
@@ -322,7 +365,7 @@ export default class Client {
    * @return SshKey|false
    */
   getSshKey(id) {
-    return entities.SshKey.get(id);
+    return entities.SshKey.get(id, this.getConfig());
   }
 
   /**
@@ -336,7 +379,7 @@ export default class Client {
   addSshKey(value, title) {
     const values = this.cleanRequest({ value, title });
 
-    return new entities.SshKey(values).save();
+    return new entities.SshKey(values, "", {}, this.getConfig()).save();
   }
 
   /**
@@ -393,7 +436,7 @@ export default class Client {
       options_custom: optionsCustom
     });
 
-    return new entities.Subscription(values).save();
+    return new entities.Subscription(values, "", {}, this.getConfig()).save();
   }
 
   /**
@@ -404,7 +447,7 @@ export default class Client {
    * @return Subscription|false
    */
   getSubscription(id) {
-    return entities.Subscription.get({ id });
+    return entities.Subscription.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -415,7 +458,10 @@ export default class Client {
    * @return Subscriptions[]
    */
   getSubscriptions(filter, all) {
-    return entities.Subscription.query({ filter, all: all && 1 });
+    return entities.Subscription.query(
+      { filter, all: all && 1 },
+      this.getConfig()
+    );
   }
 
   /**
@@ -426,12 +472,15 @@ export default class Client {
    * @param string environmentId
    */
   initializeEnvironment(projectId, options, environmentId = "master") {
-    const { api_url } = getConfig();
+    const cnf = this.getConfig();
 
     return request(
-      `${api_url}/projects/${projectId}/environments/${environmentId}/initialize`,
+      `${
+        cnf.api_url
+      }/projects/${projectId}/environments/${environmentId}/initialize`,
       "POST",
-      options
+      options,
+      cnf
     );
   }
 
@@ -461,9 +510,14 @@ export default class Client {
     };
     if (format) query.format = format;
     if (country_code) query.country_code = country_code;
-    const { api_url } = getConfig();
+    const cnf = this.getConfig();
 
-    return request(`${api_url}/v1/subscriptions/estimate`, "GET", query);
+    return request(
+      `${cnf.api_url}/v1/subscriptions/estimate`,
+      "GET",
+      query,
+      cnf
+    );
   }
 
   /**
@@ -475,7 +529,11 @@ export default class Client {
    * @return Deployment
    */
   getCurrentDeployment(projectId, environmentId, params) {
-    return entities.Deployment.get({ projectId, environmentId, ...params });
+    return entities.Deployment.get(
+      { projectId, environmentId, ...params },
+      "",
+      this.getConfig()
+    );
   }
 
   /**
@@ -484,8 +542,8 @@ export default class Client {
    *
    * @return Organization[]
    */
-  getOrganizations() {
-    return entities.Organization.query();
+  getOrganizations(params = {}) {
+    return entities.Organization.query(params, "", this.getConfig());
   }
 
   /**
@@ -496,7 +554,7 @@ export default class Client {
    * @return Organization
    */
   getOrganization(id) {
-    return entities.Organization.get({ id });
+    return entities.Organization.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -507,7 +565,12 @@ export default class Client {
    * @return Organization
    */
   createOrganization(organization) {
-    const newOrganization = new entities.Organization(organization);
+    const newOrganization = new entities.Organization(
+      organization,
+      "",
+      {},
+      this.getConfig()
+    );
 
     return newOrganization.save();
   }
@@ -520,7 +583,7 @@ export default class Client {
    * @return Team
    */
   createTeam(team) {
-    const newTeam = new entities.Team(team);
+    const newTeam = new entities.Team(team, "", {}, this.getConfig());
 
     return newTeam.save();
   }
@@ -531,6 +594,7 @@ export default class Client {
    *
    * @return Team[]
    */
+
   getTeams() {
     return this.getAccountInfo().then(me => {
       if (!me) {
@@ -549,7 +613,7 @@ export default class Client {
    * @return Team
    */
   getTeam(id) {
-    return entities.Team.get({ id });
+    return entities.Team.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -558,8 +622,8 @@ export default class Client {
    *
    * @return Region[]
    */
-  getRegions() {
-    return entities.Region.query();
+  getRegions(params) {
+    return entities.Region.query(params, this.getConfig());
   }
 
   /**
@@ -569,7 +633,7 @@ export default class Client {
    * @return Account
    */
   getAccount(id) {
-    return entities.Account.get({ id });
+    return entities.Account.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -579,7 +643,7 @@ export default class Client {
    * @return Address
    */
   getAddress(id) {
-    return entities.Address.get({ id });
+    return entities.Address.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -589,6 +653,7 @@ export default class Client {
    * @return Address
    */
   saveAddress(address) {
+    //TODO: fix
     return entities.Address.update({ address });
   }
 
@@ -599,7 +664,7 @@ export default class Client {
    * @return Account
    */
   getOrders(owner) {
-    return entities.Order.query({ filter: { owner } });
+    return entities.Order.query({ filter: { owner } }, this.getConfig());
   }
 
   /**
@@ -609,7 +674,7 @@ export default class Client {
    * @return Account
    */
   getOrder(id) {
-    return entities.Order.get({ id });
+    return entities.Order.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -619,7 +684,7 @@ export default class Client {
    * @return Voucher
    */
   getVouchers(uuid) {
-    return entities.Voucher.get({ uuid });
+    return entities.Voucher.get({ uuid }, "", this.getConfig());
   }
 
   /**
@@ -628,8 +693,8 @@ export default class Client {
    * @return Promise
    */
   getCardOnFile() {
-    const { api_url } = getConfig();
-    const card = request(`${api_url}/platform/cardonfile`, "GET");
+    const cnf = this.getConfig();
+    const card = request(`${api_url}/platform/cardonfile`, "GET", {}, cnf);
     return card;
   }
 
@@ -641,7 +706,7 @@ export default class Client {
    * @return Promise
    */
   getPaymentSource(owner) {
-    return entities.PaymentSource.get(owner);
+    return entities.PaymentSource.get(owner, "", this.getConfig());
   }
 
   /**
@@ -657,7 +722,7 @@ export default class Client {
   addPaymentSource(type, token, email) {
     const values = this.cleanRequest({ type, token, email });
 
-    return new entities.PaymentSource(values).save();
+    return new entities.PaymentSource(values, "", {}, this.getConfig()).save();
   }
 
   /**
@@ -669,7 +734,7 @@ export default class Client {
    * rejects otherwise
    */
   deletePaymentSource(uuid) {
-    return entities.PaymentSource.delete(uuid);
+    return entities.PaymentSource.delete(uuid, this.getConfig());
   }
 
   /**
@@ -678,7 +743,7 @@ export default class Client {
    * @return Promise
    */
   getPaymentSourcesAllowed() {
-    return entities.PaymentSource.getAllowed();
+    return entities.PaymentSource.getAllowed(this.getConfig());
   }
 
   /**
@@ -687,7 +752,7 @@ export default class Client {
    * @return Promise: { client_secret, public_key }
    */
   createPaymentSourceIntent() {
-    return entities.PaymentSource.intent();
+    return entities.PaymentSource.intent(this.getConfig());
   }
 
   /**
@@ -697,7 +762,7 @@ export default class Client {
    * @return Promise
    */
   getUserProfile(id) {
-    return entities.AccountsProfile.get({ id });
+    return entities.AccountsProfile.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -729,14 +794,15 @@ export default class Client {
    * @return Promise
    */
   async updateUserProfile(id, data) {
-    const { api_url } = getConfig();
+    const cnf = this.getConfig();
     const updatedProfile = await request(
-      `${api_url}/platform/profiles/${id}`,
+      `${cnf.api_url}/platform/profiles/${id}`,
       "PATCH",
-      data
+      data,
+      cnf
     );
 
-    return new entities.AccountsProfile(updatedProfile);
+    return new entities.AccountsProfile(updatedProfile, "", {}, cnf);
   }
 
   /**
@@ -745,12 +811,17 @@ export default class Client {
    * @return Promise
    */
   getSetupRegistry() {
-    const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+    const cnf = this.getConfig();
+    return request(
+      `${cnf.api_url}/platform/setup/registry`,
+      "POST",
+      {},
+      cnf
+    ).then(data => {
       return typeof data === "undefined"
         ? undefined
         : Object.entries(data).reduce((items, [key, value]) => {
-            items[key] = new entities.SetupRegistry(value);
+            items[key] = new entities.SetupRegistry(value, "", {}, cnf);
             return items;
           }, {});
     });
@@ -763,7 +834,7 @@ export default class Client {
    * @return Promise
    */
   getSetupRegistryItem(name) {
-    return entities.SetupRegistry.get({ name });
+    return entities.SetupRegistry.get({ name }, "", this.getConfig());
   }
 
   /**
@@ -773,7 +844,7 @@ export default class Client {
    * @return Promise
    */
   getSetupConfig(settings) {
-    return entities.SetupConfig.get(settings);
+    return entities.SetupConfig.get(settings, "", this.getConfig());
   }
 
   /**
@@ -782,12 +853,17 @@ export default class Client {
    * @return Promise
    */
   getSetupRegistry() {
-    const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then(data => {
+    const cnf = this.getConfig();
+    return request(
+      `${cnf.api_url}/platform/setup/registry`,
+      "POST",
+      {},
+      cnf
+    ).then(data => {
       return typeof data === "undefined"
         ? undefined
         : Object.entries(data).reduce((items, [key, value]) => {
-            items[key] = new entities.SetupRegistry(value);
+            items[key] = new entities.SetupRegistry(value, "", {}, cnf);
             return items;
           }, {});
     });
@@ -800,7 +876,7 @@ export default class Client {
    * @return Promise
    */
   getSetupRegistryItem(name) {
-    return entities.SetupRegistry.get({ name });
+    return entities.SetupRegistry.get({ name }, "", this.getConfig());
   }
 
   /**
@@ -810,7 +886,7 @@ export default class Client {
    * @return Promise
    */
   getSetupConfig(settings) {
-    return entities.SetupConfig.get(settings);
+    return entities.SetupConfig.get(settings, "", this.getConfig());
   }
 
   /**
@@ -820,7 +896,7 @@ export default class Client {
    * @return Promise
    */
   getUser(id) {
-    return entities.AuthUser.get({ id });
+    return entities.AuthUser.get({ id }, "", this.getConfig());
   }
 
   /**
@@ -831,13 +907,13 @@ export default class Client {
    * @return string
    */
   async getUserIdFromUsername(username) {
-    const { api_url } = getConfig();
+    const cnf = this.getConfig();
 
     const user = await request(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${cnf.api_url}/v1/profiles?filter[username]=${username}`
     );
 
-    return new entities.AccountsProfile(user.profiles[0]);
+    return new entities.AccountsProfile(user.profiles[0], "", {}, cnf);
   }
 
   /**
@@ -852,11 +928,10 @@ export default class Client {
   getProjectActivities(projectId, types, starts_at) {
     const params = { type: types, starts_at, projectId };
 
-    const { api_url } = getConfig();
-
     return entities.Activity.query(
       params,
-      `${api_url}/projects/:projectId/activities`
+      `:api_url/projects/:projectId/activities`,
+      this.getConfig()
     );
   }
 
@@ -869,7 +944,7 @@ export default class Client {
    * returns the information required to enroll the user if resolves
    */
   getTFA(userId) {
-    return entities.TwoFactorAuthentication.get(userId);
+    return entities.TwoFactorAuthentication.get(userId, this.getConfig());
   }
 
   /**
@@ -883,7 +958,12 @@ export default class Client {
    * if resolves
    */
   enrollTFA(userId, secret, passcode) {
-    return entities.TwoFactorAuthentication.enroll(userId, secret, passcode);
+    return entities.TwoFactorAuthentication.enroll(
+      userId,
+      secret,
+      passcode,
+      this.getConfig()
+    );
   }
 
   /**
@@ -895,7 +975,7 @@ export default class Client {
    * rejects otherwise
    */
   disableTFA(userId) {
-    return entities.TwoFactorAuthentication.delete(userId);
+    return entities.TwoFactorAuthentication.delete(userId, this.getConfig());
   }
 
   /**
@@ -907,7 +987,7 @@ export default class Client {
    * if resolves
    */
   resetRecoveryCodes(userId) {
-    return entities.TwoFactorAuthentication.reset(userId);
+    return entities.TwoFactorAuthentication.reset(userId, this.getConfig());
   }
 
   /*
@@ -918,7 +998,7 @@ export default class Client {
    * @return Promise ConnectedAccounts[]
    */
   getConnectedAccounts(userId) {
-    return entities.ConnectedAccount.query(userId);
+    return entities.ConnectedAccount.query(userId, this.getConfig());
   }
 
   /**
@@ -928,7 +1008,7 @@ export default class Client {
    * @return Promise<Ticket[]>
    */
   async getTickets(settings) {
-    return entities.Ticket.query(settings).then(tickets => {
+    return entities.Ticket.query(settings, this.getConfig()).then(tickets => {
       return tickets.data;
     });
   }
@@ -942,7 +1022,9 @@ export default class Client {
    * @return Promise<Ticket>
    */
   updateTicketStatus(ticketId, status) {
-    return entities.Ticket.patch(ticketId, { status }).then(ticket => ticket);
+    return entities.Ticket.patch(ticketId, { status }, this.getConfig()).then(
+      ticket => ticket
+    );
   }
 
   /**
@@ -953,8 +1035,14 @@ export default class Client {
    * @return Promise<Priority[]>
    */
   async getTicketPriorities(subscription_id) {
-    const priorities = await entities.TicketPriority.get({ subscription_id });
-    return priorities.map(priority => new entities.TicketPriority(priority));
+    const priorities = await entities.TicketPriority.get(
+      { subscription_id },
+      this.getConfig()
+    );
+    return priorities.map(
+      priority =>
+        new entities.TicketPriority(priority, "", {}, this.getConfig())
+    );
   }
 
   /**
@@ -963,8 +1051,11 @@ export default class Client {
    * @return Promise<Category[]>
    */
   async getTicketCategories() {
-    const categories = await entities.TicketCategory.get();
-    return categories.map(priority => new entities.TicketCategory(priority));
+    const categories = await entities.TicketCategory.get({}, this.getConfig());
+    return categories.map(
+      priority =>
+        new entities.TicketCategory(priority, "", {}, this.getConfig())
+    );
   }
 
   /**
@@ -975,7 +1066,10 @@ export default class Client {
    * @return Promise<Attachment[]>
    */
   async getTicketAttachments(ticketId) {
-    const response = await entities.Ticket.getAttachments(ticketId);
+    const response = await entities.Ticket.getAttachments(
+      ticketId,
+      this.getConfig()
+    );
     const attachments = response.data.attachments;
     return Object.entries(attachments || {}).map(([filename, attachment]) => ({
       filename: filename,
@@ -992,7 +1086,10 @@ export default class Client {
    * @return Promise<Attachment[]>
    */
   async getAllTicketAttachments(ticketId) {
-    const response = await entities.Ticket.getAllAttachments(ticketId);
+    const response = await entities.Ticket.getAllAttachments(
+      ticketId,
+      this.getConfig()
+    );
     return response.map(attachment => ({
       filename: attachment.filename,
       url: attachment.uri,
@@ -1008,7 +1105,7 @@ export default class Client {
    * @return Promise<Ticket>
    */
   async openTicket(ticket) {
-    const response = await entities.Ticket.open(ticket);
+    const response = await entities.Ticket.open(ticket, this.getConfig());
     return response;
   }
 
@@ -1019,7 +1116,11 @@ export default class Client {
    * @return Promise<Comment[]>
    */
   async loadComments(ticketId, params) {
-    const { data } = await entities.Comment.query(ticketId, params);
+    const { data } = await entities.Comment.query(
+      ticketId,
+      params,
+      this.getConfig()
+    );
     const page = params.page || 1;
     const PAGE_SIZE = 50;
     const pages = Math.ceil(data.count / PAGE_SIZE);
@@ -1059,7 +1160,7 @@ export default class Client {
    * @return Promise<Comment>
    */
   async sendComment(comment) {
-    return entities.Comment.send(comment);
+    return entities.Comment.send(comment, this.getConfig());
   }
 
   /**
@@ -1073,7 +1174,11 @@ export default class Client {
    * profile picture
    */
   updateProfilePicture(userId, picture) {
-    return entities.AccountsProfile.updateProfilePicture(userId, picture);
+    return entities.AccountsProfile.updateProfilePicture(
+      userId,
+      picture,
+      this.getConfig()
+    );
   }
 
   /**
@@ -1084,7 +1189,10 @@ export default class Client {
    * @returns {Promise} Resolves if the picture was deleted.
    */
   deleteProfilePicture(userId) {
-    return entities.AccountsProfile.deleteProfilePicture(userId);
+    return entities.AccountsProfile.deleteProfilePicture(
+      userId,
+      this.getConfig()
+    );
   }
 
   /**
@@ -1098,13 +1206,18 @@ export default class Client {
    * @returns {Promise} Promise that return a Result.
    */
   async createInvitation(email, projectId, role, environments, force = false) {
-    const invitation = new entities.Invitation({
-      email,
-      projectId,
-      environments,
-      role,
-      force
-    });
+    const invitation = new entities.Invitation(
+      {
+        email,
+        projectId,
+        environments,
+        role,
+        force
+      },
+      "",
+      {},
+      this.getConfig()
+    );
 
     return await invitation.save();
   }
@@ -1117,6 +1230,6 @@ export default class Client {
    * @returns {Promise} Promise that return an inivitations list.
    */
   getInvitations(projectId) {
-    return entities.Invitation.query(projectId);
+    return entities.Invitation.query(projectId, this.getConfig());
   }
 }

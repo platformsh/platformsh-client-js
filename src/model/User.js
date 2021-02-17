@@ -5,10 +5,16 @@ const _url = "/api/users";
 const paramDefaults = {};
 
 export default class User extends Ressource {
-  constructor(account, url = `${_url}/:id`, modifiableField = []) {
+  constructor(
+    account,
+    url = `${_url}/:id`,
+    params,
+    config,
+    modifiableField = []
+  ) {
     const { id } = account;
 
-    super(url, paramDefaults, { id }, account, [], modifiableField);
+    super(url, paramDefaults, { id }, account, [], modifiableField, config);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
     this.created_at = "";
@@ -19,25 +25,22 @@ export default class User extends Ressource {
     this.username = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl || `:api_url${_url}/:id`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
   static query(params, customUrl) {
-    const { api_url } = getConfig();
-
     return super.query(
-      this.getQueryUrl(customUrl || `${api_url}${_url}`),
+      this.getQueryUrl(customUrl || `:api_url${_url}`),
       {},
-      paramDefaults,
+      super.getConfig(config),
       params
     );
   }

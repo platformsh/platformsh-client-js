@@ -1,8 +1,12 @@
+import { getConfig } from "../config";
+
 export default class Result {
-  constructor(result, url, ressourceClass) {
+  constructor(result, url, ressourceClass, config) {
     this._url = url;
     this.data = result;
     this._ressourceClass = ressourceClass;
+
+    this.config = config || getConfig();
   }
 
   /**
@@ -32,7 +36,7 @@ export default class Result {
     const Activity = require("./Activity").default;
 
     return this.data._embedded.activities.map(
-      activity => new Activity(activity, this._url)
+      activity => new Activity(activity, this._url, this.config)
     );
   }
 
@@ -51,6 +55,6 @@ export default class Result {
       throw new Error("No entity found in result");
     }
 
-    return new this._ressourceClass(data, this._url);
+    return new this._ressourceClass(data, this._url, this.config);
   }
 }

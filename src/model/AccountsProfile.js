@@ -37,17 +37,17 @@ const modifiableField = [
 ];
 
 export default class AccountsProfile extends Ressource {
-  constructor(profile) {
-    const { api_url } = getConfig();
+  constructor(profile, customUrl, params, config) {
     const { id } = profile;
 
     super(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       paramDefaults,
       {},
       profile,
       createableField,
-      modifiableField
+      modifiableField,
+      config
     );
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
@@ -66,43 +66,54 @@ export default class AccountsProfile extends Ressource {
     this.marketing = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static async update(id, data) {
-    const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+  static async update(id, data, config) {
+    const conf = super.getConfig(config);
+    const endpoint = `${conf.api_url}${_urlParser(url, { id })}`;
 
-    const updatedProfile = await request(endpoint, "PATCH", data);
-    return new AccountsProfile(updatedProfile);
+    const updatedProfile = await request(endpoint, "PATCH", data, conf);
+    return new AccountsProfile(updatedProfile, conf);
   }
 
-  static async getUserByUsername(username) {
-    const { api_url } = getConfig();
+  static async getUserByUsername(username, config) {
+    const conf = super.getConfig(config);
 
     const user = await request(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${conf.api_url}/v1/profiles?filter[username]=${username}`,
+      "GET",
+      {},
+      conf
     );
 
-    return new AccountsProfile(user.profiles[0]);
+    return new AccountsProfile(user.profiles[0], conf);
   }
 
-  static updateProfilePicture(userId, picture) {
-    const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
+  static updateProfilePicture(userId, picture, config) {
+    const conf = super.getConfig(config);
+    return request(
+      `${conf.api_url}/v1/profile/${userId}/picture`,
+      "POST",
+      picture,
+      conf
+    );
   }
 
-  static async deleteProfilePicture(userId) {
-    const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
+  static async deleteProfilePicture(userId, config) {
+    const conf = super.getConfig(config);
+    return request(
+      `${conf.api_url}/v1/profile/${userId}/picture`,
+      "DELETE",
+      conf
+    );
   }
 }

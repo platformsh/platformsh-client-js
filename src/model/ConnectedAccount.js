@@ -5,11 +5,10 @@ import request from "../api";
 const _url = "/users/:userId/connections";
 
 export default class ConnectedAccount extends Ressource {
-  constructor(connectedAccount, url) {
+  constructor(connectedAccount, url, config) {
     const { provider } = connectedAccount;
-    const { api_url } = getConfig();
 
-    super(url, {}, {}, connectedAccount, [], []);
+    super(url, {}, {}, connectedAccount, [], [], config);
 
     this.provider = "";
     this.subject = "";
@@ -17,21 +16,25 @@ export default class ConnectedAccount extends Ressource {
     this.updated_at = "";
   }
 
-  static get(userId, provider) {
-    const { api_url } = getConfig();
-
-    return super.get(`${api_url}${_url}/:provider`, { userId, provider });
+  static get(userId, providerName, config) {
+    return super.get(
+      `:api_url${_url}/:providerName`,
+      { userId, providerName },
+      super.getConfig(config)
+    );
   }
 
-  static query(userId) {
-    const { api_url } = getConfig();
-
-    return super.query(`${api_url}${_url}`, { userId }, {}, {}, data =>
-      data.map(d => ({ id: d.provider, ...d }))
+  static query(userId, config) {
+    return super.query(
+      `:api_url${_url}`,
+      { userId },
+      super.getConfig(config),
+      {},
+      data => data.map(d => ({ id: d.provider, ...d }))
     );
   }
 
   delete(userId) {
-    return request(this._url, "DELETE");
+    return request(this._url, "DELETE", {}, this.getConfig());
   }
 }

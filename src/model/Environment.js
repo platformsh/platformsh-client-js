@@ -25,7 +25,7 @@ const sshRegex = /^ssh:\/\/([a-zA-Z0-9_\-]+)@(.+)$/;
 const sshLinkKeyPrefix = "pf:ssh:";
 
 export default class Environment extends Ressource {
-  constructor(environment, url) {
+  constructor(environment, url, config) {
     const { id, project } = environment;
 
     super(
@@ -34,7 +34,8 @@ export default class Environment extends Ressource {
       { id, project },
       environment,
       [],
-      modifiableField
+      modifiableField,
+      config
     );
     this.id = "";
     this.status = "";
@@ -57,27 +58,26 @@ export default class Environment extends Ressource {
     this.is_main = [];
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
+    const urlToCall = customUrl ? `${customUrl}/:id` : `:api_url${_url}/:id`;
 
     return super.get(
       urlToCall,
-      { project: projectId, id },
-      paramDefaults,
+      { projectId, id },
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super.query(
       customUrl || `${api_url}${_url}`,
-      { project: projectId },
-      paramDefaults,
+      { projectId },
+      super.getConfig(config),
       queryParams
     );
   }
@@ -275,7 +275,11 @@ export default class Environment extends Ressource {
    * @return Activity|false
    */
   getActivity(id) {
-    return Activity.get({ id }, `${this.getUri()}/activities`);
+    return Activity.get(
+      { id },
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -293,7 +297,11 @@ export default class Environment extends Ressource {
   getActivities(type, starts_at) {
     const params = { type, starts_at };
 
-    return Activity.query(params, `${this.getUri()}/activities`);
+    return Activity.query(
+      params,
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -304,7 +312,11 @@ export default class Environment extends Ressource {
    * @return Variable[]
    */
   getVariables(limit) {
-    return Variable.query({ limit }, this.getLink("#manage-variables"));
+    return Variable.query(
+      { limit },
+      this.getLink("#manage-variables"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -362,7 +374,11 @@ export default class Environment extends Ressource {
    * @return Variable|false
    */
   getVariable(id) {
-    return Variable.get({ id }, this.getLink("#manage-variables"));
+    return Variable.get(
+      { id },
+      this.getLink("#manage-variables"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -374,7 +390,11 @@ export default class Environment extends Ressource {
    */
   setRoute(values = {}) {
     if (!values.id) {
-      const route = new Route(values, this.getLink("#manage-routes"));
+      const route = new Route(
+        values,
+        this.getLink("#manage-routes"),
+        this.getConfig()
+      );
 
       return route.save();
     }
@@ -386,7 +406,11 @@ export default class Environment extends Ressource {
         );
       }
 
-      const route = new Route(values, this.getLink("#manage-routes"));
+      const route = new Route(
+        values,
+        this.getLink("#manage-routes"),
+        this.getConfig()
+      );
 
       return route.save();
     });
@@ -399,7 +423,7 @@ export default class Environment extends Ressource {
    * @return Route
    */
   getRoute(id) {
-    return Route.get({ id }, this.getLink("#manage-routes"));
+    return Route.get({ id }, this.getLink("#manage-routes"), this.getConfig());
   }
 
   /**
@@ -409,7 +433,7 @@ export default class Environment extends Ressource {
    * @return Route[]
    */
   getRoutes() {
-    return Route.query({}, this.getLink("#manage-routes"));
+    return Route.query({}, this.getLink("#manage-routes"), this.getConfig());
   }
 
   /**
@@ -452,7 +476,11 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess|false
    */
   getUser(id) {
-    return EnvironmentAccess.get({ id }, this.getLink("#manage-access"));
+    return EnvironmentAccess.get(
+      { id },
+      this.getLink("#manage-access"),
+      this.getConfig()
+    );
   }
   /**
    * Get the users with access to this environment.
@@ -460,7 +488,11 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess[]
    */
   getUsers() {
-    return EnvironmentAccess.query({}, this.getLink("#manage-access"));
+    return EnvironmentAccess.query(
+      {},
+      this.getLink("#manage-access"),
+      this.getConfig()
+    );
   }
   /**
    * Add a new user to the environment.
@@ -482,7 +514,8 @@ export default class Environment extends Ressource {
     body[property] = user;
     const environmentAccess = new EnvironmentAccess(
       body,
-      this.getLink("#manage-access")
+      this.getLink("#manage-access"),
+      this.getConfig()
     );
 
     return environmentAccess.save();
@@ -496,7 +529,11 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess|false
    */
   removeUser(id) {
-    return EnvironmentAccess.get({ id }, this.getLink("#manage-access")).then(
+    return EnvironmentAccess.get(
+      { id },
+      this.getLink("#manage-access"),
+      this.getConfig()
+    ).then(
       environmentAccess => environmentAccess && environmentAccess.remove()
     );
   }
@@ -512,7 +549,7 @@ export default class Environment extends Ressource {
   getMetrics(query) {
     const params = query && { q: query };
 
-    return Metrics.get(params, `${this.getUri()}/metrics`);
+    return Metrics.get(params, `${this.getUri()}/metrics`, this.getConfig());
   }
 
   /**
@@ -524,6 +561,6 @@ export default class Environment extends Ressource {
    * @return Commit
    */
   getHeadCommit() {
-    return Commit.get(this.project, this.head_commit);
+    return Commit.get(this.project, this.head_commit, this.getConfig());
   }
 }

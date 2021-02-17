@@ -4,6 +4,7 @@ import parse_url from "parse_url";
 import _urlParser from "../urlParser";
 import request from "../api";
 import Result from "./Result";
+import { getConfig } from "../config";
 
 const handler = {
   get(target, key) {
@@ -36,7 +37,8 @@ export default class Ressource {
     params,
     data = {},
     _creatableField = [],
-    _modifiableField = []
+    _modifiableField = [],
+    config
   ) {
     // This is an abstract class
     if (this.constructor === Ressource) {
@@ -47,9 +49,15 @@ export default class Ressource {
 
     const url = _url || this.getLink("self");
     this._params = params;
+    this.config = config || getConfig();
 
-    this._url = _urlParser(url, params, paramDefaults);
-    const parsedUrl = parse_url(url);
+    this._url = _urlParser(
+      url,
+      { ...params, ...this.getConfig() },
+      paramDefaults
+    );
+
+    const parsedUrl = parse_url(this._url);
 
     if (parsedUrl[1] === "http" || parsedUrl[1] === "https") {
       this._baseUrl = `${parsedUrl[1]}:${parsedUrl[2]}${parsedUrl[3]}${
@@ -63,30 +71,32 @@ export default class Ressource {
     return new Proxy(this, handler);
   }
 
+  getConfig() {
+    return this.config || getConfig();
+  }
+
+  static getConfig(config) {
+    return config || getConfig();
+  }
+
   static getQueryUrl(_url = "") {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
-  static get(_url, params, paramDefaults, queryParams) {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+  static get(_url, params, config, queryParams) {
+    const parsedUrl = _urlParser(_url, { ...params, ...config });
 
-    return request(parsedUrl, "GET", queryParams).then(data => {
+    return request(parsedUrl, "GET", queryParams, config).then(data => {
       return typeof data === "undefined"
         ? undefined
         : new this.prototype.constructor(data, parsedUrl, params);
     });
   }
 
-  static query(
-    _url,
-    params,
-    paramDefaults,
-    queryParams,
-    transformResultBeforeMap
-  ) {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+  static query(_url, params, config, queryParams, transformResultBeforeMap) {
+    const parsedUrl = _urlParser(_url, { ...params, ...config });
 
-    return request(parsedUrl, "GET", queryParams).then(data => {
+    return request(parsedUrl, "GET", queryParams, config).then(data => {
       let dataToMap = data;
 
       if (transformResultBeforeMap) {
@@ -145,11 +155,14 @@ export default class Ressource {
       this._paramDefaults
     );
 
-    return request(parsedUrl, "PATCH", pick(data, this._modifiableField)).then(
-      data => {
-        return new Result(data, this._url, this.constructor);
-      }
-    );
+    return request(
+      parsedUrl,
+      "PATCH",
+      pick(data, this._modifiableField),
+      this.getConfig()
+    ).then(data => {
+      return new Result(data, this._url, this.constructor);
+    });
   }
 
   updateLocal(data) {
@@ -202,13 +215,16 @@ export default class Ressource {
     if (errors) {
       return Promise.reject(errors);
     }
-    const url = this._queryUrl || this._url;
+    const url = _urlParser(this._queryUrl || this._url, this.getConfig());
 
-    return request(url, "POST", pick(this.data, this._creatableField)).then(
-      data => {
-        return new Result(data, url, this.constructor);
-      }
-    );
+    return request(
+      url,
+      "POST",
+      pick(this.data, this._creatableField),
+      this.getConfig()
+    ).then(data => {
+      return new Result(data, url, this.constructor);
+    });
   }
 
   delete() {
@@ -217,7 +233,7 @@ export default class Ressource {
     if (!deleteLink) {
       throw new Error("Not allowed to delete");
     }
-    return request(deleteLink, "DELETE", {}).then(
+    return request(deleteLink, "DELETE", {}, this.getConfig()).then(
       result => new Result(result, this._url, this.constructor)
     );
   }
@@ -237,10 +253,12 @@ export default class Ressource {
    *
    */
   refresh(params) {
-    return request(this.getUri(), "GET", params).then(data => {
-      this.copy(data);
-      return this;
-    });
+    return request(this.getUri(), "GET", params, this.getConfig()).then(
+      data => {
+        this.copy(data);
+        return this;
+      }
+    );
   }
 
   /**
@@ -355,7 +373,7 @@ export default class Ressource {
     if (!this.operationAvailable(op)) {
       throw new Error(`Oper tion not available: ${op}`);
     }
-    return request(this.getLink(`#${op}`), method, body);
+    return request(this.getLink(`#${op}`), method, body, this.getConfig());
   }
 
   /**
@@ -369,7 +387,7 @@ export default class Ressource {
    */
   runLongOperation(op, method = "POST", body) {
     return this.runOperation(op, method, body).then(data => {
-      const result = new Result(data, this.getUri());
+      const result = new Result(data, this.getUri(), this.getConfig());
       const activities = result.getActivities();
 
       if (activities.length !== 1) {

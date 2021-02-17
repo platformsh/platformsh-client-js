@@ -5,22 +5,18 @@ const url = "/v1/tickets/category";
 const paramDefaults = {};
 
 export default class TicketCategory extends Ressource {
-  constructor(ticketCategory) {
-    const { api_url } = getConfig();
-
-    super(`${api_url}${url}`, paramDefaults, {}, ticketCategory, [], []);
+  constructor(ticketCategory, url, params, config) {
+    super(`:api_url${url}`, paramDefaults, {}, ticketCategory, [], [], config);
 
     this.id = "";
     this.label = "";
   }
 
-  static get(queryParams) {
-    const { api_url } = getConfig();
-
+  static get(queryParams, config) {
     return super.query(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       queryParams,
       data => data
     );

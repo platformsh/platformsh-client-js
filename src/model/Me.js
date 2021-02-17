@@ -18,9 +18,9 @@ const modifiableField = [
 ];
 
 export default class Me extends User {
-  constructor(account) {
-    const { api_url } = getConfig();
-    super(account, `${api_url}${url}`, modifiableField);
+  constructor(account, config) {
+    const { api_url } = config;
+    super(account, `${api_url}${url}`, {}, config, modifiableField);
 
     this.projects = [];
     this.ssh_keys = [];
@@ -37,17 +37,18 @@ export default class Me extends User {
     this.trial = false;
   }
 
-  static get() {
-    const { api_url } = getConfig();
-
-    return super.get({}, `${api_url}${url}`);
+  static get(config) {
+    return super.get({}, `:api_url${url}`, super.getConfig(config));
   }
 
   async update(data) {
-    const { api_url } = getConfig();
+    const conf = this.getConfig();
 
-    const result = await super.update(data, `${api_url}/platform/profiles/:id`);
+    const result = await super.update(
+      data,
+      `${conf.api_url}/platform/profiles/:id`
+    );
 
-    return new Me(result.data); // Account API does not return a Result
+    return new Me(result.data, conf); // Account API does not return a Result
   }
 }

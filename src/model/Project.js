@@ -21,8 +21,8 @@ const url = "/projects/:id";
 let _source;
 
 export default class Project extends Ressource {
-  constructor(project, url) {
-    super(url, paramDefaults, {}, project, [], modifiableField);
+  constructor(project, url, params, config) {
+    super(url, paramDefaults, {}, project, [], modifiableField, config);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
     this.cluster = "";
@@ -49,14 +49,13 @@ export default class Project extends Ressource {
     this.default_domain = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
@@ -101,7 +100,7 @@ export default class Project extends Ressource {
    * @return ProjectAccess[]
    */
   getUsers() {
-    return ProjectAccess.query({}, this.getLink("access"));
+    return ProjectAccess.query({}, this.getLink("access"), this.getConfig());
   }
 
   /**
@@ -123,7 +122,11 @@ export default class Project extends Ressource {
 
     body[property] = user;
 
-    const projectAccess = new ProjectAccess(body, this.getLink("access"));
+    const projectAccess = new ProjectAccess(
+      body,
+      this.getLink("access"),
+      this.getConfig()
+    );
 
     return projectAccess.save();
   }
@@ -136,7 +139,11 @@ export default class Project extends Ressource {
    * @return Environment|false
    */
   getEnvironment(id) {
-    return Environment.get({ id }, this.getLink("environments"));
+    return Environment.get(
+      { id },
+      this.getLink("environments"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -169,7 +176,11 @@ export default class Project extends Ressource {
    * @return Environment[]
    */
   getEnvironments(limit) {
-    return Environment.query({ limit }, this.getLink("environments"));
+    return Environment.query(
+      { limit },
+      this.getLink("environments"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -180,7 +191,7 @@ export default class Project extends Ressource {
    * @return Domain[]
    */
   getDomains(limit) {
-    return Domain.query({ limit }, this.getLink("domains"));
+    return Domain.query({ limit }, this.getLink("domains"), this.getConfig());
   }
 
   /**
@@ -191,7 +202,7 @@ export default class Project extends Ressource {
    * @return Domain|false
    */
   getDomain(name) {
-    return Domain.get({ name }, this.getLink("domains"));
+    return Domain.get({ name }, this.getLink("domains"), this.getConfig());
   }
 
   /**
@@ -208,7 +219,7 @@ export default class Project extends Ressource {
     if (ssl.length) {
       body.ssl = ssl;
     }
-    const domain = new Domain(body, this.getLink("domains"));
+    const domain = new Domain(body, this.getLink("domains"), this.getConfig());
 
     return domain.save();
   }
@@ -221,7 +232,11 @@ export default class Project extends Ressource {
    * @return Integration[]
    */
   getIntegrations(limit) {
-    return Integration.query({ limit }, this.getLink("integrations"));
+    return Integration.query(
+      { limit },
+      this.getLink("integrations"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -232,7 +247,11 @@ export default class Project extends Ressource {
    * @return Integration|false
    */
   getIntegration(id) {
-    return Integration.get({ id }, this.getLink("integrations"));
+    return Integration.get(
+      { id },
+      this.getLink("integrations"),
+      this.getConfig()
+    );
   }
 
   /**
@@ -245,7 +264,11 @@ export default class Project extends Ressource {
    */
   addIntegration(type, data = []) {
     const body = { type, ...data };
-    const integration = new Integration(body, this.getLink("integrations"));
+    const integration = new Integration(
+      body,
+      this.getLink("integrations"),
+      this.getConfig()
+    );
 
     return integration.save();
   }
@@ -258,7 +281,11 @@ export default class Project extends Ressource {
    * @return Activity|false
    */
   getActivity(id) {
-    return Activity.get({ id }, `${this.getUri()}/activities`);
+    return Activity.get(
+      { id },
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -276,7 +303,11 @@ export default class Project extends Ressource {
   getActivities(types, starts_at) {
     const params = { type: types, starts_at };
 
-    return Activity.query(params, `${this.getUri()}/activities`);
+    return Activity.query(
+      params,
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -300,7 +331,8 @@ export default class Project extends Ressource {
   getVariables(limit) {
     return ProjectLevelVariable.query(
       { limit },
-      this.getLink("#manage-variables")
+      this.getLink("#manage-variables"),
+      this.getConfig()
     );
   }
 
@@ -352,7 +384,8 @@ export default class Project extends Ressource {
           values.name = name;
           const projectLevelVariable = new ProjectLevelVariable(
             values,
-            this.getLink("#manage-variables")
+            this.getLink("#manage-variables"),
+            this.getConfig()
           );
 
           return projectLevelVariable.save();
@@ -373,7 +406,8 @@ export default class Project extends Ressource {
   getVariable(name) {
     return ProjectLevelVariable.get(
       { name },
-      this.getLink("#manage-variables")
+      this.getLink("#manage-variables"),
+      this.getConfig()
     );
   }
 
@@ -381,7 +415,11 @@ export default class Project extends Ressource {
    * get certificates
    */
   getCertificates() {
-    return Certificate.query({}, `${this.getUri()}/certificates`);
+    return Certificate.query(
+      {},
+      `${this.getUri()}/certificates`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -393,7 +431,8 @@ export default class Project extends Ressource {
   addCertificate(certificate, key, chain = []) {
     const certificateObj = new Certificate(
       { certificate, key, chain },
-      `${this.getUri()}/certificates`
+      `${this.getUri()}/certificates`,
+      this.getConfig()
     );
 
     return certificateObj.save();

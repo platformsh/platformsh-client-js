@@ -5,11 +5,10 @@ const url = "/v1/vouchers";
 const paramDefaults = {};
 
 export default class Voucher extends Ressource {
-  constructor(account) {
+  constructor(account, url, params, config) {
     const { uuid } = account;
-    const { api_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { uuid }, account);
+    super(`:api_url${url}`, paramDefaults, { uuid }, account, [], [], config);
     this.currency = "";
     this.discounted_orders = [];
     this.uuid = "";
@@ -19,25 +18,22 @@ export default class Voucher extends Ressource {
     this.vouchers_total = 0;
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { uuid, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { uuid },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params) {
-    const { api_url } = getConfig();
-
+  static query(params, config) {
     return super.query(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       params,
       data => data.vouchers
     );

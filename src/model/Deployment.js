@@ -6,8 +6,8 @@ const _url =
   "/projects/:projectId/environments/:environmentId/deployments/current";
 
 export default class Deployment extends Ressource {
-  constructor(deployment, url) {
-    super(url, paramDefaults, {}, deployment);
+  constructor(deployment, url, config) {
+    super(url, paramDefaults, {}, deployment, [], [], config);
     this.webapps = {};
     this.services = {};
     this.workers = {};
@@ -15,14 +15,13 @@ export default class Deployment extends Ressource {
     this.id = "";
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

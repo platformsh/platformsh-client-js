@@ -16,14 +16,15 @@ const modifiableField = ["role"];
 const _url = "/projects/:projectId/environments/:environmentId/access";
 
 export default class EnvironmentAccess extends Ressource {
-  constructor(environmentAccess, url) {
+  constructor(environmentAccess, url, params, config) {
     super(
       url,
       paramDefaults,
       {},
       environmentAccess,
       creatableField,
-      modifiableField
+      modifiableField,
+      config
     );
     this.id = "";
     this.user = "";
@@ -34,27 +35,25 @@ export default class EnvironmentAccess extends Ressource {
     this._required = ["role"];
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, environmentId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
+    const urlToCall = customUrl ? `${customUrl}/:id` : `:api_url${_url}/:id`;
 
     return super.get(
       urlToCall,
       { id, projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
@@ -91,7 +90,7 @@ export default class EnvironmentAccess extends Ressource {
    * @return Result
    */
   getAccount() {
-    return Account.get({ id: this.id }).then(account => {
+    return Account.get({ id: this.id }, "", this.getConfig()).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);
       }
@@ -109,6 +108,6 @@ export default class EnvironmentAccess extends Ressource {
   getUser() {
     const embeddedUsers = this.getEmbedded("users");
 
-    return new User(embeddedUsers[0]);
+    return new User(embeddedUsers[0], undefined, {}, this.getConfig());
   }
 }

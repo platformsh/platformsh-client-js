@@ -10,16 +10,15 @@ const creatableField = ["name", "parent", "id"];
 const modifiableField = ["name"];
 
 export default class Team extends Ressource {
-  constructor(team, url) {
-    const { api_url } = getConfig();
-
+  constructor(team, url, params, config) {
     super(
-      url || `${api_url}${_url}`,
+      url || `:api_url${_url}`,
       paramDefaults,
       {},
       team,
       creatableField,
-      modifiableField
+      modifiableField,
+      config
     );
     this.id = "";
     this.name = "";
@@ -27,35 +26,37 @@ export default class Team extends Ressource {
     this.organization = ""; // organizationId
   }
 
-  static get(params = {}, customUrl) {
+  static get(params = {}, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl || `:api_url${_url}/:id`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
-    const { api_url } = getConfig();
-
+  static query(params, customUrl, config) {
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       params
     );
   }
 
   getMembers() {
-    return TeamMember.query({ teamId: this.id });
+    return TeamMember.query({ teamId: this.id }, "", this.getConfig());
   }
 
   addMember(member) {
-    const teamMember = new TeamMember({ ...member, teamId: this.id });
+    const teamMember = new TeamMember(
+      { ...member, teamId: this.id },
+      "",
+      {},
+      this.getConfig()
+    );
 
     return teamMember.save();
   }
@@ -65,7 +66,7 @@ export default class Team extends Ressource {
       return super.getLink(rel, absolute);
     }
     if (rel === "self") {
-      const { api_url } = getConfig();
+      const { api_url } = this.getConfig();
 
       return `${api_url}${_url}/:id`;
     }

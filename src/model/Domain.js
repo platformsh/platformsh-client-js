@@ -5,33 +5,31 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/domains";
 
 export default class Domain extends Ressource {
-  constructor(domain, url) {
-    super(url, paramDefaults, {}, domain, ["name", "ssl"]);
+  constructor(domain, url, config) {
+    super(url, paramDefaults, {}, domain, ["name", "ssl"], [], config);
     this.id = "";
     this.name = "";
     this._required = ["name"];
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { name, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl ? `${customUrl}/:name` : `${api_url}${_url}`,
+      customUrl ? `${customUrl}/:name` : `:api_url${_url}`,
       { name },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

@@ -5,11 +5,11 @@ const url = "/platform/regions";
 const paramDefaults = {};
 
 export default class Region extends Ressource {
-  constructor(region) {
+  constructor(region, config) {
     const { id } = region;
     const { account_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, region);
+    super(`${config.account_url}${url}`, paramDefaults, { id }, region, config);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = "";
     this.available = false;
@@ -20,9 +20,12 @@ export default class Region extends Ressource {
     this.zone = "";
   }
 
-  static query(params) {
-    const { account_url } = getConfig();
-
-    return super.query(`${account_url}${url}`, {}, paramDefaults, params);
+  static query(params, config) {
+    return super.query(
+      `:account_url${url}`,
+      {},
+      super.getConfig(config),
+      params
+    );
   }
 }

@@ -21,8 +21,16 @@ const modifialbleField = [
 const _url = "/projects/:projectId/environments/:environmentId/variables";
 
 export default class Variable extends Ressource {
-  constructor(variable, url) {
-    super(url, paramDefaults, {}, variable, creatableField, modifialbleField);
+  constructor(variable, url, params, config) {
+    super(
+      url,
+      paramDefaults,
+      {},
+      variable,
+      creatableField,
+      modifialbleField,
+      config
+    );
     this.id = "";
     this.name = "";
     this.project = "";
@@ -37,22 +45,25 @@ export default class Variable extends Ressource {
     this.is_inheritable = true;
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, environmentId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
-    const urlToCall = customUrl || `${api_url}${_url}`;
+    const urlToCall = customUrl || `:api_url${_url}`;
 
-    return super.get(`${urlToCall}/:id`, { id }, paramDefaults, queryParams);
+    return super.get(
+      `${urlToCall}/:id`,
+      { id },
+      super.getConfig(config),
+      queryParams
+    );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
@@ -67,7 +78,12 @@ export default class Variable extends Ressource {
    */
   disable() {
     if (!this.is_enabled) {
-      return new Result({}, this._url, this.prototype.constructor);
+      return new Result(
+        {},
+        this._url,
+        this.prototype.constructor,
+        this.getConfig()
+      );
     }
     return this.update({ is_enabled: false });
   }

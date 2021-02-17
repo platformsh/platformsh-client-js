@@ -29,6 +29,7 @@ export const request = (
   url,
   method,
   data,
+  config,
   additionalHeaders = {},
   retryNumber = 0
 ) => {
@@ -54,16 +55,17 @@ export const request = (
     fetch(apiUrl, requestConfig)
       .then(response => {
         if (response.status === 401) {
-          const config = getConfig();
+          const conf = config || getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
-          if (typeof config.access_token === "undefined" && retryNumber < 2) {
-            return authenticate(config, true).then(t => {
+          if (typeof conf.access_token === "undefined" && retryNumber < 2) {
+            return authenticate(conf, true).then(t => {
               resolve(
                 authenticatedRequest(
                   url,
                   method,
                   data,
+                  conf,
                   additionalHeaders,
                   retryNumber + 1
                 )
@@ -119,6 +121,7 @@ export const authenticatedRequest = (
   url,
   method,
   data,
+  config,
   additionalHeaders = {},
   retryNumber = 0
 ) => {
@@ -139,14 +142,15 @@ export const authenticatedRequest = (
     const tokenExpirationDate = token.expires;
 
     if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
-      const config = getConfig();
+      const conf = config || getConfig();
       console.log("Token expiration detected");
 
-      return authenticate(config, true).then(t => {
+      return authenticate(conf, true).then(t => {
         return authenticatedRequest(
           url,
           method,
           data,
+          conf,
           additionalHeaders,
           retryNumber + 1
         );
@@ -161,6 +165,7 @@ export const authenticatedRequest = (
       url,
       method,
       data,
+      config,
       {
         ...additionalHeaders,
         ...authenticationHeaders

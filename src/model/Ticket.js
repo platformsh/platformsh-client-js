@@ -6,10 +6,10 @@ const url = "/v1/tickets";
 const paramDefaults = {};
 
 export default class Ticket extends Ressource {
-  constructor(ticket) {
+  constructor(ticket, url, params, config) {
     const { api_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, {}, ticket, [], []);
+    super(`:api_url${url}`, paramDefaults, {}, ticket, [], [], config);
 
     this.subject = "";
     this.description = "";
@@ -21,35 +21,37 @@ export default class Ticket extends Ressource {
     this.attachment_filename = "";
   }
 
-  static getAttachments(ticketId) {
-    const { api_url } = getConfig();
+  static getAttachments(ticketId, config) {
     const url = `/v1/comments/${ticketId}/description`;
 
-    return super.get(`${api_url}${url}`, {}, paramDefaults, {});
+    return super.get(`:api_url${url}`, {}, super.getConfig(config), {});
   }
 
-  static getAllAttachments(ticketId) {
-    const { api_url } = getConfig();
+  static getAllAttachments(ticketId, config) {
+    const cnf = super.getConfig(config);
     const url = `/v1/comments/${ticketId}/attachments`;
 
-    return request(`${api_url}${url}`, "GET");
+    return request(`${cnf.api_url}${url}`, "GET", {}, cnf);
   }
 
-  static query(queryParams) {
-    const { api_url } = getConfig();
-
-    return super.get(`${api_url}${url}`, {}, paramDefaults, queryParams);
+  static query(queryParams, config) {
+    return super.get(
+      `:api_url${url}`,
+      {},
+      super.getConfig(config),
+      queryParams
+    );
   }
 
-  static open(ticket) {
-    const { api_url } = getConfig();
+  static open(ticket, config) {
+    const cnf = super.getConfig(config);
 
-    return request(`${api_url}${url}`, "POST", ticket);
+    return request(`${cnf.api_url}${url}`, "POST", ticket, cnf);
   }
 
-  static patch(ticketId, ticket) {
-    const { api_url } = getConfig();
+  static patch(ticketId, ticket, config) {
+    const cnf = super.getConfig(config);
 
-    return request(`${api_url}${url}/${ticketId}`, "PATCH", ticket);
+    return request(`${cnf.api_url}${url}/${ticketId}`, "PATCH", ticket, cnf);
   }
 }

@@ -8,17 +8,17 @@ const _url = `${_queryUrl}/:id`;
 const creatableField = ["projectId", "environments", "role", "email", "force"];
 
 export default class Invitation extends Ressource {
-  constructor(invitation, url) {
+  constructor(invitation, url, params, config) {
     const { projectId, id } = invitation;
-    const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url || `:api_url${_url}`,
       {},
       { projectId, id },
       invitation,
       creatableField,
-      []
+      [],
+      config
     );
 
     this._queryUrl = Ressource.getQueryUrl(this._url);
@@ -33,21 +33,25 @@ export default class Invitation extends Ressource {
     this.force = false;
   }
 
-  static get(projectId, id) {
-    const { api_url } = getConfig();
-
-    return super.get(`${api_url}${_url}`, { id, projectId });
+  static get(projectId, id, config) {
+    return super.get(
+      `:api_url${_url}`,
+      { id, projectId },
+      super.getConfig(config)
+    );
   }
 
-  static query(projectId) {
-    const { api_url } = getConfig();
-
-    return super.query(`${api_url}${_queryUrl}`, { projectId }, {}, {}, data =>
-      data.map(d => ({ projectId, ...d }))
+  static query(projectId, config) {
+    return super.query(
+      `:api_url${_queryUrl}`,
+      { projectId },
+      super.getConfig(config),
+      {},
+      data => data.map(d => ({ projectId, ...d }))
     );
   }
 
   delete() {
-    return request(this._url, "DELETE");
+    return request(this._url, "DELETE", {}, this.getConfig());
   }
 }

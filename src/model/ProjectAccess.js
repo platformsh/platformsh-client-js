@@ -16,19 +16,30 @@ const modifiableField = ["role"];
 const _url = "/projects/:projectId/access";
 
 export default class ProjectAccess extends Ressource {
-  constructor(projectAccess, url) {
-    super(url, paramDefaults, {}, projectAccess, createField, modifiableField);
+  constructor(projectAccess, url, config) {
+    super(
+      url,
+      paramDefaults,
+      {},
+      projectAccess,
+      createField,
+      modifiableField,
+      config
+    );
     this._required = ["email"];
     this.id = "";
     this.role = "";
     this.user = "";
   }
 
-  static query(params = {}, customUrl) {
+  static query(params = {}, customUrl, config) {
     const { projectId } = params;
-    const { api_url } = getConfig();
 
-    return super.query(customUrl || `${api_url}${_url}`, { projectId });
+    return super.query(
+      customUrl || `:api_url${_url}`,
+      { projectId },
+      super.getConfig(config)
+    );
   }
 
   /**
@@ -39,12 +50,14 @@ export default class ProjectAccess extends Ressource {
    * @return Result
    */
   getAccount() {
-    return Account.get({ id: this.user }).then(account => {
-      if (!account) {
-        throw new Error(`Account not found for user: ${this.id}`);
+    return Account.get({ id: this.user }, "", this.getConfig()).then(
+      account => {
+        if (!account) {
+          throw new Error(`Account not found for user: ${this.id}`);
+        }
+        return account;
       }
-      return account;
-    });
+    );
   }
 
   /**
@@ -57,7 +70,7 @@ export default class ProjectAccess extends Ressource {
   getUser() {
     const embeddedUsers = this.getEmbedded("users");
 
-    return new User(embeddedUsers[0]);
+    return new User(embeddedUsers[0], this.getConfig());
   }
 
   /**

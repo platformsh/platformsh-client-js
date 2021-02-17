@@ -55,7 +55,7 @@ const fields = [
 const _url = "/projects/:projectId/integrations";
 
 export default class Integration extends Ressource {
-  constructor(integration, url) {
+  constructor(integration, url, config) {
     const { id } = integration;
 
     super(
@@ -64,7 +64,8 @@ export default class Integration extends Ressource {
       { id },
       integration,
       fields.concat("type"),
-      fields
+      fields,
+      config
     );
     this._required = ["type"];
     this.id = "";
@@ -83,26 +84,24 @@ export default class Integration extends Ressource {
     return errors;
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
+      customUrl ? `${customUrl}/:id` : `:api_url${_url}/:id`,
       { projectId, id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
@@ -115,7 +114,11 @@ export default class Integration extends Ressource {
    * @return Activity|false
    */
   getActivity(id) {
-    return Activity.get({ id }, `${this.getUri()}/activities`);
+    return Activity.get(
+      { id },
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -133,7 +136,11 @@ export default class Integration extends Ressource {
   getActivities(type, starts_at) {
     const params = { type, starts_at };
 
-    return Activity.query(params, `${this.getUri()}/activities`);
+    return Activity.query(
+      params,
+      `${this.getUri()}/activities`,
+      this.getConfig()
+    );
   }
 
   /**
@@ -145,6 +152,6 @@ export default class Integration extends Ressource {
   triggerHook() {
     const hookUrl = this.getLink("#hook");
 
-    return request(hookUrl, "post");
+    return request(hookUrl, "post", {}, this.getConfig());
   }
 }

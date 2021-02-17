@@ -6,10 +6,8 @@ const url = "/v1/comments";
 const paramDefaults = {};
 
 export default class Comment extends Ressource {
-  constructor(comment) {
-    const { api_url } = getConfig();
-
-    super(`${api_url}${url}`, paramDefaults, {}, comment, [], []);
+  constructor(comment, config) {
+    super(`:api_url${url}`, paramDefaults, {}, comment, [], [], config);
 
     this.ticket_id = "";
     this.comment_id = "";
@@ -20,20 +18,18 @@ export default class Comment extends Ressource {
     this.attachments = [];
   }
 
-  static query(ticketId, queryParams) {
-    const { api_url } = getConfig();
-
+  static query(ticketId, queryParams, config) {
     return super.get(
-      `${api_url}${url}/${ticketId}`,
+      `:api_url${url}/${ticketId}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static send(comment) {
-    const { api_url } = getConfig();
+  static send(comment, config) {
+    const conf = super.getConfig(config);
 
-    return request(`${api_url}${url}`, "POST", comment);
+    return request(`${conf.api_url}${url}`, "POST", comment, conf);
   }
 }

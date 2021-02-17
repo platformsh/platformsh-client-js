@@ -5,10 +5,8 @@ const url = "/v1/tickets/priority";
 const paramDefaults = {};
 
 export default class TicketPriority extends Ressource {
-  constructor(ticketPriority) {
-    const { api_url } = getConfig();
-
-    super(`${api_url}${url}`, paramDefaults, {}, ticketPriority, [], []);
+  constructor(ticketPriority, url, params, config) {
+    super(`:api_url${url}`, paramDefaults, {}, ticketPriority, [], [], config);
 
     this.id = "";
     this.label = "";
@@ -16,13 +14,11 @@ export default class TicketPriority extends Ressource {
     this.description = "";
   }
 
-  static get(queryParams) {
-    const { api_url } = getConfig();
-
+  static get(queryParams, config) {
     return super.query(
-      `${api_url}${url}`,
+      `:api_url${url}`,
       {},
-      paramDefaults,
+      super.getConfig(config),
       queryParams,
       data => data
     );

@@ -5,8 +5,16 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/certificates";
 
 export default class Certificate extends Ressource {
-  constructor(certificate, url) {
-    super(url, paramDefaults, {}, certificate, ["key", "certificate", "chain"]);
+  constructor(certificate, url, config) {
+    super(
+      url,
+      paramDefaults,
+      {},
+      certificate,
+      ["key", "certificate", "chain"],
+      [],
+      config
+    );
     this.key = "";
     this.id = "";
     this.certificate = "";
@@ -20,14 +28,13 @@ export default class Certificate extends Ressource {
     this._required = ["key", "certificate"];
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }

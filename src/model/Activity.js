@@ -6,8 +6,8 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
 
 export default class Activity extends Ressource {
-  constructor(activity, url) {
-    super(url, paramDefaults, {}, activity, ["name", "ssl"]);
+  constructor(activity, url, config) {
+    super(url, paramDefaults, {}, activity, ["name", "ssl"], [], config);
     this.id = "";
     this.completion_percent = 0;
     this.log = "";
@@ -29,26 +29,24 @@ export default class Activity extends Ressource {
     this.STATE_PENDING = "pending";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { projectId, environmentId, id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
+      customUrl ? `${customUrl}/:id` : `:api_url${_url}/:id`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params, customUrl) {
+  static query(params, customUrl, config) {
     const { projectId, environmentId, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
+      customUrl || `:api_url${_url}`,
       { projectId, environmentId },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
@@ -152,7 +150,7 @@ export default class Activity extends Ressource {
       });
     }
 
-    return request(this.getLink("log"), "GET", { start_at });
+    return request(this.getLink("log"), "GET", { start_at }, this.getConfig());
   }
 
   getLogs(callback) {

@@ -5,11 +5,10 @@ const url = "/v1/orders/:id";
 const paramDefaults = {};
 
 export default class Order extends Ressource {
-  constructor(account) {
+  constructor(account, customUrl, params, config) {
     const { id } = account;
-    const { api_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, { id }, account);
+    super(`:api_url${url}`, paramDefaults, { id }, account, [], [], config);
     this.id = "";
     this.status = "";
     this.owner = "";
@@ -24,25 +23,22 @@ export default class Order extends Ressource {
     this.line_items = [];
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, config) {
     const { id, ...queryParams } = params;
-    const { api_url } = getConfig();
 
     return super.get(
-      customUrl || `${api_url}${url}`,
+      customUrl || `:api_url${url}`,
       { id },
-      paramDefaults,
+      super.getConfig(config),
       queryParams
     );
   }
 
-  static query(params) {
-    const { api_url } = getConfig();
-
+  static query(params, config) {
     return super.query(
-      this.getQueryUrl(`${api_url}${url}`),
+      this.getQueryUrl(`:api_url${url}`),
       {},
-      paramDefaults,
+      super.getConfig(config),
       params,
       data => data.commerce_order
     );
