@@ -949,14 +949,14 @@ export default class Client {
    * Get a list of available priorities for the subscription ID.
    *
    * @param {string|number} subscription_id
-   * @param {string} category_name
+   * @param {string} category
    *
    * @return Promise<Priority[]>
    */
-  async getTicketPriorities(subscription_id, category_name) {
+  async getTicketPriorities(subscription_id, category) {
     const priorities = await entities.TicketPriority.get({
       subscription_id,
-      category_name
+      category
     });
     return priorities.map(priority => new entities.TicketPriority(priority));
   }
