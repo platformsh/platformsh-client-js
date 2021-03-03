@@ -67,6 +67,33 @@ function removeIFrame() {
   document.body.removeChild(iframe);
 }
 
+function checkForStorageAccess(auth) {
+  return new Promise((resolve, reject) => {
+    removeIFrame();
+
+    createIFrame(`${auth.authentication_url}/request-storage-access.html`);
+
+    async function receiveMessage(event) {
+      if (event.origin !== auth.authentication_url) {
+        return false;
+      }
+      const data = event.data;
+
+      window.removeEventListener("message", receiveMessage, false);
+
+      removeIFrame();
+
+      if (data.granted) {
+        resolve();
+      } else {
+        reject();
+      }
+    }
+
+    window.addEventListener("message", receiveMessage, false);
+  });
+}
+
 function logInWithToken(token) {
   const credentials = {
     grant_type: "api_token",
@@ -300,6 +327,11 @@ const logInWithWebMessageAndPKCE = async reset => {
 
       if (storedToken && !reset) {
         return resolve(storedToken);
+      }
+
+      // Remove this when google chrome is compatible
+      if (document.hasStorageAccess) {
+        await checkForStorageAccess(auth);
       }
 
       jso_wipe();
