@@ -344,7 +344,11 @@ const logInWithWebMessageAndPKCE = async reset => {
         const data = event.data;
 
         if (data.error || !data.payload || data.state !== req.state) {
-          throw new Error(data.error);
+          if (auth.popupMode) {
+            return logInWithPopUp();
+          }
+
+          return logInWithRedirect();
         }
 
         localStorage.removeItem(`state-${req.providerID}-${req.state}`);
