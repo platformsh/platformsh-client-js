@@ -72,7 +72,6 @@ function checkForStorageAccess(auth) {
     removeIFrame();
 
     createIFrame(`${auth.authentication_url}/request-storage-access.html`);
-
     async function receiveMessage(event) {
       if (event.origin !== auth.authentication_url) {
         return false;
@@ -329,11 +328,6 @@ const logInWithWebMessageAndPKCE = async reset => {
         return resolve(storedToken);
       }
 
-      // Remove this when google chrome is compatible
-      if (document.hasStorageAccess) {
-        await checkForStorageAccess(auth);
-      }
-
       jso_wipe();
       removeIFrame();
 
@@ -352,6 +346,11 @@ const logInWithWebMessageAndPKCE = async reset => {
             )
           );
         }
+      }
+
+      // Remove this when google chrome is compatible
+      if (document.hasStorageAccess) {
+        await checkForStorageAccess(auth);
       }
 
       const req = jso_getAuthRequest(auth.provider, auth.scope);
