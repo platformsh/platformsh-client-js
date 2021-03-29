@@ -333,6 +333,7 @@ describe("Client", () => {
         region: "region",
         plan: "development",
         title: "title",
+        defaultBranch: "production",
         storage: "storage",
         environments: "environments",
         activationCallback

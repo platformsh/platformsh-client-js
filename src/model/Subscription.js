@@ -15,7 +15,8 @@ const creatableField = [
   "environments",
   "options_url",
   "vendor",
-  "options_custom"
+  "options_custom",
+  "default_branch"
 ];
 
 const modifiableField = ["plan", "environments", "storage", "big_dev"];
