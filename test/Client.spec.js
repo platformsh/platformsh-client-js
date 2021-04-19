@@ -967,4 +967,31 @@ describe("Client", () => {
       );
     });
   });
+  describe("Organization members", done => {
+    it("Get organization members", done => {
+      fetchMock.mock(`${api_url}/organizations/aliceOrg/members`, {
+        items: [
+          {
+            id: "alice"
+          }
+        ]
+      });
+      client.getOrganizationMembers("aliceOrg").then(members => {
+        assert.equal(members[0].id, "alice");
+        assert.equal(members[0].constructor.name, "OrganizationMember");
+        done();
+      });
+    });
+
+    it("Get an organization member", done => {
+      fetchMock.mock(`${api_url}/organizations/aliceOrg/members/1`, {
+        id: "alice"
+      });
+      client.getOrganizationMember("aliceOrg", "1").then(member => {
+        assert.equal(member.id, "alice");
+        assert.equal(member.constructor.name, "OrganizationMember");
+        done();
+      });
+    });
+  });
 });

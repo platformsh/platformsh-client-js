@@ -491,6 +491,30 @@ export default class Client {
   }
 
   /**
+   * Get organization members.
+   *
+   * @param string organizationId
+   * @param array filters
+   *
+   * @return OrganizationMember[]
+   */
+  getOrganizationMembers(organizationId, filter) {
+    return entities.OrganizationMember.query({ organizationId, filter });
+  }
+
+  /**
+   * Get an organization member.
+   *
+   * @param string organizationId
+   * @param string id
+   *
+   * @return OrganizationMember
+   */
+  getOrganizationMember(organizationId, id) {
+    return entities.OrganizationMember.get({ organizationId, id });
+  }
+
+  /**
    * Initalize the environment for a new subscription
    *
    * @param string projectId

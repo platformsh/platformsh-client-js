@@ -22,6 +22,7 @@ export default class Organization extends Ressource {
       modifiableField
     );
     this.id = "";
+    this.user_id = "";
     this.name = "";
     this.label = "";
     this.owner = "";
@@ -57,8 +58,8 @@ export default class Organization extends Ressource {
 
   addMember(member) {
     const organizationMember = new OrganizationMember({
-      ...member,
-      organizationId: this.id
+      organizationId: this.id,
+      ...member
     });
 
     return organizationMember.save();
@@ -67,11 +68,6 @@ export default class Organization extends Ressource {
   getLink(rel, absolute = true) {
     if (this.hasLink(rel)) {
       return super.getLink(rel, absolute);
-    }
-    if (rel === "self") {
-      const { api_url } = getConfig();
-
-      return `${api_url}${_url}/:id`;
     }
   }
 }

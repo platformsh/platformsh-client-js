@@ -40,6 +40,7 @@ import Voucher from "./Voucher";
 import Invitation from "./Invitation";
 import OrganizationSubscription from "./OrganizationSubscription";
 import EnvironmentType from "./EnvironmentType";
+import OrganizationMember from "./OrganizationMember";
 
 export default {
   Account,
@@ -83,5 +84,6 @@ export default {
   Voucher,
   Invitation,
   OrganizationSubscription,
-  EnvironmentType
+  EnvironmentType,
+  OrganizationMember
 };
