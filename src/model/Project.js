@@ -16,7 +16,12 @@ import Activity from "./Activity";
 import Certificate from "./Certificate";
 
 const paramDefaults = {};
-const modifiableField = ["default_domain", "title", "timezone"];
+const modifiableField = [
+  "default_domain",
+  "title",
+  "default_branch",
+  "timezone"
+];
 const url = "/projects/:id";
 let _source;
 
@@ -47,6 +52,8 @@ export default class Project extends Ressource {
     this.vendor_resources = "";
     this.vendor_website = "";
     this.default_domain = "";
+    this.organization = "";
+    this.default_branch = "";
   }
 
   static get(params, customUrl) {

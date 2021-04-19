@@ -365,6 +365,7 @@ export default class Client {
    * @param string region  The region. See Subscription::$availableRegions.
    * @param string plan    The plan. See Subscription::$availablePlans.
    * @param string title   The project title.
+   * @param string defaultBranch The default branch.
    * @param int    storage The storage of each environment, in MiB.
    * @param int    environments The number of available environments.
    * @param array  activationCallback An activation callback for the subscription.
@@ -376,6 +377,7 @@ export default class Client {
       region,
       plan = "development",
       title,
+      defaultBranch,
       storage,
       environments,
       optionsUrl,
@@ -386,6 +388,7 @@ export default class Client {
       project_region: region,
       plan,
       project_title: title,
+      default_branch: defaultBranch,
       storage,
       environments,
       options_url: optionsUrl,
@@ -949,11 +952,15 @@ export default class Client {
    * Get a list of available priorities for the subscription ID.
    *
    * @param {string|number} subscription_id
+   * @param {string} category
    *
    * @return Promise<Priority[]>
    */
-  async getTicketPriorities(subscription_id) {
-    const priorities = await entities.TicketPriority.get({ subscription_id });
+  async getTicketPriorities(subscription_id, category) {
+    const priorities = await entities.TicketPriority.get({
+      subscription_id,
+      category
+    });
     return priorities.map(priority => new entities.TicketPriority(priority));
   }
 

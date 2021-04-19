@@ -15,7 +15,8 @@ const creatableField = [
   "environments",
   "options_url",
   "vendor",
-  "options_custom"
+  "options_custom",
+  "default_branch"
 ];
 
 const modifiableField = ["plan", "environments", "storage", "big_dev"];
@@ -61,6 +62,7 @@ export default class Subscription extends Ressource {
     this.STATUS_SUSPENDED = "suspended";
     this.STATUS_DELETED = "deleted";
     this.owner_info = {};
+    this.organization = "";
   }
 
   static get(params, customUrl) {

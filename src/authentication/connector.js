@@ -67,6 +67,32 @@ function removeIFrame() {
   document.body.removeChild(iframe);
 }
 
+function checkForStorageAccess(auth) {
+  return new Promise((resolve, reject) => {
+    removeIFrame();
+
+    createIFrame(`${auth.authentication_url}/request-storage-access.html`);
+    async function receiveMessage(event) {
+      if (event.origin !== auth.authentication_url) {
+        return false;
+      }
+      const data = event.data;
+
+      window.removeEventListener("message", receiveMessage, false);
+
+      removeIFrame();
+
+      if (data.granted) {
+        resolve();
+      } else {
+        reject();
+      }
+    }
+
+    window.addEventListener("message", receiveMessage, false);
+  });
+}
+
 function logInWithToken(token) {
   const credentials = {
     grant_type: "api_token",
@@ -322,6 +348,11 @@ const logInWithWebMessageAndPKCE = async reset => {
         }
       }
 
+      // Remove this when google chrome is compatible
+      if (document.hasStorageAccess) {
+        await checkForStorageAccess(auth);
+      }
+
       const req = jso_getAuthRequest(auth.provider, auth.scope);
 
       const pkce = await generatePKCE();
@@ -344,7 +375,11 @@ const logInWithWebMessageAndPKCE = async reset => {
         const data = event.data;
 
         if (data.error || !data.payload || data.state !== req.state) {
-          throw new Error(data.error);
+          if (auth.popupMode) {
+            return logInWithPopUp();
+          }
+
+          return logInWithRedirect();
         }
 
         localStorage.removeItem(`state-${req.providerID}-${req.state}`);
