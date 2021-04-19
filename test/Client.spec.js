@@ -509,17 +509,19 @@ describe("Client", () => {
   });
 
   it("Get regions", done => {
-    fetchMock.mock("https://accounts.platform.sh/api/platform/regions", [
-      {
-        available: true,
-        endpoint: "https://staging.plat.farm/api",
-        id: "us.platform.sh",
-        label: "PEPSi Staging",
-        private: false,
-        provider: "AWS",
-        zone: "Europe"
-      }
-    ]);
+    fetchMock.mock("https://accounts.platform.sh/api/platform/regions", {
+      regions: [
+        {
+          available: true,
+          endpoint: "https://staging.plat.farm/api",
+          id: "us.platform.sh",
+          label: "PEPSi Staging",
+          private: false,
+          provider: "AWS",
+          zone: "Europe"
+        }
+      ]
+    });
     client.getRegions().then(regions => {
       assert.equal(regions[0].id, "us.platform.sh");
       assert.equal(regions[0].endpoint, "https://staging.plat.farm/api");

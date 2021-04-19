@@ -23,6 +23,12 @@ export default class Region extends Ressource {
   static query(params) {
     const { account_url } = getConfig();
 
-    return super.query(`${account_url}${url}`, {}, paramDefaults, params);
+    return super.query(
+      `${account_url}${url}`,
+      {},
+      paramDefaults,
+      params,
+      data => data.regions
+    );
   }
 }
