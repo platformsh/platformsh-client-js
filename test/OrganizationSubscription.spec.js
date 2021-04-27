@@ -51,6 +51,33 @@ describe("OrganizationSubscription", () => {
       })
       .catch(err => console.log(err));
   });
+  it("Get organization subscription estimate", done => {
+    fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions/1`, {
+      id: 1,
+      project_region: "region",
+      plan: "test_plan",
+      storage: "test_storage",
+      environments: [],
+      user_licences: ["test_user_licences"]
+    });
+
+    fetchMock.mock(
+      `${api_url}/organizations/aliceOrg/subscriptions/1/estimate?plan=test_plan&storage=test_storage&`,
+      {
+        project_region: "region"
+      }
+    );
+    OrganizationSubscription.get({ organizationId: "aliceOrg", id: "1" }).then(
+      subscription => {
+        console.log(subscription._queryUrl);
+        assert.equal(subscription.project_region, "region");
+        assert.equal(subscription.constructor.name, "OrganizationSubscription");
+        subscription.getEstimate().then(es => {
+          done();
+        });
+      }
+    );
+  });
 
   it("Get organization subscriptions", done => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions`, {

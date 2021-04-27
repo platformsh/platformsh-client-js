@@ -563,6 +563,42 @@ export default class Client {
   }
 
   /**
+   * Estimate the cost of a subscription for an organization.
+   *
+   * @param string plan         The plan (see Subscription::$availablePlans).
+   * @param int    storage      The allowed storage per environment (in MiB).
+   * @param int    environments The number of environments.
+   * @param int    users        The number of users.
+   *
+   * @return array An array containing at least 'total' (a formatted price).
+   */
+  getOrganizationSubscriptionEstimate(
+    organizationId,
+    plan,
+    storage,
+    environments,
+    user_licenses,
+    format = null,
+    country_code = null
+  ) {
+    const query = {
+      plan,
+      storage,
+      environments,
+      user_licenses
+    };
+    if (format) query.format = format;
+    if (country_code) query.country_code = country_code;
+    const { api_url } = getConfig();
+
+    return request(
+      `${api_url}/organizations/${organizationId}/subscriptions/estimate`,
+      "GET",
+      query
+    );
+  }
+
+  /**
    * Get current deployment informations
    *
    * @param string projectId
@@ -679,6 +715,16 @@ export default class Client {
   }
 
   /**
+   * Get organization address
+   *
+   *
+   * @return Address
+   */
+  getOrganizationAddress(organizationId) {
+    return entities.OrganizationAddress.get({ organizationId });
+  }
+
+  /**
    * Update address
    *
    *
@@ -686,6 +732,16 @@ export default class Client {
    */
   saveAddress(address) {
     return entities.Address.update({ address });
+  }
+
+  /**
+   * Update organization address
+   *
+   *
+   * @return Address
+   */
+  saveOrganizationAddress(address) {
+    return entities.OrganizationAddress.update({ address });
   }
 
   /**
@@ -709,6 +765,29 @@ export default class Client {
   }
 
   /**
+   * Get organization orders
+   *
+   *
+   * @return Account
+   */
+  getOrganizationOrders(organizationId, owner) {
+    return entities.OrganizationOrder.query({
+      organizationId,
+      filter: { owner }
+    });
+  }
+
+  /**
+   * Get organization order
+   *
+   *
+   * @return Account
+   */
+  getOrganizationOrder(organizationId, id) {
+    return entities.OrganizationOrder.get({ organizationId, id });
+  }
+
+  /**
    * Get vouchers
    *
    *
@@ -716,6 +795,16 @@ export default class Client {
    */
   getVouchers(uuid) {
     return entities.Voucher.get({ uuid });
+  }
+
+  /**
+   * Get organization vouchers
+   *
+   *
+   * @return Voucher
+   */
+  getOrganizationVouchers(organizationId) {
+    return entities.OrganizationVoucher.query({ organizationId });
   }
 
   /**
@@ -741,6 +830,17 @@ export default class Client {
   }
 
   /**
+   * Get organization payment source.
+   *
+   * @param string organization id.
+   *
+   * @return Promise
+   */
+  getOrganizationPaymentSource(organizationId) {
+    return entities.OrganizationPaymentSource.get({ organizationId });
+  }
+
+  /**
    * Add a new payement source to user's account.
    *
    * @param string type The type of the payment source: credit-card /
@@ -757,6 +857,25 @@ export default class Client {
   }
 
   /**
+   * Add a new payement source to an organization.
+   *
+   * @param string type The type of the payment source: credit-card /
+   * stripe_sepa_debit.
+   * @param string token The token returns by Stripe.
+   * @param string email The email linked to the payment source.
+   *
+   * @return Result
+   */
+  addOrganizationPaymentSource(organizationId, type, token, email) {
+    const values = this.cleanRequest({ type, token, email });
+
+    return new entities.OrganizationPaymentSource({
+      organizationId,
+      ...values
+    }).save();
+  }
+
+  /**
    * Delete payment source for the owner.
    *
    * @param {string} uuid The UUID of the owner of the payment source.
@@ -769,6 +888,18 @@ export default class Client {
   }
 
   /**
+   * Delete payment source for the organization.
+   *
+   * @param {string} uuid The UUID of the owner of the payment source.
+   *
+   * @return {Promise} It resolves if the payment source is deleted,
+   * rejects otherwise
+   */
+  deleteOrganizationPaymentSource(uuid) {
+    return entities.OrganizationPaymentSource.delete(uuid);
+  }
+
+  /**
    * Get payment source allowed.
    *
    * @return Promise
@@ -778,12 +909,30 @@ export default class Client {
   }
 
   /**
-   * Create a Setupt Intent
+   * Get payment source allowed for an organization.
+   *
+   * @return Promise
+   */
+  getOrganizationPaymentSourcesAllowed(organizationId) {
+    return entities.OrganizationPaymentSource.getAllowed(organizationId);
+  }
+
+  /**
+   * Create a Setup Intent
    *
    * @return Promise: { client_secret, public_key }
    */
   createPaymentSourceIntent() {
     return entities.PaymentSource.intent();
+  }
+
+  /**
+   * Create a Setup Intent for an organization
+   *
+   * @return Promise: { client_secret, public_key }
+   */
+  createOrganizationPaymentSourceIntent(organizationId) {
+    return entities.OrganizationPaymentSource.intent(organizationId);
   }
 
   /**
@@ -794,6 +943,16 @@ export default class Client {
    */
   getUserProfile(id) {
     return entities.AccountsProfile.get({ id });
+  }
+
+  /**
+   * Get the organization  profile.
+   *
+   * @param {string} organizationId - id of the organization.
+   * @return Promise
+   */
+  getOrganizationProfile(organizationId) {
+    return entities.OrganizationProfile.get({ organizationId });
   }
 
   /**
@@ -833,6 +992,25 @@ export default class Client {
     );
 
     return new entities.AccountsProfile(updatedProfile);
+  }
+
+  /**
+   * Update a organization profile.
+   *
+   * @param {string} id - id of the organization.
+   * @param {obj} data - fields to update on the profile
+   *
+   * @return Promise
+   */
+  async updateOrganizationProfile(id, data) {
+    const { api_url } = getConfig();
+    const updatedProfile = await request(
+      `${api_url}/organizations/${id}/profile`,
+      "PATCH",
+      data
+    );
+
+    return new entities.OrganizationProfile(updatedProfile);
   }
 
   /**
