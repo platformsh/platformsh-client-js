@@ -258,9 +258,22 @@ export default class Client {
   }
 
   /**
+   * Get backups of environment {environmentId} of project {projectId}
+   *
+   * @param projectId
+   * @param environmentId
+   *
+   * @return Promise EnvironmentBackup[]
+   */
+  getEnvironmentBackups(projectId, environmentId) {
+    return entities.EnvironmentBackup.query({ projectId, environmentId });
+  }
+
+  /**
    * Get the integrations of project projectId
    *
    * @param string projectId
+   * @param environmentId
    *
    * @return Promise Integration[]
    */
