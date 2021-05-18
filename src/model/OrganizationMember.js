@@ -1,4 +1,5 @@
 import Ressource from "./Ressource";
+import AuthUser from "./AuthUser";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
@@ -52,5 +53,9 @@ export default class OrganizationMember extends Ressource {
       queryParams,
       data => data.items
     );
+  }
+
+  getUser() {
+    return this.getRef("ref:users:0", AuthUser);
   }
 }
