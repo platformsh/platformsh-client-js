@@ -1163,4 +1163,42 @@ export default class Client {
   getInvitations(projectId) {
     return entities.Invitation.query(projectId);
   }
+  /**
+   * Get project environment types
+   *
+   * @param {string} projectId
+   *
+   * @returns {Promise} Promise that return an environment types list.
+   */
+  getProjectEnvironmentTypes(projectId) {
+    return entities.EnvironmentType.query({ projectId });
+  }
+  /**
+   * Get project environment type
+   *
+   * @param {string} projectId
+   * @param {string} id
+   *
+   * @returns {Promise} Promise that return an environment types list.
+   */
+  getProjectEnvironmentType(projectId, id) {
+    return entities.EnvironmentType.get({ projectId, id });
+  }
+  /**
+   * Get project environment types accesses
+   *
+   * @param {string} projectId
+   *
+   * @returns {Promise} Promise that return an environment types accesses list.
+   */
+  async getProjectEnvironmentTypesWithAccesses(projectId) {
+    const environmentTypes = await this.getProjectEnvironmentTypes(projectId);
+    const accesses = [];
+    for (let i = 0; i < environmentTypes.length; i++) {
+      const environmentType = environmentTypes[i];
+      await environmentType.getAccess();
+    }
+
+    return environmentTypes;
+  }
 }
