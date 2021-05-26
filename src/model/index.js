@@ -38,6 +38,7 @@ import ConnectedAccount from "./ConnectedAccount";
 import PaymentSource from "./PaymentSource";
 import Voucher from "./Voucher";
 import Invitation from "./Invitation";
+import OrganizationSubscription from "./OrganizationSubscription";
 
 export default {
   Account,
@@ -79,5 +80,6 @@ export default {
   TicketPriority,
   TicketCategory,
   Voucher,
-  Invitation
+  Invitation,
+  OrganizationSubscription
 };

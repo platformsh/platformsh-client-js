@@ -424,7 +424,7 @@ export default class Client {
   }
 
   /**
-   * Get a subscriptions.
+   * Get subscriptions.
    *
    * @param array filters
    *
@@ -432,6 +432,30 @@ export default class Client {
    */
   getSubscriptions(filter, all) {
     return entities.Subscription.query({ filter, all: all && 1 });
+  }
+
+  /**
+   * Get organization subscriptions.
+   *
+   * @param string organizationId
+   * @param array filters
+   *
+   * @return OrganizationSubscriptions[]
+   */
+  getOrganizationSubscriptions(organizationId, filter) {
+    return entities.OrganizationSubscription.query({ organizationId, filter });
+  }
+
+  /**
+   * Get organization subscription.
+   *
+   * @param string organizationId
+   * @param string subscriptionId
+   *
+   * @return OrganizationSubscription
+   */
+  getOrganizationSubscription(organizationId, id) {
+    return entities.OrganizationSubscription.get({ organizationId, id });
   }
 
   /**
