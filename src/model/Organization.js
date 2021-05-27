@@ -46,7 +46,8 @@ export default class Organization extends Ressource {
       customUrl || `${api_url}${_url}`,
       {},
       paramDefaults,
-      params
+      params,
+      data => data.items
     );
   }
 
