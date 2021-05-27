@@ -455,14 +455,16 @@ describe("Client", () => {
   });
 
   it("Get organizations", done => {
-    fetchMock.mock("https://api.platform.sh/api/organizations", [
-      {
-        id: "1",
-        name: "org1",
-        label: "the organization",
-        owner: "10"
-      }
-    ]);
+    fetchMock.mock("https://api.platform.sh/api/organizations", {
+      items: [
+        {
+          id: "1",
+          name: "org1",
+          label: "the organization",
+          owner: "10"
+        }
+      ]
+    });
     client.getOrganizations().then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
