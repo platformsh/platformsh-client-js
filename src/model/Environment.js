@@ -55,6 +55,7 @@ export default class Environment extends Ressource {
     this.deployment_target = "";
     this.http_access = {};
     this.is_main = [];
+    this.type = "";
   }
 
   static get(params, customUrl) {
