@@ -246,12 +246,14 @@ export default class Ressource {
   /**
    * Check whether an operation is available on the resource.
    *
-   * @param string op
+   * @param {string} operationName
    *
-   * @return bool
+   * @return {boolean} true if the operation is available false otherwise
    */
-  operationAvailable(op) {
-    return this.data._links[`#${op}`].href;
+  operationAvailable(operationName) {
+    const links = this.data._links;
+    const operation = links && links[`#${operationName}`];
+    return operation?.href;
   }
 
   /**
@@ -353,7 +355,7 @@ export default class Ressource {
    */
   runOperation(op, method = "POST", body) {
     if (!this.operationAvailable(op)) {
-      throw new Error(`Oper tion not available: ${op}`);
+      throw new Error(`Operation not available: ${op}`);
     }
     return request(this.getLink(`#${op}`), method, body);
   }
