@@ -924,27 +924,33 @@ describe("Client", () => {
 
       fetchMock.mock(
         "https://test.com/api/projects/test_project/environment-types/staging/access",
-        {
-          id: "alice",
-          user: "alice",
-          role: "admin"
-        }
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
       );
       fetchMock.mock(
         "https://test.com/api/projects/test_project/environment-types/production/access",
-        {
-          id: "alice",
-          user: "alice",
-          role: "admin"
-        }
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
       );
       fetchMock.mock(
         "https://test.com/api/projects/test_project/environment-types/development/access",
-        {
-          id: "alice",
-          user: "alice",
-          role: "admin"
-        }
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
       );
 
       const environmentTypes = await client.getProjectEnvironmentTypesWithAccesses(
@@ -953,10 +959,10 @@ describe("Client", () => {
 
       assert.equal(environmentTypes.length, 3);
       assert.equal(environmentTypes[0].id, "development");
-      assert.equal(environmentTypes[0].access.id, "alice");
+      assert.equal(environmentTypes[0].accesses[0].id, "alice");
       assert.equal(environmentTypes[0].constructor.name, "EnvironmentType");
       assert.equal(
-        environmentTypes[0].access.constructor.name,
+        environmentTypes[0].accesses[0].constructor.name,
         "ProjectAccess"
       );
     });

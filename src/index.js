@@ -1133,6 +1133,7 @@ export default class Client {
 
   /**
    * Create an invitation
+   * @deprecated Use createInvitationWithEnvironmentType() instead
    *
    * @param {string} email
    * @param {string} projectId
@@ -1146,6 +1147,33 @@ export default class Client {
       email,
       projectId,
       environments,
+      role,
+      force
+    });
+
+    return await invitation.save();
+  }
+  /**
+   * Create an invitation with environment types
+   *
+   * @param {string} email
+   * @param {string} projectId
+   * @param {string} role project role
+   * @param {array} Permissions Array of environment types object id/role
+   *
+   * @returns {Promise} Promise that return a Result.
+   */
+  async createInvitationWithEnvironmentTypes(
+    email,
+    projectId,
+    role,
+    permissions,
+    force = false
+  ) {
+    const invitation = new entities.Invitation({
+      email,
+      projectId,
+      permissions,
       role,
       force
     });
@@ -1196,9 +1224,39 @@ export default class Client {
     const accesses = [];
     for (let i = 0; i < environmentTypes.length; i++) {
       const environmentType = environmentTypes[i];
-      await environmentType.getAccess();
+      await environmentType.getAccesses();
     }
 
     return environmentTypes;
+  }
+  /**
+   * Update project environment types accesses
+   *
+   * @param {string} projectId
+   * @param {string} environmentTypeId
+   *
+   * @returns {Promise} Promise that return an access object.
+   */
+  async updateEnvironmentTypeAccess(projectId, environmentTypeId, access) {
+    return entities.EnvironmentType.updateAccess(
+      projectId,
+      environmentTypeId,
+      access
+    );
+  }
+  /**
+   * create project environment types accesses
+   *
+   * @param {string} projectId
+   * @param {string} environmentTypeId
+   *
+   * @returns {Promise} Promise that return an access object.
+   */
+  async createEnvironmentTypeAccess(projectId, environmentTypeId, access) {
+    return entities.EnvironmentType.createAccess(
+      projectId,
+      environmentTypeId,
+      access
+    );
   }
 }

@@ -5,7 +5,14 @@ import request from "../api";
 const _queryUrl = "/projects/:projectId/invitations";
 const _url = `${_queryUrl}/:id`;
 
-const creatableField = ["projectId", "environments", "role", "email", "force"];
+const creatableField = [
+  "projectId",
+  "environments",
+  "permissions",
+  "role",
+  "email",
+  "force"
+];
 
 export default class Invitation extends Ressource {
   constructor(invitation, url) {
@@ -26,7 +33,8 @@ export default class Invitation extends Ressource {
     this.id = "";
     this.owner = {};
     this.projectId = "";
-    this.environments = [];
+    this.environments = []; // This field is deprecated, use permissions instead
+    this.permissions = [];
     this.state = "";
     this.email = "";
     this.role = "";
