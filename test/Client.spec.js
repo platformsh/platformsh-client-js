@@ -857,4 +857,114 @@ describe("Client", () => {
       assert.equal(invitation.constructor.name, "Invitation");
     });
   });
+
+  describe("Environment types", done => {
+    it("Get environment types", async () => {
+      const environmentTypesMock = [
+        {
+          id: "development",
+          _links: {
+            self: {
+              href:
+                "http://admin.local.c-g.io/api/projects/test_project/environment-types/development"
+            },
+            "#edit": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/development"
+            },
+            "#access": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/development/access"
+            }
+          },
+          attributes: {}
+        },
+        {
+          id: "production",
+          _links: {
+            self: {
+              href:
+                "http://admin.local.c-g.io/api/projects/test_project/environment-types/production"
+            },
+            "#edit": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/production"
+            },
+            "#access": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/production/access"
+            }
+          },
+          attributes: {}
+        },
+        {
+          id: "staging",
+          _links: {
+            self: {
+              href:
+                "http://admin.local.c-g.io/api/projects/test_project/environment-types/staging"
+            },
+            "#edit": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/staging"
+            },
+            "#access": {
+              href:
+                "https://test.com/api/projects/test_project/environment-types/staging/access"
+            }
+          },
+          attributes: {}
+        }
+      ];
+
+      fetchMock.mock(
+        `${api_url}/projects/project_id/environment-types`,
+        environmentTypesMock
+      );
+
+      fetchMock.mock(
+        "https://test.com/api/projects/test_project/environment-types/staging/access",
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
+      );
+      fetchMock.mock(
+        "https://test.com/api/projects/test_project/environment-types/production/access",
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
+      );
+      fetchMock.mock(
+        "https://test.com/api/projects/test_project/environment-types/development/access",
+        [
+          {
+            id: "alice",
+            user: "alice",
+            role: "admin"
+          }
+        ]
+      );
+
+      const environmentTypes = await client.getProjectEnvironmentTypesWithAccesses(
+        "project_id"
+      );
+
+      assert.equal(environmentTypes.length, 3);
+      assert.equal(environmentTypes[0].id, "development");
+      assert.equal(environmentTypes[0].accesses[0].id, "alice");
+      assert.equal(environmentTypes[0].constructor.name, "EnvironmentType");
+      assert.equal(
+        environmentTypes[0].accesses[0].constructor.name,
+        "ProjectAccess"
+      );
+    });
+  });
 });

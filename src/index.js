@@ -1133,6 +1133,7 @@ export default class Client {
 
   /**
    * Create an invitation
+   * @deprecated Use createInvitationWithEnvironmentType() instead
    *
    * @param {string} email
    * @param {string} projectId
@@ -1153,6 +1154,33 @@ export default class Client {
     return await invitation.save();
   }
   /**
+   * Create an invitation with environment types
+   *
+   * @param {string} email
+   * @param {string} projectId
+   * @param {string} role project role
+   * @param {array} Permissions Array of environment types object id/role
+   *
+   * @returns {Promise} Promise that return a Result.
+   */
+  async createInvitationWithEnvironmentTypes(
+    email,
+    projectId,
+    role,
+    permissions,
+    force = false
+  ) {
+    const invitation = new entities.Invitation({
+      email,
+      projectId,
+      permissions,
+      role,
+      force
+    });
+
+    return await invitation.save();
+  }
+  /**
    * Get project invitations list
    *
    * @param {string} projectId
@@ -1162,5 +1190,73 @@ export default class Client {
    */
   getInvitations(projectId) {
     return entities.Invitation.query(projectId);
+  }
+  /**
+   * Get project environment types
+   *
+   * @param {string} projectId
+   *
+   * @returns {Promise} Promise that return an environment types list.
+   */
+  getProjectEnvironmentTypes(projectId) {
+    return entities.EnvironmentType.query({ projectId });
+  }
+  /**
+   * Get project environment type
+   *
+   * @param {string} projectId
+   * @param {string} id
+   *
+   * @returns {Promise} Promise that return an environment types list.
+   */
+  getProjectEnvironmentType(projectId, id) {
+    return entities.EnvironmentType.get({ projectId, id });
+  }
+  /**
+   * Get project environment types accesses
+   *
+   * @param {string} projectId
+   *
+   * @returns {Promise} Promise that return an environment types accesses list.
+   */
+  async getProjectEnvironmentTypesWithAccesses(projectId) {
+    const environmentTypes = await this.getProjectEnvironmentTypes(projectId);
+    const accesses = [];
+    for (let i = 0; i < environmentTypes.length; i++) {
+      const environmentType = environmentTypes[i];
+      await environmentType.getAccesses();
+    }
+
+    return environmentTypes;
+  }
+  /**
+   * Update project environment types accesses
+   *
+   * @param {string} projectId
+   * @param {string} environmentTypeId
+   *
+   * @returns {Promise} Promise that return an access object.
+   */
+  async updateEnvironmentTypeAccess(projectId, environmentTypeId, access) {
+    return entities.EnvironmentType.updateAccess(
+      projectId,
+      environmentTypeId,
+      access
+    );
+  }
+  /**
+   * create project environment types accesses
+   *
+   * @param {string} projectId
+   * @param {string} environmentTypeId
+   *
+   * @returns {Promise} Promise that return an access object.
+   */
+  async createEnvironmentTypeAccess(projectId, environmentTypeId, access) {
+    return entities.EnvironmentType.createAccess(
+      projectId,
+      environmentTypeId,
+      access
+    );
   }
 }
