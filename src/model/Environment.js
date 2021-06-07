@@ -152,8 +152,8 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  branch(title, id = this.sanitizeId(title)) {
-    const body = { name: id, title };
+  branch(title, type, id = this.sanitizeId(title)) {
+    const body = { name: id, title, type };
 
     return this.runLongOperation("branch", "POST", body);
   }
