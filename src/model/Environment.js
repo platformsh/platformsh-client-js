@@ -17,7 +17,8 @@ const modifiableField = [
   "enable_smtp",
   "restrict_robots",
   "http_access",
-  "title"
+  "title",
+  "type"
 ];
 const _url = "/projects/:projectId/environments";
 
