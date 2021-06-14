@@ -413,6 +413,31 @@ export default class Client {
   }
 
   /**
+   * Create a new Platform.sh subscription.
+   *
+   * @param string region  The region. See Subscription::$availableRegions.
+   * @param string plan    The plan. See Subscription::$availablePlans.
+   * @param string title   The project title.
+   * @param string defaultBranch The default branch.
+   * @param int    storage The storage of each environment, in MiB.
+   * @param int    environments The number of available environments.
+   * @param array  activationCallback An activation callback for the subscription.
+   *
+   * @return Subscription
+   */
+  createOrganizationSubscription(config) {
+    const { region, plan = "development", title, vendor } = config;
+    const values = this.cleanRequest({
+      project_region: region,
+      plan,
+      project_title: title,
+      vendor
+    });
+
+    return new entities.OrganizationSubscription(values).save();
+  }
+
+  /**
    * Get a subscription by its ID.
    *
    * @param string|int id
