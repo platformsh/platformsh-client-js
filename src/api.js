@@ -30,7 +30,8 @@ export const request = (
   method,
   data,
   additionalHeaders = {},
-  retryNumber = 0
+  retryNumber = 0,
+  options = {}
 ) => {
   let body = data && { ...data };
   let apiUrl = url;
@@ -43,6 +44,7 @@ export const request = (
 
   const requestConfig = {
     method,
+    ...options,
     headers: { ...defaultHeaders, ...additionalHeaders }
   };
 
@@ -65,7 +67,8 @@ export const request = (
                   method,
                   data,
                   additionalHeaders,
-                  retryNumber + 1
+                  retryNumber + 1,
+                  options
                 )
               );
             });
@@ -120,7 +123,8 @@ export const authenticatedRequest = (
   method,
   data,
   additionalHeaders = {},
-  retryNumber = 0
+  retryNumber = 0,
+  options = {}
 ) => {
   return authenticationPromise.then(token => {
     if (!token) {
@@ -148,7 +152,8 @@ export const authenticatedRequest = (
           method,
           data,
           additionalHeaders,
-          retryNumber + 1
+          retryNumber + 1,
+          options
         );
       });
     }
@@ -165,7 +170,8 @@ export const authenticatedRequest = (
         ...additionalHeaders,
         ...authenticationHeaders
       },
-      retryNumber
+      retryNumber,
+      options
     );
   });
 };

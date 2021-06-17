@@ -67,10 +67,10 @@ export default class Ressource {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
-  static get(_url, params, paramDefaults, queryParams) {
+  static get(_url, params, paramDefaults, queryParams, options) {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams).then(data => {
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(data => {
       return typeof data === "undefined"
         ? undefined
         : new this.prototype.constructor(data, parsedUrl, params);
