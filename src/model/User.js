@@ -19,7 +19,7 @@ export default class User extends Ressource {
     this.username = "";
   }
 
-  static get(params, customUrl) {
+  static get(params, customUrl, options) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -27,7 +27,8 @@ export default class User extends Ressource {
       customUrl || `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
-      queryParams
+      queryParams,
+      options
     );
   }
 
