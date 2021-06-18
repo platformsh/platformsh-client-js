@@ -10,6 +10,16 @@ import Subscription from "./Subscription";
 const url = "/organizations/:organizationId/subscriptions/:id";
 
 export default class OrganizationSubscription extends Subscription {
+  constructor(subscription) {
+    const { api_url } = getConfig();
+
+    super(subscription);
+
+    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
+    this._required = ["project_region", "organizationId"];
+    this.organizationId = "";
+  }
+
   static get(params, customUrl) {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();

@@ -426,12 +426,19 @@ export default class Client {
    * @return Subscription
    */
   createOrganizationSubscription(config) {
-    const { region, plan = "development", title, vendor } = config;
+    const {
+      organizationId,
+      region,
+      plan = "development",
+      title,
+      vendor
+    } = config;
     const values = this.cleanRequest({
       project_region: region,
       plan,
       project_title: title,
-      vendor
+      vendor,
+      organizationId
     });
 
     return new entities.OrganizationSubscription(values).save();
