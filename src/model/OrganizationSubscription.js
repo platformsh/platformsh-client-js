@@ -1,4 +1,5 @@
 import isUrl from "is-url";
+import _urlParser from "../urlParser";
 
 import Ressource from "./Ressource";
 import Account from "./Account";
@@ -15,9 +16,11 @@ export default class OrganizationSubscription extends Subscription {
 
     super(subscription);
 
-    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
     this._required = ["project_region", "organizationId"];
     this.organizationId = "";
+    this._urlOverride = _urlParser(Ressource.getQueryUrl(`${api_url}${url}`), {
+      organizationId: subscription.organizationId
+    });
   }
 
   static get(params, customUrl) {
@@ -45,5 +48,9 @@ export default class OrganizationSubscription extends Subscription {
       queryParams,
       data => data.items
     );
+  }
+
+  save() {
+    return super.save(this._urlOverride);
   }
 }
