@@ -193,7 +193,7 @@ export default class Ressource {
     return Object.keys(errors).length ? errors : undefined;
   }
 
-  save(urlOverride = false) {
+  save() {
     if (!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
     }
@@ -202,7 +202,7 @@ export default class Ressource {
     if (errors) {
       return Promise.reject(errors);
     }
-    const url = urlOverride || this._queryUrl || this._url;
+    const url = this._queryUrl || this._url;
 
     return request(url, "POST", pick(this.data, this._creatableField)).then(
       data => {
