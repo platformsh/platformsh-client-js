@@ -31,6 +31,27 @@ describe("OrganizationSubscription", () => {
     );
   });
 
+  it("Save organization subscription", done => {
+    fetchMock.mock(
+      `${api_url}/organizations/aliceOrg/subscriptions`,
+      {
+        project_region: "region"
+      },
+      "POST"
+    );
+    const organizationSubscription = new OrganizationSubscription({
+      organizationId: "aliceOrg",
+      project_region: "region"
+    });
+    organizationSubscription
+      .save()
+      .then(subscription => {
+        assert.equal(subscription.constructor.name, "Result");
+        done();
+      })
+      .catch(err => console.log(err));
+  });
+
   it("Get organization subscriptions", done => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions`, {
       items: [
