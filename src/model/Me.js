@@ -37,10 +37,12 @@ export default class Me extends User {
     this.trial = false;
   }
 
-  static get() {
+  static get(reset = false) {
     const { api_url } = getConfig();
 
-    return super.get({}, `${api_url}${url}`);
+    return super.get({}, `${api_url}${url}`, {
+      cache: reset ? "reload" : "default"
+    });
   }
 
   async update(data) {

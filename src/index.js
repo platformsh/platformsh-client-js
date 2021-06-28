@@ -42,7 +42,7 @@ export default class Client {
    */
   getAccountInfo(reset = false) {
     if (!this.getAccountInfoPromise || reset) {
-      this.getAccountInfoPromise = entities.Me.get();
+      this.getAccountInfoPromise = entities.Me.get(reset);
     }
 
     return this.getAccountInfoPromise;
