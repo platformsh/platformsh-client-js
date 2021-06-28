@@ -1,11 +1,5 @@
-import isUrl from "is-url";
-import _urlParser from "../urlParser";
-
 import Ressource from "./Ressource";
-import Account from "./Account";
-import Project from "./Project";
 import { getConfig } from "../config";
-import { authenticatedRequest } from "../api";
 import Subscription from "./Subscription";
 
 const url = "/organizations/:organizationId/subscriptions/:id";
