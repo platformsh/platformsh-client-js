@@ -60,6 +60,14 @@ export default class EnvironmentType extends Ressource {
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
+  static deleteAccess(projectId, environmentTypeId, access) {
+    const { api_url } = getConfig();
+    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
+      access.id
+    }`;
+    return request(url, "DELETE");
+  }
+
   async getAccesses() {
     const accessLink = this.getLink("#access");
     const accesses = await request(accessLink);

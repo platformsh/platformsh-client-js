@@ -1266,11 +1266,28 @@ export default class Client {
    *
    * @param {string} projectId
    * @param {string} environmentTypeId
+   * @param {ProjectAccess} access
    *
    * @returns {Promise} Promise that return an access object.
    */
   async updateEnvironmentTypeAccess(projectId, environmentTypeId, access) {
     return entities.EnvironmentType.updateAccess(
+      projectId,
+      environmentTypeId,
+      access
+    );
+  }
+  /**
+   * Delete project environment types accesses
+   *
+   * @param {string} projectId
+   * @param {string} environmentTypeId
+   * @param {ProjectAccess} access
+   *
+   * @returns {Promise} Promise that return a Result.
+   */
+  async deleteEnvironmentTypeAccess(projectId, environmentTypeId, access) {
+    return entities.EnvironmentType.deleteAccess(
       projectId,
       environmentTypeId,
       access
