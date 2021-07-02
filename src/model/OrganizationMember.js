@@ -1,10 +1,11 @@
 import Ressource from "./Ressource";
+import AuthUser from "./AuthUser";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
 const _url = "/organizations/:organizationId/members";
 
-const creatableField = ["user", "role"];
+const creatableField = ["user_id", "role"];
 
 export default class OrganizationMember extends Ressource {
   constructor(organizationMember, url) {
@@ -19,9 +20,14 @@ export default class OrganizationMember extends Ressource {
       creatableField,
       creatableField
     );
-    this.user = ""; // User id
+    this.id = "";
+    this.user_id = "";
     this.role = "";
-    this.organizationId = "";
+    this.organization_id = "";
+    this.permissions = [];
+    this.owner = false;
+    this.created_at = "";
+    this.updated_at = "";
   }
 
   static get(params = {}, customUrl) {
@@ -44,7 +50,12 @@ export default class OrganizationMember extends Ressource {
       customUrl || `${api_url}${_url}`,
       { organizationId },
       paramDefaults,
-      queryParams
+      queryParams,
+      data => data.items
     );
+  }
+
+  getUser() {
+    return this.getRef("ref:users:0", AuthUser);
   }
 }

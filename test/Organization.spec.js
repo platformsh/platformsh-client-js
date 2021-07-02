@@ -16,14 +16,14 @@ describe("Organization", () => {
   });
 
   it("Get members", done => {
-    fetchMock.mock("https://api.platform.sh/api/organizations/1/members", [
-      { user: "1" }
-    ]);
+    fetchMock.mock("https://api.platform.sh/api/organizations/1/members", {
+      items: [{ user_id: "1" }]
+    });
 
     const organization = new Organization({ id: 1 });
 
     organization.getMembers().then(organizationMembers => {
-      assert.equal(organizationMembers[0].user, "1");
+      assert.equal(organizationMembers[0].user_id, "1");
       assert.equal(
         organizationMembers[0].constructor.name,
         "OrganizationMember"
