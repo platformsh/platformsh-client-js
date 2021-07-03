@@ -1,18 +1,27 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import Subscription from "./Subscription";
+import urlParser from "../urlParser";
 
 const url = "/organizations/:organizationId/subscriptions/:id";
 
 export default class OrganizationSubscription extends Subscription {
-  constructor(subscription) {
+  constructor(subscription, customUrl) {
+    const { organizationId } = subscription;
     const { api_url } = getConfig();
 
-    super(subscription, `${api_url}${url}`);
+    const _url = urlParser(
+      customUrl || `${api_url}${url}`,
+      { organizationId },
+      {}
+    );
+
+    super(subscription, _url);
 
     this._required = ["project_region", "organizationId"];
     this._creatableField.push("organizationId");
-    this.organizationId = "";
+
+    this.organization_id = organizationId;
   }
 
   static get(params, customUrl) {

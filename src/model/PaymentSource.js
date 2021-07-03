@@ -9,10 +9,16 @@ const paramDefaults = {};
 const creatableField = ["type", "token", "email"];
 
 export default class PaymentSource extends Ressource {
-  constructor(paymentSource) {
+  constructor(paymentSource, customUrl, params) {
     const { api_url } = getConfig();
 
-    super(`${api_url}${url}`, paramDefaults, {}, paymentSource, creatableField);
+    super(
+      customUrl || `${api_url}${url}`,
+      paramDefaults,
+      params,
+      paymentSource,
+      creatableField
+    );
     this.id = "";
     this.type = "";
     this.name = "";
@@ -54,7 +60,7 @@ export default class PaymentSource extends Ressource {
   /**
    * Delete the payment source.
    *
-   * @return Result
+   * @return object
    */
   static delete(params) {
     const { api_url } = getConfig();
@@ -65,7 +71,7 @@ export default class PaymentSource extends Ressource {
    * Get allowed payment source.
    * The list of allowed payment sources for the current API consumer.
    *
-   * @return PaymentSource allowd []
+   * @return object
    */
   static getAllowed() {
     const { api_url } = getConfig();
@@ -75,7 +81,7 @@ export default class PaymentSource extends Ressource {
   /**
    * Create a Setup Intent.
    *
-   * @return SetupIntent
+   * @return object
    */
   static intent() {
     const { api_url } = getConfig();

@@ -41,6 +41,11 @@ import Invitation from "./Invitation";
 import OrganizationSubscription from "./OrganizationSubscription";
 import EnvironmentType from "./EnvironmentType";
 import OrganizationMember from "./OrganizationMember";
+import OrganizationOrder from "./OrganizationOrder";
+import OrganizationPaymentSource from "./OrganizationPaymentSource";
+import OrganizationProfile from "./OrganizationProfile";
+import OrganizationAddress from "./OrganizationAddress";
+import OrganizationVoucher from "./OrganizationVoucher";
 
 export default {
   Account,
@@ -85,5 +90,10 @@ export default {
   Invitation,
   OrganizationSubscription,
   EnvironmentType,
-  OrganizationMember
+  OrganizationMember,
+  OrganizationOrder,
+  OrganizationPaymentSource,
+  OrganizationProfile,
+  OrganizationAddress,
+  OrganizationVoucher
 };
