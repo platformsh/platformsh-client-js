@@ -498,8 +498,8 @@ export default class Client {
    *
    * @return OrganizationMember[]
    */
-  getOrganizationMembers(organizationId, filter) {
-    return entities.OrganizationMember.query({ organizationId, filter });
+  getOrganizationMembers(organizationId, params) {
+    return entities.OrganizationMember.query({ organizationId, ...params });
   }
 
   /**
