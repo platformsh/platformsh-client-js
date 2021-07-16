@@ -3,6 +3,7 @@ import parse_url from "parse_url";
 
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLink } from "../refs";
 import request from "../api";
 import Result from "./Result";
 
@@ -265,9 +266,7 @@ export default class Ressource {
    * @return bool
    */
   hasLink(rel) {
-    return (
-      this.data._links && this.data._links[rel] && this.data._links[rel].href
-    );
+    return hasLink(this.data._links, rel);
   }
 
   /**
@@ -309,17 +308,7 @@ export default class Ressource {
    * @return string
    */
   getLink(rel, absolute = true) {
-    if (!this.hasLink(rel)) {
-      throw new Error(`Link not found: ${rel}`);
-    }
-
-    let _url = this.data._links[rel].href;
-
-    if (absolute && _url.indexOf("//") === -1) {
-      _url = this.makeAbsoluteUrl(_url);
-    }
-
-    return _url;
+    return getLink(this.data._links, rel, absolute, this._baseUrl);
   }
 
   /**
@@ -342,7 +331,7 @@ export default class Ressource {
    * @return string
    */
   makeAbsoluteUrl(relativeUrl, _baseUrl = this._baseUrl) {
-    return `${_baseUrl}${relativeUrl}`;
+    return makeAbsoluteUrl(`${_baseUrl}${relativeUrl}`, _baseUrl);
   }
 
   /**
@@ -388,26 +377,24 @@ export default class Ressource {
   }
 
   // Load a single object from the ref API
-  async getRef(linkKey, constructor) {
-    const obj = await request(this.getLink(linkKey));
-    return new constructor(obj);
+  getRef(linkKey, constructor, absolute = true) {
+    return getRef(
+      this.data._links,
+      linkKey,
+      constructor,
+      absolute,
+      this._baseUrl
+    );
   }
 
   // Load a list of objects from the ref API
-  async getRefs(linkKey, constructor) {
-    const refs = Object.keys(this.data._links)?.filter(l =>
-      l.startsWith(linkKey)
+  async getRefs(linkKey, constructor, absolute = true) {
+    return getRefs(
+      this.data._links,
+      linkKey,
+      constructor,
+      absolute,
+      this._baseUrl
     );
-
-    let obj = {};
-    for (let i = 0; i < refs.length; i++) {
-      obj = {
-        ...obj,
-        ...(await request(this.getLink(`${linkKey}:${i}`)))
-      };
-    }
-
-    // The ref API returns a map id => object
-    return Object.values(obj).map(o => new constructor(o));
   }
 }

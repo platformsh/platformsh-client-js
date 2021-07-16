@@ -1,4 +1,4 @@
-import Ressource from "./Ressource";
+import CursoredRessource from "./CursoredRessource";
 import AuthUser from "./AuthUser";
 import { getConfig } from "../config";
 
@@ -7,7 +7,7 @@ const _url = "/organizations/:organizationId/members";
 
 const creatableField = ["user_id", "role"];
 
-export default class OrganizationMember extends Ressource {
+export default class OrganizationMember extends CursoredRessource {
   constructor(organizationMember, url) {
     const { organizationId } = organizationMember;
     const { api_url } = getConfig();

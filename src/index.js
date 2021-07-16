@@ -496,7 +496,7 @@ export default class Client {
    * @param string organizationId
    * @param array filters
    *
-   * @return OrganizationMember[]
+   * @return CursoredResult
    */
   getOrganizationMembers(organizationId, filter) {
     return entities.OrganizationMember.query({ organizationId, filter });

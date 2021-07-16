@@ -1163,8 +1163,8 @@ describe("Client", () => {
         ]
       });
       client.getOrganizationMembers("aliceOrg").then(members => {
-        assert.equal(members[0].id, "alice");
-        assert.equal(members[0].constructor.name, "OrganizationMember");
+        assert.equal(members.items[0].id, "alice");
+        assert.equal(members.items[0].constructor.name, "OrganizationMember");
         done();
       });
     });
