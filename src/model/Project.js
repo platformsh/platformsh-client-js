@@ -52,7 +52,7 @@ export default class Project extends Ressource {
     this.vendor_resources = "";
     this.vendor_website = "";
     this.default_domain = "";
-    this.organization = "";
+    this.organization_id = "";
     this.default_branch = "";
   }
 
