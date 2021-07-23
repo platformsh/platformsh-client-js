@@ -546,6 +546,7 @@ export default class Client {
     storage,
     environments,
     user_licenses,
+    big_dev,
     format = null,
     country_code = null
   ) {
@@ -553,7 +554,8 @@ export default class Client {
       plan,
       storage,
       environments,
-      user_licenses
+      user_licenses,
+      big_dev
     };
     if (format) query.format = format;
     if (country_code) query.country_code = country_code;
@@ -578,6 +580,7 @@ export default class Client {
     storage,
     environments,
     user_licenses,
+    big_dev,
     format = null,
     country_code = null
   ) {
@@ -585,7 +588,8 @@ export default class Client {
       plan,
       storage,
       environments,
-      user_licenses
+      user_licenses,
+      big_dev
     };
     if (format) query.format = format;
     if (country_code) query.country_code = country_code;

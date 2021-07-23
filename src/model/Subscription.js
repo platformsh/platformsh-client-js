@@ -51,6 +51,7 @@ export default class Subscription extends Ressource {
     this.plan = "";
     this.environments = 0;
     this.storage = 0;
+    this.big_dev = 0;
     this.user_licenses = 0;
     this.project_id = "";
     this.project_title = "";
@@ -209,7 +210,8 @@ export default class Subscription extends Ressource {
       plan: this.plan,
       storage: this.storage,
       environments: this.environments,
-      user_licenses: this.users_licenses
+      user_licenses: this.users_licenses,
+      big_dev: this.big_dev
     };
 
     return authenticatedRequest(
