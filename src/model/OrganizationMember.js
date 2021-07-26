@@ -50,8 +50,7 @@ export default class OrganizationMember extends CursoredRessource {
       customUrl || `${api_url}${_url}`,
       { organizationId },
       paramDefaults,
-      queryParams,
-      data => data.items
+      queryParams
     );
   }
 

@@ -5,7 +5,13 @@ import request from "../api";
 import CursoredResult from "./CursoredResult";
 
 export default class CursoredRessource extends Ressource {
-  static async query(_url, params, paramDefaults, queryParams) {
+  static async query(
+    _url,
+    params,
+    paramDefaults,
+    queryParams,
+    ResultConstructor
+  ) {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     const result = await request(parsedUrl, "GET", queryParams);
@@ -14,7 +20,7 @@ export default class CursoredRessource extends Ressource {
       parsedUrl,
       result?.items,
       result?._links,
-      this.prototype.constructor
+      ResultConstructor || this.prototype.constructor
     );
   }
 }

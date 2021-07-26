@@ -1,7 +1,9 @@
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
 import Subscription from "./Subscription";
+import CursoredResult from "./CursoredResult";
 import urlParser from "../urlParser";
+import CursoredRessource from "./CursoredRessource";
 
 const url = "/organizations/:organizationId/subscriptions/:id";
 
@@ -24,11 +26,11 @@ export default class OrganizationSubscription extends Subscription {
     this.organization_id = organizationId;
   }
 
-  static get(params, customUrl) {
+  static async get(params, customUrl) {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.get.call(
+    return await Ressource.get.call(
       this,
       customUrl || `${api_url}${url}`,
       { organizationId, id },
@@ -38,16 +40,15 @@ export default class OrganizationSubscription extends Subscription {
   }
 
   static query(params) {
-    const { organizationId, id, ...queryParams } = params;
+    const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.query.call(
-      this,
+    return CursoredRessource.query(
       this.getQueryUrl(`${api_url}${url}`),
       { organizationId },
       {},
       queryParams,
-      data => data.items
+      OrganizationSubscription
     );
   }
 
