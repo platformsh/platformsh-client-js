@@ -5,6 +5,7 @@ import OrganizationMember from "./OrganizationMember";
 
 const paramDefaults = {};
 const _url = "/organizations";
+const user_url = "/users/:userId/organizations";
 
 const creatableField = ["name", "label", "owner"];
 const modifiableField = ["name", "label"];
@@ -40,14 +41,20 @@ export default class Organization extends Ressource {
     );
   }
 
-  static query(params, customUrl) {
+  static query(params = {}, customUrl) {
     const { api_url } = getConfig();
+    const { userId, ...queryParams } = params;
+
+    let url = `${api_url}${_url}`;
+    if (userId) {
+      url = `${api_url}${user_url}`;
+    }
 
     return super.query(
-      customUrl || `${api_url}${_url}`,
-      {},
+      customUrl || url,
+      { userId },
       paramDefaults,
-      params,
+      queryParams,
       data => data.items
     );
   }

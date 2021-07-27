@@ -35,6 +35,7 @@ export default class Me extends User {
     this.company_type = "";
     this.mail = "";
     this.trial = false;
+    this.uuid = "";
   }
 
   static get(reset = false) {
