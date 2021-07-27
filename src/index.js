@@ -620,8 +620,8 @@ export default class Client {
    *
    * @return Organization[]
    */
-  getOrganizations() {
-    return entities.Organization.query();
+  getOrganizations(params) {
+    return entities.Organization.query(params);
   }
 
   /**
