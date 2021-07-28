@@ -211,7 +211,7 @@ export default class Subscription extends Ressource {
       storage: this.storage,
       environments: this.environments,
       user_licenses: this.users_licenses,
-      big_dev: this.big_dev
+      big_dev: this.big_dev || undefined
     };
 
     return authenticatedRequest(
