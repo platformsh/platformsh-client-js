@@ -1,6 +1,7 @@
 import pick from "object.pick";
 import parse_url from "parse_url";
 
+import { getConfig } from "../config";
 import _urlParser from "../urlParser";
 import request from "../api";
 import Result from "./Result";
@@ -386,8 +387,27 @@ export default class Ressource {
     return this.data._links && !!this.data._links[permission];
   }
 
+  // Load a single object from the ref API
   async getRef(linkKey, constructor) {
     const obj = await request(this.getLink(linkKey));
     return new constructor(obj);
+  }
+
+  // Load a list of objects from the ref API
+  async getRefs(linkKey, constructor) {
+    const refs = Object.keys(this.data._links)?.filter(l =>
+      l.startsWith(linkKey)
+    );
+
+    let obj = {};
+    for (let i = 0; i < refs.length; i++) {
+      obj = {
+        ...obj,
+        ...(await request(this.getLink(`${linkKey}:${i}`)))
+      };
+    }
+
+    // The ref API returns a map id => object
+    return Object.values(obj).map(o => new constructor(o));
   }
 }

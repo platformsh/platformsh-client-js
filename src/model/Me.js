@@ -1,6 +1,7 @@
 import User from "./User";
 import Ressource from "./Ressource";
 import { getConfig } from "../config";
+import Organization from "./Organization";
 
 const url = "/platform/me";
 const paramDefaults = {};
@@ -52,5 +53,9 @@ export default class Me extends User {
     const result = await super.update(data, `${api_url}/platform/profiles/:id`);
 
     return new Me(result.data); // Account API does not return a Result
+  }
+
+  getOrganizations() {
+    return this.getRefs("ref:organizations", Organization);
   }
 }
