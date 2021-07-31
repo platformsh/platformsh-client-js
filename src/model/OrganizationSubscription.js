@@ -50,4 +50,8 @@ export default class OrganizationSubscription extends Subscription {
       data => data.items
     );
   }
+
+  getOrganizations() {
+    return this.getRefs("ref:organizations", Organization);
+  }
 }
