@@ -48,16 +48,10 @@ export const getRefs = async (
   for (let i = 0; i < refs.length; i++) {
     obj = {
       ...obj,
-      ...(await getRef(
-        links,
-        `${linkKey}:${i}`,
-        constructor,
-        absolute,
-        baseUrl
-      ))
+      ...(await request(getLink(links, `${linkKey}:${i}`, absolute, baseUrl)))
     };
   }
 
   // The ref API returns a map id => object
-  return Object.values(obj);
+  return Object.values(obj).map(o => new constructor(o));
 };

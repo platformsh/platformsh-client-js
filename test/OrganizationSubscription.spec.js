@@ -89,10 +89,10 @@ describe("OrganizationSubscription", () => {
     });
     OrganizationSubscription.query({ organizationId: "aliceOrg" }).then(
       subscriptions => {
-        assert.equal(subscriptions.length, 1);
-        assert.equal(subscriptions[0].project_region, "region");
+        assert.equal(subscriptions.items.length, 1);
+        assert.equal(subscriptions.items[0].project_region, "region");
         assert.equal(
-          subscriptions[0].constructor.name,
+          subscriptions.items[0].constructor.name,
           "OrganizationSubscription"
         );
         done();
