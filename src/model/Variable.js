@@ -9,14 +9,18 @@ const creatableField = [
   "is_json",
   "is_sensitive",
   "is_inheritable",
-  "is_enabled"
+  "is_enabled",
+  "visible_build",
+  "visible_runtime"
 ];
 const modifialbleField = [
   "value",
   "is_json",
   "is_sensitive",
   "is_inheritable",
-  "is_enabled"
+  "is_enabled",
+  "visible_build",
+  "visible_runtime"
 ];
 const _url = "/projects/:projectId/environments/:environmentId/variables";
 
@@ -32,9 +36,11 @@ export default class Variable extends Ressource {
     this.created_at = "";
     this.updated_at = "";
     this.inherited = false;
-    this.is_json = "";
-    this.is_sensitive = "";
+    this.is_json = false;
+    this.is_sensitive = false;
     this.is_inheritable = true;
+    this.visible_build = false;
+    this.visible_runtime = true;
   }
 
   static get(params, customUrl) {

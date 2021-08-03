@@ -35,10 +35,10 @@ export default class ProjectLevelVariable extends Ressource {
     this.id = "";
     this.name = "";
     this.value = "";
-    this.is_json = "";
-    this.is_sensitive = "";
-    this.visible_build = "";
-    this.visible_runtime = "";
+    this.is_json = false;
+    this.is_sensitive = false;
+    this.visible_build = false;
+    this.visible_runtime = true;
     this.created_at = "";
     this.updated_at = "";
   }
