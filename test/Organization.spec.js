@@ -23,9 +23,9 @@ describe("Organization", () => {
     const organization = new Organization({ id: 1 });
 
     organization.getMembers().then(organizationMembers => {
-      assert.equal(organizationMembers[0].user_id, "1");
+      assert.equal(organizationMembers.items[0].user_id, "1");
       assert.equal(
-        organizationMembers[0].constructor.name,
+        organizationMembers.items[0].constructor.name,
         "OrganizationMember"
       );
       done();
