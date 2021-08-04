@@ -42,6 +42,9 @@ export const getRefs = async (
   absolute,
   baseUrl
 ) => {
+  if (!links) {
+    return [];
+  }
   const refs = Object.keys(links)?.filter(l => l.startsWith(linkKey));
 
   let obj = {};
