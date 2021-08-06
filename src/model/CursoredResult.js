@@ -31,13 +31,22 @@ class CursoredLinksManager {
     return this.getPage("previous");
   }
 
-  getUsers() {
+  getUser() {
     return this.getRef("ref:users:0", AuthUser);
+  }
+
+  getUsers() {
+    return this.getRefs("ref:users", AuthUser);
   }
 
   async getRef(linkKey, constructor) {
     const { api_url } = getConfig();
     return getRef(this.links, linkKey, constructor, true, api_url);
+  }
+
+  async getRefs(linkKey, constructor) {
+    const { api_url } = getConfig();
+    return getRefs(this.links, linkKey, constructor, true, api_url);
   }
 
   hasMore() {
