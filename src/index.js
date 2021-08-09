@@ -1401,6 +1401,44 @@ export default class Client {
 
     return await invitation.save();
   }
+
+  /**
+   * Create an organization invitation
+   *
+   * @param {string} email
+   * @param {string} organizationId
+   * @param {array} permissions
+   * @param {bool} force
+   *
+   * @returns {Promise} Promise that return a Result.
+   */
+  async createOrganizationInvitation(
+    email,
+    organizationId,
+    permissions,
+    force = false
+  ) {
+    const invitation = new entities.OrganizationInvitation({
+      email,
+      organizationId,
+      permissions,
+      force
+    });
+
+    return await invitation.save();
+  }
+
+  /**
+   * Get organization invitations list
+   *
+   * @param {string} organizationId
+   *
+   * @returns {Promise} Promise that return an organization inivitations list.
+   */
+  getOrganizationInvitations(organizationId) {
+    return entities.OrganizationInvitation.query(organizationId);
+  }
+
   /**
    * Create an invitation with environment types
    *

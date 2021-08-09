@@ -25,6 +25,7 @@ export default class OrganizationProfile extends Ressource {
     this.billing_contact = "";
     this.default_catalog = "";
     this.company_name = "";
+    this.current_trial = "";
   }
 
   static get(params) {

@@ -214,8 +214,8 @@ export default class Ressource {
     );
   }
 
-  delete() {
-    const deleteLink = this.getLink("#delete");
+  delete(url) {
+    const deleteLink = url || this.getLink("#delete");
 
     if (!deleteLink) {
       throw new Error("Not allowed to delete");

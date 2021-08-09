@@ -53,4 +53,48 @@ describe("OrganizationSubscription", () => {
       }
     );
   });
+
+  it("Update organization member", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/organizations/aliceOrg/members/1",
+      {},
+      "PATCH"
+    );
+
+    const member = new OrganizationMember({
+      id: 1,
+      permissions: [],
+      _links: {
+        "#edit": {
+          href: "/organizations/aliceOrg/members/1"
+        }
+      }
+    });
+
+    member.update({ permissions: ["billing"] }).then(() => {
+      done();
+    });
+  });
+
+  it("Delete organization member", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/organizations/aliceOrg/members/1",
+      {},
+      "DELETE"
+    );
+
+    const member = new OrganizationMember({
+      id: 1,
+      permissions: [],
+      _links: {
+        delete: {
+          href: "/organizations/aliceOrg/members/1"
+        }
+      }
+    });
+
+    member.delete().then(() => {
+      done();
+    });
+  });
 });
