@@ -56,5 +56,5 @@ export const getRefs = async (
   }
 
   // The ref API returns a map id => object
-  return Object.values(obj).map(o => new constructor(o));
+  return Object.values(obj).map(o => o && new constructor(o));
 };
