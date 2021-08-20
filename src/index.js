@@ -774,10 +774,10 @@ export default class Client {
    *
    * @return Account
    */
-  getOrganizationOrders(organizationId, owner) {
+  getOrganizationOrders(organizationId, filter) {
     return entities.OrganizationOrder.query({
       organizationId,
-      filter: { owner }
+      filter
     });
   }
 
