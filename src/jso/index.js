@@ -262,7 +262,7 @@ export const jso_getAuthUrl = (providerid, scopes, codeChallenge) => {
     throw new Error(`Could not find configuration for provider ${providerid}`);
   co = config[providerid];
 
-  request = jso_getAuthRequest(providerid, scopes, "", "");
+  request = jso_getAuthRequest(providerid, scopes, "");
 
   if (codeChallenge) {
     request["code_challenge"] = codeChallenge;
@@ -278,7 +278,7 @@ export const jso_getAuthRequest = (
   providerid,
   scopes,
   response_mode,
-  prompt
+  prompt = "create"
 ) => {
   let state, request, co;
 
