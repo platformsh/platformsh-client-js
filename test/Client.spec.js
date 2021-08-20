@@ -755,7 +755,7 @@ describe("Client", () => {
         }
       }
     );
-    client.getOrganizationOrders("aliceorgid", "1").then(orders => {
+    client.getOrganizationOrders("aliceorgid", { owner: "1" }).then(orders => {
       assert.equal(orders.length, 1);
       assert.equal(orders[0].constructor.name, "OrganizationOrder");
       done();
