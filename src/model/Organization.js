@@ -27,6 +27,7 @@ export default class Organization extends Ressource {
     this.name = "";
     this.label = "";
     this.owner_id = "";
+    this._queryUrl = url || `${api_url}${_url}`;
   }
 
   static get(params = {}, customUrl) {
