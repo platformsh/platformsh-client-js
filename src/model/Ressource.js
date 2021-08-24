@@ -134,7 +134,7 @@ export default class Ressource {
     let updateLink;
 
     try {
-      updateLink = this.getLink("#edit");
+      updateLink = this.getLink("#edit", true);
     } catch (err) {
       if (!_url) {
         throw new Error("Not allowed to edit", err);

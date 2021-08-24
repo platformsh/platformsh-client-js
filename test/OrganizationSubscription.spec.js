@@ -69,7 +69,6 @@ describe("OrganizationSubscription", () => {
     );
     OrganizationSubscription.get({ organizationId: "aliceOrg", id: "1" }).then(
       subscription => {
-        console.log(subscription._queryUrl);
         assert.equal(subscription.project_region, "region");
         assert.equal(subscription.constructor.name, "OrganizationSubscription");
         subscription.getEstimate().then(es => {
@@ -98,5 +97,32 @@ describe("OrganizationSubscription", () => {
         done();
       }
     );
+  });
+
+  it("Update organization subscription", done => {
+    fetchMock.mock(
+      `https://api.platform.sh/organizations/aliceOrg/subscriptions/1`,
+      {
+        project_region: "region"
+      },
+      "PATCH"
+    );
+    const organizationSubscription = new OrganizationSubscription({
+      id: 1,
+      organizationId: "aliceOrg",
+      project_region: "region",
+      _links: {
+        self: {
+          href: "/organizations/aliceOrg/subscriptions/1"
+        }
+      }
+    });
+    organizationSubscription
+      .update({ environments: 3 })
+      .then(subscription => {
+        assert.equal(subscription.constructor.name, "Result");
+        done();
+      })
+      .catch(err => console.log(err));
   });
 });

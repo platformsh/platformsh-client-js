@@ -50,7 +50,7 @@ describe("Organization", () => {
     });
   });
 
-  it.only("Update organization", done => {
+  it("Update organization", done => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/aliceorg",
       {},
