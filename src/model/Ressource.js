@@ -142,7 +142,7 @@ export default class Ressource {
     }
 
     const parsedUrl = _urlParser(
-      _url || updateLink,
+      _url || updateLink || this._url,
       this.data,
       this._paramDefaults
     );
