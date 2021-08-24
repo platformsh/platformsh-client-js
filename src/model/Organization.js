@@ -15,7 +15,7 @@ export default class Organization extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url || `${api_url}${_url}/:id`,
       paramDefaults,
       {},
       organization,

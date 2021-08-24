@@ -49,4 +49,22 @@ describe("Organization", () => {
       done();
     });
   });
+
+  it.only("Update organization", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/organizations/aliceorg",
+      {},
+      "PATCH"
+    );
+
+    const organization = new Organization(
+      { id: "aliceorg" },
+      "https://api.platform.sh/api/organizations/aliceorg"
+    );
+
+    organization.update({ name: "test" }).then(result => {
+      assert.equal(result.constructor.name, "Result");
+      done();
+    });
+  });
 });
