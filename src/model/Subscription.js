@@ -241,7 +241,7 @@ export default class Subscription extends Ressource {
   /**
    * @inheritdoc
    */
-  getLink(rel, absolute = false) {
+  getLink(rel, absolute = true) {
     if (rel === "#edit" || rel === "#delete") {
       return this.getUri(absolute);
     }

@@ -125,4 +125,31 @@ describe("OrganizationSubscription", () => {
       })
       .catch(err => console.log(err));
   });
+
+  it("Delete organization subscription", done => {
+    fetchMock.mock(
+      `https://api.platform.sh/organizations/aliceOrg/subscriptions/1`,
+      {},
+      "DELETE"
+    );
+    const organizationSubscription = new OrganizationSubscription({
+      id: 1,
+      organizationId: "aliceOrg",
+      project_region: "region",
+      _links: {
+        self: {
+          href: "/organizations/aliceOrg/subscriptions/1"
+        },
+        "#delete": {
+          href: "/organizations/aliceOrg/subscriptions/1"
+        }
+      }
+    });
+    organizationSubscription
+      .delete()
+      .then(() => {
+        done();
+      })
+      .catch(err => console.log(err));
+  });
 });
