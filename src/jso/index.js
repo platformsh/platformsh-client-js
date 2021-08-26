@@ -278,7 +278,7 @@ export const jso_getAuthRequest = (
   providerid,
   scopes,
   response_mode,
-  prompt = "create"
+  prompt
 ) => {
   let state, request, co;
 
