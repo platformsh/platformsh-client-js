@@ -203,7 +203,7 @@ function logInWithRedirect(reset) {
 
     // Override for redirect
     auth.response_mode = "";
-    auth.prompt = "";
+    auth.prompt = "create";
 
     if (auth.response_type === "code") {
       // Check for code
@@ -431,7 +431,12 @@ export const logInWithPopUp = async reset => {
     return storedToken;
   }
 
-  const request = jso_getAuthRequest(authConfig.provider, authConfig.scope);
+  const request = jso_getAuthRequest(
+    authConfig.provider,
+    authConfig.scope,
+    undefined,
+    "create"
+  );
 
   const auth = new OAuth2PopupFlow({
     authorizationUri: authConfig.authorization,
