@@ -5,21 +5,25 @@ const url = "/organizations/:organizationId/vouchers";
 const paramDefaults = {};
 
 export default class OrganizationVoucher extends Ressource {
-  constructor(account, customUrl) {
-    const { uuid } = account;
+  constructor(voucher, customUrl) {
     const { api_url } = getConfig();
 
-    super(customUrl || `${api_url}${url}`);
+    super(customUrl || `${api_url}${url}`, paramDefaults, {}, voucher);
+    this.currency = "";
+    this.discounted_orders = [];
+    this.vouchers = [];
+    this.vouchers_applied = 0;
+    this.vouchers_remaining_balance = 0;
+    this.vouchers_total = 0;
   }
 
   static get(params, customUrl) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.get.call(
-      this,
+    return super.get(
       customUrl || `${api_url}${url}`,
-      { organizationId, id },
+      { organizationId },
       {},
       queryParams
     );
@@ -29,13 +33,12 @@ export default class OrganizationVoucher extends Ressource {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.query.call(
-      this,
+    return super.query(
       `${api_url}${url}`,
       { organizationId },
       {},
       queryParams,
-      data => data.items
+      data => data.vouchers
     );
   }
 }

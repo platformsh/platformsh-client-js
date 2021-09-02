@@ -808,7 +808,7 @@ export default class Client {
    * @return Voucher
    */
   getOrganizationVouchers(organizationId) {
-    return entities.OrganizationVoucher.query({ organizationId });
+    return entities.OrganizationVoucher.get({ organizationId });
   }
 
   /**
