@@ -10,11 +10,12 @@ export default class CursoredRessource extends Ressource {
     params,
     paramDefaults,
     queryParams,
-    ResultConstructor
+    ResultConstructor,
+    options
   ) {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    const result = await request(parsedUrl, "GET", queryParams);
+    const result = await request(parsedUrl, "GET", queryParams, {}, 0, options);
 
     return new CursoredResult(
       parsedUrl,

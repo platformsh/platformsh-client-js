@@ -99,6 +99,36 @@ describe("OrganizationSubscription", () => {
     );
   });
 
+  it("Get organization subscriptions with filters", done => {
+    fetchMock.mock(
+      `${api_url}/organizations/aliceOrg/subscriptions?filter[status][value][]=active&filter[status][value][]=suspended&filter[status][operator]=IN`,
+      {
+        items: [
+          {
+            project_region: "region"
+          }
+        ]
+      }
+    );
+    OrganizationSubscription.query({
+      organizationId: "aliceOrg",
+      filter: {
+        status: {
+          value: ["active", "suspended"],
+          operator: "IN"
+        }
+      }
+    }).then(subscriptions => {
+      assert.equal(subscriptions.items.length, 1);
+      assert.equal(subscriptions.items[0].project_region, "region");
+      assert.equal(
+        subscriptions.items[0].constructor.name,
+        "OrganizationSubscription"
+      );
+      done();
+    });
+  });
+
   it("Update organization subscription", done => {
     fetchMock.mock(
       `https://api.platform.sh/organizations/aliceOrg/subscriptions/1`,

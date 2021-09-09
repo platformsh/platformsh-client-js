@@ -84,11 +84,12 @@ export default class Ressource {
     params,
     paramDefaults,
     queryParams,
-    transformResultBeforeMap
+    transformResultBeforeMap,
+    options
   ) {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams).then(data => {
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(data => {
       let dataToMap = data;
 
       if (transformResultBeforeMap) {

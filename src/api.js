@@ -37,7 +37,9 @@ export const request = (
   let apiUrl = url;
 
   if (method === "GET") {
-    const queryString = param(body || {});
+    const queryString = param(body || {}, "", {
+      arrayPrefix: options.queryStringArrayPrefix || false
+    });
 
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ""}`;
   }
