@@ -5733,10 +5733,10 @@ to-object-path@^0.3.0:
   dependencies:
     kind-of "^3.0.2"
 
-to-querystring@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/to-querystring/-/to-querystring-1.1.0.tgz#31efbcebb332bcb2522de36129b4234179399fbd"
-  integrity sha512-nlYTDlLrE9+JJlEcoqEvOytgReSG4z8+hdHeSO8+WF4VLzF7sY5KFyIGvCEWJc0bROdMJsyhOnbPEb5R2LOI8A==
+to-querystring@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/to-querystring/-/to-querystring-1.1.1.tgz#98de5b00c79768a98ca48a2c09a960238d960265"
+  integrity sha512-ZgIacl9TXAoT7sGXUYjQiy0MW7Tf/7CJQLt757hYHfXXc8JBzOVBMx4DckqKUO4hi36J72/m8UcH/GCHK+n97g==
 
 to-regex-range@^2.1.0:
   version "2.1.1"
