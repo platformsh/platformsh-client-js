@@ -431,13 +431,23 @@ export default class Client {
       region,
       plan = "development",
       title,
-      vendor
+      defaultBranch,
+      storage,
+      environments,
+      optionsUrl,
+      vendor,
+      optionsCustom
     } = config;
     const values = this.cleanRequest({
       project_region: region,
       plan,
       project_title: title,
+      default_branch: defaultBranch,
+      storage,
+      environments,
+      options_url: optionsUrl,
       vendor,
+      options_custom: optionsCustom,
       organizationId
     });
 
