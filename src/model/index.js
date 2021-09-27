@@ -46,6 +46,7 @@ import OrganizationPaymentSource from "./OrganizationPaymentSource";
 import OrganizationProfile from "./OrganizationProfile";
 import OrganizationAddress from "./OrganizationAddress";
 import OrganizationVoucher from "./OrganizationVoucher";
+import OrganizationInvitation from "./OrganizationInvitation";
 
 export default {
   Account,
@@ -95,5 +96,6 @@ export default {
   OrganizationPaymentSource,
   OrganizationProfile,
   OrganizationAddress,
-  OrganizationVoucher
+  OrganizationVoucher,
+  OrganizationInvitation
 };

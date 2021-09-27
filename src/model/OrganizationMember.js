@@ -5,7 +5,8 @@ import { getConfig } from "../config";
 const paramDefaults = {};
 const _url = "/organizations/:organizationId/members";
 
-const creatableField = ["user_id", "role"];
+const creatableField = ["user_id", "permissions"];
+const updatableField = ["permissions"];
 
 export default class OrganizationMember extends CursoredRessource {
   constructor(organizationMember, url) {
@@ -18,11 +19,10 @@ export default class OrganizationMember extends CursoredRessource {
       { organizationId },
       organizationMember,
       creatableField,
-      creatableField
+      updatableField
     );
     this.id = "";
     this.user_id = "";
-    this.role = "";
     this.organization_id = "";
     this.permissions = [];
     this.owner = false;
@@ -52,6 +52,10 @@ export default class OrganizationMember extends CursoredRessource {
       paramDefaults,
       queryParams
     );
+  }
+
+  delete() {
+    return super.delete(this.getLink("delete"));
   }
 
   getUser() {
