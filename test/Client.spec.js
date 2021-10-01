@@ -621,6 +621,34 @@ describe("Client", () => {
     });
   });
 
+  it("Get organization regions", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/organizations/aliceorgid/regions",
+      {
+        items: [
+          {
+            available: true,
+            endpoint: "https://staging.plat.farm/api",
+            id: "us.platform.sh",
+            label: "PEPSi Staging",
+            private: false,
+            provider: "AWS",
+            zone: "Europe"
+          }
+        ]
+      }
+    );
+    client.getOrganizationRegions("aliceorgid").then(result => {
+      assert.equal(result.items[0].id, "us.platform.sh");
+      assert.equal(result.items[0].endpoint, "https://staging.plat.farm/api");
+      assert.equal(result.items[0].available, true);
+      assert.equal(result.items[0].label, "PEPSi Staging");
+      assert.equal(result.items[0].zone, "Europe");
+      assert.equal(result.items[0].constructor.name, "OrganizationRegion");
+      done();
+    });
+  });
+
   it("Get account", done => {
     fetchMock.mock("https://accounts.platform.sh/api/platform/users/test", {
       id: "test",
