@@ -35,7 +35,7 @@ export default class Activity extends Ressource {
 
     return super.get(
       customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
-      { id },
+      { projectId, environmentId, id },
       paramDefaults,
       queryParams
     );
