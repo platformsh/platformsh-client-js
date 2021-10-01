@@ -146,6 +146,14 @@ export default class Client {
     });
   }
 
+  getEnvironmentActivity(projectId, environmentId, activityId) {
+    return entities.Activity.get({
+      projectId,
+      environmentId,
+      id: activityId
+    });
+  }
+
   /**
    * Get the certificates of project projectId
    *
