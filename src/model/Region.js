@@ -18,6 +18,7 @@ export default class Region extends Ressource {
     this.private = true;
     this.provider = "";
     this.zone = "";
+    this.project_label = "";
   }
 
   static query(params) {

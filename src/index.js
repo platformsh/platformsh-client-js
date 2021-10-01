@@ -709,6 +709,16 @@ export default class Client {
   }
 
   /**
+   * Get organization regions
+   *
+   *
+   * @return CursoredResult
+   */
+  getOrganizationRegions(organizationId, params) {
+    return entities.OrganizationRegion.query({ organizationId, ...params });
+  }
+
+  /**
    * Get account
    *
    *
