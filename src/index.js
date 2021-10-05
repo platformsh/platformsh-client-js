@@ -1167,6 +1167,24 @@ export default class Client {
   }
 
   /**
+   * Get a project's activity
+   *
+   * @param string projectId
+   * @param string activityId
+   *
+   * @return Promise Activity
+   */
+  getProjectActivity(projectId, activityId) {
+    const params = { id: activityId, projectId };
+    const { api_url } = getConfig();
+
+    return entities.Activity.get(
+      params,
+      `${api_url}/projects/:projectId/activities`
+    );
+  }
+
+  /**
    * Returns the information required to start the TFA enrollment process.
    *
    * @param {string} userId User identifier
