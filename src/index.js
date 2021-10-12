@@ -492,8 +492,11 @@ export default class Client {
    *
    * @return OrganizationSubscriptions[]
    */
-  getOrganizationSubscriptions(organizationId, filter) {
-    return entities.OrganizationSubscription.query({ organizationId, filter });
+  getOrganizationSubscriptions(organizationId, params) {
+    return entities.OrganizationSubscription.query({
+      organizationId,
+      ...params
+    });
   }
 
   /**
