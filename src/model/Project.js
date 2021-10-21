@@ -320,6 +320,8 @@ export default class Project extends Ressource {
    *   The value of the variable to set.  If non-scalar it will be JSON-encoded automatically.
    * @param bool json
    *   True if this value is an encoded JSON value. false if it's a primitive.
+   * @param bool sensitive
+   *   True if the value is sensitive and needs to be hide, false otherwise
    * @param bool visibleBuild
    *   True if this variable should be exposed during the build phase, false otherwise.
    * @param bool visibleRuntime

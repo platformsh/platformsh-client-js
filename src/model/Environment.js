@@ -315,6 +315,11 @@ export default class Environment extends Ressource {
    * @param string name
    * @param mixed  value
    * @param bool   json
+   * @param bool   enabled
+   * @param bool   inheritable
+   * @param bool   sensitive
+   * @param bool   visibleBuild
+   * @param bool   visibleRuntime
    *
    * @return Result
    */
@@ -325,7 +330,9 @@ export default class Environment extends Ressource {
     is_json = false,
     is_enabled = true,
     is_inheritable = true,
-    is_sensitive = false
+    is_sensitive = false,
+    visible_build = true,
+    visible_runtime = true
   ) {
     const values = {
       name,
@@ -333,7 +340,9 @@ export default class Environment extends Ressource {
       is_json,
       is_enabled,
       is_inheritable,
-      is_sensitive
+      is_sensitive,
+      visible_build,
+      visible_runtime
     };
 
     return this.getVariable(name)
