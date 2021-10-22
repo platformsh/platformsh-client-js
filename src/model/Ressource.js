@@ -142,13 +142,15 @@ export default class Ressource {
       }
     }
 
-    const parsedUrl = _urlParser(
-      _url || updateLink || this._url,
-      this.data,
-      this._paramDefaults
-    );
+    if (!updateLink) {
+      updateLink = _urlParser(
+        _url || this._url,
+        this.data,
+        this._paramDefaults
+      );
+    }
 
-    return request(parsedUrl, "PATCH", pick(data, this._modifiableField)).then(
+    return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
       data => {
         return new Result(data, this._url, this.constructor);
       }
