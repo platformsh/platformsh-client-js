@@ -203,7 +203,7 @@ function logInWithRedirect(reset) {
 
     // Override for redirect
     auth.response_mode = "";
-    auth.prompt = "create";
+    auth.prompt = "";
 
     if (auth.response_type === "code") {
       // Check for code
@@ -435,7 +435,7 @@ export const logInWithPopUp = async reset => {
     authConfig.provider,
     authConfig.scope,
     undefined,
-    "create"
+    ""
   );
 
   const auth = new OAuth2PopupFlow({
