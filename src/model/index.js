@@ -48,6 +48,7 @@ import OrganizationAddress from "./OrganizationAddress";
 import OrganizationVoucher from "./OrganizationVoucher";
 import OrganizationInvitation from "./OrganizationInvitation";
 import OrganizationRegion from "./OrganizationRegion";
+import SourceOperation from "./SourceOperation";
 
 export default {
   Account,
@@ -99,5 +100,6 @@ export default {
   OrganizationAddress,
   OrganizationVoucher,
   OrganizationInvitation,
-  OrganizationRegion
+  OrganizationRegion,
+  SourceOperation
 };
