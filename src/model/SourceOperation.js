@@ -41,7 +41,7 @@ export default class SourceOperation extends Ressource {
   // requires a HAL link. This link is not available on this endpoint.
   run(variables) {
     const body = { operation: this.operation };
-    if (typeof variables !== undefined) {
+    if (typeof variables !== "undefined") {
       body.variables = { ...variables };
     }
     return request(this._url, "POST", body).then(data => {
