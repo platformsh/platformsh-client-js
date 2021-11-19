@@ -15,7 +15,7 @@ describe("Team", () => {
     fetchMock.restore();
   });
 
-  it("Get SourceOpewation", async () => {
+  it("Get SourceOperation", async () => {
     const command = 'set -e\necho "Does this SourceOp run?""\n';
     fetchMock.mock(
       "https://api.platform.sh/api/projects/asdf1234/environments/staging/source-operations",
