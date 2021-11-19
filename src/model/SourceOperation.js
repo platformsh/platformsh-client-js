@@ -15,7 +15,7 @@ export default class SourceOperation extends Ressource {
     super(url, paramDefaults, {}, sourceOperation);
     this.operation = "";
     this.app = "";
-    this.commmand = "";
+    this.command = "";
   }
 
   // This is a custom method because we have to override the url
