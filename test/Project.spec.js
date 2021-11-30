@@ -744,4 +744,45 @@ describe("Project", () => {
       done();
     });
   });
+
+  it("Get Capabilities", done => {
+    const capabilities = {
+      id: capabilities,
+      _links: {
+        self: {
+          href:
+            "https://test.com/api/projects/ffzefzef3/capabilities/capabilities"
+        },
+        "#edit": {
+          href: "/api/projects/qtnfkpa5ehbxi/capabilities"
+        }
+      },
+      source_operation: {
+        enabled: true
+      }
+    };
+    fetchMock.mock(
+      "https://test.com/api/projects/ffzefzef3/capabilities",
+      capabilities
+    );
+
+    const project = new Project(
+      {
+        _links: {
+          self: {
+            href: "/api/projects/ffzefzef3"
+          },
+          "#capabilitiess": {
+            href: "/api/projects/ffzefzef3/capabilities"
+          }
+        }
+      },
+      "https://test.com/api/projects/ffzefzef3"
+    );
+
+    project.getCapabilities().then(({ source_operation }) => {
+      assert.equal(source_operation.enabled, true);
+      done();
+    });
+  });
 });

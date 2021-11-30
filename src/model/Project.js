@@ -14,6 +14,7 @@ import Integration from "./Integration";
 import ProjectLevelVariable from "./ProjectLevelVariable";
 import Activity from "./Activity";
 import Certificate from "./Certificate";
+import request from "../api";
 
 const paramDefaults = {};
 const modifiableField = [
@@ -434,5 +435,13 @@ export default class Project extends Ressource {
         emailLogo: `${this.vendor_resources}/images/logo-email.png`,
         ...theme
       }));
+  }
+
+  /**
+   * Retrieve list of Capabilities supported
+   * by this project
+   */
+  getCapabilities() {
+    return request(this.getLink("capabilities"));
   }
 }
