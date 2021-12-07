@@ -7,7 +7,7 @@ const paramDefaults = {};
 const _url = "/organizations";
 const user_url = "/users/:userId/organizations";
 
-const creatableField = ["name", "label", "owner"];
+const creatableField = ["name", "label", "owner_id"];
 const modifiableField = ["name", "label"];
 
 export default class Organization extends Ressource {
@@ -27,6 +27,8 @@ export default class Organization extends Ressource {
     this.name = "";
     this.label = "";
     this.owner_id = "";
+    this.created_at = "";
+    this.updated_at = "";
     this._queryUrl = url || `${api_url}${_url}`;
   }
 
