@@ -19,7 +19,13 @@ const creatableField = [
   "default_branch"
 ];
 
-const modifiableField = ["plan", "environments", "storage", "big_dev"];
+const modifiableField = [
+  "plan",
+  "environments",
+  "storage",
+  "big_dev",
+  "agency_site"
+];
 
 const url = "/v1/subscriptions/:id";
 const STATUS_ACTIVE = "active";
