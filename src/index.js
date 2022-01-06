@@ -603,14 +603,16 @@ export default class Client {
     user_licenses,
     big_dev,
     format = null,
-    country_code = null
+    country_code = null,
+    agency_site
   ) {
     const query = {
       plan,
       storage,
       environments,
       user_licenses,
-      big_dev
+      big_dev,
+      agency_site
     };
     if (format) query.format = format;
     if (country_code) query.country_code = country_code;
