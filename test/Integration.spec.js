@@ -35,6 +35,30 @@ describe("Integration", () => {
     });
   });
 
+  it("Delete integration", done => {
+    fetchMock.mock(
+      `${api_url}/projects/ffzefzef3/integrations/integration_id`,
+      {},
+      "DELETE"
+    );
+    const integration = new Integration(
+      {
+        _links: {
+          "#delete": {
+            href: "/api/projects/ffzefzef3/integrations/integration_id"
+          }
+        },
+        id: 1,
+        status: "inactive"
+      },
+      `${api_url}/projects/ffzefzef3/integrations/integration_id`
+    );
+
+    integration.delete().then(() => {
+      done();
+    });
+  });
+
   it("Get integration", done => {
     fetchMock.mock(`${api_url}/projects/ffzefzef3/integrations/1`, {
       id: 1,
