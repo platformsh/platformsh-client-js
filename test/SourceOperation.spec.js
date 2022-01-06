@@ -6,7 +6,7 @@ import fetchMock from "fetch-mock";
 import { setAuthenticationPromise } from "../src/api";
 import SourceOperation from "../src/model/SourceOperation";
 
-describe("Team", () => {
+describe("Source operation", () => {
   before(function() {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
