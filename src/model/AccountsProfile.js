@@ -70,7 +70,7 @@ export default class AccountsProfile extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,

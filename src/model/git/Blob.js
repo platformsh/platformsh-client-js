@@ -24,7 +24,7 @@ export default class Blob extends Ressource {
   static get(projectId, sha) {
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${_url}`, { projectId, sha });
+    return super._get(`${api_url}${_url}`, { projectId, sha });
   }
 
   async getInstance() {

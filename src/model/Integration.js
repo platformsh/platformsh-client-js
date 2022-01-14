@@ -87,7 +87,7 @@ export default class Integration extends Ressource {
     const { projectId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
       { projectId, id },
       paramDefaults,
@@ -99,7 +99,7 @@ export default class Integration extends Ressource {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { projectId },
       paramDefaults,

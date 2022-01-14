@@ -20,13 +20,13 @@ export default class ConnectedAccount extends Ressource {
   static get(userId, provider) {
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${_url}/:provider`, { userId, provider });
+    return super._get(`${api_url}${_url}/:provider`, { userId, provider });
   }
 
   static query(userId) {
     const { api_url } = getConfig();
 
-    return super.query(`${api_url}${_url}`, { userId }, {}, {}, data =>
+    return super._query(`${api_url}${_url}`, { userId }, {}, {}, data =>
       data.map(d => ({ id: d.provider, ...d }))
     );
   }

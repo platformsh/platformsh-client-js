@@ -21,7 +21,7 @@ export default class OrganizationVoucher extends Ressource {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { organizationId },
       {},
@@ -33,7 +33,7 @@ export default class OrganizationVoucher extends Ressource {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       `${api_url}${url}`,
       { organizationId },
       {},

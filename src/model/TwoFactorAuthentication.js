@@ -22,7 +22,7 @@ export default class Account extends Ressource {
 
   static get(userId) {
     const { api_url } = getConfig();
-    return super.get(`${api_url}${url}`, { userId }, paramDefaults, {});
+    return super._get(`${api_url}${url}`, { userId }, paramDefaults, {});
   }
 
   static enroll(userId, secret, passcode) {

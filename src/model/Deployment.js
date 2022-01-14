@@ -19,7 +19,7 @@ export default class Deployment extends Ressource {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,

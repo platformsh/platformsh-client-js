@@ -48,14 +48,14 @@ export default class Variable extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl || `${api_url}${_url}`;
 
-    return super.get(`${urlToCall}/:id`, { id }, paramDefaults, queryParams);
+    return super._get(`${urlToCall}/:id`, { id }, paramDefaults, queryParams);
   }
 
   static query(params, customUrl) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,

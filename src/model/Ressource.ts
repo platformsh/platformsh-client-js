@@ -1,14 +1,26 @@
-import pick from "object.pick";
 import parse_url from "parse_url";
 
-import { getConfig } from "../config";
 import _urlParser from "../urlParser";
 import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLink } from "../refs";
 import request from "../api";
 import Result from "./Result";
+import Activity from "./Activity";
+
+interface link {
+  href: string
+}
+
+interface APIObject {
+  [key: string]: any,
+  id: string,
+  _links?: Record<string, link>,
+  _embedded?: Record<string, Array<object>>
+};
+
+type ParamsType = object;
 
 const handler = {
-  get(target, key) {
+  get(target: any, key: string) {
     if (
       typeof key !== "symbol" &&
       !key.startsWith("_") &&
@@ -20,7 +32,7 @@ const handler = {
 
     return target[key];
   },
-  set(target, key, value) {
+  set(target: any, key: string, value: any) {
     if (key !== "data" && target.hasOwnProperty(key)) {
       target.data[key] = value;
       return true;
@@ -31,14 +43,43 @@ const handler = {
   }
 };
 
-export default class Ressource {
+const pick = (data: APIObject, fields: string[]) => {
+  return Object.keys(data)
+    .filter(k => fields.indexOf(k) !== -1)
+    .reduce<APIObject>((acc: APIObject, k: string) => {
+      acc[k] = data[k];
+
+      return acc;
+    }, 
+    {id: ""});
+};
+
+function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
+      var instance = Object.create(context?.prototype || null);
+      return <T> new instance.constructor(...args);
+}
+
+
+export default abstract class Ressource {
+  
+  protected _url: string;
+  protected _params: ParamsType;
+  protected _baseUrl?: string;
+  protected _creatableField: string[];
+  protected _modifiableField: string[];
+  protected _paramDefaults: ParamsType;
+  protected _required?: string[];
+  protected _queryUrl?: string;
+
+  private data?: APIObject;
+
   constructor(
-    _url,
-    paramDefaults,
-    params,
-    data = {},
-    _creatableField = [],
-    _modifiableField = []
+    _url: string,
+    paramDefaults: ParamsType,
+    params: ParamsType,
+    data: APIObject,
+    _creatableField: string[] = [],
+    _modifiableField: string[] = []
   ) {
     // This is an abstract class
     if (this.constructor === Ressource) {
@@ -69,41 +110,40 @@ export default class Ressource {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
-  static get(_url, params, paramDefaults, queryParams, options) {
+  static _get(_url: string, params?: ParamsType, paramDefaults?: ParamsType, queryParams?: ParamsType, options?: object): Promise<Ressource | undefined> {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(data => {
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: APIObject) => {
       return typeof data === "undefined"
         ? undefined
-        : new this.prototype.constructor(data, parsedUrl, params);
+        : getInstance<Ressource>(this, data, parsedUrl, params);
     });
   }
 
-  static query(
-    _url,
-    params,
-    paramDefaults,
-    queryParams,
-    transformResultBeforeMap,
-    options
-  ) {
+  static _query(
+    _url: string,
+    params?: ParamsType,
+    paramDefaults?: ParamsType,
+    queryParams?: ParamsType ,
+    transformResultBeforeMap? : (data: Array<APIObject>) => Array<APIObject>,
+    options?:  object // Define that in api
+  ) : Promise<Array<Ressource> | undefined>{
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(data => {
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: Array<APIObject>) => {
       let dataToMap = data;
-
       if (transformResultBeforeMap) {
         dataToMap = transformResultBeforeMap(data);
       }
 
       return dataToMap.map(
-        d => new this.prototype.constructor(d, `${parsedUrl}/${d.id}`)
+        (d: APIObject) => getInstance<Ressource>(this, d, `${parsedUrl}/${d.id}`)
       );
     });
   }
 
-  checkProperty() {
-    return undefined;
+  checkProperty(property: string, value: any): object {
+    return {};
   }
 
   /**
@@ -113,16 +153,22 @@ export default class Ressource {
    *
    * @return string{} An object of validation errors.
    */
-  checkUpdate(values = {}) {
-    let errors;
+  checkUpdate(values: APIObject | undefined) {
+    if(!values) {
+      return;
+    }
 
+    let errors: object = {};
+    
+    //checkProperty can be overrided by children
     for (let key in Object.keys(values)) {
-      errors = { ...errors, ...this.checkProperty(key, values[key]) };
+      errors =  this.checkProperty(key, values[key]);
     }
     return Object.keys(errors).length ? errors : undefined;
+
   }
 
-  update(data, _url) {
+  update(data: APIObject, _url: string) {
     if (!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
     }
@@ -138,7 +184,7 @@ export default class Ressource {
       updateLink = this.getLink("#edit", true);
     } catch (err) {
       if (!_url) {
-        throw new Error("Not allowed to edit", err);
+        throw new Error("Not allowed to edit");
       }
     }
 
@@ -151,14 +197,14 @@ export default class Ressource {
     }
 
     return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
-      data => {
+      (data: APIObject) => {
         return new Result(data, this._url, this.constructor);
       }
     );
   }
 
-  updateLocal(data) {
-    return new this.constructor({ ...this.data, ...data }, this._url);
+  updateLocal(data: APIObject) {
+    return new (this.constructor as any)({ ...this.data, ...data }, this._url);
   }
 
   /**
@@ -177,8 +223,11 @@ export default class Ressource {
    *
    * @return string{} An object of validation errors.
    */
-  checkNew(values = {}) {
-    let errors = {};
+  checkNew(values: APIObject | undefined) {
+    if (!values) {
+      return;
+    }
+    let errors: { [key: string] : string } = {};
     const dataKeys = Object.keys(values);
 
     const missing = this.getRequired().filter(function(i) {
@@ -198,42 +247,42 @@ export default class Ressource {
     return Object.keys(errors).length ? errors : undefined;
   }
 
-  save() {
+  save(): Promise<Result> {
     if (!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
     }
+    
     const errors = this.checkNew(this.data);
-
     if (errors) {
       return Promise.reject(errors);
     }
     const url = this._queryUrl || this._url;
-
-    return request(url, "POST", pick(this.data, this._creatableField)).then(
-      data => {
+    
+    return request(url, "POST", this.data && pick(this.data, this._creatableField)).then(
+      (data: APIObject) => {
         return new Result(data, url, this.constructor);
       }
     );
   }
 
-  delete(url) {
+  delete(url?: string): Promise<Result> {
     const deleteLink = url || this.getLink("#delete");
 
     if (!deleteLink) {
       throw new Error("Not allowed to delete");
     }
     return request(deleteLink, "DELETE", {}).then(
-      result => new Result(result, this._url, this.constructor)
+      (result: APIObject) => new Result(result, this._url, this.constructor)
     );
   }
 
-  copy(data) {
+  copy(data: APIObject) {
     this.data = { ...this.data, ...data };
   }
 
-  static wrap(objects) {
-    return objects.map(
-      object => new this.prototype.constructor(object, this._url)
+  static wrap(objs: APIObject[]) {
+    return objs.map(
+      (obj: APIObject) => getInstance<Ressource>(this, obj)
     );
   }
 
@@ -241,8 +290,8 @@ export default class Ressource {
    * Refresh the resource.
    *
    */
-  refresh(params) {
-    return request(this.getUri(), "GET", params).then(data => {
+  refresh(params: ParamsType): Promise<Ressource> {
+    return request(this.getUri(), "GET", params).then((data: APIObject) => {
       this.copy(data);
       return this;
     });
@@ -255,8 +304,8 @@ export default class Ressource {
    *
    * @return {boolean} true if the operation is available false otherwise
    */
-  operationAvailable(operationName) {
-    const links = this.data._links;
+  operationAvailable(operationName: string) {
+    const links = this.data?._links;
     const operation = links && links[`#${operationName}`];
     return operation?.href;
   }
@@ -268,8 +317,8 @@ export default class Ressource {
    *
    * @return bool
    */
-  hasLink(rel) {
-    return hasLink(this.data._links, rel);
+  hasLink(rel: string): boolean {
+    return hasLink(this.data?._links, rel);
   }
 
   /**
@@ -279,9 +328,9 @@ export default class Ressource {
    *
    * @return bool
    */
-  hasEmbedded(rel) {
+  hasEmbedded(rel: string) {
     return (
-      this.data._embedded &&
+      this.data?._embedded &&
       this.data._embedded[rel] &&
       !!this.data._embedded[rel].length
     );
@@ -294,12 +343,12 @@ export default class Ressource {
    *
    * @return array
    */
-  getEmbedded(rel) {
+  getEmbedded(rel: string) {
     if (!this.hasEmbedded(rel)) {
       throw new Error(`Embedded not found: ${rel}`);
     }
 
-    return this.data._embedded[rel];
+    return this.data?._embedded && this.data._embedded[rel];
   }
 
   /**
@@ -310,8 +359,8 @@ export default class Ressource {
    *
    * @return string
    */
-  getLink(rel, absolute = true) {
-    return getLink(this.data._links, rel, absolute, this._baseUrl);
+  getLink(rel: string, absolute: boolean = true): string {
+    return getLink(this.data?._links, rel, absolute, this._baseUrl);
   }
 
   /**
@@ -333,7 +382,7 @@ export default class Ressource {
    *
    * @return string
    */
-  makeAbsoluteUrl(relativeUrl, _baseUrl = this._baseUrl) {
+  makeAbsoluteUrl(relativeUrl: string, _baseUrl: string | undefined = this._baseUrl) {
     return makeAbsoluteUrl(`${_baseUrl}${relativeUrl}`, _baseUrl);
   }
 
@@ -346,7 +395,7 @@ export default class Ressource {
    *
    * @return array
    */
-  runOperation(op, method = "POST", body) {
+  runOperation(op: string, method = "POST", body: object): Promise<any> {
     if (!this.operationAvailable(op)) {
       throw new Error(`Operation not available: ${op}`);
     }
@@ -362,8 +411,8 @@ export default class Ressource {
    *
    * @return Activity
    */
-  runLongOperation(op, method = "POST", body) {
-    return this.runOperation(op, method, body).then(data => {
+  runLongOperation(op: string, method = "POST", body: ParamsType): Promise<Activity> {
+    return this.runOperation(op, method, body).then((data: APIObject) => {
       const result = new Result(data, this.getUri());
       const activities = result.getActivities();
 
@@ -375,14 +424,14 @@ export default class Ressource {
     });
   }
 
-  hasPermission(permission) {
-    return this.data._links && !!this.data._links[permission];
+  hasPermission(permission: string) {
+    return this.data?._links && !!this.data._links[permission];
   }
 
   // Load a single object from the ref API
-  getRef(linkKey, constructor, absolute = true) {
+  getRef(linkKey: string, constructor: Function, absolute = true) {
     return getRef(
-      this.data._links,
+      this.data?._links,
       linkKey,
       constructor,
       absolute,
@@ -391,9 +440,9 @@ export default class Ressource {
   }
 
   // Load a list of objects from the ref API
-  async getRefs(linkKey, constructor, absolute = true) {
+  async getRefs(linkKey: string, constructor: Function, absolute = true) {
     return getRefs(
-      this.data._links,
+      this.data?._links,
       linkKey,
       constructor,
       absolute,

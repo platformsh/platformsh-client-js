@@ -21,7 +21,7 @@ export default class EnvironmentType extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,
@@ -33,7 +33,7 @@ export default class EnvironmentType extends Ressource {
     const { api_url } = getConfig();
     const { projectId, ...queryString } = params;
 
-    return super.query(
+    return super._query(
       this.getQueryUrl(`${api_url}${url}`),
       { projectId },
       paramDefaults,

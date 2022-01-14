@@ -37,7 +37,7 @@ export default class ApiToken extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,
@@ -49,7 +49,7 @@ export default class ApiToken extends Ressource {
     const { api_url } = getConfig();
     const { userId } = params;
 
-    return super.query(
+    return super._query(
       Ressource.getQueryUrl(`${api_url}${url}`, userId),
       params,
       paramDefaults

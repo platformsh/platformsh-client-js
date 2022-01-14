@@ -35,13 +35,13 @@ export default class OrganizationInvitation extends Ressource {
   static get(organizationId, id) {
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${_url}`, { id, organizationId });
+    return super._get(`${api_url}${_url}`, { id, organizationId });
   }
 
   static query(organizationId) {
     const { api_url } = getConfig();
 
-    return super.query(`${api_url}${_queryUrl}`, { organizationId }, {}, {});
+    return super._query(`${api_url}${_queryUrl}`, { organizationId }, {}, {});
   }
 
   delete() {

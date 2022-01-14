@@ -25,7 +25,7 @@ export default class Ticket extends Ressource {
     const { api_url } = getConfig();
     const url = `/v1/comments/${ticketId}/description`;
 
-    return super.get(`${api_url}${url}`, {}, paramDefaults, {});
+    return super._get(`${api_url}${url}`, {}, paramDefaults, {});
   }
 
   static getAllAttachments(ticketId) {
@@ -38,7 +38,7 @@ export default class Ticket extends Ressource {
   static query(queryParams) {
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${url}`, {}, paramDefaults, queryParams);
+    return super._get(`${api_url}${url}`, {}, paramDefaults, queryParams);
   }
 
   static open(ticket) {

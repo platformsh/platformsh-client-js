@@ -37,7 +37,7 @@ export default class Route extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(
+    return super._get(
       urlToCall,
       { id, projectId, environmentId },
       paramDefaults,
@@ -49,7 +49,7 @@ export default class Route extends Ressource {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,

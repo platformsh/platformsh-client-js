@@ -23,7 +23,7 @@ export default class Voucher extends Ressource {
     const { uuid, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { uuid },
       paramDefaults,
@@ -34,7 +34,7 @@ export default class Voucher extends Ressource {
   static query(params) {
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       `${api_url}${url}`,
       {},
       paramDefaults,

@@ -9,7 +9,7 @@ export default class OrganizationOrder extends Order {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.get.call(
+    return Ressource._get.call(
       this,
       customUrl || `${api_url}${url}`,
       { organizationId, id },
@@ -22,7 +22,7 @@ export default class OrganizationOrder extends Order {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return Ressource.query.call(
+    return Ressource._query.call(
       this,
       this.getQueryUrl(`${api_url}${url}`),
       { organizationId },

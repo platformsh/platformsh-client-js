@@ -49,7 +49,7 @@ export default class PaymentSource extends Ressource {
   static query(params = {}, customUrl) {
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${url}`,
       {},
       paramDefaults,

@@ -53,7 +53,7 @@ export default class OrganizationAddress extends Ressource {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       this.getQueryUrl(customUrl || `${api_url}${url}`, id),
       { organizationId, id },
       paramDefaults,
@@ -65,7 +65,7 @@ export default class OrganizationAddress extends Ressource {
     const { api_url } = getConfig();
     const { organizationId, id } = params;
 
-    return super.query(
+    return super._query(
       this.getQueryUrl(`${api_url}${url}`, id),
       { organizationId },
       paramDefaults,

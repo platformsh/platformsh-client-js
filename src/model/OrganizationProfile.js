@@ -45,6 +45,6 @@ export default class OrganizationProfile extends Ressource {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${url}`, { organizationId }, {}, queryParams);
+    return super._get(`${api_url}${url}`, { organizationId }, {}, queryParams);
   }
 }

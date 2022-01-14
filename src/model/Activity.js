@@ -33,7 +33,7 @@ export default class Activity extends Ressource {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
       { projectId, environmentId, id },
       paramDefaults,
@@ -45,7 +45,7 @@ export default class Activity extends Ressource {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,

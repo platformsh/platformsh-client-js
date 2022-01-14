@@ -28,7 +28,7 @@ export default class Order extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,
@@ -39,7 +39,7 @@ export default class Order extends Ressource {
   static query(params) {
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       this.getQueryUrl(`${api_url}${url}`),
       {},
       paramDefaults,

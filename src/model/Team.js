@@ -31,7 +31,7 @@ export default class Team extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
@@ -42,7 +42,7 @@ export default class Team extends Ressource {
   static query(params, customUrl) {
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       {},
       paramDefaults,

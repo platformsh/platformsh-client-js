@@ -34,7 +34,7 @@ export default class OrganizationMember extends CursoredRessource {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${_url}/:id`,
       { organizationId, id },
       paramDefaults,

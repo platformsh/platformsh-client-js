@@ -38,7 +38,7 @@ export default class Organization extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       customUrl || `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
@@ -55,7 +55,7 @@ export default class Organization extends Ressource {
       url = `${api_url}${user_url}`;
     }
 
-    return super.query(
+    return super._query(
       customUrl || url,
       { userId },
       paramDefaults,

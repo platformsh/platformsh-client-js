@@ -44,13 +44,13 @@ export default class Invitation extends Ressource {
   static get(projectId, id) {
     const { api_url } = getConfig();
 
-    return super.get(`${api_url}${_url}`, { id, projectId });
+    return super._get(`${api_url}${_url}`, { id, projectId });
   }
 
   static query(projectId) {
     const { api_url } = getConfig();
 
-    return super.query(`${api_url}${_queryUrl}`, { projectId }, {}, {}, data =>
+    return super._query(`${api_url}${_queryUrl}`, { projectId }, {}, {}, data =>
       data.map(d => ({ projectId, ...d }))
     );
   }

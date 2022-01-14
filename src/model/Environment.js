@@ -64,7 +64,7 @@ export default class Environment extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
 
-    return super.get(
+    return super._get(
       urlToCall,
       { project: projectId, id },
       paramDefaults,
@@ -76,7 +76,7 @@ export default class Environment extends Ressource {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { project: projectId },
       paramDefaults,

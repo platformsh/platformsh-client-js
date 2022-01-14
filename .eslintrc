@@ -35,5 +35,22 @@
 
   "rules": {
     "prettier/prettier": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "plugins": [
+        "prettier",
+        "react",
+        "react-hooks",
+        "jsx-a11y",
+        "@typescript-eslint"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "error"
+      }
+    }
+  ]
 }

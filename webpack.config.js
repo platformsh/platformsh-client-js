@@ -31,6 +31,11 @@ var config = {
   module: {
     rules: [
       {
+        test: /\.ts(x?)$/,
+        exclude: [/node_modules/, /^.*\.spec\.tsx$/, /^.*\.spec\.ts$/],
+        use: ["babel-loader", "ts-loader"]
+      },
+      {
         test: /(\.js)$/,
         use: "babel-loader",
         exclude: /node_modules/
@@ -39,7 +44,7 @@ var config = {
   },
   resolve: {
     modules: [path.resolve("./src"), "node_modules"],
-    extensions: [".js"]
+    extensions: [".js", ".ts"]
   },
   plugins: plugins,
   ...additionalSettings

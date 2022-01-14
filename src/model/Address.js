@@ -53,7 +53,7 @@ export default class Address extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       this.getQueryUrl(customUrl || `${api_url}${url}`, id),
       { id },
       paramDefaults,
@@ -65,7 +65,7 @@ export default class Address extends Ressource {
     const { api_url } = getConfig();
     const { id } = params;
 
-    return super.query(
+    return super._query(
       this.getQueryUrl(`${api_url}${url}`, id),
       {},
       paramDefaults,

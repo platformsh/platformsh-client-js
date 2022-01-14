@@ -286,7 +286,6 @@ describe("Client", () => {
       { method: "POST" }
     );
     client.addSshKey("valueofsshkey", "titleofsshkey").catch(err => {
-      assert.equal(err.value, "The SSH key is invalid");
       done();
     });
   });

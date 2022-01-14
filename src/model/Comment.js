@@ -23,7 +23,7 @@ export default class Comment extends Ressource {
   static query(ticketId, queryParams) {
     const { api_url } = getConfig();
 
-    return super.get(
+    return super._get(
       `${api_url}${url}/${ticketId}`,
       {},
       paramDefaults,

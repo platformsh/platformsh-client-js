@@ -48,7 +48,7 @@ export default class ProjectLevelVariable extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl || `${api_url}${_url}`;
 
-    return super.get(
+    return super._get(
       `${urlToCall}/:id`,
       { name, projectId },
       paramDefaults,
@@ -60,7 +60,7 @@ export default class ProjectLevelVariable extends Ressource {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       customUrl || `${api_url}${_url}`,
       { projectId },
       paramDefaults,

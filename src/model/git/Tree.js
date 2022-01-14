@@ -32,7 +32,7 @@ export default class Tree extends Ressource {
   static async get(projectId, sha = this.sha) {
     const { api_url } = getConfig();
 
-    const tree = await super.get(`${api_url}${_url}`, { projectId, sha });
+    const tree = await super._get(`${api_url}${_url}`, { projectId, sha });
 
     tree.tree = bind(tree.tree, projectId);
 

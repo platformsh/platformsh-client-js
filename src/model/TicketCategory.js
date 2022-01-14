@@ -17,7 +17,7 @@ export default class TicketCategory extends Ressource {
   static get(queryParams) {
     const { api_url } = getConfig();
 
-    return super.query(
+    return super._query(
       `${api_url}${url}`,
       {},
       paramDefaults,

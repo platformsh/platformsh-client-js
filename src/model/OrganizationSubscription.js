@@ -30,7 +30,7 @@ export default class OrganizationSubscription extends Subscription {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return await Ressource.get.call(
+    return await Ressource._get.call(
       this,
       customUrl || `${api_url}${url}`,
       { organizationId, id },

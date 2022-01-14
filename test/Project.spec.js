@@ -747,7 +747,7 @@ describe("Project", () => {
 
   it("Get Capabilities", done => {
     const capabilities = {
-      id: capabilities,
+      id: "capabilities",
       _links: {
         self: {
           href:
