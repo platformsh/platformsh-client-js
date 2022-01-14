@@ -58,7 +58,7 @@ describe("OrganizationSubscription", () => {
       plan: "test_plan",
       storage: "test_storage",
       environments: [],
-      user_licences: ["test_user_licences"]
+      user_licenses: ["test_user_licenses"]
     });
 
     fetchMock.mock(

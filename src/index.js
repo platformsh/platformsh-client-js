@@ -562,27 +562,10 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getSubscriptionEstimate(
-    plan,
-    storage,
-    environments,
-    user_licenses,
-    big_dev,
-    format = null,
-    country_code = null
-  ) {
-    const query = {
-      plan,
-      storage,
-      environments,
-      user_licenses,
-      big_dev
-    };
-    if (format) query.format = format;
-    if (country_code) query.country_code = country_code;
+  getSubscriptionEstimate(params) {
     const { api_url } = getConfig();
 
-    return request(`${api_url}/v1/subscriptions/estimate`, "GET", query);
+    return request(`${api_url}/v1/subscriptions/estimate`, "GET", params);
   }
 
   /**
@@ -595,31 +578,13 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getOrganizationSubscriptionEstimate(
-    organizationId,
-    plan,
-    storage,
-    environments,
-    user_licenses,
-    big_dev,
-    format = null,
-    country_code = null
-  ) {
-    const query = {
-      plan,
-      storage,
-      environments,
-      user_licenses,
-      big_dev
-    };
-    if (format) query.format = format;
-    if (country_code) query.country_code = country_code;
+  getOrganizationSubscriptionEstimate(organizationId, params) {
     const { api_url } = getConfig();
 
     return request(
       `${api_url}/organizations/${organizationId}/subscriptions/estimate`,
       "GET",
-      query
+      params
     );
   }
 

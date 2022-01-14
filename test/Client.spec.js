@@ -425,18 +425,22 @@ describe("Client", () => {
   });
 
   it("Get subscription estimate", done => {
+    const params = {
+      plan: "plan",
+      storage: "storage",
+      environments: "environments",
+      user_licenses: "users"
+    };
     fetchMock.mock(
       `${api_url}/v1/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`,
       {
         key: "value"
       }
     );
-    client
-      .getSubscriptionEstimate("plan", "storage", "environments", "users")
-      .then(estimate => {
-        assert.equal(estimate.key, "value");
-        done();
-      });
+    client.getSubscriptionEstimate(params).then(estimate => {
+      assert.equal(estimate.key, "value");
+      done();
+    });
   });
 
   it("Get current deployment informations", done => {
@@ -462,13 +466,13 @@ describe("Client", () => {
       }
     );
     client
-      .getOrganizationSubscriptionEstimate(
-        "aliceorg",
-        "plan",
-        "storage",
-        "environments",
-        "users"
-      )
+      .getOrganizationSubscriptionEstimate("aliceorg", {
+        plan: "plan",
+        storage: "storage",
+        environments: "environments",
+        user_licenses: "users"
+      })
+
       .then(estimate => {
         assert.equal(estimate.key, "value");
         done();
