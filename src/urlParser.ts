@@ -1,6 +1,6 @@
 const paramsRegex = /(:[0-z]+)/g;
 
-export default (url = "", params = {}, paramDefaults = {}) => {
+export default (url = "", params: Record<string, string> = {}, paramDefaults: Record<string, string> = {}) => {
   const paramsList = url.match(paramsRegex);
 
   if (!paramsList || !paramsList.length) {

@@ -2,11 +2,18 @@ import api, {
   setAuthenticationPromise,
   getAuthenticationPromise
 } from "../api";
-import connector, { logInWithPopUp } from "./connector";
+import connector from "./connector";
 
 import { jso_wipe } from "../jso";
 
-let authenticationInProgress = false;
+import { ClientConfiguration } from "../config";
+
+let authenticationInProgress: boolean = false;
+
+export type JWTToken = {
+  access_token: string,
+  expires: number
+};
 
 export default (
   {
@@ -16,9 +23,9 @@ export default (
     popupMode,
     response_mode,
     prompt
-  },
-  reset
-) => {
+  }: ClientConfiguration,
+  reset: boolean
+): Promise<JWTToken> => {
   let promise;
 
   if (authenticationInProgress) {

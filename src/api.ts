@@ -1,14 +1,19 @@
 import "isomorphic-fetch"; // fetch api polyfill
-require("es6-promise").polyfill();
 import param from "to-querystring";
 import isNode from "detect-node";
 
-import { getConfig } from "./config";
-import authenticate from "./authentication";
+import { getConfig, ClientConfiguration } from "./config";
+import authenticate, { JWTToken } from "./authentication";
 
-let authenticationPromise;
+export type RequestOptions = {
+  queryStringArrayPrefix?: boolean;
+};
 
-export const setAuthenticationPromise = promise => {
+export type RequestConfiguration = RequestOptions & RequestInit;
+
+let authenticationPromise : Promise<JWTToken>;
+
+export const setAuthenticationPromise = (promise: Promise<any>) => {
   authenticationPromise = promise;
 };
 
@@ -16,22 +21,22 @@ export const getAuthenticationPromise = () => {
   return authenticationPromise;
 };
 
-const defaultHeaders = {};
+const defaultHeaders: Record<string, string> = {};
 
 if (isNode) {
   defaultHeaders["Content-Type"] = "application/json";
 }
 
-const isFormData = data =>
+const isFormData = (data: FormData | object | undefined) =>
   typeof FormData !== "undefined" && data instanceof FormData;
 
 export const request = (
-  url,
-  method,
-  data,
-  additionalHeaders = {},
-  retryNumber = 0,
-  options = {}
+  url: string,
+  method: string,
+  data: FormData | object | undefined,
+  additionalHeaders: Record<string, string> = {},
+  retryNumber: number = 0,
+  options: RequestOptions = {}
 ) => {
   let body = data && { ...data };
   let apiUrl = url;
@@ -44,21 +49,22 @@ export const request = (
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ""}`;
   }
 
-  const requestConfig = {
+  const requestConfig: RequestConfiguration = {
     method,
     ...options,
     headers: { ...defaultHeaders, ...additionalHeaders }
   };
 
   if (method !== "GET" && method !== "HEAD" && body) {
-    requestConfig.body = isFormData(data) ? data : JSON.stringify(body);
+    const d: BodyInit = isFormData(data) ? data as FormData : JSON.stringify(body);
+    requestConfig.body = d;
   }
 
   return new Promise((resolve, reject) => {
     fetch(apiUrl, requestConfig)
       .then(response => {
         if (response.status === 401) {
-          const config = getConfig();
+          const config: ClientConfiguration  = getConfig();
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
           if (typeof config.access_token === "undefined" && retryNumber < 2) {
@@ -86,7 +92,7 @@ export const request = (
           type === "application/hal+json; charset=utf-8";
 
         if (response.ok) {
-          if (imageTypes.includes(type) || response.status === 202) {
+          if ((type && imageTypes.includes(type)) || response.status === 202) {
             return resolve(response);
           }
           return resolve(
@@ -121,13 +127,13 @@ export const request = (
 };
 
 export const authenticatedRequest = (
-  url,
-  method,
-  data,
-  additionalHeaders = {},
-  retryNumber = 0,
-  options = {}
-) => {
+  url: string,
+  method: string  = "GET",
+  data?: FormData | object | undefined,
+  additionalHeaders: Record<string, string> = {},
+  retryNumber: number = 0,
+  options: RequestOptions = {}
+): Promise<any> => {
   return authenticationPromise.then(token => {
     if (!token) {
       throw new Error("Token is mandatory");
@@ -178,7 +184,7 @@ export const authenticatedRequest = (
   });
 };
 
-export const createEventSource = url =>
+export const createEventSource = (url: string) =>
   authenticationPromise.then(
     token =>
       new window.EventSource(`${url}?access_token=${token["access_token"]}`)

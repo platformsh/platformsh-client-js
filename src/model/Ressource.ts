@@ -1,23 +1,21 @@
 import parse_url from "parse_url";
 
 import _urlParser from "../urlParser";
-import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLink } from "../refs";
+import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLink, Link } from "../refs";
 import request from "../api";
 import Result from "./Result";
 import Activity from "./Activity";
 
-interface link {
-  href: string
-}
-
-interface APIObject {
+export interface APIObject {
   [key: string]: any,
   id: string,
-  _links?: Record<string, link>,
+  _links?: Record<string, Link>,
   _embedded?: Record<string, Array<object>>
 };
 
-type ParamsType = object;
+type ParamsType = Record<string, any>;
+
+export type RessourceChildClass = new (obj: APIObject) => Ressource;
 
 const handler = {
   get(target: any, key: string) {
@@ -304,10 +302,10 @@ export default abstract class Ressource {
    *
    * @return {boolean} true if the operation is available false otherwise
    */
-  operationAvailable(operationName: string) {
+  operationAvailable(operationName: string): boolean {
     const links = this.data?._links;
     const operation = links && links[`#${operationName}`];
-    return operation?.href;
+    return !!operation?.href;
   }
 
   /**
@@ -328,11 +326,11 @@ export default abstract class Ressource {
    *
    * @return bool
    */
-  hasEmbedded(rel: string) {
+  hasEmbedded(rel: string): boolean {
     return (
-      this.data?._embedded &&
+      !!(this.data?._embedded &&
       this.data._embedded[rel] &&
-      !!this.data._embedded[rel].length
+      this.data._embedded[rel].length)
     );
   }
 
@@ -429,7 +427,7 @@ export default abstract class Ressource {
   }
 
   // Load a single object from the ref API
-  getRef(linkKey: string, constructor: Function, absolute = true) {
+  getRef(linkKey: string, constructor: RessourceChildClass, absolute = true) {
     return getRef(
       this.data?._links,
       linkKey,
@@ -440,7 +438,7 @@ export default abstract class Ressource {
   }
 
   // Load a list of objects from the ref API
-  async getRefs(linkKey: string, constructor: Function, absolute = true) {
+  async getRefs(linkKey: string, constructor: RessourceChildClass, absolute = true) {
     return getRefs(
       this.data?._links,
       linkKey,
