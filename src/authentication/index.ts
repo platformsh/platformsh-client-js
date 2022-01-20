@@ -12,7 +12,10 @@ let authenticationInProgress: boolean = false;
 
 export type JWTToken = {
   access_token: string,
-  expires: number
+  expires: number,
+  expires_in: number,
+  token_type: string,
+  scope: string
 };
 
 export default (
@@ -44,14 +47,18 @@ export default (
       prompt
     });
   }
+  
+  if(promise) {
+    setAuthenticationPromise(promise);
 
-  setAuthenticationPromise(promise);
+    promise.then(() => {
+      authenticationInProgress = false;
+    });
 
-  promise.then(() => {
-    authenticationInProgress = false;
-  });
+    return promise;
+  }
 
-  return promise;
+  return Promise.reject();
 };
 
 export const authenticatedRequest = api;

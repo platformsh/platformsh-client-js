@@ -14,8 +14,11 @@ export type ClientConfiguration = {
   api_token?: string,
   popupMode?: boolean,
   response_mode?: string,
-  prompt?: boolean,
-  base_url?: string
+  prompt: string,
+  base_url?: string,
+  redirect_uri: string,
+  response_type: string,
+  onBeforeRedirect?: (location: string) => void
 };
 
 const getConfigDefault = (
@@ -29,7 +32,10 @@ const getConfigDefault = (
   authentication_url: baseUrl,
   scope: [],
   authorization: `${baseUrl}/oauth2/authorize`,
-  logout_url: `${baseUrl}/user/logout`
+  logout_url: `${baseUrl}/user/logout`,
+  prompt: "",
+  redirect_uri: "",
+  response_type: "code"
 });
 
 let config = getConfigDefault();

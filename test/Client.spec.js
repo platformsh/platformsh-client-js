@@ -18,7 +18,9 @@ describe("Client", () => {
     fetchMock.mock(`${authentication_url}/oauth2/token`, {
       access_token: "test"
     });
-    client = new Client();
+    client = new Client({
+      api_token: "test"
+    });
   });
 
   afterEach(function() {

@@ -7,23 +7,25 @@ import {
   jso_configure,
   jso_ensureTokens,
   jso_getToken,
-  jso_getAuthUrl,
   jso_getAuthRequest,
   jso_checkfortoken,
-  set_token_expiration,
   jso_wipe,
   jso_wipeStates,
   jso_saveToken,
   encodeURL,
   generatePKCE,
-  epoch,
   jso_checkforcode,
   jso_saveCodeVerifier,
-  jso_getCodeVerifier
+  jso_getCodeVerifier,
+  PKCERequest
 } from "../jso";
-import { getConfig } from "../config";
+import { getConfig, ClientConfiguration } from "../config";
 
-let basicAuth;
+type IFrameOption = {
+  sandbox?: string
+};
+
+let basicAuth: string;
 
 if (isNode) {
   basicAuth = Buffer.from("platform-cli:", "latin1").toString("base64");
@@ -31,8 +33,8 @@ if (isNode) {
   basicAuth = btoa("platform-cli:");
 }
 
-function createIFrame(src, options = {}) {
-  let iframe = document.getElementById("logiframe-platformsh");
+function createIFrame(src: string, options: IFrameOption = {}): HTMLIFrameElement {
+  let iframe: HTMLIFrameElement = document.getElementById("logiframe-platformsh") as HTMLIFrameElement;
 
   if (iframe) {
     return iframe;
@@ -48,11 +50,13 @@ function createIFrame(src, options = {}) {
   iframe.src = src;
   document.body.appendChild(iframe);
 
-  iframe.contentWindow.onerror = function(msg, url, line) {
-    if (msg === "[IFRAME ERROR MESSAGE]") {
-      return true;
-    }
-  };
+  if(iframe.contentWindow) {
+    iframe.contentWindow.onerror = function(msg, url, line) {
+      if (msg === "[IFRAME ERROR MESSAGE]") {
+        return true;
+      }
+    };
+  }
 
   return iframe;
 }
@@ -67,12 +71,12 @@ function removeIFrame() {
   document.body.removeChild(iframe);
 }
 
-function checkForStorageAccess(auth) {
+function checkForStorageAccess(auth: ClientConfiguration) {
   return new Promise((resolve, reject) => {
     removeIFrame();
 
     createIFrame(`${auth.authentication_url}/request-storage-access.html`);
-    async function receiveMessage(event) {
+    async function receiveMessage(event: MessageEvent) {
       if (event.origin !== auth.authentication_url) {
         return false;
       }
@@ -83,7 +87,7 @@ function checkForStorageAccess(auth) {
       removeIFrame();
 
       if (data.granted) {
-        resolve();
+        resolve(data);
       } else {
         reject();
       }
@@ -93,7 +97,7 @@ function checkForStorageAccess(auth) {
   });
 }
 
-function logInWithToken(token) {
+function logInWithToken(token: string) {
   const credentials = {
     grant_type: "api_token",
     api_token: token
@@ -108,22 +112,15 @@ function logInWithToken(token) {
     "POST",
     credentials,
     headers
-  ).then(session => {
-    const expires = epoch() + session.expires_in;
-
-    return {
-      expires,
-      ...session
-    };
-  });
+  );
 }
 
 const getTokenWithAuthorizationCode = async (
-  authenticationUrl,
-  clientId,
-  redirectUri,
-  codeVerifier,
-  code
+  authenticationUrl: string,
+  clientId: string,
+  redirectUri: string,
+  codeVerifier: string,
+  code: string
 ) => {
   const basicAuthHeader = btoa(`${clientId}:`);
 
@@ -150,7 +147,7 @@ const getTokenWithAuthorizationCode = async (
   return await resp.json();
 };
 
-async function authorizationCodeCallback(config, codeVerifier, code, state) {
+async function authorizationCodeCallback(config: ClientConfiguration, codeVerifier: string, code: string, state?: string) {
   const atoken = await getTokenWithAuthorizationCode(
     config.authentication_url,
     config.client_id,
@@ -159,7 +156,7 @@ async function authorizationCodeCallback(config, codeVerifier, code, state) {
     code
   );
 
-  set_token_expiration(atoken, config);
+  // set_token_expiration(atoken, config);
 
   jso_saveToken(config.provider, atoken);
 
@@ -169,16 +166,16 @@ async function authorizationCodeCallback(config, codeVerifier, code, state) {
   return atoken;
 }
 
-function logInWithRedirect(reset) {
+function logInWithRedirect(reset: boolean = false) {
   console.log("In redirect...");
   return new Promise(async (resolve, reject) => {
-    const config = getConfig();
+    const config: ClientConfiguration = getConfig();
     const auth = {
+      ...config,
       response_mode: config.response_mode,
       prompt: config.prompt,
-      ...config
     };
-    let pkce;
+    let pkce: PKCERequest;
 
     if (!auth.client_id) {
       reject("Client_id in AUTH_CONFIG is mandatory");
@@ -211,14 +208,16 @@ function logInWithRedirect(reset) {
 
       if (oauthResp) {
         const codeVerifier = jso_getCodeVerifier(config.provider);
-        return resolve(
-          await authorizationCodeCallback(
-            auth,
-            codeVerifier,
-            oauthResp.code,
-            req.state
-          )
-        );
+        if(codeVerifier && oauthResp.code) {
+          return resolve(
+            await authorizationCodeCallback(
+              auth,
+              codeVerifier,
+              oauthResp.code,
+              req.state
+            )
+          );
+        }
       }
 
       pkce = await generatePKCE();
@@ -248,7 +247,7 @@ function logInWithRedirect(reset) {
       let iframeDidReturnError;
 
       try {
-        href = iframe.contentWindow.location.href;
+        href = iframe.contentWindow?.location.href;
 
         // Firefox doesn't throw an exception for the above but instead it returns
         // the following string. Chrome throws an exception, which is caught below.
@@ -274,7 +273,7 @@ function logInWithRedirect(reset) {
           { [auth.provider]: auth.scope },
           true,
           auth.onBeforeRedirect,
-          auth.response_type === "code" && pkce.codeChallenge
+          auth.response_type === "code" ? pkce.codeChallenge : undefined
         );
       }
 
@@ -287,14 +286,16 @@ function logInWithRedirect(reset) {
           // Check for code
           const oauthResp = jso_checkforcode(href);
 
-          return resolve(
-            await authorizationCodeCallback(
-              auth,
-              pkce.codeVerifier,
-              oauthResp.code,
-              req.state
-            )
-          );
+          if (oauthResp?.code) {
+            return resolve(
+              await authorizationCodeCallback(
+                auth,
+                pkce.codeVerifier,
+                oauthResp?.code,
+                req.state
+              )
+            );
+          }
         }
         jso_checkfortoken(auth.client_id, auth.provider, href, true);
         const token = jso_getToken(auth.provider);
@@ -306,7 +307,7 @@ function logInWithRedirect(reset) {
   });
 }
 
-const logInWithWebMessageAndPKCE = async reset => {
+const logInWithWebMessageAndPKCE = async (reset: boolean) => {
   const auth = getConfig();
 
   return new Promise(async (resolve, reject) => {
@@ -336,7 +337,7 @@ const logInWithWebMessageAndPKCE = async reset => {
       if (oauthResp) {
         const codeVerifier = jso_getCodeVerifier(auth.provider);
 
-        if (codeVerifier) {
+        if (codeVerifier && oauthResp.code && oauthResp.state) {
           return resolve(
             await authorizationCodeCallback(
               auth,
@@ -349,6 +350,7 @@ const logInWithWebMessageAndPKCE = async reset => {
       }
 
       // Remove this when google chrome is compatible
+      // @ts-ignore
       if (document.hasStorageAccess) {
         await checkForStorageAccess(auth);
       }
@@ -368,7 +370,7 @@ const logInWithWebMessageAndPKCE = async reset => {
         resolve(logInWithRedirect());
       }, 5000);
 
-      async function receiveMessage(event) {
+      async function receiveMessage(event: MessageEvent) {
         if (event.origin !== auth.authentication_url) {
           return false;
         }
@@ -415,7 +417,7 @@ const logInWithWebMessageAndPKCE = async reset => {
   });
 };
 
-export const logInWithPopUp = async reset => {
+export const logInWithPopUp = async (reset: boolean = false) => {
   if (localStorage.getItem("redirectFallBack") === "true") {
     localStorage.removeItem("redirectFallBack");
     return await logInWithRedirect();
@@ -442,10 +444,10 @@ export const logInWithPopUp = async reset => {
     authorizationUri: authConfig.authorization,
     clientId: authConfig.client_id,
     redirectUri: authConfig.redirect_uri,
-    scope: authConfig.scope,
+    scope: authConfig.scope?.join(","),
     accessTokenStorageKey: `raw-token-${request.providerID}`,
     additionalAuthorizationParameters: {
-      state: request.state
+      state: request.state || ""
     },
     afterResponse: r => {
       // Check that the redirect response state is valid
@@ -457,8 +459,6 @@ export const logInWithPopUp = async reset => {
       );
     }
   });
-
-  const resp = auth.handleRedirect();
 
   // Open the popup and wait for
   const popupResp = await auth.tryLoginPopup();
@@ -476,18 +476,19 @@ export const logInWithPopUp = async reset => {
   return jso_getToken(authConfig.provider);
 };
 
-export default (token, reset, config) => {
-  if (isNode) {
+export default (token?: string, reset: boolean = false, config?: Partial<ClientConfiguration>) => {
+  if (isNode && token) {
     return logInWithToken(token).catch(e => new Error(e));
   }
 
-  if (config.response_mode === "web_message" && config.prompt === "none") {
+  if (config?.response_mode === "web_message" && config.prompt === "none") {
     return logInWithWebMessageAndPKCE(reset);
   }
 
-  if (config.popupMode) {
+  if (config?.popupMode) {
     return logInWithPopUp(reset);
   }
 
   return logInWithRedirect(reset);
 };
+

@@ -37,7 +37,7 @@ export const request = (
   additionalHeaders: Record<string, string> = {},
   retryNumber: number = 0,
   options: RequestOptions = {}
-) => {
+): Promise<any> => {
   let body = data && { ...data };
   let apiUrl = url;
 

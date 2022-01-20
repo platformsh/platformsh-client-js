@@ -1,13 +1,45 @@
+import { JWTToken } from "src/authentication";
+import { ClientConfiguration } from "src/config";
 import ApiDefaultStorage from "./ApiDefaultStorage";
 
-let config = {},
-  default_lifetime = 3600,
-  options = {
+export type PKCERequest = {
+  codeVerifier: string,
+  codeChallenge: string
+};
+
+export type OAuthRequest = {
+  code_challenge?: string,
+  code_challenge_method?: string,
+  scopes?: Array<string>,
+  scope?: string,
+  state?: string,
+  location?: string,
+  providerID?: string
+} & Partial<Omit<ClientConfiguration, "scope">>;
+
+export type CodeOAuthRedirectResponse = {
+  code: string | null,
+  state: string | null
+};
+
+export type TokenOAuthRedirectResponse = {
+  [key: string]: any,
+  state?: string | null
+};
+
+export type OAuthState = {
+  providerID: string,
+  scopes?: Array<string>,
+  location?: string
+};
+
+let config: Record<string, ClientConfiguration>,
+  options: Record<string, any> = {
     debug: false
   },
-  api_redirect,
-  api_storage,
-  internalStates = [];
+  api_redirect: (url: string) => void,
+  api_storage: ApiDefaultStorage,
+  internalStates: Record<string, any> = {};
 
 /*
 * ------ SECTION: Utilities
@@ -17,17 +49,13 @@ let config = {},
  * A log wrapper, that only logs if logging is turned on in the config
  * @param  {string} msg Log message
  */
-const log = msg => {
+const log = (msg: string) => {
   if (!options.debug) return;
   if (!console) return;
   if (!console.log) return;
 
   // console.log("LOG(), Arguments", arguments, msg);
-  if (arguments.length > 1) {
-    console.log(arguments);
-  } else {
     console.log(msg);
-  }
 };
 
 /*
@@ -45,21 +73,20 @@ const uuid = () => {
 /**
  * Set the global options.
  */
-const setOptions = opts => {
+const setOptions = (opts: Record<string, any> | undefined) => {
   if (!opts) return;
   for (let k in opts) {
     if (opts.hasOwnProperty(k)) {
       options[k] = opts[k];
     }
   }
-  log("Options is set to ", options);
 };
 
 /*
 * Takes an URL as input and a params object.
 * Each property in the params is added to the url as query string parameters
 */
-export const encodeURL = (url, params) => {
+export const encodeURL = (url: string, params: Record<string, any>) => {
   let res = url;
   let k,
     i = 0;
@@ -81,13 +108,13 @@ export const encodeURL = (url, params) => {
 */
 export const epoch = () => Math.round(new Date().getTime() / 1000.0);
 
-const parseQueryString = qs => {
+const parseQueryString = (qs: string) => {
   let e,
     a = /\+/g, // Regex for replacing addition symbol with a space
     r = /([^&;=]+)=?([^&;]*)/g,
-    d = s => decodeURIComponent(s.replace(a, " ")),
+    d = (s: string) => decodeURIComponent(s.replace(a, " ")),
     q = qs,
-    urlParams = {};
+    urlParams: Record<string, any> = {};
 
   e = r.exec(q);
   while (e) {
@@ -105,47 +132,20 @@ const parseQueryString = qs => {
 * Redirects the user to a specific URL
 */
 api_redirect = url => {
-  window.location = url;
+  window.location.href = url;
 };
 
 api_storage = new ApiDefaultStorage();
 
-export const jso_getCodeVerifier = provider => {
+export const jso_getCodeVerifier = (provider: string) => {
   return api_storage.getCodeVerifier(provider);
 };
 
-export const jso_saveCodeVerifier = (provider, codeVerifier) => {
+export const jso_saveCodeVerifier = (provider: string, codeVerifier: string) => {
   api_storage.saveCodeVerifier(provider, codeVerifier);
 };
 
-/*
-* Decide when this token should expire.
-* Priority fallback:
-* 1. Access token expires_in
-* 2. Life time in config (may be false = permanent...)
-* 3. Specific permanent scope.
-* 4. Default library lifetime:
-*/
-export const set_token_expiration = (atoken, co) => {
-  const now = epoch();
-  if (atoken["expires_in"]) {
-    atoken["expires"] = now + parseInt(atoken["expires_in"], 10);
-  } else if (co["default_lifetime"] === false) {
-    // Token is permanent.
-  } else if (co["default_lifetime"]) {
-    atoken["expires"] = now + co["default_lifetime"];
-  } else if (co["permanent_scope"]) {
-    if (!api_storage.hasScope(atoken, co["permanent_scope"])) {
-      atoken["expires"] = now + default_lifetime;
-    }
-  } else {
-    atoken["expires"] = now + default_lifetime;
-  }
-
-  return atoken;
-};
-
-const getTokenOauthRedirectResponse = url => {
+const getTokenOauthRedirectResponse = (url: string | undefined): TokenOAuthRedirectResponse | undefined => {
   let h = window.location.hash;
 
   // If a url is provided
@@ -157,12 +157,12 @@ const getTokenOauthRedirectResponse = url => {
   return parseQueryString(h.substring(1));
 };
 
-const getCodeOauthRedirectResponse = url => {
+const getCodeOauthRedirectResponse = (url: string | undefined): CodeOAuthRedirectResponse | undefined => {
   const urlParams = new URLSearchParams(
     url ? `?${url.split("?")[1]}` : window.location.search
   );
   if (!urlParams.has("code")) {
-    return false;
+    return;
   }
 
   return {
@@ -171,11 +171,11 @@ const getCodeOauthRedirectResponse = url => {
   };
 };
 
-export const jso_checkforcode = url => {
+export const jso_checkforcode = (url?: string) => {
   const oauthResponse = getCodeOauthRedirectResponse(url);
 
-  if (!oauthResponse.code) {
-    return false;
+  if (!oauthResponse?.code) {
+    return;
   }
 
   return oauthResponse;
@@ -190,14 +190,14 @@ export const jso_checkforcode = url => {
  * childbrowser when the jso context is not receiving the response,
  * instead the response is received on a child browser.
  */
-export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
-  let atoken, state, co;
+export const jso_checkfortoken = (clientId: string, provider: string, url?: string, disableRedirect?: boolean) => {
+  let atoken: TokenOAuthRedirectResponse | undefined, state: OAuthState, co: ClientConfiguration;
 
   log(`jso_checkfortoken(${clientId})`);
 
   atoken = getTokenOauthRedirectResponse(url);
 
-  if (atoken.state) {
+  if (atoken?.state) {
     state = api_storage.getState(atoken.state, provider);
   } else {
     if (!clientId) {
@@ -206,6 +206,8 @@ export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
       );
     }
     state = { providerID: clientId };
+
+    return;
   }
 
   if (!state) throw new Error("Could not retrieve state");
@@ -218,33 +220,29 @@ export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
    * If state was not provided, and default provider contains a scope parameter
    * we assume this is the one requested...
    */
-  if (!atoken.state && co.scope) {
+  if (!atoken?.state && co.scope) {
     state.scopes = co.scope;
-    log("Setting state: ", state);
   }
-  log(`Checking atoken ${atoken} and co `, co);
 
-  atoken = set_token_expiration(atoken, co);
+  // atoken = set_token_expiration(atoken, co);
 
   /*
   * Handle scopes for this token
   */
-  if (atoken["scope"]) {
-    atoken["scopes"] = atoken["scope"].split(" ");
-  } else if (state["scopes"]) {
-    atoken["scopes"] = state["scopes"];
+  if (atoken?.scope) {
+    atoken.scopes = atoken.scope.split(" ");
+  } else if (state.scopes) {
+    atoken.scopes = state.scopes;
   }
 
   api_storage.saveToken(state.providerID, atoken);
   if (!disableRedirect) {
     if (state.location) {
-      window.location = state.location;
+      window.location.href = state.location;
     } else {
       window.location.hash = "";
     }
   }
-
-  log(atoken);
 
   if (
     internalStates[atoken.state] &&
@@ -256,8 +254,8 @@ export const jso_checkfortoken = (clientId, provider, url, disableRedirect) => {
   }
 };
 
-export const jso_getAuthUrl = (providerid, scopes, codeChallenge) => {
-  let state, request, authurl, co;
+export const jso_getAuthUrl = (providerid: string, scopes: Array<string>, codeChallenge?: string) => {
+  let request: OAuthRequest, authurl, co;
   if (!config[providerid])
     throw new Error(`Could not find configuration for provider ${providerid}`);
   co = config[providerid];
@@ -275,19 +273,16 @@ export const jso_getAuthUrl = (providerid, scopes, codeChallenge) => {
 };
 
 export const jso_getAuthRequest = (
-  providerid,
-  scopes,
-  response_mode,
-  prompt
-) => {
-  let state, request, co;
+  providerid: string,
+  scopes: Array<string>,
+  response_mode?: string,
+  prompt?: string
+) : OAuthRequest => {
+  let state, request: OAuthRequest, co;
 
   if (!config[providerid])
     throw new Error(`Could not find configuration for provider ${providerid}`);
   co = config[providerid];
-
-  log(`About to send an authorization request to [${providerid}]. Config:`);
-  log(co);
 
   state = uuid();
   request = {
@@ -342,8 +337,8 @@ export const jso_getAuthRequest = (
 /*
 * A config object contains:
 */
-const jso_authrequest = (providerid, scopes, codeChallenge) => {
-  let state, request, authurl;
+const jso_authrequest = (providerid: string, scopes: Array<string>, codeChallenge?: string) => {
+  let authurl: string;
 
   authurl = jso_getAuthUrl(providerid, scopes, codeChallenge);
 
@@ -351,10 +346,10 @@ const jso_authrequest = (providerid, scopes, codeChallenge) => {
 };
 
 export const jso_ensureTokens = (
-  ensure,
-  reset,
-  onBeforeRedirect,
-  codeChallenge
+  ensure: Record<string, any>,
+  reset: boolean,
+  onBeforeRedirect?: (location: string) => void,
+  codeChallenge?: string
 ) => {
   let providerid, scopes, token;
 
@@ -385,44 +380,18 @@ export const jso_ensureTokens = (
   return true;
 };
 
-export const jso_findDefaultEntry = c => {
-  let k,
-    i = 0;
-
-  if (!c) return;
-  log("c", c);
-  for (k in c) {
-    i++;
-    if (c[k].isDefault && c[k].isDefault === true) {
-      return k;
-    }
-  }
-  if (i === 1) return k;
-};
-
-export const jso_configure = (c, opts, popupMode) => {
+export const jso_configure = (c: Record<string, ClientConfiguration>, opts?: Record<string, any>, popupMode?: boolean) => {
   config = c;
   setOptions(opts);
   try {
-    let def = jso_findDefaultEntry(c);
+    let def = Object.keys(c)[0];
 
-    if (!popupMode && c[def].response_type === "token") {
-      log("jso_configure() about to check for token for this entry", def);
+    if (!popupMode && def && c[def].response_type === "token") {
       jso_checkfortoken(c[def].client_id, def);
     }
   } catch (e) {
     log("Error when retrieving token from hash: " + e);
     window.location.hash = "";
-  }
-};
-
-export const jso_dump = () => {
-  for (let key in config) {
-    log("=====> Processing provider [" + key + "]");
-    log("=] Config");
-    log(config[key]);
-    log("=] Tokens");
-    log(api_storage.getTokens(key));
   }
 };
 
@@ -434,24 +403,16 @@ export const jso_wipe = () => {
   }
 };
 
-export const jso_saveToken = (providerID, atoken) => {
+export const jso_saveToken = (providerID: string, atoken: TokenOAuthRedirectResponse) => {
   api_storage.saveToken(providerID, atoken);
 };
 
-export const jso_getToken = (providerid, scopes) => {
+export const jso_getToken = (providerid: string, scopes?: Array<string>) => {
   let token = api_storage.getToken(providerid, scopes);
 
   if (!token) return null;
   if (!token["access_token"]) return null;
   return token;
-};
-
-export const jso_registerRedirectHandler = callback => {
-  api_redirect = callback;
-};
-
-export const jso_registerStorageHandler = object => {
-  api_storage = object;
 };
 
 export const jso_wipeStates = () => {
@@ -462,8 +423,8 @@ export const jso_wipeStates = () => {
   }
 };
 
-const base64URLEncode = data => {
-  return btoa(String.fromCharCode.apply(null, new Uint8Array(data)))
+const base64URLEncode = (data: ArrayBuffer) => {
+  return btoa(String.fromCharCode.apply(null, [...new Uint8Array(data)]))
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
