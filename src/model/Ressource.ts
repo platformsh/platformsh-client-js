@@ -1,7 +1,7 @@
 import parse_url from "parse_url";
 
 import _urlParser from "../urlParser";
-import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLink, Link } from "../refs";
+import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLinkHref, Link } from "../refs";
 import request from "../api";
 import Result from "./Result";
 import Activity from "./Activity";
@@ -350,15 +350,20 @@ export default abstract class Ressource {
   }
 
   /**
-   * Get a link for a given resource relation.
-   *
+   * Get a link href for a given resource relation.
    * @param string rel
    * @param bool absolute
    *
    * @return string
    */
   getLink(rel: string, absolute: boolean = true): string {
-    return getLink(this.data?._links, rel, absolute, this._baseUrl);
+    const href = getLinkHref(this.data?._links, rel, absolute, this._baseUrl);
+
+    if(typeof href === "string") {
+      return href;
+    }
+
+    return "";
   }
 
   /**
