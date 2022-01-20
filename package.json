@@ -8,8 +8,8 @@
     "build": "rm -rf ./lib && webpack --env.mode=build",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
     "test": "npm run test-web && npm run test-node",
-    "test-web": "mocha -r mock-local-storage ts-node/register ./test/.setup.js ./test/**/*.spec.js",
-    "test-node": "mocha -r ./test/.setup-node.js ts-node/register ./test/**/*.spec.js",
+    "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
+    "test-node": "mocha -r ./test/.setup-node.js ./test/**/*.spec.js",
     "eslint": "eslint .",
     "precommit": "lint-staged && npm run build",
     "prepush": "npm test"
