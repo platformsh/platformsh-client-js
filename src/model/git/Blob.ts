@@ -2,14 +2,24 @@ import isNode from "detect-node";
 
 import Ressource from "../Ressource";
 import { getConfig } from "../../config";
-import request from "../../api";
 
 const _url = "/projects/:projectId/git/blobs/:sha";
 
-export default class Blob extends Ressource {
-  constructor(blob, url = _url, params) {
-    const { api_url } = getConfig();
+export type BlobParams = {
+  projectId: string,
+  sha: string
+};
 
+export default class Blob extends Ressource {
+  id: string;
+  type: string;
+  path: string;
+  sha: string;
+  size: string;
+  encoding: string;
+  content: string;
+
+  constructor(blob: Blob, url = _url, params: BlobParams) {
     super(url, {}, params, blob, [], []);
 
     this.id = "";
@@ -21,20 +31,20 @@ export default class Blob extends Ressource {
     this.content = "";
   }
 
-  static get(projectId, sha) {
+  static get(projectId: string, sha: string) : Promise<Blob> {
     const { api_url } = getConfig();
 
-    return super._get(`${api_url}${_url}`, { projectId, sha });
+    return super._get<Blob>(`${api_url}${_url}`, { projectId, sha });
   }
 
-  async getInstance() {
-    const { api_url } = getConfig();
-
+  async getInstance(): Promise<Blob| undefined> {
     const blob = await Blob.get(this._params.projectId, this._params.sha);
 
-    blob.path = this.path;
+    if(blob) {
+      blob.path = this.path;
 
-    return blob;
+      return blob;
+    }
   }
 
   decodeBase64() {
@@ -53,11 +63,11 @@ export default class Blob extends Ressource {
    *
    * @return string
    */
-  async getRawContent() {
+  async getRawContent(): Promise<string | undefined> {
     if (!this.encoding) {
       const blob = await Blob.get(this._params.projectId, this._params.sha);
 
-      return blob.getRawContent();
+      return blob?.getRawContent();
     }
 
     if (this.encoding === "base64") {

@@ -5,8 +5,43 @@ import request from "../api";
 const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
 
+export interface ActivityGetParams {
+  id?: string,
+  projectId?: string,
+  environmentId?: string,
+  [index: string]: any
+};
+
+export interface ActivityQueryParams {
+  projectId?: string,
+  environmentId?: string,
+  [index: string]: any
+};
+
 export default class Activity extends Ressource {
-  constructor(activity, url) {
+  readonly RESULT_SUCCESS = "success";
+  readonly RESULT_FAILURE = "failure";
+  readonly STATE_COMPLETE = "complete";
+  readonly STATE_IN_PROGRESS = "in_progress";
+  readonly STATE_PENDING = "pending";
+
+  id: string;
+  completion_percent: number;
+  log: string;
+  created_at: string;
+  updated_at: string;
+  environments: string[];
+  completed_at: string;
+  parameters: string[];
+  project: string;
+  state: string;
+  result: string;
+  started_at: string;
+  type: string;
+  payload: Record<string, any>;
+
+
+  constructor(activity: Activity, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
     this.id = "";
     this.completion_percent = 0;
@@ -22,14 +57,9 @@ export default class Activity extends Ressource {
     this.started_at = "";
     this.type = "";
     this.payload = [];
-    this.RESULT_SUCCESS = "success";
-    this.RESULT_FAILURE = "failure";
-    this.STATE_COMPLETE = "complete";
-    this.STATE_IN_PROGRESS = "in_progress";
-    this.STATE_PENDING = "pending";
   }
 
-  static get(params, customUrl) {
+  static get(params: ActivityGetParams, customUrl: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -41,7 +71,7 @@ export default class Activity extends Ressource {
     );
   }
 
-  static query(params, customUrl) {
+  static query(params: ActivityQueryParams, customUrl: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -68,7 +98,7 @@ export default class Activity extends Ressource {
    *                                string.
    * @param int|float pollInterval The polling interval, in seconds.
    */
-  wait(onPoll, onLog, pollInterval = 1) {
+  wait(onPoll: (activity: Activity) => void, onLog: (log: string) => void, pollInterval = 1) {
     const log = this.log || "";
 
     if (onLog && log.trim().length) {
@@ -85,7 +115,7 @@ export default class Activity extends Ressource {
         }
 
         this.refresh({ timeout: pollInterval + 5 })
-          .then(activity => {
+          .then((activity: Activity) => {
             if (onPoll) {
               onPoll(activity);
             }
@@ -123,7 +153,7 @@ export default class Activity extends Ressource {
    * @return int
    */
   getCompletionPercent() {
-    return parseInt(this.completion_percent);
+    return this.completion_percent;
   }
 
   /**
@@ -142,7 +172,7 @@ export default class Activity extends Ressource {
     return this.runLongOperation("restore", "POST", {});
   }
 
-  getLogAt(start_at, delay) {
+  getLogAt(start_at: number, delay: number): Promise<string> {
     if (delay) {
       return new Promise(resolve => {
         setTimeout(
@@ -155,7 +185,7 @@ export default class Activity extends Ressource {
     return request(this.getLink("log"), "GET", { start_at });
   }
 
-  getLogs(callback) {
+  getLogs(callback: (log: Array<string> | string, response?: Response) => void) {
     let canceled = false;
 
     const cancel = () => {
@@ -203,8 +233,8 @@ export default class Activity extends Ressource {
               break;
             }
           } catch (response) {
-            if (response.status < 500 || response.status > 599) {
-              callback({}, response);
+            if (response instanceof Response && (response.status < 500 || response.status > 599)) {
+              callback([], response);
             }
 
             delay = 3000;

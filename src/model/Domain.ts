@@ -26,11 +26,11 @@ export default class Domain extends Ressource {
     this._required = ["name"];
   }
 
-  static get(params: DomainGetParams, customUrl: string) {
+  static get(params: DomainGetParams, customUrl: string): Promise<Domain> {
     const { name, projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._get(
+    return super._get<Domain>(
       customUrl ? `${customUrl}/:name` : `${api_url}${_url}`,
       { name, projectId },
       paramDefaults,
@@ -38,7 +38,7 @@ export default class Domain extends Ressource {
     );
   }
 
-  static query(params: DomainQueryParams, customUrl: string) {
+  static query(params: DomainQueryParams, customUrl: string): Promise<Domain[]> {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 

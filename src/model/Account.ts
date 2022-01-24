@@ -4,8 +4,22 @@ import { getConfig } from "../config";
 const url = "/platform/users/:id";
 const paramDefaults = {};
 
+export interface AccountGetParams {
+  id?: string,
+  [index: string]: any
+};
+
 export default class Account extends Ressource {
-  constructor(account) {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  has_key: boolean;
+  display_name: string;
+  email: string;
+  picture: string;
+  roles: string;
+
+  constructor(account: Account) {
     const { id } = account;
     const { account_url } = getConfig();
 
@@ -21,11 +35,11 @@ export default class Account extends Ressource {
     this.roles = "";
   }
 
-  static get(params, customUrl) {
+  static get(params: AccountGetParams, customUrl: string): Promise<Account> {
     const { id, ...queryParams } = params;
     const { account_url } = getConfig();
 
-    return super._get(
+    return super._get<Account>(
       customUrl || `${account_url}${url}`,
       { id },
       paramDefaults,
@@ -33,10 +47,10 @@ export default class Account extends Ressource {
     );
   }
 
-  static query(params) {
+  static query(params: AccountGetParams): Promise<Account[]> {
     const { account_url } = getConfig();
 
-    return super._query(
+    return super._query<Account>(
       this.getQueryUrl(`${account_url}${url}`),
       {},
       paramDefaults,

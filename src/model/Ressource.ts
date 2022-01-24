@@ -108,24 +108,22 @@ export default abstract class Ressource {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
-  static _get(_url: string, params?: ParamsType, paramDefaults?: ParamsType, queryParams?: ParamsType, options?: object): Promise<Ressource | undefined> {
+  static _get<T>(_url: string, params?: ParamsType, paramDefaults?: ParamsType, queryParams?: ParamsType, options?: object): Promise<T> {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: APIObject) => {
-      return typeof data === "undefined"
-        ? undefined
-        : getInstance<Ressource>(this, data, parsedUrl, params);
+      return getInstance<T>(this, data, parsedUrl, params);
     });
   }
 
-  static _query(
+  static _query<T>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,
     queryParams?: ParamsType ,
     transformResultBeforeMap? : (data: Array<APIObject>) => Array<APIObject>,
     options?:  object // Define that in api
-  ) : Promise<Array<Ressource> | undefined>{
+  ) : Promise<Array<T>>{
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: Array<APIObject>) => {
@@ -135,7 +133,7 @@ export default abstract class Ressource {
       }
 
       return dataToMap.map(
-        (d: APIObject) => getInstance<Ressource>(this, d, `${parsedUrl}/${d.id}`)
+        (d: APIObject) => getInstance<T>(this, d, `${parsedUrl}/${d.id}`)
       );
     });
   }
@@ -288,7 +286,7 @@ export default abstract class Ressource {
    * Refresh the resource.
    *
    */
-  refresh(params: ParamsType): Promise<Ressource> {
+  refresh(params: ParamsType): Promise<typeof this> {
     return request(this.getUri(), "GET", params).then((data: APIObject) => {
       this.copy(data);
       return this;

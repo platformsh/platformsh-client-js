@@ -36,10 +36,30 @@ const modifiableField = [
   "marketing"
 ];
 
+export interface AccountsProfileGetParams {
+  id?: string,
+  [index: string]: any
+};
+
 export default class AccountsProfile extends Ressource {
-  constructor(profile) {
+  id: string;
+  display_name: string;
+  email: string;
+  username: string;
+  picture: string;
+  company_type: string;
+  company_role: string;
+  company_name: string;
+  website_url: string;
+  new_ui: boolean;
+  ui_colorscheme: string;
+  ui_contrast: string;
+  default_catalog: string;
+  marketing: string;
+
+
+  constructor(profile: AccountsProfile) {
     const { api_url } = getConfig();
-    const { id } = profile;
 
     super(
       `${api_url}${url}`,
@@ -59,14 +79,14 @@ export default class AccountsProfile extends Ressource {
     this.company_role = "";
     this.company_name = "";
     this.website_url = "";
-    this.new_ui = "";
+    this.new_ui = true;
     this.ui_colorscheme = "";
     this.ui_contrast = "";
     this.default_catalog = "";
     this.marketing = "";
   }
 
-  static get(params, customUrl) {
+  static get(params: AccountsProfile, customUrl: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -78,7 +98,7 @@ export default class AccountsProfile extends Ressource {
     );
   }
 
-  static async update(id, data) {
+  static async update(id: string, data: AccountsProfile) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
 
@@ -86,7 +106,7 @@ export default class AccountsProfile extends Ressource {
     return new AccountsProfile(updatedProfile);
   }
 
-  static async getUserByUsername(username) {
+  static async getUserByUsername(username: string) {
     const { api_url } = getConfig();
 
     const user = await request(
@@ -96,12 +116,12 @@ export default class AccountsProfile extends Ressource {
     return new AccountsProfile(user.profiles[0]);
   }
 
-  static updateProfilePicture(userId, picture) {
+  static updateProfilePicture(userId: string, picture: FormData) {
     const { api_url } = getConfig();
     return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
   }
 
-  static async deleteProfilePicture(userId) {
+  static async deleteProfilePicture(userId: string) {
     const { api_url } = getConfig();
     return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
   }
