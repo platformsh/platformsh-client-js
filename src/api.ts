@@ -6,7 +6,7 @@ import { getConfig, ClientConfiguration } from "./config";
 import authenticate, { JWTToken } from "./authentication";
 
 export type RequestOptions = {
-  queryStringArrayPrefix?: boolean;
+  queryStringArrayPrefix?: string;
 };
 
 export type RequestConfiguration = RequestOptions & RequestInit;
@@ -43,7 +43,7 @@ export const request = (
 
   if (method === "GET") {
     const queryString = param(body || {}, "", {
-      arrayPrefix: options.queryStringArrayPrefix || false
+      arrayPrefix: options.queryStringArrayPrefix || ""
     });
 
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ""}`;
