@@ -37,15 +37,15 @@ export default class Result {
   }
 
   /**
-   * Get the entity embedded in the result.
-   *
-   * @throws \Exception If no entity was embedded.
+   * Get the entity embedded in the result or an Instance
+   * of this calling Resource if no entity exist in the result
+   * @throws \Exception If Resource result or Constructor does not exist
    *
    * @return Resource
    *   An instance of Resource.
    */
   getEntity() {
-    const data = this.data["_embedded"]["entity"];
+    const data = this.data["_embedded"]?.["entity"] || this.data;
 
     if (!data || !this._ressourceClass) {
       throw new Error("No entity found in result");

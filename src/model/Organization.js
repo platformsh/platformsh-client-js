@@ -7,7 +7,14 @@ const paramDefaults = {};
 const _url = "/organizations";
 const user_url = "/users/:userId/organizations";
 
-const creatableField = ["name", "label", "owner_id"];
+const creatableField = [
+  "name",
+  "label",
+  "country",
+  "security_contact",
+  "company_name"
+];
+
 const modifiableField = ["name", "label"];
 
 export default class Organization extends Ressource {
