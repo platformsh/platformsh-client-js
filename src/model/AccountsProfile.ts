@@ -1,4 +1,4 @@
-import Ressource from "./Ressource";
+import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import request from "../api";
 import _urlParser from "../urlParser";
@@ -37,7 +37,7 @@ const modifiableField = [
 ];
 
 export interface AccountsProfileGetParams {
-  id?: string,
+  id: string,
   [index: string]: any
 };
 
@@ -58,7 +58,7 @@ export default class AccountsProfile extends Ressource {
   marketing: string;
 
 
-  constructor(profile: AccountsProfile) {
+  constructor(profile: APIObject) {
     const { api_url } = getConfig();
 
     super(
@@ -86,11 +86,11 @@ export default class AccountsProfile extends Ressource {
     this.marketing = "";
   }
 
-  static get(params: AccountsProfile, customUrl: string) {
+  static get(params: AccountsProfileGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._get(
+    return super._get<AccountsProfile>(
       customUrl || `${api_url}${url}`,
       { id },
       paramDefaults,
@@ -98,7 +98,7 @@ export default class AccountsProfile extends Ressource {
     );
   }
 
-  static async update(id: string, data: AccountsProfile) {
+  static async update(id: string, data: APIObject) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
 

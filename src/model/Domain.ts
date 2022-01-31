@@ -1,4 +1,4 @@
-import Ressource from "./Ressource";
+import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
@@ -16,17 +16,16 @@ export interface DomainQueryParams {
 };
 
 export default class Domain extends Ressource {
-  id: string;
-  name: string;
+  id = "";
+  name = "";
+  ssl = [];
 
-  constructor(domain: Domain, url: string) {
+  constructor(domain: APIObject, url: string) {
     super(url, paramDefaults, {}, domain, ["name", "ssl"]);
-    this.id = "";
-    this.name = "";
     this._required = ["name"];
   }
 
-  static get(params: DomainGetParams, customUrl: string): Promise<Domain> {
+  static get(params: DomainGetParams, customUrl?: string): Promise<Domain> {
     const { name, projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -38,7 +37,7 @@ export default class Domain extends Ressource {
     );
   }
 
-  static query(params: DomainQueryParams, customUrl: string): Promise<Domain[]> {
+  static query(params: DomainQueryParams, customUrl?: string): Promise<Domain[]> {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 

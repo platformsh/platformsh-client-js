@@ -6,7 +6,7 @@ export type Link = {
   [key: string]: unknown
 }
 
-type Links = Record<string, Link | Array<Link>>;
+export type Links = Record<string, Link | Array<Link>>;
 
 type GetLinkOptions =  {
   absolute?: boolean, baseUrl?: string, hrefOnly?: boolean
@@ -51,10 +51,10 @@ export const getLinkHref = (links: Links | undefined, rel: string, absolute = tr
 }
 
 // Load a single object from the ref API
-export const getRef = async (
+export const getRef = async <T>(
   links: Links | undefined,
   linkKey: string,
-  constructor: RessourceChildClass,
+  constructor: RessourceChildClass<T>,
   absolute: boolean = true,
   baseUrl: string = ""
 ) => {
@@ -63,15 +63,15 @@ export const getRef = async (
 };
 
 // Load a list of objects from the ref API
-export const getRefs = async (
+export const getRefs = async <T>(
   links: Links | undefined,
   linkKey: string,
-  constructor: RessourceChildClass,
+  constructor: RessourceChildClass<T>,
   absolute: boolean,
   baseUrl: string = ""
-) => {
+): Promise<T[]> => {
   if (!links) {
-    return [];
+    return Promise.resolve([]);
   }
   const refs = Object.keys(links)?.filter(l => l.startsWith(linkKey));
 

@@ -34,7 +34,7 @@ export default class Commit extends Ressource {
   static get(projectId: string, sha: string): Promise<Commit> {
     const { api_url } = getConfig();
 
-    return super._get(`${api_url}${_url}`, { projectId, sha });
+    return super._get<Commit>(`${api_url}${_url}`, { projectId, sha });
   }
 
   getTree(projectId = this._params.projectId): Promise<Tree | undefined> {

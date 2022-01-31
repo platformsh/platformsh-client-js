@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
+    "outDir": "types",
     "module": "esnext",
     "target": "es2015",
     "lib": [
@@ -12,7 +13,6 @@
       "es2019"
     ],
     "sourceMap": true,
-    "jsx": "react",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "strict": true,

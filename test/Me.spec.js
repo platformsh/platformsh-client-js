@@ -61,10 +61,10 @@ describe("Me", () => {
 
     Me.get().then(me => {
       me.update({ picture: "testNewPic" }).then(newMe => {
-        assert.equal(newMe.id, 1);
-        assert.equal(newMe.email, "test@test.com");
-        assert.equal(newMe.picture, "testNewPic");
-        assert.equal(newMe.constructor.name, "Me");
+        assert.equal(newMe.data.id, 1);
+        assert.equal(newMe.data.email, "test@test.com");
+        assert.equal(newMe.data.picture, "testNewPic");
+        assert.equal(newMe.constructor.name, "Result");
         done();
       });
     });

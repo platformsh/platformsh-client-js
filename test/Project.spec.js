@@ -483,24 +483,6 @@ describe("Project", () => {
     );
 
     assert.equal(project.isSuspended(), true);
-
-    project = new Project(
-      {
-        _links: {
-          self: {
-            href: "/api/projects/ffzefzef3"
-          }
-        },
-        id: "ffzefzef3",
-        title: "project title",
-        subscription: {
-          suspended: true
-        }
-      },
-      "https://test.com/api/projects/ffzefzef3"
-    );
-
-    assert.equal(project.isSuspended(), true);
   });
 
   it("Not be suspended", () => {

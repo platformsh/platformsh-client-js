@@ -22,7 +22,7 @@ if (env.mode === "build") {
 var config = {
   mode: "development",
   entry: {
-    [libraryName]: __dirname + "/src/index.js",
+    [libraryName]: __dirname + "/src/index.ts",
     "authentication/index": __dirname + "/src/authentication"
   },
   output: {

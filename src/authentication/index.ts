@@ -27,7 +27,7 @@ export default (
     response_mode,
     prompt
   }: ClientConfiguration,
-  reset: boolean
+  reset = false
 ): Promise<JWTToken> => {
   let promise;
 

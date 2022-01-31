@@ -1,4 +1,4 @@
-import Ressource from "./Ressource";
+import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 
 const url = "/platform/users/:id";
@@ -19,7 +19,7 @@ export default class Account extends Ressource {
   picture: string;
   roles: string;
 
-  constructor(account: Account) {
+  constructor(account: APIObject) {
     const { id } = account;
     const { account_url } = getConfig();
 
@@ -35,7 +35,7 @@ export default class Account extends Ressource {
     this.roles = "";
   }
 
-  static get(params: AccountGetParams, customUrl: string): Promise<Account> {
+  static get(params: AccountGetParams, customUrl?: string): Promise<Account> {
     const { id, ...queryParams } = params;
     const { account_url } = getConfig();
 

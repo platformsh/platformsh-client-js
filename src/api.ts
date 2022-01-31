@@ -13,7 +13,7 @@ export type RequestConfiguration = RequestOptions & RequestInit;
 
 let authenticationPromise : Promise<JWTToken>;
 
-export const setAuthenticationPromise = (promise: Promise<any>) => {
+export const setAuthenticationPromise = (promise: Promise<JWTToken>) => {
   authenticationPromise = promise;
 };
 
@@ -33,7 +33,7 @@ const isFormData = (data: FormData | object | undefined) =>
 export const request = (
   url: string,
   method: string,
-  data: FormData | object | undefined,
+  data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber: number = 0,
   options: RequestOptions = {}

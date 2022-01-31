@@ -5,17 +5,20 @@ import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLinkHref, Link } from "..
 import request from "../api";
 import Result from "./Result";
 import Activity from "./Activity";
+import CursoredResult from "./CursoredResult";
+import { CommerceOrderResponse } from "./Order";
+import { VoucherResponse } from "./OrganizationVoucher";
+import { RegionResponse } from "./Region";
 
 export interface APIObject {
   [key: string]: any,
-  id: string,
   _links?: Record<string, Link>,
   _embedded?: Record<string, Array<object>>
 };
 
-type ParamsType = Record<string, any>;
+export type ParamsType = Record<string, any>;
 
-export type RessourceChildClass = new (obj: APIObject) => Ressource;
+export type RessourceChildClass<T> = new (obj: any, url?: string) => T;
 
 const handler = {
   get(target: any, key: string) {
@@ -53,8 +56,8 @@ const pick = (data: APIObject, fields: string[]) => {
 };
 
 function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
-      var instance = Object.create(context?.prototype || null);
-      return <T> new instance.constructor(...args);
+  var instance = Object.create(context?.prototype || null);
+  return <T> new instance.constructor(...args);
 }
 
 
@@ -104,7 +107,7 @@ export default abstract class Ressource {
     return new Proxy(this, handler);
   }
 
-  static getQueryUrl(_url = "") {
+  static getQueryUrl(_url = "", id?: string) {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
@@ -121,7 +124,7 @@ export default abstract class Ressource {
     params?: ParamsType,
     paramDefaults?: ParamsType,
     queryParams?: ParamsType ,
-    transformResultBeforeMap? : (data: Array<APIObject>) => Array<APIObject>,
+    transformResultBeforeMap? : (data: Array<APIObject> | CursoredResult<T> | CommerceOrderResponse | VoucherResponse | RegionResponse) => Array<APIObject>,
     options?:  object // Define that in api
   ) : Promise<Array<T>>{
     const parsedUrl = _urlParser(_url, params, paramDefaults);
@@ -164,7 +167,7 @@ export default abstract class Ressource {
 
   }
 
-  update(data: APIObject, _url: string) {
+  update(data: APIObject, _url?: string) {
     if (!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
     }
@@ -194,7 +197,7 @@ export default abstract class Ressource {
 
     return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
       (data: APIObject) => {
-        return new Result(data, this._url, this.constructor);
+        return new Result(data, this._url, this.constructor as RessourceChildClass<any>);
       }
     );
   }
@@ -256,7 +259,7 @@ export default abstract class Ressource {
     
     return request(url, "POST", this.data && pick(this.data, this._creatableField)).then(
       (data: APIObject) => {
-        return new Result(data, url, this.constructor);
+        return new Result(data, url, this.constructor as RessourceChildClass<any>);
       }
     );
   }
@@ -268,7 +271,7 @@ export default abstract class Ressource {
       throw new Error("Not allowed to delete");
     }
     return request(deleteLink, "DELETE", {}).then(
-      (result: APIObject) => new Result(result, this._url, this.constructor)
+      (result: APIObject) => new Result(result, this._url, this.constructor as RessourceChildClass<any>)
     );
   }
 
@@ -286,7 +289,7 @@ export default abstract class Ressource {
    * Refresh the resource.
    *
    */
-  refresh(params: ParamsType): Promise<typeof this> {
+  refresh(params?: ParamsType) {
     return request(this.getUri(), "GET", params).then((data: APIObject) => {
       this.copy(data);
       return this;
@@ -365,6 +368,15 @@ export default abstract class Ressource {
   }
 
   /**
+   * Get links for a given resource relation.
+   *
+   * @return Links
+   */
+  getLinks() {
+    return this.data?._links;
+  }
+
+  /**
    * Get the resource's URI.
    *
    * @param bool absolute
@@ -396,7 +408,7 @@ export default abstract class Ressource {
    *
    * @return array
    */
-  runOperation(op: string, method = "POST", body: object): Promise<any> {
+  runOperation(op: string, method = "POST", body?: object): Promise<any> {
     if (!this.operationAvailable(op)) {
       throw new Error(`Operation not available: ${op}`);
     }
@@ -412,7 +424,7 @@ export default abstract class Ressource {
    *
    * @return Activity
    */
-  runLongOperation(op: string, method = "POST", body: ParamsType): Promise<Activity> {
+  runLongOperation(op: string, method = "POST", body?: ParamsType): Promise<Activity> {
     return this.runOperation(op, method, body).then((data: APIObject) => {
       const result = new Result(data, this.getUri());
       const activities = result.getActivities();
@@ -430,8 +442,8 @@ export default abstract class Ressource {
   }
 
   // Load a single object from the ref API
-  getRef(linkKey: string, constructor: RessourceChildClass, absolute = true) {
-    return getRef(
+  getRef<T>(linkKey: string, constructor: RessourceChildClass<T>, absolute = true) {
+    return getRef<T>(
       this.data?._links,
       linkKey,
       constructor,
@@ -441,8 +453,8 @@ export default abstract class Ressource {
   }
 
   // Load a list of objects from the ref API
-  async getRefs(linkKey: string, constructor: RessourceChildClass, absolute = true) {
-    return getRefs(
+  async getRefs<T>(linkKey: string, constructor: RessourceChildClass<T>, absolute = true): Promise<T[]> {
+    return getRefs<T>(
       this.data?._links,
       linkKey,
       constructor,

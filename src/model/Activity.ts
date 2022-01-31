@@ -1,4 +1,4 @@
-import Ressource from "./Ressource";
+import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import request from "../api";
 
@@ -41,7 +41,7 @@ export default class Activity extends Ressource {
   payload: Record<string, any>;
 
 
-  constructor(activity: Activity, url: string) {
+  constructor(activity: APIObject, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
     this.id = "";
     this.completion_percent = 0;
@@ -59,11 +59,11 @@ export default class Activity extends Ressource {
     this.payload = [];
   }
 
-  static get(params: ActivityGetParams, customUrl: string) {
+  static get(params: ActivityGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._get(
+    return super._get<Activity>(
       customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`,
       { projectId, environmentId, id },
       paramDefaults,
@@ -71,11 +71,11 @@ export default class Activity extends Ressource {
     );
   }
 
-  static query(params: ActivityQueryParams, customUrl: string) {
+  static query(params: ActivityQueryParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._query(
+    return super._query<Activity>(
       customUrl || `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,

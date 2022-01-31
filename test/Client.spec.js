@@ -272,7 +272,7 @@ describe("Client", () => {
     fetchMock.mock(`${api_url}/v1/ssh_keys/theId`, {
       changed: "2017-03-13T17:38:49+01:00"
     });
-    client.getSshKey({ id: "theId" }).then(sshkey => {
+    client.getSshKey("theId").then(sshkey => {
       assert.equal(sshkey.changed, "2017-03-13T17:38:49+01:00");
       assert.equal(sshkey.constructor.name, "SshKey");
       done();
@@ -1227,6 +1227,25 @@ describe("Client", () => {
         .then(intent => {
           assert.equal(intent.id, "alice");
           // assert.equal(intent.constructor.name, "OrganizationPaymentSource");
+          done();
+        });
+    });
+  });
+  describe("Comments", done => {
+    it("Create comments", done => {
+      fetchMock.mock(
+        `${api_url}/v1/comments`,
+        {
+          id: "alice"
+        },
+        "POST"
+      );
+      client
+        .sendComment({
+          ticket_id: "test"
+        })
+        .then(result => {
+          assert.equal(result.constructor.name, "Result");
           done();
         });
     });
