@@ -3,8 +3,20 @@ import { getConfig } from "../config";
 
 const url = "/organizations/:organizationId/profile";
 const paramDefaults = {};
-const createableField = ["default_catalog", "marketing"];
-const modifiableField = ["default_catalog", "marketing"];
+const createableField = [
+  "default_catalog",
+  "marketing",
+  "company_name",
+  "security_contact",
+  "website_url"
+];
+const modifiableField = [
+  "default_catalog",
+  "marketing",
+  "company_name",
+  "security_contact",
+  "website_url"
+];
 
 export default class OrganizationProfile extends Ressource {
   constructor(profile, customUrl) {
@@ -25,6 +37,7 @@ export default class OrganizationProfile extends Ressource {
     this.billing_contact = "";
     this.default_catalog = "";
     this.company_name = "";
+    this.website_url = "";
     this.current_trial = "";
   }
 

@@ -7,15 +7,9 @@ const paramDefaults = {};
 const _url = "/organizations";
 const user_url = "/users/:userId/organizations";
 
-const creatableField = [
-  "name",
-  "label",
-  "country",
-  "security_contact",
-  "company_name"
-];
+const creatableField = ["name", "label", "country"];
 
-const modifiableField = ["name", "label"];
+const modifiableField = ["name", "label", "country"];
 
 export default class Organization extends Ressource {
   constructor(organization, url) {
@@ -33,6 +27,7 @@ export default class Organization extends Ressource {
     this.user_id = "";
     this.name = "";
     this.label = "";
+    this.country = "";
     this.owner_id = "";
     this.created_at = "";
     this.updated_at = "";
@@ -86,5 +81,14 @@ export default class Organization extends Ressource {
     if (this.hasLink(rel)) {
       return super.getLink(rel, absolute);
     }
+  }
+
+  /**
+   * Delete an organization,
+   * we have to override super.delete()
+   * since organization links are not prefixed with # as implemented in Resouce
+   */
+  delete() {
+    return super.delete(this.getLink("delete"));
   }
 }
