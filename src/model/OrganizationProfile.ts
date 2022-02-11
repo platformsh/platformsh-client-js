@@ -31,6 +31,7 @@ export default class OrganizationProfile extends Ressource {
   default_catalog: string;
   company_name: string;
   current_trial: string;
+  website_url: string;
 
   constructor(profile: APIObject, customUrl?: string) {
     const { api_url } = getConfig();

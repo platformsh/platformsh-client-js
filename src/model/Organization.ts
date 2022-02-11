@@ -30,6 +30,7 @@ export default class Organization extends Ressource {
   owner_id: string;
   created_at: string;
   updated_at: string;
+  country: string;
 
   constructor(organization: APIObject, url?: string) {
     const { api_url } = getConfig();
