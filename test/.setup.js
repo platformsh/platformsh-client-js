@@ -1,4 +1,18 @@
-require("@babel/register")();
+require("@babel/register")({
+  cache: false,
+  extensions: [".ts", ".js"],
+  presets: [
+    [
+      "@babel/preset-env",
+      {
+        targets: {
+          node: "current"
+        }
+      }
+    ],
+    "@babel/preset-typescript"
+  ]
+});
 
 var jsdom = require("jsdom").jsdom;
 

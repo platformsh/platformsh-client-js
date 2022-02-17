@@ -22,7 +22,7 @@ if (env.mode === "build") {
 var config = {
   mode: "development",
   entry: {
-    [libraryName]: __dirname + "/src/index.js",
+    [libraryName]: __dirname + "/src/index.ts",
     "authentication/index": __dirname + "/src/authentication"
   },
   output: {
@@ -30,6 +30,11 @@ var config = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        exclude: [/node_modules/, /^.*\.spec\.tsx$/, /^.*\.spec\.ts$/],
+        use: ["babel-loader", "ts-loader"]
+      },
       {
         test: /(\.js)$/,
         use: "babel-loader",
@@ -39,7 +44,7 @@ var config = {
   },
   resolve: {
     modules: [path.resolve("./src"), "node_modules"],
-    extensions: [".js"]
+    extensions: [".js", ".ts"]
   },
   plugins: plugins,
   ...additionalSettings

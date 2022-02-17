@@ -166,7 +166,7 @@ describe("PaymentSource", () => {
       }
     );
 
-    PaymentSource.delete({ uuid: "uuid" }).then(res => {
+    PaymentSource.delete().then(res => {
       assert.isTrue(mock.called());
       done();
     });
