@@ -1,7 +1,8 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
-import request from "../api";
-import _urlParser from "../urlParser";
+import Ressource, { APIObject } from "../Ressource";
+import { getConfig } from "../../config";
+import request from "../../api";
+import _urlParser from "../../urlParser";
+import { AccountsProfileType } from "./types";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -41,7 +42,7 @@ export interface AccountsProfileGetParams {
   [index: string]: any
 };
 
-export default class AccountsProfile extends Ressource {
+export default class AccountsProfile extends Ressource implements AccountsProfileType {
   id: string;
   display_name: string;
   email: string;
@@ -55,7 +56,7 @@ export default class AccountsProfile extends Ressource {
   ui_colorscheme: string;
   ui_contrast: string;
   default_catalog: string;
-  marketing: string;
+  // marketing: string;
 
 
   constructor(profile: APIObject) {
@@ -83,7 +84,7 @@ export default class AccountsProfile extends Ressource {
     this.ui_colorscheme = "";
     this.ui_contrast = "";
     this.default_catalog = "";
-    this.marketing = "";
+    // this.marketing = "";
   }
 
   static get(params: AccountsProfileGetParams, customUrl?: string) {
