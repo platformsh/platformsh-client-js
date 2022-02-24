@@ -51,8 +51,8 @@ const pick = (data: APIObject, fields: string[]) => {
       acc[k] = data[k];
 
       return acc;
-    }, 
-    {id: ""});
+    },
+    {});
 };
 
 function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
@@ -62,7 +62,7 @@ function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
 
 
 export default abstract class Ressource {
-  
+
   protected _url: string;
   protected _params: ParamsType;
   protected _baseUrl?: string;
@@ -158,7 +158,7 @@ export default abstract class Ressource {
     }
 
     let errors: object = {};
-    
+
     //checkProperty can be overrided by children
     for (let key in Object.keys(values)) {
       errors =  this.checkProperty(key, values[key]);
@@ -250,13 +250,13 @@ export default abstract class Ressource {
     if (!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
     }
-    
+
     const errors = this.checkNew(this.data);
     if (errors) {
       return Promise.reject(errors);
     }
     const url = this._queryUrl || this._url;
-    
+
     return request(url, "POST", this.data && pick(this.data, this._creatableField)).then(
       (data: APIObject) => {
         return new Result(data, url, this.constructor as RessourceChildClass<any>);
