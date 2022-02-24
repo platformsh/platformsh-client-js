@@ -592,6 +592,7 @@ export default class Client {
    * @param int    storage      The allowed storage per environment (in MiB).
    * @param int    environments The number of environments.
    * @param int    users        The number of users.
+   * @param string backups      The available backup sellables
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
@@ -602,6 +603,7 @@ export default class Client {
     environments: number,
     user_licenses: number,
     big_dev: string,
+    backups?: string,
     format?: string,
     country_code?: string
   }) {

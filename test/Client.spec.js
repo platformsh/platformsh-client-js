@@ -430,10 +430,11 @@ describe("Client", () => {
       plan: "plan",
       storage: "storage",
       environments: "environments",
-      user_licenses: "users"
+      user_licenses: "users",
+      backups: "backups"
     };
     fetchMock.mock(
-      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`,
+      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users&backups=backups`,
       {
         key: "value"
       }
@@ -461,7 +462,7 @@ describe("Client", () => {
 
   it("Get organization subscription estimate", done => {
     fetchMock.mock(
-      `${api_url}/organizations/aliceorg/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users`,
+      `${api_url}/organizations/aliceorg/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users&backups=backups`,
       {
         key: "value"
       }
@@ -471,7 +472,8 @@ describe("Client", () => {
         plan: "plan",
         storage: "storage",
         environments: "environments",
-        user_licenses: "users"
+        user_licenses: "users",
+        backups: "backups"
       })
 
       .then(estimate => {

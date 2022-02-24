@@ -19,7 +19,13 @@ const creatableField = [
   "default_branch"
 ];
 
-const modifiableField = ["plan", "environments", "storage", "big_dev"];
+const modifiableField = [
+  "plan",
+  "environments",
+  "storage",
+  "big_dev",
+  "backups"
+];
 
 const url = "/v1/subscriptions/:id";
 const STATUS_ACTIVE = "active";
@@ -51,6 +57,7 @@ export default class Subscription extends Ressource {
   environments: number;
   storage: number;
   big_dev: number;
+  backups: string;
   user_licenses: number;
   project_id: string;
   project_title: string;
@@ -85,6 +92,7 @@ export default class Subscription extends Ressource {
     this.environments = 0;
     this.storage = 0;
     this.big_dev = 0;
+    this.backups = "";
     this.user_licenses = 0;
     this.project_id = "";
     this.project_title = "";
@@ -243,7 +251,8 @@ export default class Subscription extends Ressource {
       storage: this.storage,
       environments: this.environments,
       user_licenses: this.users_licenses,
-      big_dev: this.big_dev || undefined
+      big_dev: this.big_dev || undefined,
+      backups: this.backups || undefined
     };
 
     return authenticatedRequest(
