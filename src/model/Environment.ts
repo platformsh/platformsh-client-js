@@ -451,8 +451,10 @@ export default class Environment extends Ressource {
    * @return string[]
    */
   getRouteUrls() {
-    const routes = getLink(this.getLinks(), "pf:routes", { absolute: false, hrefOnly: false});
+    const links = this.getLinks()
+    if (!links) return [];
 
+    const routes =  links["pf:routes"]
     if (!routes || !Array.isArray(routes)) {
       return [];
     }
