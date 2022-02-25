@@ -1,5 +1,5 @@
 import { JWTToken } from "src/authentication";
-import { ClientConfiguration } from "src/config";
+import { ClientConfiguration, DefaultClientConfiguration } from "src/config";
 import ApiDefaultStorage from "./ApiDefaultStorage";
 
 export type PKCERequest = {
@@ -380,7 +380,7 @@ export const jso_ensureTokens = (
   return true;
 };
 
-export const jso_configure = (c: Record<string, ClientConfiguration>, opts?: Record<string, any>, popupMode?: boolean) => {
+export const jso_configure = (c: Record<string, DefaultClientConfiguration>, opts?: Record<string, any>, popupMode?: boolean) => {
   config = c;
   setOptions(opts);
   try {

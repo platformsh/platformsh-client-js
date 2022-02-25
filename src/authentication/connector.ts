@@ -19,7 +19,7 @@ import {
   jso_getCodeVerifier,
   PKCERequest
 } from "../jso";
-import { getConfig, ClientConfiguration } from "../config";
+import { getConfig, ClientConfiguration, DefaultClientConfiguration } from "../config";
 
 type IFrameOption = {
   sandbox?: string
@@ -147,7 +147,7 @@ const getTokenWithAuthorizationCode = async (
   return await resp.json();
 };
 
-async function authorizationCodeCallback(config: ClientConfiguration, codeVerifier: string, code: string, state?: string) {
+async function authorizationCodeCallback(config: DefaultClientConfiguration, codeVerifier: string, code: string, state?: string) {
   const atoken = await getTokenWithAuthorizationCode(
     config.authentication_url,
     config.client_id,
@@ -169,7 +169,7 @@ async function authorizationCodeCallback(config: ClientConfiguration, codeVerifi
 function logInWithRedirect(reset: boolean = false) {
   console.log("In redirect...");
   return new Promise(async (resolve, reject) => {
-    const config: ClientConfiguration = getConfig();
+    const config = getConfig();
     const auth = {
       ...config,
       response_mode: config.response_mode,
