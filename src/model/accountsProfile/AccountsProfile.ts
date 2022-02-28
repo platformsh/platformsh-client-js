@@ -42,7 +42,8 @@ export interface AccountsProfileGetParams {
   [index: string]: any
 };
 
-export default class AccountsProfile extends Ressource implements AccountsProfileType {
+
+class AccountsProfile extends Ressource {
   id: string;
   display_name: string;
   email: string;
@@ -56,9 +57,7 @@ export default class AccountsProfile extends Ressource implements AccountsProfil
   ui_colorscheme: string;
   ui_contrast: string;
   default_catalog: string;
-  // marketing: string;
-
-
+ 
   constructor(profile: APIObject) {
     const { api_url } = getConfig();
 
@@ -86,7 +85,7 @@ export default class AccountsProfile extends Ressource implements AccountsProfil
     this.default_catalog = "";
     // this.marketing = "";
   }
-
+ 
   static get(params: AccountsProfileGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
@@ -127,3 +126,15 @@ export default class AccountsProfile extends Ressource implements AccountsProfil
     return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
   }
 }
+
+interface AccountsProfileInterface  {
+  new (profile: APIObject): AccountsProfile & AccountsProfileType;
+  deleteProfilePicture(userId: string): Promise<any>
+  updateProfilePicture(userId: string, picture: FormData): Promise<any>
+  get(params: AccountsProfileGetParams, customUrl?: string | undefined): Promise<AccountsProfile>
+  update(id: string, data: APIObject): Promise<AccountsProfile>
+}
+
+const _AccountsProfile:AccountsProfileInterface = AccountsProfile as any
+
+export default _AccountsProfile
