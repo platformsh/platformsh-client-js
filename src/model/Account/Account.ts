@@ -1,16 +1,22 @@
 import Ressource, { APIObject } from "../Ressource";
 import { getConfig } from "../../config";
-import { CurrentUserType } from "./types";
+import { autoImplementWithBaseClass } from "../utils";
+import { AccountGetParams, CurrentUserType } from "./types";
 
 const url = "/platform/users/:id";
 const paramDefaults = {};
 
-export interface AccountGetParams {
-  id?: string,
-  [index: string]: any
-};
+class BaseClass extends Ressource{
+}
+export default class Account extends autoImplementWithBaseClass(BaseClass)<CurrentUserType>() {
 
-class Account extends Ressource {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  has_key: boolean;
+  display_name: string;
+  email: string;
+  picture: string;
 
   constructor(account: APIObject) {
     const { id } = account;
@@ -18,7 +24,13 @@ class Account extends Ressource {
 
     super(`${account_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
-  
+    this.id = "";
+    this.created_at = "";
+    this.updated_at = "";
+    this.has_key = false;
+    this.display_name = "";
+    this.email = "";
+    this.picture = "";
   }
 
   static get(params: AccountGetParams, customUrl?: string): Promise<Account> {
@@ -44,14 +56,3 @@ class Account extends Ressource {
     );
   }
 }
-
-
-interface AccountInterface  {
-  new (account: APIObject): Account & CurrentUserType;
-  query(params: AccountGetParams): Promise<Account[]>
-  get(params: AccountGetParams, customUrl?: string | undefined): Promise<Account>
-}
-
-const _Account:AccountInterface = Account as any
-
-export default _Account

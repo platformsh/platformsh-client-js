@@ -2,7 +2,8 @@ import Ressource, { APIObject } from "../Ressource";
 import { getConfig } from "../../config";
 import request from "../../api";
 import _urlParser from "../../urlParser";
-import { AccountsProfileType } from "./types";
+import { AccountsProfileGetParams, ProfileType } from "./types";
+import { autoImplementWithBaseClass } from "../utils";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -37,13 +38,10 @@ const modifiableField = [
   "marketing"
 ];
 
-export interface AccountsProfileGetParams {
-  id: string,
-  [index: string]: any
-};
+class BaseClass extends Ressource{
+}
 
-
-class AccountsProfile extends Ressource {
+class AccountsProfile extends autoImplementWithBaseClass(BaseClass)<ProfileType>() {
   id: string;
   display_name: string;
   email: string;
@@ -85,7 +83,7 @@ class AccountsProfile extends Ressource {
     this.default_catalog = "";
     // this.marketing = "";
   }
- 
+
   static get(params: AccountsProfileGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
@@ -127,14 +125,5 @@ class AccountsProfile extends Ressource {
   }
 }
 
-interface AccountsProfileInterface  {
-  new (profile: APIObject): AccountsProfile & AccountsProfileType;
-  deleteProfilePicture(userId: string): Promise<any>
-  updateProfilePicture(userId: string, picture: FormData): Promise<any>
-  get(params: AccountsProfileGetParams, customUrl?: string | undefined): Promise<AccountsProfile>
-  update(id: string, data: APIObject): Promise<AccountsProfile>
-}
+export default AccountsProfile
 
-const _AccountsProfile:AccountsProfileInterface = AccountsProfile as any
-
-export default _AccountsProfile
