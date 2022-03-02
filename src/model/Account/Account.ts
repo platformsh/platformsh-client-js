@@ -6,9 +6,7 @@ import { AccountGetParams, CurrentUserType } from "./types";
 const url = "/platform/users/:id";
 const paramDefaults = {};
 
-class BaseClass extends Ressource{
-}
-export default class Account extends autoImplementWithBaseClass(BaseClass)<CurrentUserType>() {
+export default class Account extends autoImplementWithBaseClass()<CurrentUserType>() {
 
   id: string;
   created_at: string;

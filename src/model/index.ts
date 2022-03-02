@@ -24,7 +24,7 @@ import TicketCategory from "./TicketCategory";
 import Region from "./Region";
 import Order from "./Order";
 import Me from "./Me";
-import AccountsProfile from "./AccountsProfile";
+import AccountsProfile from "./accountsProfile";
 import SetupRegistry from "./SetupRegistry";
 import SetupConfig from "./SetupConfig";
 import AuthUser from "./AuthUser";

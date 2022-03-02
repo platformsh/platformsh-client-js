@@ -38,24 +38,9 @@ const modifiableField = [
   "marketing"
 ];
 
-class BaseClass extends Ressource{
-}
-
-class AccountsProfile extends autoImplementWithBaseClass(BaseClass)<ProfileType>() {
-  id: string;
-  display_name: string;
-  email: string;
-  username: string;
-  picture: string;
-  company_type: string;
-  company_role: string;
-  company_name: string;
-  website_url: string;
-  new_ui: boolean;
-  ui_colorscheme: string;
+class AccountsProfile extends autoImplementWithBaseClass()<ProfileType>() {
   ui_contrast: string;
-  default_catalog: string;
- 
+
   constructor(profile: APIObject) {
     const { api_url } = getConfig();
 

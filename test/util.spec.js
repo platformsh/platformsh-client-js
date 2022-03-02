@@ -1,5 +1,8 @@
 import { assert } from "chai";
-import { autoImplement, autoImplementWithBaseClass } from "../src/model/utils";
+import {
+  autoImplement,
+  autoImplementWithCustomClass
+} from "../src/model/utils";
 
 class Parent {
   constructor(arg) {
@@ -28,7 +31,7 @@ class Parent {
   }
 }
 
-class Child extends autoImplementWithBaseClass(Parent)() {
+class Child extends autoImplementWithCustomClass(Parent)() {
   constructor(s) {
     super(s);
   }
@@ -67,7 +70,7 @@ describe("Auto implement weak interface", () => {
   });
 
   it("should optionally allow initializing a class with default value", () => {
-    class Child extends autoImplementWithBaseClass(Parent)({
+    class Child extends autoImplementWithCustomClass(Parent)({
       defaultValue: "default_value"
     }) {}
     assert.equal(new Child({}).defaultValue, "default_value");
