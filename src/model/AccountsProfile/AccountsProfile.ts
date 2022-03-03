@@ -3,7 +3,7 @@ import { getConfig } from "../../config";
 import request from "../../api";
 import _urlParser from "../../urlParser";
 import { AccountsProfileGetParams, ProfileType } from "./types";
-import { autoImplementWithBaseClass } from "../utils";
+import { autoImplementWithResources } from "../utils";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -38,10 +38,7 @@ const modifiableField = [
   "marketing"
 ];
 
-class BaseClass extends Ressource{
-}
-
-class AccountsProfile extends autoImplementWithBaseClass(BaseClass)<ProfileType>() {
+class AccountsProfile extends autoImplementWithResources()<ProfileType>() {
   id: string;
   display_name: string;
   email: string;

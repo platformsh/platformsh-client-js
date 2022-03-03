@@ -5,7 +5,7 @@ import fetchMock from "fetch-mock";
 
 import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
-import AccountsProfile from "../src/model/CccountsProfile/AccountsProfile";
+import AccountsProfile from "../src/model/AccountsProfile/AccountsProfile";
 
 describe("AccountsProfile", () => {
   const { api_url } = getConfig();

@@ -1,10 +1,14 @@
+import Ressource from "./Ressource";
+
+export class BaseClass extends Ressource{
+}
 /**
  * Emulate a derived class that extend it Base type  and implement a weak interface 
  * without the need to redeclare the properties of the interface in the derived class
  * @param base the base class to implement
  * @returns An Emulated Base class type which implements the properties of the weak interface generic
  */
-export function autoImplementWithBaseClass<BaseImpl extends new (...args: any[]) => any>(base: BaseImpl) {
+export function autoImplementWithCustomClass<BaseImpl extends new (...args: any[]) => any>(base: BaseImpl) {
     return function <T>(defaults?: Partial<T>): Pick<BaseImpl, keyof BaseImpl> & {
       new(...a: (BaseImpl extends new (...o: infer A) => unknown ? A : [])): InstanceType<BaseImpl> & T
     } {
@@ -16,6 +20,10 @@ export function autoImplementWithBaseClass<BaseImpl extends new (...args: any[])
       } as any
     }
   }
+
+export function autoImplementWithResources() {
+  return autoImplementWithCustomClass(BaseClass);
+}
 
 /**
  * Emulates a Base class that implements the type of T without need to
