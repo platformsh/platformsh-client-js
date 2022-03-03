@@ -2,29 +2,40 @@ const DEFAULT_ACCOUNT_URL = "https://accounts.platform.sh";
 const DEFAULT_API_URL = "https://api.platform.sh/api";
 
 export type ClientConfiguration = {
-  provider: string,
-  client_id: string,
-  account_url: string,
+  provider?: string,
+  client_id?: string,
+  account_url?: string,
   api_url: string,
-  authentication_url: string,
-  scope: Array<string>,
+  authentication_url?: string,
+  scope?: Array<string>,
   authorization: string,
-  logout_url: string,
+  logout_url?: string,
   access_token?: string,
   api_token?: string,
   popupMode?: boolean,
   response_mode?: string,
-  prompt: string,
+  prompt?: string,
   base_url?: string,
-  redirect_uri: string,
-  response_type: string,
+  redirect_uri?: string,
+  response_type?: string,
   onBeforeRedirect?: (location: string) => void
 };
+
+export type DefaultClientConfiguration = ClientConfiguration & {
+  scope: Array<string>
+  redirect_uri:string
+  provider:string
+  client_id:string
+  account_url:string
+  authentication_url:string
+  prompt:string
+  response_type:string
+}
 
 const getConfigDefault = (
   baseUrl: string = DEFAULT_ACCOUNT_URL,
   api_url: string = DEFAULT_API_URL
-): ClientConfiguration => ({
+): DefaultClientConfiguration => ({
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
   account_url: `${baseUrl}/api`,
@@ -47,6 +58,6 @@ export const setConfig = (newConfig: ClientConfiguration) => {
   };
 };
 
-export const getConfig = (): ClientConfiguration => {
+export const getConfig = () => {
   return config;
 };
