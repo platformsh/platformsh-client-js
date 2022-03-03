@@ -1,14 +1,12 @@
 import Ressource, { APIObject } from "../Ressource";
 import { getConfig } from "../../config";
-import { autoImplementWithBaseClass } from "../utils";
+import { autoImplementWithResources } from "../utils";
 import { AccountGetParams, CurrentUserType } from "./types";
 
 const url = "/platform/users/:id";
 const paramDefaults = {};
 
-class BaseClass extends Ressource{
-}
-export default class Account extends autoImplementWithBaseClass(BaseClass)<CurrentUserType>() {
+export default class Account extends autoImplementWithResources()<CurrentUserType>() {
 
   id: string;
   created_at: string;
