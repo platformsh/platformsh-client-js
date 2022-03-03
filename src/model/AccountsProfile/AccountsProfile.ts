@@ -78,7 +78,6 @@ class AccountsProfile extends autoImplementWithResources()<ProfileType>() {
     this.ui_colorscheme = "";
     this.ui_contrast = "";
     this.default_catalog = "";
-    // this.marketing = "";
   }
 
   static get(params: AccountsProfileGetParams, customUrl?: string) {
@@ -93,7 +92,7 @@ class AccountsProfile extends autoImplementWithResources()<ProfileType>() {
     );
   }
 
-  static async update(id: string, data: APIObject) {
+  static async update(id: string, data: Partial<ProfileType>) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
 

@@ -1,19 +1,14 @@
-import Ressource from "../Ressource";
-import Tree from "./Tree";
-import { getConfig } from "../../config";
+import Ressource from "../../Ressource";
+import Tree from "../Tree";
+import { getConfig } from "../../../config";
+import { CommitParams, CommitType } from "./types";
+import { autoImplementWithResources } from "../../utils";
 
 const _url = "/projects/:projectId/git/commits/:sha";
 
-export interface CommitParams {
-  projectId?: string,
-  [index: string]: any
-}
-
-export default class Commit extends Ressource {
+export default class Commit extends autoImplementWithResources()<CommitType>() {
   id: string;
   sha: string;
-  author: string;
-  committer: string;
   message: string;
   tree: string;
   parents: string[];
@@ -24,8 +19,6 @@ export default class Commit extends Ressource {
 
     this.id = "";
     this.sha = "";
-    this.author = "";
-    this.committer = "";
     this.message = "";
     this.tree = "";
     this.parents = [];
