@@ -1,13 +1,9 @@
-import Ressource from "../Ressource";
-import { getConfig } from "../../config";
-import Blob from "./Blob";
+import { getConfig } from "../../../config";
+import Blob from "../Blob";
+import { autoImplementWithResources } from "../../utils";
+import { TreeParams, TreeType } from "./types";
 
 const _url = "/projects/:projectId/git/trees/:sha";
-
-export type TreeParams = {
-  projectId?: string,
-  [key: string]: any
-};
 
 function bind(trees: Array<Tree | Blob | undefined>, projectId: string) {
   return trees.map((o: Tree | Blob | undefined) => {
@@ -20,7 +16,7 @@ function bind(trees: Array<Tree | Blob | undefined>, projectId: string) {
   });
 }
 
-export default class Tree extends Ressource {
+export default class Tree extends autoImplementWithResources()<Omit<TreeType,'tree'> & {tree:Array<Tree | Blob | undefined>}>() {
   id: string;
   sha: string;
   type: string;

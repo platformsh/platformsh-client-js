@@ -1,23 +1,19 @@
 import isNode from "detect-node";
 
-import Ressource from "../Ressource";
-import { getConfig } from "../../config";
+import { getConfig } from "../../../config";
+import { autoImplementWithResources } from "../../utils";
+import { BlobParams, BlobType } from "./types";
 
 const _url = "/projects/:projectId/git/blobs/:sha";
 
-export type BlobParams = {
-  projectId: string,
-  sha: string
-};
-
-export default class Blob extends Ressource {
+export default class Blob extends autoImplementWithResources()<BlobType>() {
   id: string;
   type: string;
   path: string;
   sha: string;
-  size: string;
   encoding: string;
   content: string;
+  size: number;
 
   constructor(blob: Blob, url = _url, params: BlobParams) {
     super(url, {}, params, blob, [], []);
@@ -26,9 +22,9 @@ export default class Blob extends Ressource {
     this.type = "blob";
     this.path = "";
     this.sha = "";
-    this.size = "";
     this.encoding = "";
     this.content = "";
+    this.size = 0;
   }
 
   static get(projectId: string, sha: string) : Promise<Blob> {

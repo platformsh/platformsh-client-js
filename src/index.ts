@@ -1575,3 +1575,10 @@ export default class Client {
     });
   }
 }
+
+// Make all types accessible from index
+export * from './model/AccountsProfile/types'
+export * from './model/Account/types'
+export * from './model/git/Blob/types'
+export * from './model/git/Commit/types'
+export * from './model/git/Tree/types'
