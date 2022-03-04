@@ -94,7 +94,7 @@ export default class OrganizationAddress extends Ressource {
     const { api_url } = getConfig();
     const { organizationId } = params;
 
-    return super._query<OrganizationAddress>(
+    return super._get<OrganizationAddress>(
       `${api_url}${url}`,
       { organizationId },
       paramDefaults,
