@@ -833,8 +833,8 @@ export default class Client {
    *
    * @return Promise
    */
-  getPaymentSource(owner: string) {
-    return entities.PaymentSource.get(owner);
+  getPaymentSource(owner?: string) {
+    return entities.PaymentSource.get({owner});
   }
 
   /**
