@@ -105,7 +105,6 @@ export default class Subscription extends Ressource {
     this.created_at = "";
     this.users_licenses = 0;
     this.license_uri = "";
-    this.project_id = "";
   }
 
   static get(params: SubscriptionGetParams, customUrl?: string) {
