@@ -12,6 +12,7 @@ import {
   jso_wipe,
   jso_wipeStates,
   jso_saveToken,
+  set_token_expiration,
   encodeURL,
   generatePKCE,
   jso_checkforcode,
@@ -156,7 +157,7 @@ async function authorizationCodeCallback(config: DefaultClientConfiguration, cod
     code
   );
 
-  // set_token_expiration(atoken, config);
+  set_token_expiration(atoken, config);
 
   jso_saveToken(config.provider, atoken);
 
