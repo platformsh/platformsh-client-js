@@ -28,6 +28,9 @@ var config = {
   output: {
     filename: outputFile
   },
+  watchOptions: {
+    ignored: [/node_modules/, /types/]
+  },
   module: {
     rules: [
       {
