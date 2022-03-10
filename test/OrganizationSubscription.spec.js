@@ -82,6 +82,7 @@ describe("OrganizationSubscription", () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions`, {
       items: [
         {
+          project_id: "projectId",
           project_region: "region"
         }
       ]
@@ -90,6 +91,7 @@ describe("OrganizationSubscription", () => {
       subscriptions => {
         assert.equal(subscriptions.items.length, 1);
         assert.equal(subscriptions.items[0].project_region, "region");
+        assert.equal(subscriptions.items[0].project_id, "projectId");
         assert.equal(
           subscriptions.items[0].constructor.name,
           "OrganizationSubscription"

@@ -31,7 +31,6 @@ export default class OrganizationSubscription extends Subscription {
       { organizationId },
       {}
     );
-
     super(subscription, _url);
 
     this._required = ["project_region", "organizationId"];
