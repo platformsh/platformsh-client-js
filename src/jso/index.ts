@@ -1,5 +1,6 @@
 import { JWTToken } from "src/authentication";
 import { ClientConfiguration, DefaultClientConfiguration } from "src/config";
+import { Token } from "typescript";
 import ApiDefaultStorage from "./ApiDefaultStorage";
 
 export type PKCERequest = {
@@ -181,6 +182,15 @@ export const jso_checkforcode = (url?: string) => {
   return oauthResponse;
 };
 
+export const set_token_expiration = (atoken: TokenOAuthRedirectResponse, co: ClientConfiguration) => {
+  const now = epoch();
+  if (atoken["expires_in"]) {
+    atoken["expires"] = now + parseInt(atoken["expires_in"], 10);
+  }
+
+  return atoken;
+};
+
 /**
  * Check if the hash contains an access token.
  * And if it do, extract the state, compare with
@@ -224,7 +234,7 @@ export const jso_checkfortoken = (clientId: string, provider: string, url?: stri
     state.scopes = co.scope;
   }
 
-  // atoken = set_token_expiration(atoken, co);
+  atoken = set_token_expiration(atoken, co);
 
   /*
   * Handle scopes for this token
@@ -245,6 +255,7 @@ export const jso_checkfortoken = (clientId: string, provider: string, url?: stri
   }
 
   if (
+    atoken.state &&
     internalStates[atoken.state] &&
     typeof internalStates[atoken.state] === "function"
   ) {
