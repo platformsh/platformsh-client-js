@@ -49,6 +49,15 @@ export interface SubscriptionGetParams {
   [key: string]: any;
 };
 
+export type SubscriptionEstimateQueryType = {
+  plan?: string
+  environments?: number
+  storage?: number
+  user_licenses?: number
+  format?: "formatted" | "complex"
+  big_dev?: string //Not available anymore on API
+}
+
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
@@ -70,6 +79,9 @@ export default class Subscription extends Ressource {
   created_at: string;
   users_licenses: number;
   license_uri: string;
+  project_options: {
+    plan_title: Record<string, string>,
+  }
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -105,6 +117,9 @@ export default class Subscription extends Ressource {
     this.created_at = "";
     this.users_licenses = 0;
     this.license_uri = "";
+    this.project_options = {
+      plan_title: {}
+    }
   }
 
   static get(params: SubscriptionGetParams, customUrl?: string) {
@@ -168,7 +183,7 @@ export default class Subscription extends Ressource {
   /**
    * @inheritdoc
    */
-  checkProperty(property: string, value: number | {uri: string}) {
+  checkProperty(property: string, value: number | { uri: string }) {
     const errors: Record<string, string> = {};
 
     if (property === "storage" && typeof value === "number" && value < 1024) {
@@ -240,19 +255,21 @@ export default class Subscription extends Ressource {
     return Project.get({ id: this.project_id }, url);
   }
 
-  /**
+  /**   
    * Get estimate associated with this subscription.
-   *
-   * @return Project|false
+   * @param query the query parameter for this subscription estimate
+   * @return Project|false 
    */
-  getEstimate() {
+  getEstimate(query?: SubscriptionEstimateQueryType) {
     const params = {
-      plan: this.plan,
-      storage: this.storage,
-      environments: this.environments,
-      user_licenses: this.users_licenses,
+      plan: query?.plan || this.plan,
+      storage: query?.storage || this.storage,
+      environments: query?.environments || this.environments,
+      user_licenses: query?.user_licenses || this.users_licenses,
       big_dev: this.big_dev || undefined,
-      backups: this.backups || undefined
+      backups: this.backups || undefined,
+      format: query?.format,
+      ...query
     };
 
     return authenticatedRequest(
@@ -265,7 +282,7 @@ export default class Subscription extends Ressource {
   /**
    * @inheritdoc
    */
-  wrap(data: { subscriptions?: Array<Subscription>}) {
+  wrap(data: { subscriptions?: Array<Subscription> }) {
     return Ressource.wrap(data?.subscriptions ? data.subscriptions : []);
   }
 
