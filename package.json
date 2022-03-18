@@ -40,7 +40,7 @@
     "fetch-mock": "^5.9.4",
     "husky": "^0.14.3",
     "jsdom": "^9.6.0",
-    "lint-staged": "^7.3.0",
+    "lint-staged": "^12.3.7",
     "mocha": "^6.0.2",
     "mock-local-storage": "^1.1.8",
     "prettier": "1.13.4",
