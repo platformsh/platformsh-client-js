@@ -49,6 +49,7 @@ import OrganizationVoucher from "./OrganizationVoucher";
 import OrganizationInvitation from "./OrganizationInvitation";
 import OrganizationRegion from "./OrganizationRegion";
 import SourceOperation from "./SourceOperation";
+import Topology from "./Topology";
 
 export default {
   Account,
@@ -101,5 +102,6 @@ export default {
   OrganizationVoucher,
   OrganizationInvitation,
   OrganizationRegion,
-  SourceOperation
+  SourceOperation,
+  Topology
 };

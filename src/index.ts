@@ -1539,4 +1539,21 @@ export default class Client {
       access
     );
   }
+
+  /**
+   * Get current deployment topology
+   *
+   * @param {string} projectId
+   * @param {string} environmentId
+   * @param {object} params
+   *
+   * @returns {Promise} Promise that return an access object.
+   */
+  async getTopology(projectId: string, environmentId: string, params?: Record<string, any>) {
+    return entities.Topology.get({
+      projectId,
+      environmentId,
+      ...params
+    });
+  }
 }
