@@ -61,6 +61,10 @@ export type SubscriptionEstimateQueryType = {
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
+  created_at: string
+  owner_info: {
+    type: string
+  }
   owner: string;
   plan: string;
   environments: number;
@@ -74,11 +78,10 @@ export default class Subscription extends Ressource {
   project_region_label: string;
   project_ui: string;
   vendor: string;
-  owner_info: object;
   organization: string;
-  created_at: string;
   users_licenses: number;
   license_uri: string;
+  organization_id: string;
   project_options: {
     plan_title: Record<string, string>,
   }
@@ -112,11 +115,14 @@ export default class Subscription extends Ressource {
     this.project_region_label = "";
     this.project_ui = "";
     this.vendor = "";
-    this.owner_info = {};
+    this.owner_info = {
+      type: ""
+    };
     this.organization = "";
     this.created_at = "";
     this.users_licenses = 0;
     this.license_uri = "";
+    this.organization_id = ""
     this.project_options = {
       plan_title: {}
     }
