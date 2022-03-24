@@ -1,5 +1,6 @@
 import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+import Topology from "./Topology";
 
 const paramDefaults = {};
 const _url =
