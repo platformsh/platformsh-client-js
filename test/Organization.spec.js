@@ -67,4 +67,39 @@ describe("Organization", () => {
       done();
     });
   });
+
+  it("Get vouchers", done => {
+    fetchMock.mock("https://api.platform.sh/api/organizations/1/vouchers", {
+      vouchers: [{ code: "voucher-1" }]
+    });
+
+    const organization = new Organization({ id: 1 });
+
+    organization.getVouchers().then(organizationVouchers => {
+      assert.equal(organizationVouchers.data.vouchers[0].code, "voucher-1");
+      assert.equal(
+        organizationVouchers.constructor.name,
+        "OrganizationVoucher"
+      );
+      done();
+    });
+  });
+
+  it("Add voucher", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/organizations/1/vouchers/apply",
+      {},
+      "POST"
+    );
+
+    const organization = new Organization(
+      { id: 1 },
+      "https://api.platform.sh/api/organizations/1"
+    );
+
+    organization.addVoucher({ code: "voucher-1" }).then(result => {
+      assert.equal(result.constructor.name, "Result");
+      done();
+    });
+  });
 });

@@ -3,6 +3,7 @@ import { getConfig } from "../config";
 import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
+import OrganizationVoucher from "./OrganizationVoucher";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -100,6 +101,19 @@ export default class Organization extends Ressource {
     });
 
     return organizationMember.save();
+  }
+
+  getVouchers() {
+    return OrganizationVoucher.get({ organizationId: this.id });
+  }
+
+  addVoucher(code: string) {
+    const { api_url } = getConfig();
+    return new OrganizationVoucher({
+      organizationId: this.id,
+      code
+    }, `${api_url}/organizations/${this.id}/vouchers/apply`).save();
+
   }
 
   getLink(rel: string, absolute = true) {

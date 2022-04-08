@@ -816,6 +816,24 @@ export default class Client {
   }
 
   /**
+   * Add a new voucher to an organization.
+   *
+   * @param string organizationId.
+   * @param string code The code.
+   *
+   * @return Result
+   */
+  addOrganizationVoucher(organizationId: string, code: string) {
+    const { api_url } = getConfig();
+    const values = this.cleanRequest({ code });
+
+    return new entities.OrganizationVoucher({
+      organizationId,
+      ...values
+    }, `${api_url}/organizations/${organizationId}/vouchers/apply`).save();
+  }
+
+  /**
    * Get a users cardonfile
    *
    * @return Promise
