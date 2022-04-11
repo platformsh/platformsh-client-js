@@ -1252,4 +1252,31 @@ describe("Client", () => {
         });
     });
   });
+  describe("Organization vouchers", done => {
+    it("Get organization vouchers", done => {
+      fetchMock.mock(`${api_url}/organizations/aliceOrg/vouchers`, {
+        vouchers: [
+          {
+            code: "voucher-1"
+          }
+        ]
+      });
+      client.getOrganizationVouchers("aliceOrg").then(vouchers => {
+        assert.equal(vouchers.data.vouchers[0].code, "voucher-1");
+        assert.equal(vouchers.constructor.name, "OrganizationVoucher");
+        done();
+      });
+    });
+
+    it("Get an organization member", done => {
+      fetchMock.mock(`${api_url}/organizations/aliceOrg/members/1`, {
+        id: "alice"
+      });
+      client.getOrganizationMember("aliceOrg", "1").then(member => {
+        assert.equal(member.id, "alice");
+        assert.equal(member.constructor.name, "OrganizationMember");
+        done();
+      });
+    });
+  });
 });

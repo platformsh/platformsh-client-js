@@ -3,19 +3,20 @@ import { getConfig } from "../config";
 
 const url = "/organizations/:organizationId/vouchers";
 const paramDefaults = {};
+const creatableField = ["code"];
 
 export interface OrganizationVoucherGetParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 export interface OrganizationVoucherQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export interface VoucherResponse {
-  vouchers: Array<OrganizationVoucher>
-};
+  vouchers: Array<OrganizationVoucher>;
+}
 
 export default class OrganizationVoucher extends Ressource {
   currency: string;
@@ -24,11 +25,17 @@ export default class OrganizationVoucher extends Ressource {
   vouchers_applied: number;
   vouchers_remaining_balance: number;
   vouchers_total: number;
-  
+
   constructor(voucher: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
 
-    super(customUrl || `${api_url}${url}`, paramDefaults, {}, voucher);
+    super(
+      customUrl || `${api_url}${url}`,
+      paramDefaults,
+      {},
+      voucher,
+      creatableField
+    );
     this.currency = "";
     this.discounted_orders = [];
     this.vouchers = [];
