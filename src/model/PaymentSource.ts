@@ -7,6 +7,14 @@ const url = "/platform/payment_source";
 const paramDefaults = {};
 const creatableField = ["type", "token", "email"];
 
+export interface PaymentSourceAllowedParams {
+  [key: string]: any;
+};
+
+export interface PaymentSourceIntentParams {
+  [key: string]: any;
+};
+
 export default class PaymentSource extends Ressource {
   id: string;
   type: string;
@@ -79,9 +87,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static getAllowed() {
+  static getAllowed(params?: PaymentSourceAllowedParams) {
     const { api_url } = getConfig();
-    return request(`${api_url}${url}/allowed`, "GET");
+    return request(`${api_url}${url}/allowed`, "GET", params);
   }
 
   /**
@@ -89,9 +97,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static intent() {
+  static intent(params?: PaymentSourceIntentParams) {
     const { api_url } = getConfig();
-    return request(`${api_url}${url}/intent`, "POST");
+    return request(`${api_url}${url}/intent`, "POST", params);
   }
 
   /**

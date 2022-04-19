@@ -87,18 +87,18 @@ describe("OrganizationSubscription", () => {
         }
       ]
     });
-    OrganizationSubscription.query({ organizationId: "aliceOrg" }).then(
-      subscriptions => {
-        assert.equal(subscriptions.items.length, 1);
-        assert.equal(subscriptions.items[0].project_region, "region");
-        assert.equal(subscriptions.items[0].project_id, "projectId");
-        assert.equal(
-          subscriptions.items[0].constructor.name,
-          "OrganizationSubscription"
-        );
-        done();
-      }
-    );
+    OrganizationSubscription.queryCursoredResult({
+      organizationId: "aliceOrg"
+    }).then(subscriptions => {
+      assert.equal(subscriptions.items.length, 1);
+      assert.equal(subscriptions.items[0].project_region, "region");
+      assert.equal(subscriptions.items[0].project_id, "projectId");
+      assert.equal(
+        subscriptions.items[0].constructor.name,
+        "OrganizationSubscription"
+      );
+      done();
+    });
   });
 
   it("Get organization subscriptions with filters", done => {
@@ -112,7 +112,7 @@ describe("OrganizationSubscription", () => {
         ]
       }
     );
-    OrganizationSubscription.query({
+    OrganizationSubscription.queryCursoredResult({
       organizationId: "aliceOrg",
       filter: {
         status: {

@@ -16,10 +16,8 @@ export interface OrganizationOrderQueryParams {
   [key: string]: any;
 };
 
-// @ts-ignore
-// TODO: solve the get and query function inheritance ts error
 export default class OrganizationOrder extends Order {
-  static get(params: OrganizationOrderGetParams, customUrl?: string) {
+  static get(params: OrganizationOrderGetParams, customUrl?: string): Promise<OrganizationOrder> {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -29,10 +27,10 @@ export default class OrganizationOrder extends Order {
       { organizationId, id },
       {},
       queryParams
-    );
+    ) as Promise<OrganizationOrder>;
   }
 
-  static query(params: OrganizationOrderQueryParams) {
+  static query(params: OrganizationOrderQueryParams): Promise<OrganizationOrder[]> {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -43,6 +41,6 @@ export default class OrganizationOrder extends Order {
       {},
       queryParams,
       data => (data as CursoredResult<OrganizationOrder>).items
-    );
+    ) as Promise<OrganizationOrder[]>;
   }
 }

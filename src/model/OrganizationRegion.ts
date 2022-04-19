@@ -1,5 +1,6 @@
 import Region from "./Region";
 import CursoredRessource from "./CursoredRessource";
+import CursoredResult from "./CursoredResult";
 import { getConfig } from "../config";
 
 const url = "/organizations/:organizationId/regions/:id";
@@ -9,10 +10,8 @@ export interface OrganizationRegionQueryParams {
   [key: string]: any;
 };
 
-// @ts-ignore
-// TODO: solve the query function inheritance ts error
 export default class OrganizationRegion extends Region {
-  static query(params: OrganizationRegionQueryParams) {
+  static queryCursoredResult(params: OrganizationRegionQueryParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
