@@ -69,14 +69,6 @@ export default class ApiToken extends Ressource {
       paramDefaults
     );
   }
-
-  // @ts-ignore
-  // @deprecated use deleteWithParams instead
-  delete(params: APITokenQueryParams) {
-    const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
-    
-    return super.delete(url);
-  }
   
   deleteWithParams(params: APITokenQueryParams) {
     const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;

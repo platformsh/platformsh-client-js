@@ -7,6 +7,7 @@ import Me from "./model/Me";
 import { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
 import ProjectAccess from "./model/ProjectAccess";
 import { APIObject } from "./model/Ressource";
+import SshKey from "./model/SshKey";
 import { TicketQueryParams } from "./model/Ticket";
 
 export const models = entities;
@@ -365,10 +366,12 @@ export default class Client {
    *
    * @return Result
    */
-  addSshKey(value: string, title: string) {
+  async addSshKey(value: string, title: string): Promise<SshKey> {
     const values = this.cleanRequest({ value, title });
 
-    return new entities.SshKey(values).save();
+    const result = await new entities.SshKey(values).save();
+
+    return result.getEntity();
   }
 
   /**
@@ -504,7 +507,7 @@ export default class Client {
    * @return OrganizationSubscriptions[]
    */
   getOrganizationSubscriptions(organizationId: string, params: OrganizationSubscriptionGetParams) {
-    return entities.OrganizationSubscription.query({
+    return entities.OrganizationSubscription.queryCursoredResult({
       ...params,
       organizationId,
     });
@@ -719,7 +722,7 @@ export default class Client {
    * @return CursoredResult
    */
   getOrganizationRegions(organizationId: string, params: object) {
-    return entities.OrganizationRegion.query({ organizationId, ...params });
+    return entities.OrganizationRegion.queryCursoredResult({ organizationId, ...params });
   }
 
   /**
@@ -940,7 +943,7 @@ export default class Client {
    * @return Promise
    */
   getOrganizationPaymentSourcesAllowed(organizationId: string) {
-    return entities.OrganizationPaymentSource.getAllowed(organizationId);
+    return entities.OrganizationPaymentSource.getAllowed({ organizationId });
   }
 
   /**
@@ -958,7 +961,7 @@ export default class Client {
    * @return Promise: { client_secret, public_key }
    */
   createOrganizationPaymentSourceIntent(organizationId: string) {
-    return entities.OrganizationPaymentSource.intent(organizationId);
+    return entities.OrganizationPaymentSource.intent({ organizationId });
   }
 
   /**

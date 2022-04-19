@@ -1,5 +1,4 @@
-import User from "./User";
-import { APIObject } from "./Ressource";
+import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import Organization from "./Organization";
 import Project from "./Project";
@@ -21,9 +20,14 @@ const modifiableField = [
   "ssh_keys"
 ];
 
-// @ts-ignore
-// TODO: fix the get method inheritance error
-export default class Me extends User {
+export default class Me extends Ressource {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  has_key: boolean;
+  display_name: string;
+  email: string;
+  username: string;
   projects: Array<Project>;
   ssh_keys: Array<SshKey>;
   roles: Array<string>;
@@ -40,8 +44,15 @@ export default class Me extends User {
 
   constructor(account: APIObject) {
     const { api_url } = getConfig();
-    super(account, `${api_url}${url}`, modifiableField);
+    super(`${api_url}${url}`, {}, {}, account, [], modifiableField);
 
+    this.id = "";
+    this.created_at = "";
+    this.updated_at = "";
+    this.has_key = false;
+    this.display_name = "";
+    this.email = "";
+    this.username = "";
     this.projects = [];
     this.ssh_keys = [];
     this.roles = [];

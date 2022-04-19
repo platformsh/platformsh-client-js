@@ -12,8 +12,6 @@ export interface OrganizationPaymentSourceParams {
   [key: string]: any;
 };
 
-// @ts-ignore
-// TODO: solve the getAllowed and intent function inheritance ts error
 export default class OrganizationPaymentSource extends PaymentSource {
   constructor(paymentSource: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -60,13 +58,11 @@ export default class OrganizationPaymentSource extends PaymentSource {
    *
    * @return object
    */
-  static getAllowed(organizationId: string) {
+  static getAllowed(params: OrganizationPaymentSourceParams) {
     const { api_url } = getConfig();
     const parsedUrl = _urlParser(
       `${api_url}${url}`,
-      {
-        organizationId
-      },
+      params,
       {}
     );
     return request(`${parsedUrl}/allowed`, "GET");
@@ -77,13 +73,11 @@ export default class OrganizationPaymentSource extends PaymentSource {
    *
    * @return object
    */
-  static intent(organizationId: string) {
+  static intent(params: OrganizationPaymentSourceParams) {
     const { api_url } = getConfig();
     const parsedUrl = _urlParser(
       `${api_url}${url}`,
-      {
-        organizationId
-      },
+      params,
       {}
     );
     return request(`${parsedUrl}/intent`, "POST");

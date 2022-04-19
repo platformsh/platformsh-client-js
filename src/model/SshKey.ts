@@ -46,18 +46,6 @@ export default class SshKey extends Ressource {
   }
 
   /**
-   * Override Ressource.save() so that it returns an SshKey and not a Result.
-   *
-   * @return object
-   */
-  // @ts-ignore
-  // TODO: fix inheritance error
-  async save() {
-    let sshKey = await super.save();
-    return new SshKey(sshKey.data);
-  }
-
-  /**
    * Override Ressource.getLink() so that it returns an SshKey and not a Result.
    *
    * @return string

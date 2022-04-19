@@ -17,8 +17,6 @@ export interface OrganizationSubscriptionQueryParams {
   [key: string]: any;
 };
 
-// @ts-ignore
-// TODO: solve the get and query function inheritance ts error
 export default class OrganizationSubscription extends Subscription {
   organization_id: string;
 
@@ -49,10 +47,10 @@ export default class OrganizationSubscription extends Subscription {
       { organizationId, id },
       {},
       queryParams
-    );
+    ) as Promise<OrganizationSubscription>;
   }
 
-  static query(params: OrganizationSubscriptionQueryParams) {
+  static queryCursoredResult(params: OrganizationSubscriptionQueryParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
