@@ -39,19 +39,6 @@ const modifiableField = [
 ];
 
 class AccountsProfile extends autoImplementWithResources()<ProfileType>() {
-  id: string;
-  display_name: string;
-  email: string;
-  username: string;
-  picture: string;
-  company_type: string;
-  company_role: string;
-  company_name: string;
-  website_url: string;
-  new_ui: boolean;
-  ui_colorscheme: string;
-  ui_contrast: string;
-  default_catalog: string;
  
   constructor(profile: APIObject) {
     const { api_url } = getConfig();
@@ -65,19 +52,6 @@ class AccountsProfile extends autoImplementWithResources()<ProfileType>() {
       modifiableField
     );
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = "";
-    this.display_name = "";
-    this.email = "";
-    this.username = "";
-    this.picture = "";
-    this.company_type = "";
-    this.company_role = "";
-    this.company_name = "";
-    this.website_url = "";
-    this.new_ui = true;
-    this.ui_colorscheme = "";
-    this.ui_contrast = "";
-    this.default_catalog = "";
   }
 
   static get(params: AccountsProfileGetParams, customUrl?: string) {

@@ -17,20 +17,14 @@ function bind(trees: Array<Tree | Blob | undefined>, projectId: string) {
 }
 
 export default class Tree extends autoImplementWithResources()<Omit<TreeType,'tree'> & {tree:Array<Tree | Blob | undefined>}>() {
-  id: string;
-  sha: string;
   type: string;
   path: string;
-  tree: Array<Tree | Blob | undefined>;
 
   constructor(tree: Tree, url = _url, params: TreeParams) {
     super(url, {}, params, tree, [], []);
 
-    this.id = "";
     this.type = "tree";
-    this.sha = "";
-    this.path = "";
-    this.tree = [];
+    this.path = tree.path;
   }
 
   static async get(projectId: string, sha: string): Promise<Tree | undefined> {

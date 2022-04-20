@@ -23,18 +23,17 @@ export type RessourceChildClass<T> = new (obj: any, url?: string) => T;
 const handler = {
   get(target: any, key: string) {
     if (
-      typeof key !== "symbol" &&
-      !key.startsWith("_") &&
-      key !== "data" &&
-      target.hasOwnProperty(key)
+      typeof target[key] === "function" ||
+      key.startsWith("_") ||
+      key === "data"
     ) {
-      return target.data && target.data[key];
+      return target[key];
     }
 
-    return target[key];
+    return target.data && target.data[key];
   },
   set(target: any, key: string, value: any) {
-    if (key !== "data" && target.hasOwnProperty(key)) {
+    if (key !== "data" && !key.startsWith("_")) {
       target.data[key] = value;
       return true;
     }
@@ -91,7 +90,6 @@ export default abstract class Ressource {
 
     const url = _url || this.getLink("self");
     this._params = params;
-
     this._url = _urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
 

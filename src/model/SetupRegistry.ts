@@ -13,19 +13,31 @@ export interface SetupRegistryGetParams {
 };
 
 export default class SetupRegistry extends Ressource {
-  description = "";
-  repo_name = "";
-  disk = null;
-  docs = {};
-  endpoint = "";
-  min_disk_size = null;
-  name = "";
-  runtime = null;
-  type = "";
-  versions = {};
+  description: string;
+  repo_name : string;
+  disk: any;
+  docs: Record<string, any>;
+  endpoint: string;
+  min_disk_size: any;
+  name: string;
+  runtime: any;
+  type: string;
+  versions: Record<string, any>;
 
   constructor(registry: APIObject, url = `${_url}?service=:name`, modifiableField = []) {
     super(url, paramDefaults, {}, registry, [], modifiableField);
+
+    this.description = registry.description;
+    this.repo_name = registry.repo_name;
+    this.disk =  registry.disk;
+    this.docs =  registry.docs;
+    this.endpoint = registry.endpoint;
+    this.min_disk_size =  registry.min_disk_size;
+    this.name =  registry.name;
+    this.runtime =  registry.runtime;
+    this.type =  registry.type;
+    this.versions =  registry.versions;
+  
     this._queryUrl = Ressource.getQueryUrl(url);
   }
 

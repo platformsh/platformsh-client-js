@@ -7,24 +7,14 @@ import { BlobParams, BlobType } from "./types";
 const _url = "/projects/:projectId/git/blobs/:sha";
 
 export default class Blob extends autoImplementWithResources()<BlobType>() {
-  id: string;
   type: string;
   path: string;
-  sha: string;
-  encoding: string;
-  content: string;
-  size: number;
 
   constructor(blob: Blob, url = _url, params: BlobParams) {
     super(url, {}, params, blob, [], []);
 
-    this.id = "";
     this.type = "blob";
-    this.path = "";
-    this.sha = "";
-    this.encoding = "";
-    this.content = "";
-    this.size = 0;
+    this.path = blob.path;
   }
 
   static get(projectId: string, sha: string) : Promise<Blob> {

@@ -8,27 +8,12 @@ const paramDefaults = {};
 
 export default class Account extends autoImplementWithResources()<CurrentUserType>() {
 
-  id: string;
-  created_at: string;
-  updated_at: string;
-  has_key: boolean;
-  display_name: string;
-  email: string;
-  picture: string;
-
   constructor(account: APIObject) {
     const { id } = account;
     const { account_url } = getConfig();
 
     super(`${account_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = "";
-    this.created_at = "";
-    this.updated_at = "";
-    this.has_key = false;
-    this.display_name = "";
-    this.email = "";
-    this.picture = "";
   }
 
   static get(params: AccountGetParams, customUrl?: string): Promise<Account> {
