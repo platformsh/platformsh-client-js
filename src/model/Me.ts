@@ -60,9 +60,15 @@ export default class Me extends User {
   static get(reset = false) {
     const { api_url } = getConfig();
 
-    return super._get<Me>(`${api_url}${url}`, {
-      cache: reset ? "reload" : "default"
-    });
+    return super._get<Me>(
+      `${api_url}${url}`,
+      {},
+      {},
+      {},
+      {
+        cache: reset ? "reload" : "default"
+      }
+    );
   }
 
   async update(data: APIObject, _url?: string) {
