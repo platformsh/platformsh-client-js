@@ -76,9 +76,7 @@ function checkForStorageAccess(auth: ClientConfiguration) {
   return new Promise((resolve, reject) => {
     removeIFrame();
 
-    createIFrame(`${auth.authentication_url}/request-storage-access.html`, {
-      sandbox: "allow-scripts"
-    });
+    createIFrame(`${auth.authentication_url}/request-storage-access.html`);
     async function receiveMessage(event: MessageEvent) {
       if (event.origin !== auth.authentication_url) {
         return false;
@@ -407,9 +405,7 @@ const logInWithWebMessageAndPKCE = async (reset: boolean) => {
       window.addEventListener("message", receiveMessage, false);
 
       const authUrl = encodeURL(auth.authorization, req);
-      createIFrame(authUrl, {
-        sandbox: "allow-scripts"
-      });
+      createIFrame(authUrl);
     } catch (err) {
       console.log("Error Silent refresh");
       console.log(err);
