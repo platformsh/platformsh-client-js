@@ -348,6 +348,17 @@ export default abstract class Ressource {
     return this.data?._embedded && this.data._embedded[rel];
   }
 
+
+
+  /**
+   * Get a copy of the internal data
+   *
+   * @return object
+   */
+  getData() {
+    return {...this.data};
+  }
+
   /**
    * Get a link href for a given resource relation.
    * @param string rel
