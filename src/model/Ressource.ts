@@ -24,8 +24,9 @@ const handler = {
   get(target: any, key: string) {
     if (
       typeof target[key] === "function" ||
-      key.startsWith("_") ||
-      key === "data"
+      (typeof key === 'string' && key.startsWith("_")) ||
+      key === "data" ||
+      typeof key === 'symbol'
     ) {
       return target[key];
     }
