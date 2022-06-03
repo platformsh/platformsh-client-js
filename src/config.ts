@@ -38,7 +38,7 @@ const getConfigDefault = (
 ): DefaultClientConfiguration => ({
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
-  account_url: `${baseUrl}/api`,
+  account_url: `${baseUrl.replace(/(\/api)$/i, "")}/api`,
   api_url,
   authentication_url: baseUrl,
   scope: [],
