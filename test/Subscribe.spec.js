@@ -65,6 +65,7 @@ describe("Subscribe", () => {
           href: "https://test.com/api/projects/ffzefzef3"
         }
       },
+      project_id: "ffzefzef3",
       id: 1,
       status: "active"
     });

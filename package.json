@@ -6,14 +6,15 @@
   "main": "lib/server/platform-api.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "build": "rm -rf ./types && rm -rf ./lib && webpack --env.mode=build && mv types/src/* types/ && rm -r types/src",
+    "build": "rm -rf ./types && rm -rf ./lib && npm run type-gen && webpack --env.mode=build && mv types/src/* types/ && rm -r types/src",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
     "test": "npm run test-web && npm run test-node",
     "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
     "test-node": "mocha -r ./test/.setup-node.js ./test/**/*.spec.js",
     "eslint": "eslint .",
     "precommit": "lint-staged && npm run build",
-    "prepush": "npm test"
+    "prepush": "npm test",
+    "type-gen": "npx openapi-typescript https://api.platform.sh/docs/openapispec-platformsh.json --output ./src/types/model.ts"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -43,6 +44,7 @@
     "lint-staged": "^7.3.0",
     "mocha": "^6.0.2",
     "mock-local-storage": "^1.1.8",
+    "openapi-typescript": "^5.2.0",
     "prettier": "1.13.4",
     "sinon": "^1.17.6",
     "terser-webpack-plugin": "^2.3.6",
@@ -63,6 +65,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.1.0",
     "atob": "^2.1.2",
     "basename": "^0.1.2",
     "detect-node": "^2.0.4",

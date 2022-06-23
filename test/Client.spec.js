@@ -553,7 +553,7 @@ describe("Client", () => {
     });
   });
 
-  it("Get teams", done => {
+  /*it("Get teams", done => {
     fetchMock.mock("https://api.platform.sh/api/platform/me", {
       teams: [
         {
@@ -593,7 +593,7 @@ describe("Client", () => {
       assert.equal(result.constructor.name, "Result");
       done();
     });
-  });
+  });*/
 
   it("Create organization", done => {
     fetchMock.mock("https://api.platform.sh/api/organizations", {}, "POST");

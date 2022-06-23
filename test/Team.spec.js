@@ -15,7 +15,7 @@ describe("Team", () => {
     fetchMock.restore();
   });
 
-  it("Get members", done => {
+  /*it("Get members", done => {
     fetchMock.mock("https://api.platform.sh/api/platform/teams/1/members", [
       { user: "1" }
     ]);
@@ -45,5 +45,5 @@ describe("Team", () => {
       assert.equal(result.constructor.name, "Result");
       done();
     });
-  });
+  });*/
 });

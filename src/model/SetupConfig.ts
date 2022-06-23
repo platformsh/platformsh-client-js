@@ -7,12 +7,15 @@ const _url = "/platform/setup/config";
 const paramDefaults = {};
 
 export default class SetupConfig extends Ressource {
-  app = "";
-  service = "";
+  app: string;
+  service: string;
 
   constructor(setupConfig: APIObject, url = `${_url}?service=:service&format=:format`) {
     super(url, paramDefaults, {}, setupConfig, []);
     this._queryUrl = Ressource.getQueryUrl(url);
+
+    this.app = setupConfig.app;
+    this.service = setupConfig.service;
   }
 
   static get({ service = "", format = "commented" }, customUrl?: string) {

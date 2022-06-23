@@ -70,7 +70,7 @@ export default class Client {
       if(!projects) {
         return undefined;
       }
-      const project = projects.find(project => project.id === id);
+      const project = projects.find(project => project?.id === id);
 
       if (project && project.endpoint) {
         return project.endpoint;
@@ -98,8 +98,8 @@ export default class Client {
         return false;
       }
 
-      return me.projects.map(
-        project => new entities.Project(project, project.endpoint)
+      return me.projects?.map(
+        project => new entities.Project(project, project.endpoint!)
       );
     });
   }
@@ -342,7 +342,7 @@ export default class Client {
    */
   getSshKeys() {
     return this.getAccountInfo().then(me => {
-      return entities.SshKey.wrap(me.ssh_keys);
+      return entities.SshKey.wrap(me.ssh_keys!);
     });
   }
 
@@ -681,7 +681,7 @@ export default class Client {
    *
    * @return Team[]
    */
-  getTeams() {
+  /*getTeams() {
     return this.getAccountInfo().then(me => {
       if (!me) {
         return false;
@@ -689,7 +689,7 @@ export default class Client {
 
       return me.teams.map(team => new entities.Team(team));
     });
-  }
+  }*/
 
   /**
    * Get team
@@ -1575,3 +1575,10 @@ export default class Client {
     });
   }
 }
+
+// Make all types accessible from index
+export * from './model/AccountsProfile/types'
+export * from './model/Account/types'
+export * from './model/git/Blob/types'
+export * from './model/git/Commit/types'
+export * from './model/git/Tree/types'

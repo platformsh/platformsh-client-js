@@ -23,18 +23,18 @@ export type RessourceChildClass<T> = new (obj: any, url?: string) => T;
 const handler = {
   get(target: any, key: string) {
     if (
-      typeof key !== "symbol" &&
-      !key.startsWith("_") &&
-      key !== "data" &&
-      target.hasOwnProperty(key)
+      typeof target[key] === "function" ||
+      (typeof key === 'string' && key.startsWith("_")) ||
+      key === "data" ||
+      typeof key === 'symbol'
     ) {
-      return target.data && target.data[key];
+      return target[key];
     }
 
-    return target[key];
+    return target.data && target.data[key];
   },
   set(target: any, key: string, value: any) {
-    if (key !== "data" && target.hasOwnProperty(key)) {
+    if (key !== "data" && !key.startsWith("_")) {
       target.data[key] = value;
       return true;
     }
@@ -91,7 +91,6 @@ export default abstract class Ressource {
 
     const url = _url || this.getLink("self");
     this._params = params;
-
     this._url = _urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
 
@@ -348,6 +347,17 @@ export default abstract class Ressource {
     }
 
     return this.data?._embedded && this.data._embedded[rel];
+  }
+
+
+
+  /**
+   * Get a copy of the internal data
+   *
+   * @return object
+   */
+  getData() {
+    return {...this.data};
   }
 
   /**
