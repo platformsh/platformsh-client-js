@@ -4,7 +4,7 @@ import request from "../../api";
 import { ActivityGetParams, ActivityQueryParams, ActivityType } from "./types";
 import { autoImplementWithResources } from "../utils";
 import { CurrentUserType } from "../Account";
-import { DomaineType } from "../Domain";
+import { DomainType } from "../Domain";
 import Environment from "../Environment";
 import Variable from "../Variable";
 import Project from "../Project";
@@ -228,15 +228,15 @@ export default class Activity extends  autoImplementWithResources()<ActivityType
     switch (type) {
       case "project.domain.create":
         return `${(payload.user as CurrentUserType).display_name} added domain ${
-          (payload.domain as DomaineType).name 
+          (payload.domain as DomainType).name 
         }`;
       case "project.domain.delete":
         return `${(payload.user as CurrentUserType).display_name} deleted domain ${
-          (payload.domain as DomaineType).name
+          (payload.domain as DomainType).name
         }`;
       case "project.domain.update":
         return `${(payload.user as CurrentUserType).display_name} updated domain ${
-          (payload.domain as DomaineType).name
+          (payload.domain as DomainType).name
         }`;
       case "project.modify.title":
         return `${(payload.user as CurrentUserType).display_name} changed project name to ${

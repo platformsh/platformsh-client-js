@@ -1,12 +1,15 @@
-import  { APIObject } from "../Ressource";
+import { APIObject } from "../Ressource";
 import { getConfig } from "../../config";
 import { autoImplementWithResources } from "../utils";
-import { DomainGetParams, DomainQueryParams, DomaineType } from "./types";
+import { DomainGetParams, DomainQueryParams, DomainType } from "./types";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/domains";
 
-export default class Domain extends autoImplementWithResources()<DomaineType>() {
+export default class Domain extends autoImplementWithResources()
+  // Avoid collission with types in Resources or weekly type any of Resource or DomaineType
+  <Omit<DomainType, 'created_at' |
+    'updated_at'>>() {
 
   constructor(domain: APIObject, url: string) {
     super(url, paramDefaults, {}, domain, ["name", "ssl"]);
