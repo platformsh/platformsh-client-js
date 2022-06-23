@@ -192,11 +192,7 @@ export default class Project extends autoImplementWithResources()<Omit<ProjectTy
    * @return Result
    */
   addDomain(name: string, ssl?: any) {
-    const body: Partial<Domain> = { name };
-
-    if (ssl?.length) {
-      body.ssl = ssl;
-    }
+    const body = { name, ssl };
     const domain = new Domain(body, this.getLink("domains"));
 
     return domain.save();

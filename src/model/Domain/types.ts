@@ -11,4 +11,4 @@ export interface DomainQueryParams {
     [index: string]: any
 };
 
-export type DomaineType = components['schemas']['Domain'];
+export type DomainType = components['schemas']['Domain'];
