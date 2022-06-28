@@ -6,7 +6,7 @@
   "main": "lib/server/platform-api.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "build": "rm -rf ./types && rm -rf ./lib && npm run type-gen && webpack --env.mode=build && mv types/src/* types/ && rm -r types/src",
+    "build": "rm -rf ./types && rm -rf ./lib && webpack --env.mode=build && mv types/src/* types/ && rm -r types/src",
     "dev": "webpack --progress --colors --watch --env.mode=dev",
     "test": "npm run test-web && npm run test-node",
     "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
