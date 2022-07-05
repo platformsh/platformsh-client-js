@@ -1448,7 +1448,10 @@ export default class Client {
     email: string,
     projectId: string,
     role: string,
-    permissions: Array<string>,
+    permissions: {
+      type: "production" | "development" | "staging";
+      role: "viewer" | "contributor" | "admin";
+    }[],
     force = false
   ) {
     const invitation = new entities.Invitation({
