@@ -28,6 +28,7 @@ export default class EnvironmentBackup extends Ressource {
   index = "";
   commit_id = "";
   environment = "";
+  safe = true;
 
   constructor(environmentBackup: APIObject, url: string) {
     super(
