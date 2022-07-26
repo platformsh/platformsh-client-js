@@ -3,6 +3,7 @@ import { APIObject, RessourceChildClass } from "./Ressource";
 export default class Result {
   private _url: string | undefined;
   data: APIObject;
+  detail: any;
   private _ressourceClass: RessourceChildClass<any> | undefined
 
   constructor(result: APIObject, url?: string, ressourceClass?: RessourceChildClass<any>) {

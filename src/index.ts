@@ -247,7 +247,7 @@ export default class Client {
    *
    * @return ProjectLevelVariable[]
    */
-  getProjectVariables(projectId: string, limit: number) {
+  getProjectVariables(projectId: string, limit?: number) {
     return entities.ProjectLevelVariable.query({ projectId, limit });
   }
 
