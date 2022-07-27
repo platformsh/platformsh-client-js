@@ -280,8 +280,8 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  backup() {
-    return this.runLongOperation("backup");
+  backup(safe = true) {
+    return this.runLongOperation("backup", "POST", { safe });
   }
 
   /**
