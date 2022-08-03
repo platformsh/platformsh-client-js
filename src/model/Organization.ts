@@ -3,7 +3,9 @@ import { getConfig } from "../config";
 import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
-import OrganizationVoucher from "./OrganizationVoucher";
+import OrganizationVoucher from "./OrganizationVoucher"; 
+import Result from "./Result";
+import { request } from "../api"; 
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -13,6 +15,15 @@ const creatableField = ["name", "label", "country"];
 
 const modifiableField = ["name", "label", "country"];
 
+type CreateSubscriptionPayloadType={
+  projectRegion: string;
+  plan?: string;
+  projectTitle?: string;
+  optionsUrl?: string;
+  defaultBranch?: string;
+  environments?: number;
+  storage?: number
+}
 export interface OrganizationGetParams {
   id: string;
   [key: string]: any;
@@ -131,5 +142,20 @@ export default class Organization extends Ressource {
    */
   delete() {
     return super.delete(this.getLink("delete"));
+  }
+
+  async createSubscription(payload:CreateSubscriptionPayloadType) {
+    //if org exists do, else create org?
+  
+    const organization_id=this.id  
+    
+    if(organization_id){
+    
+      const createOrganizationLink=this.getLink('create-subscription')
+
+      const endpoint=`${this._baseUrl}/${createOrganizationLink}`
+      const data= await request(endpoint,"POST",{...payload, organization_id})
+      return new Result(data)
+    }
   }
 }
