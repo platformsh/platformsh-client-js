@@ -5,7 +5,7 @@ import CursoredResult from "./CursoredResult";
 import OrganizationMember from "./OrganizationMember";
 import OrganizationVoucher from "./OrganizationVoucher"; 
 import Result from "./Result";
-import { request } from "../api"; 
+import  request  from "../api"; 
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -144,18 +144,15 @@ export default class Organization extends Ressource {
     return super.delete(this.getLink("delete"));
   }
 
-  async createSubscription(payload:CreateSubscriptionPayloadType) {
-    //if org exists do, else create org?
-  
+   async createSubscription(payload:CreateSubscriptionPayloadType) {
     const organization_id=this.id  
     
     if(organization_id){
     
       const createOrganizationLink=this.getLink('create-subscription')
-
-      const endpoint=`${this._baseUrl}/${createOrganizationLink}`
+      const endpoint=`${createOrganizationLink}`
       const data= await request(endpoint,"POST",{...payload, organization_id})
-      return new Result(data)
+      return new Organization(data, endpoint)
     }
   }
 }
