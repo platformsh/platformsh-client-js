@@ -3,7 +3,8 @@ import { getConfig } from "../config";
 import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
-import OrganizationVoucher from "./OrganizationVoucher";
+import OrganizationVoucher from "./OrganizationVoucher"; 
+import OrganizationSubscription, { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -12,6 +13,7 @@ const user_url = "/users/:userId/organizations";
 const creatableField = ["name", "label", "country"];
 
 const modifiableField = ["name", "label", "country"];
+
 
 export interface OrganizationGetParams {
   id: string;
@@ -131,5 +133,13 @@ export default class Organization extends Ressource {
    */
   delete() {
     return super.delete(this.getLink("delete"));
+  }
+
+  addSubscription(payload:CreateSubscriptionPayloadType) {
+    const organizationSubscription = new OrganizationSubscription({
+       subscription:{ organizationId: this.id , ...payload }
+    });
+
+    return organizationSubscription.save();
   }
 }
