@@ -5,7 +5,7 @@ import CursoredResult from "./CursoredResult";
 import OrganizationMember from "./OrganizationMember";
 import OrganizationVoucher from "./OrganizationVoucher"; 
 import  request  from "../api"; 
-import OrganizationSubscription from "./OrganizationSubscription";
+import OrganizationSubscription, { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -15,15 +15,7 @@ const creatableField = ["name", "label", "country"];
 
 const modifiableField = ["name", "label", "country"];
 
-type CreateSubscriptionPayloadType={
-  projectRegion: string;
-  plan?: string;
-  projectTitle?: string;
-  optionsUrl?: string;
-  defaultBranch?: string;
-  environments?: number;
-  storage?: number
-}
+
 export interface OrganizationGetParams {
   id: string;
   [key: string]: any;
@@ -144,16 +136,12 @@ export default class Organization extends Ressource {
     return super.delete(this.getLink("delete"));
   }
 
-   async addSubscription(payload:CreateSubscriptionPayloadType) {
+  async addSubscription(payload:CreateSubscriptionPayloadType) {
     const organizationId=this.id  
-    
-    if(organizationId){
-
-      const organizationSubscription = new OrganizationSubscription({
+    const organizationSubscription = new OrganizationSubscription({
        subscription:{ organizationId, ...payload }
-      });
+    });
 
-      return organizationSubscription.save();
-    }
+    return organizationSubscription.save();
   }
 }

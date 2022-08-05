@@ -11,11 +11,21 @@ export interface OrganizationSubscriptionGetParams {
   id: string;
   organizationId: string;
   [key: string]: any;
-};
+}
 export interface OrganizationSubscriptionQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
+
+export interface CreateSubscriptionPayloadType {
+  projectRegion: string;
+  plan?: string;
+  projectTitle?: string;
+  optionsUrl?: string;
+  defaultBranch?: string;
+  environments?: number;
+  storage?: number;
+}
 
 // @ts-ignore
 // TODO: solve the get and query function inheritance ts error
@@ -39,7 +49,10 @@ export default class OrganizationSubscription extends Subscription {
     this.organization_id = organizationId;
   }
 
-  static async get(params: OrganizationSubscriptionGetParams, customUrl?: string) {
+  static async get(
+    params: OrganizationSubscriptionGetParams,
+    customUrl?: string
+  ) {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -63,7 +76,7 @@ export default class OrganizationSubscription extends Subscription {
       queryParams,
       OrganizationSubscription,
       {
-        queryStringArrayPrefix: "[]"
+        queryStringArrayPrefix: "[]",
       }
     );
   }
