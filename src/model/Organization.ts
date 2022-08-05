@@ -4,7 +4,6 @@ import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
 import OrganizationVoucher from "./OrganizationVoucher"; 
-import  request  from "../api"; 
 import OrganizationSubscription, { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 
 const paramDefaults = {};
@@ -137,9 +136,8 @@ export default class Organization extends Ressource {
   }
 
   async addSubscription(payload:CreateSubscriptionPayloadType) {
-    const organizationId=this.id  
     const organizationSubscription = new OrganizationSubscription({
-       subscription:{ organizationId, ...payload }
+       subscription:{ organizationId: this.id , ...payload }
     });
 
     return organizationSubscription.save();
