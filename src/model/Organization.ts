@@ -135,7 +135,7 @@ export default class Organization extends Ressource {
     return super.delete(this.getLink("delete"));
   }
 
-  async addSubscription(payload:CreateSubscriptionPayloadType) {
+  addSubscription(payload:CreateSubscriptionPayloadType) {
     const organizationSubscription = new OrganizationSubscription({
        subscription:{ organizationId: this.id , ...payload }
     });
