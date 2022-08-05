@@ -4,8 +4,8 @@ import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
 import OrganizationVoucher from "./OrganizationVoucher"; 
-import Result from "./Result";
 import  request  from "../api"; 
+import OrganizationSubscription from "./OrganizationSubscription";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -145,14 +145,15 @@ export default class Organization extends Ressource {
   }
 
    async addSubscription(payload:CreateSubscriptionPayloadType) {
-    const organization_id=this.id  
+    const organizationId=this.id  
     
-    if(organization_id){
-    
-      const createOrganizationLink=this.getLink('create-subscription')
-      const endpoint=`${createOrganizationLink}`
-      const data= await request(endpoint,"POST",{...payload, organization_id})
-      return new Organization(data, endpoint)
+    if(organizationId){
+
+      const organizationSubscription = new OrganizationSubscription({
+       subscription:{ organizationId, ...payload }
+      });
+
+      return organizationSubscription.save();
     }
   }
 }
