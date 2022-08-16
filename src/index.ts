@@ -530,8 +530,8 @@ export default class Client {
    *
    * @return CursoredResult
    */
-  getOrganizationMembers(organizationId: string, filter: object) {
-    return entities.OrganizationMember.query({ organizationId, filter });
+  getOrganizationMembers(organizationId: string, filter?: object, sort?: string) {
+    return entities.OrganizationMember.query({ organizationId, filter, sort });
   }
 
   /**
