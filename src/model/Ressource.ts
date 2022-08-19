@@ -73,6 +73,7 @@ export default abstract class Ressource {
   protected _queryUrl?: string;
 
   private data?: APIObject;
+  key_id?: string
 
   constructor(
     _url: string,
@@ -80,7 +81,7 @@ export default abstract class Ressource {
     params: ParamsType,
     data: APIObject,
     _creatableField: string[] = [],
-    _modifiableField: string[] = []
+    _modifiableField: string[] = [],
   ) {
     // This is an abstract class
     if (this.constructor === Ressource) {
