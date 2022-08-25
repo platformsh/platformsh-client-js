@@ -167,7 +167,7 @@ async function authorizationCodeCallback(config: DefaultClientConfiguration, cod
   return atoken;
 }
 
-function logInWithRedirect(reset: boolean = false) {
+function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, string>) {
   console.log("In redirect...");
   return new Promise(async (resolve, reject) => {
     const config = getConfig();
@@ -236,7 +236,7 @@ function logInWithRedirect(reset: boolean = false) {
       } catch {}
     }
 
-    const authUrl = encodeURL(auth.authorization, req);
+    const authUrl = encodeURL(auth.authorization, {...req, ...extraParams});
 
     const iframe = createIFrame(authUrl, {
       sandbox: "allow-same-origin"
@@ -490,6 +490,6 @@ export default (token?: string, reset: boolean = false, config?: Partial<ClientC
     return logInWithPopUp(reset);
   }
 
-  return logInWithRedirect(reset);
+  return logInWithRedirect(reset, config?.extra_params);
 };
 

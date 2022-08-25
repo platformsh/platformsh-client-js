@@ -30,6 +30,34 @@ if (isNode) {
 const isFormData = (data: FormData | object | undefined) =>
   typeof FormData !== "undefined" && data instanceof FormData;
 
+// To transform header value string to an object:
+// 'Bearer error="insufficient_user_authentication",
+// error_description="More recent authentication is required",
+// max_age="5"'
+const decodeHeaderString = (header: string) => {
+  return header
+    .replace("Bearer", "")
+    .split(",")
+    .reduce<Record<string, string>>((acc, cu) => {
+      const [key, value] = cu
+        .replace(/"/g, "")
+        .trim()
+        .split("=");
+      acc[key] = value;
+      return acc;
+    }, {});
+};
+
+const getChallengeExtraParams = (headers: Headers): Record<string, string> => {
+  const wwwAuthentication = decodeHeaderString(
+    headers.get("WWW-Authenticate") || ""
+  );
+  return ["max_age", "acr_values"].reduce<Record<string, string>>((acc, cu) => {
+    if (wwwAuthentication[cu]) acc[cu] = wwwAuthentication[cu];
+    return acc;
+  }, {});
+};
+
 export const request = (
   url: string,
   method: string,
@@ -65,10 +93,12 @@ export const request = (
       .then(response => {
         if (response.status === 401) {
           const config: ClientConfiguration  = getConfig();
+          const extra_params = getChallengeExtraParams(response.headers);
+
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
           if (typeof config.access_token === "undefined" && retryNumber < 2) {
-            return authenticate(config, true).then(t => {
+            return authenticate({ ...config, extra_params }, true).then((t) => {
               resolve(
                 authenticatedRequest(
                   url,

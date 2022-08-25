@@ -18,7 +18,8 @@ export type ClientConfiguration = {
   base_url?: string,
   redirect_uri?: string,
   response_type?: string,
-  onBeforeRedirect?: (location: string) => void
+  onBeforeRedirect?: (location: string) => void,
+  extra_params?: Record<string, string>;
 };
 
 export type DefaultClientConfiguration = ClientConfiguration & {
