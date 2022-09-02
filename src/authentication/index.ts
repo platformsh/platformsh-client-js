@@ -25,7 +25,8 @@ export default (
     provider = "cg",
     popupMode,
     response_mode,
-    prompt
+    prompt,
+    extra_params,
   }: ClientConfiguration,
   reset = false
 ): Promise<JWTToken> => {
@@ -44,7 +45,8 @@ export default (
       provider,
       popupMode,
       response_mode,
-      prompt
+      prompt,
+      extra_params,
     });
   }
   
