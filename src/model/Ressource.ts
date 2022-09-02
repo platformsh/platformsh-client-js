@@ -279,9 +279,9 @@ export default abstract class Ressource {
     this.data = { ...this.data, ...data };
   }
 
-  static wrap(objs: APIObject[]) {
+  static wrap<T>(objs: T[]): T[] {
     return objs.map(
-      (obj: APIObject) => getInstance<Ressource>(this, obj)
+      (obj: APIObject) => getInstance(this, obj)
     );
   }
 
