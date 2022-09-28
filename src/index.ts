@@ -3,6 +3,7 @@ import connector, { JWTToken, wipeToken } from "./authentication";
 import { getConfig, setConfig, ClientConfiguration } from "./config";
 import entities from "./model";
 import Activity from "./model/Activity";
+import { CreateAccessParams } from "./model/EnvironmentType";
 import Me from "./model/Me";
 import { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
 import ProjectAccess from "./model/ProjectAccess";
@@ -1553,12 +1554,13 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an access object.
    */
-  async createEnvironmentTypeAccess(projectId: string, environmentTypeId: string, access: ProjectAccess) {
-    return entities.EnvironmentType.createAccess(
+  async createEnvironmentTypeAccess(params: CreateAccessParams) {
+    const { projectId, environmentTypeId, access } = params
+    return entities.EnvironmentType.createAccess({
       projectId,
       environmentTypeId,
       access
-    );
+    });
   }
 
   /**

@@ -17,6 +17,16 @@ export interface EnvironmentTypeQueryParams {
   [key: string]: any;
 };
 
+export type AccessRole = "admin" | "contributor" | "viewer"
+
+export interface CreateAccessParams {
+  projectId: string,
+  environmentTypeId: string,
+  access: {
+    email: string,
+    role: AccessRole
+  }
+}
 export default class EnvironmentType extends Ressource {
   id: string;
   accesses: Array<any>;
@@ -54,7 +64,8 @@ export default class EnvironmentType extends Ressource {
     );
   }
 
-  static createAccess(projectId: string, environmentTypeId: string, access: any) {
+  static createAccess(params: CreateAccessParams) {
+    const { projectId, environmentTypeId, access } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
     return request(url, "POST", {
