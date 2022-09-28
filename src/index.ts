@@ -1551,15 +1551,18 @@ export default class Client {
    *
    * @param {string} projectId
    * @param {string} environmentTypeId
+   * @param {string} email
+   * @param {string} role
    *
    * @returns {Promise} Promise that return an access object.
    */
   async createEnvironmentTypeAccess(params: CreateAccessParams) {
-    const { projectId, environmentTypeId, access } = params
+    const { projectId, environmentTypeId, email, role } = params
     return entities.EnvironmentType.createAccess({
       projectId,
       environmentTypeId,
-      access
+      email,
+      role
     });
   }
 

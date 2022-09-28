@@ -22,10 +22,8 @@ export type AccessRole = "admin" | "contributor" | "viewer"
 export interface CreateAccessParams {
   projectId: string,
   environmentTypeId: string,
-  access: {
-    email: string,
-    role: AccessRole
-  }
+  email: string,
+  role: AccessRole
 }
 export default class EnvironmentType extends Ressource {
   id: string;
@@ -65,12 +63,12 @@ export default class EnvironmentType extends Ressource {
   }
 
   static createAccess(params: CreateAccessParams) {
-    const { projectId, environmentTypeId, access } = params
+    const { projectId, environmentTypeId, email, role } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
     return request(url, "POST", {
-      email: access.email,
-      role: access.role
+      email,
+      role
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
