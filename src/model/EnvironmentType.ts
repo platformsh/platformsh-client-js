@@ -25,6 +25,19 @@ export interface CreateAccessParams {
   email: string,
   role: AccessRole
 }
+export interface UpdateAccessParams {
+  projectId: string,
+  environmentTypeId: string,
+  accessId: string,
+  role: AccessRole
+}
+
+export interface DeleteAccessParams {
+  projectId: string,
+  environmentTypeId: string,
+  accessId: string,
+}
+
 export default class EnvironmentType extends Ressource {
   id: string;
   accesses: Array<any>;
@@ -72,20 +85,22 @@ export default class EnvironmentType extends Ressource {
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static updateAccess(projectId: string, environmentTypeId: string, access: any) {
+  static updateAccess(params: UpdateAccessParams) {
+    const { projectId, environmentTypeId, accessId, role } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      access.id
+      accessId
     }`;
     return request(url, "PATCH", {
-      role: access.role
+      role
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static deleteAccess(projectId: string, environmentTypeId: string, access: any) {
+  static deleteAccess(params: DeleteAccessParams) {
+    const { projectId, environmentTypeId, accessId } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      access.id
+      accessId
     }`;
     return request(url, "DELETE");
   }
