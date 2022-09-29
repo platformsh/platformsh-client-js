@@ -1514,41 +1514,15 @@ export default class Client {
 
     return environmentTypes;
   }
-  /**
-   * Update project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   * @param {string} accessId
-   * @param {AccessRole} role
-   *
-   * @returns {Promise} Promise that return an access object.
-   */
+
   async updateEnvironmentTypeAccess(params: UpdateAccessParams) {
     return entities.EnvironmentType.updateAccess(params);
   }
-  /**
-   * Delete project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   * @param {string} accessId
-   *
-   * @returns {Promise} Promise that return a Result.
-   */
+
   async deleteEnvironmentTypeAccess(params: DeleteAccessParams) {
     return entities.EnvironmentType.deleteAccess(params);
   }
-  /**
-   * create project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   * @param {string} email
-   * @param {AccessRole} role
-   *
-   * @returns {Promise} Promise that return an access object.
-   */
+
   async createEnvironmentTypeAccess(params: CreateAccessParams) {
     return entities.EnvironmentType.createAccess(params);
   }

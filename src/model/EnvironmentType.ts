@@ -75,7 +75,7 @@ export default class EnvironmentType extends Ressource {
     );
   }
 
-  static createAccess(params: CreateAccessParams) {
+  static async createAccess(params: CreateAccessParams) {
     const { projectId, environmentTypeId, email, role } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
@@ -85,7 +85,7 @@ export default class EnvironmentType extends Ressource {
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static updateAccess(params: UpdateAccessParams) {
+  static async updateAccess(params: UpdateAccessParams) {
     const { projectId, environmentTypeId, accessId, role } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
@@ -96,7 +96,7 @@ export default class EnvironmentType extends Ressource {
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static deleteAccess(params: DeleteAccessParams) {
+  static async deleteAccess(params: DeleteAccessParams): Promise<{status: string, code: number}> {
     const { projectId, environmentTypeId, accessId } = params
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
