@@ -3,6 +3,7 @@ import connector, { JWTToken, wipeToken } from "./authentication";
 import { getConfig, setConfig, ClientConfiguration } from "./config";
 import entities from "./model";
 import Activity from "./model/Activity";
+import { AccessRole, CreateAccessParams, DeleteAccessParams, UpdateAccessParams } from "./model/EnvironmentType";
 import Me from "./model/Me";
 import { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
 import ProjectAccess from "./model/ProjectAccess";
@@ -1513,52 +1514,17 @@ export default class Client {
 
     return environmentTypes;
   }
-  /**
-   * Update project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   * @param {ProjectAccess} access
-   *
-   * @returns {Promise} Promise that return an access object.
-   */
-  async updateEnvironmentTypeAccess(projectId: string, environmentTypeId: string, access: ProjectAccess) {
-    return entities.EnvironmentType.updateAccess(
-      projectId,
-      environmentTypeId,
-      access
-    );
+
+  async updateEnvironmentTypeAccess(params: UpdateAccessParams) {
+    return entities.EnvironmentType.updateAccess(params);
   }
-  /**
-   * Delete project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   * @param {ProjectAccess} access
-   *
-   * @returns {Promise} Promise that return a Result.
-   */
-  async deleteEnvironmentTypeAccess(projectId: string, environmentTypeId: string, access: ProjectAccess) {
-    return entities.EnvironmentType.deleteAccess(
-      projectId,
-      environmentTypeId,
-      access
-    );
+
+  async deleteEnvironmentTypeAccess(params: DeleteAccessParams) {
+    return entities.EnvironmentType.deleteAccess(params);
   }
-  /**
-   * create project environment types accesses
-   *
-   * @param {string} projectId
-   * @param {string} environmentTypeId
-   *
-   * @returns {Promise} Promise that return an access object.
-   */
-  async createEnvironmentTypeAccess(projectId: string, environmentTypeId: string, access: ProjectAccess) {
-    return entities.EnvironmentType.createAccess(
-      projectId,
-      environmentTypeId,
-      access
-    );
+
+  async createEnvironmentTypeAccess(params: CreateAccessParams) {
+    return entities.EnvironmentType.createAccess(params);
   }
 
   /**
