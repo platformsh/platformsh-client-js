@@ -137,9 +137,8 @@ export default class Organization extends Ressource {
 
   addSubscription(payload:CreateSubscriptionPayloadType) {
     const organizationSubscription = new OrganizationSubscription({
-       subscription:{ organizationId: this.id , ...payload }
+       subscription:{ ...payload,  organizationId: this.id },organizationId: this.id, project_region:payload.projectRegion
     });
-
     return organizationSubscription.save();
   }
 }
