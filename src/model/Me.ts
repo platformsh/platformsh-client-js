@@ -1,6 +1,7 @@
 import User from "./User";
 import { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+import request from "../api";
 import Organization from "./Organization";
 import Project from "./Project";
 import SshKey from "./SshKey";
@@ -20,6 +21,10 @@ const modifiableField = [
   "website",
   "ssh_keys"
 ];
+
+export interface PhoneVerificationResponse {
+  verify_phone: boolean;
+}
 
 // @ts-ignore
 // TODO: fix the get method inheritance error
@@ -77,6 +82,12 @@ export default class Me extends User {
     const result = await super.update(data, `${api_url}/platform/profiles/:id`);
 
     return new Result(new Me(result.data)); // Account API does not return a Result
+  }
+
+  phone(): Promise<PhoneVerificationResponse> {
+    const { api_url } = getConfig();
+
+    return request(`${api_url}${url}/phone`, "POST");
   }
 
   getOrganizations() {
