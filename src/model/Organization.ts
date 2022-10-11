@@ -135,9 +135,9 @@ export default class Organization extends Ressource {
     return super.delete(this.getLink("delete"));
   }
 
-  addSubscription(payload:CreateSubscriptionPayloadType) {
+  addSubscription(payload: CreateSubscriptionPayloadType) {
     const organizationSubscription = new OrganizationSubscription(
-    { ...payload, organizationId: this.id, }
+      { ...payload, organizationId: this.id }
     );
     return organizationSubscription.save();
   }
