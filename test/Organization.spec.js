@@ -102,4 +102,30 @@ describe("Organization", () => {
       done();
     });
   });
+
+  it("Add subsciption", done => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/organizations/1/subscriptions",
+      {},
+      "POST"
+    );
+
+    const organization = new Organization(
+      { id: 1 },
+      "https://api.platform.sh/api/organizations/1"
+    );
+
+    organization
+      .addSubscription({
+        defaultBranch: "main",
+        organizationId: "01GF31FWWMP6ZXDQPMHBQKBSXK",
+        project_region: "org.recreation.plat.farm",
+        project_title: "wq",
+        title: "wq"
+      })
+      .then(result => {
+        assert.equal(result.constructor.name, "Result");
+        done();
+      });
+  });
 });
