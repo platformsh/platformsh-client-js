@@ -18,6 +18,12 @@ export interface EnvironmentBackupsQueryParams {
   [key: string]: any;
 };
 
+export interface EnvironmentBackupRestoreParams {
+  environment_name: string;
+  branch_from: string;
+  restore_code: boolean;
+}
+
 export default class EnvironmentBackup extends Ressource {
   id = "";
   created_at = "";
@@ -66,7 +72,7 @@ export default class EnvironmentBackup extends Ressource {
     );
   }
 
-  restore() {
-    return this.runLongOperation("restore", "POST", {});
+  restore(params: EnvironmentBackupRestoreParams) {
+    return this.runLongOperation("restore", "POST", params);
   }
 }
