@@ -65,4 +65,8 @@ export default class EnvironmentBackup extends Ressource {
       queryParams
     );
   }
+
+  restore() {
+    return this.runLongOperation("restore", "POST", {});
+  }
 }
