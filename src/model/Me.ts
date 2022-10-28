@@ -84,10 +84,11 @@ export default class Me extends User {
     return new Result(new Me(result.data)); // Account API does not return a Result
   }
 
-  phone(): Promise<PhoneVerificationResponse> {
+  phone(refresh: boolean = false): Promise<PhoneVerificationResponse> {
     const { api_url } = getConfig();
 
-    return request(`${api_url}${url}/phone`, "POST");
+    const params = refresh ? "force_refresh=1" : "";
+    return request(`${api_url}${url}/phone?${params}`, "POST");
   }
 
   getOrganizations() {
