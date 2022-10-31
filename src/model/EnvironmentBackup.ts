@@ -10,13 +10,19 @@ export interface EnvironmentBackupsGetParams {
   environmentId: string;
   id: string;
   [key: string]: any;
-};
+}
 
 export interface EnvironmentBackupsQueryParams {
   projectId: string;
   environmentId: string;
   [key: string]: any;
-};
+}
+
+export interface EnvironmentBackupsRestoreBody {
+  environment_name: string;
+  branch_from: string;
+  restore_code: boolean;
+}
 
 export default class EnvironmentBackup extends Ressource {
   id = "";
@@ -31,14 +37,7 @@ export default class EnvironmentBackup extends Ressource {
   safe = true;
 
   constructor(environmentBackup: APIObject, url: string) {
-    super(
-      url,
-      paramDefaults,
-      {},
-      environmentBackup,
-      [],
-      []
-    );
+    super(url, paramDefaults, {}, environmentBackup, [], []);
   }
 
   static get(params: EnvironmentBackupsGetParams, customUrl?: string) {
@@ -66,7 +65,7 @@ export default class EnvironmentBackup extends Ressource {
     );
   }
 
-  restore() {
-    return this.runLongOperation("restore", "POST", {});
+  restore(body: EnvironmentBackupsRestoreBody) {
+    return this.runLongOperation("restore", "POST", body);
   }
 }
