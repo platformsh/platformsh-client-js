@@ -17,27 +17,6 @@ export interface EnvironmentTypeQueryParams {
   [key: string]: any;
 };
 
-export type AccessRole = "admin" | "contributor" | "viewer"
-
-export interface CreateAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  email: string,
-  role: AccessRole
-}
-export interface UpdateAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  accessId: string,
-  role: AccessRole
-}
-
-export interface DeleteAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  accessId: string,
-}
-
 export default class EnvironmentType extends Ressource {
   id: string;
   accesses: Array<any>;
@@ -75,32 +54,29 @@ export default class EnvironmentType extends Ressource {
     );
   }
 
-  static async createAccess(params: CreateAccessParams) {
-    const { projectId, environmentTypeId, email, role } = params
+  static createAccess(projectId: string, environmentTypeId: string, access: any) {
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
     return request(url, "POST", {
-      email,
-      role
+      email: access.email,
+      role: access.role
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static async updateAccess(params: UpdateAccessParams) {
-    const { projectId, environmentTypeId, accessId, role } = params
+  static updateAccess(projectId: string, environmentTypeId: string, access: any) {
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      accessId
+      access.id
     }`;
     return request(url, "PATCH", {
-      role
+      role: access.role
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static async deleteAccess(params: DeleteAccessParams): Promise<{status: string, code: number}> {
-    const { projectId, environmentTypeId, accessId } = params
+  static deleteAccess(projectId: string, environmentTypeId: string, access: any) {
     const { api_url } = getConfig();
     const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      accessId
+      access.id
     }`;
     return request(url, "DELETE");
   }
