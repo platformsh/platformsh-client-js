@@ -1,7 +1,7 @@
 import parse_url from "parse_url";
 
 import _urlParser from "../urlParser";
-import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLinkHref, Link } from "../refs";
+import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLinkHref, Link, Links } from "../refs";
 import request from "../api";
 import Result from "./Result";
 import Activity from "./Activity";
@@ -24,9 +24,11 @@ const handler = {
   get(target: any, key: string) {
     if (
       typeof key !== "symbol" &&
-      !key.startsWith("_") &&
       key !== "data" &&
-      target.hasOwnProperty(key)
+      ((
+        (!key.startsWith("_")) &&
+        target.hasOwnProperty(key)
+      ) || ["_embedded", "_links"].includes(key))
     ) {
       return target.data && target.data[key];
     }
@@ -74,6 +76,9 @@ export default abstract class Ressource {
   protected _queryUrl?: string;
 
   private data?: APIObject;
+
+  public _links?: Record<string, Link>;
+  public _embedded?: Record<string, Array<object>>;
 
   constructor(
     _url: string,
