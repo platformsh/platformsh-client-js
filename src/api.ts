@@ -66,7 +66,8 @@ export const request = (
   retryNumber: number = 0,
   options: RequestOptions = {}
 ): Promise<any> => {
-  let body = data && { ...data };
+  const body = data instanceof Array ? data && [...data] : data && { ...data };
+
   let apiUrl = url;
 
   if (method === "GET") {
