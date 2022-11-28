@@ -2,26 +2,36 @@ import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 
 const paramDefaults = {};
+const modifiableField = ["is_default"];
 const _url = "/projects/:projectId/domains";
 
 export interface DomainGetParams {
-  name: string,
-  projectId?: string,
-  [index: string]: any
-};
+  name: string;
+  projectId?: string;
+  [index: string]: any;
+}
 
 export interface DomainQueryParams {
-  projectId: string,
-  [index: string]: any
-};
+  projectId: string;
+  [index: string]: any;
+}
 
 export default class Domain extends Ressource {
   id = "";
   name = "";
+  is_default = false;
+  created_at = "";
   ssl = [];
 
   constructor(domain: APIObject, url: string) {
-    super(url, paramDefaults, {}, domain, ["name", "ssl"]);
+    super(
+      url,
+      paramDefaults,
+      {},
+      domain,
+      ["name", "ssl", "is_default"],
+      modifiableField
+    );
     this._required = ["name"];
   }
 
@@ -37,7 +47,10 @@ export default class Domain extends Ressource {
     );
   }
 
-  static query(params: DomainQueryParams, customUrl?: string): Promise<Domain[]> {
+  static query(
+    params: DomainQueryParams,
+    customUrl?: string
+  ): Promise<Domain[]> {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
