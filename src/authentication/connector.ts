@@ -482,7 +482,7 @@ export default (token?: string, reset: boolean = false, config?: Partial<ClientC
     return logInWithToken(token).catch(e => new Error(e));
   }
 
-  if (config?.extra_params && Object.entries(config.extra_params)) {
+  if (config?.extra_params && Object.entries(config.extra_params).length) {
     return logInWithRedirect(reset, config.extra_params);
   }
 
