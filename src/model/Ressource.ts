@@ -427,9 +427,10 @@ export default abstract class Ressource {
   runLongOperation(op: string, method = "POST", body?: ParamsType): Promise<Activity> {
     return this.runOperation(op, method, body).then((data: APIObject) => {
       const result = new Result(data, this.getUri());
-      const activities = result.getActivities();
+      const activities = result.getActivities()
+      const hasWebhook = activities.some(activity => activity.type === 'integration.webhook')
 
-      if (activities.length !== 1) {
+      if (activities.length !== 1 && !hasWebhook) {
         throw new Error(`Expected one activity, found ${activities.length}`);
       }
 
