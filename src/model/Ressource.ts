@@ -55,7 +55,7 @@ const pick = (data: APIObject, fields: string[]) => {
     {});
 };
 
-const secondaryActivityTypes = ['integration.webhook']
+const secondaryActivityTypes = ['integration.webhook', 'integration.script']
 
 function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
   var instance = Object.create(context?.prototype || null);
