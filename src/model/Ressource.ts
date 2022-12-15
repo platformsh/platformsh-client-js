@@ -55,11 +55,12 @@ const pick = (data: APIObject, fields: string[]) => {
     {});
 };
 
+const secondaryActivityTypes = ['integration.webhook', 'integration.script']
+
 function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
   var instance = Object.create(context?.prototype || null);
   return <T> new instance.constructor(...args);
 }
-
 
 export default abstract class Ressource {
 
@@ -428,13 +429,13 @@ export default abstract class Ressource {
     return this.runOperation(op, method, body).then((data: APIObject) => {
       const result = new Result(data, this.getUri());
       const activities = result.getActivities()
-      const hasWebhook = activities.some(activity => activity.type === 'integration.webhook')
+      const mainActivities = activities.filter((activity) => !secondaryActivityTypes.includes(activity.type))
 
-      if (activities.length !== 1 && !hasWebhook) {
-        throw new Error(`Expected one activity, found ${activities.length}`);
+      if (mainActivities.length !== 1) {
+        throw new Error(`Expected one activity, found ${mainActivities.length}`);
       }
 
-      return activities[0];
+      return mainActivities[0];
     });
   }
 
