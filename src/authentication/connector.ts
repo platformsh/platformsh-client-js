@@ -167,6 +167,28 @@ async function authorizationCodeCallback(config: DefaultClientConfiguration, cod
   return atoken;
 }
 
+async function refreshAuth(extraParams: Record<string, string>) {
+  const config = getConfig();
+  const auth = {
+    ...config
+  };
+  const req = jso_getAuthRequest(auth.provider, auth.scope);
+  console.log(config.redirect_uri);
+  let pkce: PKCERequest;
+  pkce = await generatePKCE();
+
+  req["code_challenge"] = pkce.codeChallenge;
+  req["code_challenge_method"] = "S256";
+  delete req.prompt
+  delete req.response_mode
+
+  if (window.top) {
+    const authUrl = encodeURL(auth.authorization, {...req, ...extraParams});
+
+    window.top.location.href = authUrl
+  }
+}
+
 function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, string>) {
   console.log("In redirect...");
   return new Promise(async (resolve, reject) => {
@@ -236,7 +258,7 @@ function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, 
       } catch {}
     }
 
-    const authUrl = encodeURL(auth.authorization, {...req, ...extraParams});
+    const authUrl = encodeURL(auth.authorization, req);
 
     const iframe = createIFrame(authUrl, {
       sandbox: "allow-same-origin"
@@ -483,7 +505,7 @@ export default (token?: string, reset: boolean = false, config?: Partial<ClientC
   }
 
   if (config?.extra_params && Object.entries(config.extra_params).length) {
-    return logInWithRedirect(reset, config.extra_params);
+    return refreshAuth(config.extra_params);
   }
 
   if (config?.response_mode === "web_message" && config.prompt === "none") {
@@ -494,6 +516,6 @@ export default (token?: string, reset: boolean = false, config?: Partial<ClientC
     return logInWithPopUp(reset);
   }
 
-  return logInWithRedirect(reset, config?.extra_params);
+  return logInWithRedirect(reset);
 };
 
