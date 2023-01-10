@@ -260,7 +260,7 @@ export default class Client {
    *
    * @return ProjectLevelVariable[]
    */
-  getEnvironmentVariables(projectId: string, environmentId: string, limit: number) {
+  getEnvironmentVariables(projectId: string, environmentId: string, limit?: number) {
     return entities.Variable.query({ projectId, environmentId, limit });
   }
 
