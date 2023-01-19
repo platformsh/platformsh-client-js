@@ -23,7 +23,7 @@ describe("Project", () => {
     const project = new Project(
       {
         _links: {
-          access: {
+          "#access": {
             href: "/api/projects/ffzefzef3/access"
           }
         }
