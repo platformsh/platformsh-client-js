@@ -124,7 +124,7 @@ export default class Project extends Ressource {
    * @return ProjectAccess[]
    */
   getUsers() {
-    return ProjectAccess.query({ projectId: this.id}, this.getLink("access"));
+    return ProjectAccess.query({ projectId: this.id}, this.getLink("#access"));
   }
 
   /**
