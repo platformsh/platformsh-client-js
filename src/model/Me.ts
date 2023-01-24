@@ -42,7 +42,6 @@ export default class Me extends User {
   mail: string;
   trial: boolean;
   uuid: string;
-  current_trial: object;
 
   constructor(account: APIObject) {
     const { api_url } = getConfig();
@@ -61,7 +60,6 @@ export default class Me extends User {
     this.mail = "";
     this.trial = false;
     this.uuid = "";
-    this.current_trial = {};
   }
 
   static get(reset = false) {

@@ -65,9 +65,6 @@ export default class Environment extends Ressource {
   http_access = {};
   is_main: boolean = false;
   type: string = "";
-  deployment_state = {};
-  edge_hostname = "";
-  has_deployment = false;
 
   constructor(environment: APIObject, url: string) {
     super(

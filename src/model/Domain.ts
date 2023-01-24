@@ -22,7 +22,6 @@ export default class Domain extends Ressource {
   is_default = false;
   created_at = "";
   ssl = [];
-  updated_at = "";
 
   constructor(domain: APIObject, url: string) {
     super(
