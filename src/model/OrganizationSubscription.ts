@@ -31,7 +31,6 @@ export interface CreateSubscriptionPayloadType {
 // TODO: solve the get and query function inheritance ts error
 export default class OrganizationSubscription extends Subscription {
   organization_id: string;
-  support_tier: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { organizationId } = subscription;
@@ -48,7 +47,6 @@ export default class OrganizationSubscription extends Subscription {
     this._creatableField.push("organizationId");
 
     this.organization_id = organizationId;
-    this.support_tier = "";
   }
 
   static async get(

@@ -39,7 +39,6 @@ export default class Activity extends Ressource {
   started_at: string;
   type: string;
   payload: Record<string, any>;
-  description: string;
 
 
   constructor(activity: APIObject, url: string) {
@@ -58,7 +57,6 @@ export default class Activity extends Ressource {
     this.started_at = "";
     this.type = "";
     this.payload = [];
-    this.description = "";
   }
 
   static get(params: ActivityGetParams, customUrl?: string) {
