@@ -85,6 +85,7 @@ export default class Subscription extends Ressource {
   project_options: {
     plan_title: Record<string, string>,
   }
+  enterprise_tag: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -126,6 +127,7 @@ export default class Subscription extends Ressource {
     this.project_options = {
       plan_title: {}
     }
+    this.enterprise_tag = "";
   }
 
   static get(params: SubscriptionGetParams, customUrl?: string) {
