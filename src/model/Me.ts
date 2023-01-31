@@ -19,7 +19,7 @@ const modifiableField = [
   "company_role",
   "company_type",
   "website",
-  "ssh_keys"
+  "ssh_keys",
 ];
 
 export interface PhoneVerificationResponse {
@@ -71,7 +71,7 @@ export default class Me extends User {
       {},
       {},
       {
-        cache: reset ? "reload" : "default"
+        cache: reset ? "reload" : "default",
       }
     );
   }

@@ -5,6 +5,7 @@ const _queryUrl = "/organizations/:organizationId/invitations";
 const _url = `${_queryUrl}/:id`;
 
 const creatableField = ["permissions", "email", "force"];
+const filterUrl = "?filter[state][in]=pending,error";
 
 export default class OrganizationInvitation extends Ressource {
   id: string;
@@ -42,16 +43,27 @@ export default class OrganizationInvitation extends Ressource {
   static get(organizationId: string, id: string) {
     const { api_url } = getConfig();
 
-    return super._get<OrganizationInvitation>(`${api_url}${_url}`, { id, organizationId });
+    return super._get<OrganizationInvitation>(`${api_url}${_url}`, {
+      id,
+      organizationId,
+    });
   }
 
-  static query(organizationId: string) {
+  static query(organizationId: string, filterUrl?: string) {
     const { api_url } = getConfig();
 
-    return super._query<OrganizationInvitation>(`${api_url}${_queryUrl}`, { organizationId }, {}, {});
+    return super._query<OrganizationInvitation>(
+      filterUrl
+        ? `${api_url}${_queryUrl}${filterUrl}`
+        : `${api_url}${_queryUrl}`,
+      { organizationId },
+      {},
+      {}
+    );
   }
 
   delete() {
-    return super.delete(this._url);
+    const url = this._url.replace(filterUrl, "");
+    return super.delete(url);
   }
 }

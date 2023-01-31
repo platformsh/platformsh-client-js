@@ -1431,10 +1431,9 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an organization inivitations list.
    */
-  getOrganizationInvitations(organizationId: string) {
-    return entities.OrganizationInvitation.query(organizationId);
+  getOrganizationInvitations(organizationId: string, filterUrl?: string) {
+    return entities.OrganizationInvitation.query(organizationId, filterUrl);
   }
-
   /**
    * Create an invitation with environment types
    *
