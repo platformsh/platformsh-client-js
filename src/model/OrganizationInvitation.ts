@@ -59,11 +59,11 @@ export default class OrganizationInvitation extends Ressource {
     );
   }
 
-  static getList(organizationId: string, queryParams?: string) {
+  static getList(organizationId: string, queryParams = "") {
     const { api_url } = getConfig();
 
     return super._query<OrganizationInvitation>(
-      `${api_url}${_queryUrl}${queryParams}`,
+      `${api_url}${_queryUrl}?${queryParams}`,
       { organizationId },
       {},
       {}
