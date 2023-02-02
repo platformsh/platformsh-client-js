@@ -42,16 +42,39 @@ export default class OrganizationInvitation extends Ressource {
   static get(organizationId: string, id: string) {
     const { api_url } = getConfig();
 
-    return super._get<OrganizationInvitation>(`${api_url}${_url}`, { id, organizationId });
+    return super._get<OrganizationInvitation>(`${api_url}${_url}`, {
+      id,
+      organizationId,
+    });
   }
 
   static query(organizationId: string) {
     const { api_url } = getConfig();
 
-    return super._query<OrganizationInvitation>(`${api_url}${_queryUrl}`, { organizationId }, {}, {});
+    return super._query<OrganizationInvitation>(
+      `${api_url}${_queryUrl}`,
+      { organizationId },
+      {},
+      {}
+    );
+  }
+
+  static getList(organizationId: string, queryParams = "") {
+    const { api_url } = getConfig();
+
+    return super._query<OrganizationInvitation>(
+      `${api_url}${_queryUrl}?${queryParams}`,
+      { organizationId },
+      {},
+      {}
+    );
   }
 
   delete() {
-    return super.delete(this._url);
+    const { api_url } = getConfig();
+
+    return super.delete(
+      `${api_url}/organizations/${this.organization_id}/invitations/${this.id}`
+    );
   }
 }
