@@ -6,17 +6,17 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
 
 export interface ActivityGetParams {
-  id?: string,
-  projectId?: string,
-  environmentId?: string,
-  [index: string]: any
-};
+  id?: string;
+  projectId?: string;
+  environmentId?: string;
+  [index: string]: any;
+}
 
 export interface ActivityQueryParams {
-  projectId?: string,
-  environmentId?: string,
-  [index: string]: any
-};
+  projectId?: string;
+  environmentId?: string;
+  [index: string]: any;
+}
 
 export default class Activity extends Ressource {
   readonly RESULT_SUCCESS = "success";
@@ -30,6 +30,7 @@ export default class Activity extends Ressource {
   log: string;
   created_at: string;
   updated_at: string;
+  cancelled_at: string;
   environments: string[];
   completed_at: string;
   parameters: string[];
@@ -39,7 +40,7 @@ export default class Activity extends Ressource {
   started_at: string;
   type: string;
   payload: Record<string, any>;
-
+  timings: Record<string, string>;
 
   constructor(activity: APIObject, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
@@ -48,6 +49,7 @@ export default class Activity extends Ressource {
     this.log = "";
     this.created_at = "";
     this.updated_at = "";
+    this.cancelled_at = "";
     this.environments = [];
     this.completed_at = "";
     this.parameters = [];
@@ -57,6 +59,7 @@ export default class Activity extends Ressource {
     this.started_at = "";
     this.type = "";
     this.payload = [];
+    this.timings = {};
   }
 
   static get(params: ActivityGetParams, customUrl?: string) {
@@ -98,7 +101,11 @@ export default class Activity extends Ressource {
    *                                string.
    * @param int|float pollInterval The polling interval, in seconds.
    */
-  wait(onPoll: (activity: Activity) => void, onLog: (log: string) => void, pollInterval = 1) {
+  wait(
+    onPoll: (activity: Activity) => void,
+    onLog: (log: string) => void,
+    pollInterval = 1
+  ) {
     const log = this.log || "";
 
     if (onLog && log.trim().length) {
@@ -114,7 +121,9 @@ export default class Activity extends Ressource {
           clearInterval(interval);
         }
 
-        this.refresh({ timeout: pollInterval + 5 })
+        this.refresh({
+          timeout: pollInterval + 5
+        })
           .then((activity: Activity) => {
             if (onPoll) {
               onPoll(activity);
@@ -127,7 +136,7 @@ export default class Activity extends Ressource {
               length = newLog.length;
             }
           })
-          .catch(err => {
+          .catch((err) => {
             if (err.message.indexOf("cURL error 28") !== -1 && retries <= 5) {
               return retries++;
             }
@@ -174,7 +183,7 @@ export default class Activity extends Ressource {
 
   getLogAt(start_at: number, delay: number): Promise<string> {
     if (delay) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(
           () => resolve(request(this.getLink("log"), "GET", { start_at })),
           delay
@@ -182,10 +191,14 @@ export default class Activity extends Ressource {
       });
     }
 
-    return request(this.getLink("log"), "GET", { start_at });
+    return request(this.getLink("log"), "GET", {
+      start_at
+    });
   }
 
-  getLogs(callback: (log: Array<string> | string, response?: Response) => void) {
+  getLogs(
+    callback: (log: Array<string> | string, response?: Response) => void
+  ) {
     let canceled = false;
 
     const cancel = () => {
@@ -222,8 +235,8 @@ export default class Activity extends Ressource {
             attempts = 0;
             const logs = textJsonLog
               .split("\n")
-              .filter(line => line.length)
-              .map(log => JSON.parse(log));
+              .filter((line) => line.length)
+              .map((log) => JSON.parse(log));
 
             lastResponse = logs[logs.length - 1];
             starts_at++;
@@ -233,7 +246,10 @@ export default class Activity extends Ressource {
               break;
             }
           } catch (response) {
-            if (response instanceof Response && (response.status < 500 || response.status > 599)) {
+            if (
+              response instanceof Response &&
+              (response.status < 500 || response.status > 599)
+            ) {
               callback([], response);
             }
 
