@@ -47,7 +47,7 @@ export default class User extends Ressource {
   static get(params: UserGetParams, customUrl?: string, options?: object) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
-    console.log({ params });
+    
     return super._get<User>(
       customUrl || `${api_url}${_url}/:id`,
       { id },
