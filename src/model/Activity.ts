@@ -30,6 +30,7 @@ export default class Activity extends Ressource {
   log: string;
   created_at: string;
   updated_at: string;
+  cancelled_at: string;
   environments: string[];
   completed_at: string;
   parameters: string[];
@@ -39,7 +40,7 @@ export default class Activity extends Ressource {
   started_at: string;
   type: string;
   payload: Record<string, any>;
-
+  timings: Record<string, string>;
 
   constructor(activity: APIObject, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
@@ -48,6 +49,7 @@ export default class Activity extends Ressource {
     this.log = "";
     this.created_at = "";
     this.updated_at = "";
+    this.cancelled_at = "";
     this.environments = [];
     this.completed_at = "";
     this.parameters = [];
@@ -57,6 +59,7 @@ export default class Activity extends Ressource {
     this.started_at = "";
     this.type = "";
     this.payload = [];
+    this.timings = {};
   }
 
   static get(params: ActivityGetParams, customUrl?: string) {
