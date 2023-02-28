@@ -101,7 +101,7 @@ export default class Activity extends Ressource {
    *                                string.
    * @param int|float pollInterval The polling interval, in seconds.
    */
-  wait(onPoll: (activity: Activity) => void, onLog: (log: string) => void, pollInterval = 1) {
+  wait(onPoll?: (activity: Activity) => void, onLog?: (log: string) => void, pollInterval = 1) {
     const log = this.log || "";
 
     if (onLog && log.trim().length) {
@@ -110,7 +110,7 @@ export default class Activity extends Ressource {
     let length = log.length;
     let retries = 0;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<Activity>((resolve, reject) => {
       const interval = setInterval(() => {
         if (this.isComplete()) {
           resolve(this);
