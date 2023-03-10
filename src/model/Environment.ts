@@ -44,6 +44,12 @@ export enum Status {
   deleting = "deleting"
 };
 
+interface DeploymentState {
+  crons: object;
+  last_deployment_at: string | null;
+  last_deployment_successful: boolean;
+}
+
 export default class Environment extends Ressource {
   id: string = ""
   status: Status = Status.inactive;
@@ -62,6 +68,7 @@ export default class Environment extends Ressource {
   enable_smtp: boolean = false;
   has_code: boolean = false;
   deployment_target: string = "";
+  deployment_state: DeploymentState | object = {};
   http_access = {};
   is_main: boolean = false;
   type: string = "";
