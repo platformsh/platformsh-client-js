@@ -45,7 +45,10 @@ export enum Status {
 };
 
 interface DeploymentState {
-  crons: object;
+  crons: {
+    enabled: boolean;
+    status: string;
+  };
   last_deployment_at: string | null;
   last_deployment_successful: boolean;
 }
