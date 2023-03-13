@@ -51,7 +51,7 @@ interface DeploymentState {
   };
   last_deployment_at: string | null;
   last_deployment_successful: boolean;
-}
+};
 
 export default class Environment extends Ressource {
   id: string = ""
@@ -71,7 +71,11 @@ export default class Environment extends Ressource {
   enable_smtp: boolean = false;
   has_code: boolean = false;
   deployment_target: string = "";
-  deployment_state: DeploymentState | object = {};
+  deployment_state: DeploymentState = {
+    crons: { enabled: false, status: "" },
+    last_deployment_at: null,
+    last_deployment_successful: false
+  };
   http_access = {};
   is_main: boolean = false;
   type: string = "";
