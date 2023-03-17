@@ -46,7 +46,7 @@ export enum Status {
 interface DeploymentState {
   crons: {
     enabled: boolean;
-    status: "running" | "sleeping";
+    status: "running" | "paused";
   };
   last_deployment_at: string | null;
   last_deployment_successful: boolean;
@@ -79,7 +79,7 @@ export default class Environment extends Ressource {
   enable_smtp: boolean = false;
   has_code: boolean = false;
   deployment_target: string = "";
-  deployment_state: DeploymentState | {} = {};
+  deployment_state: DeploymentState | object = {};
   http_access: HttpAccess = {};
   is_main: boolean = false;
   type: string = "";
