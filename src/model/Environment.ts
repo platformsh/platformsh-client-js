@@ -300,6 +300,24 @@ export default class Environment extends Ressource {
     return this.runLongOperation("redeploy");
   }
 
+   /**
+   * Resume the current environment
+   *
+   * @return Activity
+   */
+   resume() {
+    return this.runLongOperation("resume");
+  }
+
+  /**
+   * Pause the current environment
+   *
+   * @return Activity
+   */
+  pause() {
+    return this.runLongOperation("pause");
+  }
+
   /**
    * Get a single environment activity.
    *
