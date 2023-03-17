@@ -8,7 +8,6 @@ import Route from "./Route";
 import EnvironmentAccess from "./EnvironmentAccess";
 import Metrics from "./Metrics";
 import Commit from "./git/Commit";
-import { getLink } from "../refs";
 
 const paramDefaults = {
   projectId: "project"
@@ -45,9 +44,21 @@ export enum Status {
 };
 
 interface DeploymentState {
-  crons: object;
+  crons: {
+    enabled: boolean;
+    status: "running" | "sleeping";
+  };
   last_deployment_at: string | null;
   last_deployment_successful: boolean;
+}
+
+interface HttpAccess {
+  is_enabled?: boolean;
+  addresses?: {
+    permission: "allow" | "deny";
+    address: string;
+  }[];
+  basic_auth?: Record<string, string | undefined>
 }
 
 export default class Environment extends Ressource {
@@ -55,7 +66,7 @@ export default class Environment extends Ressource {
   status: Status = Status.inactive;
   head_commit: string = "";
   name: string = "";
-  parent: string = "";
+  parent: string | null = null;
   machine_name:string = "";
   restrict_robots:boolean = false;
   title: string = "";
@@ -68,8 +79,8 @@ export default class Environment extends Ressource {
   enable_smtp: boolean = false;
   has_code: boolean = false;
   deployment_target: string = "";
-  deployment_state: DeploymentState | object = {};
-  http_access = {};
+  deployment_state: DeploymentState | {} = {};
+  http_access: HttpAccess = {};
   is_main: boolean = false;
   type: string = "";
 
@@ -109,7 +120,7 @@ export default class Environment extends Ressource {
     );
   }
 
-  update(data: Environment) {
+  update(data: Partial<Environment>) {
     return super.update(data);
   }
 
