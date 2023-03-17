@@ -29,10 +29,12 @@
   },
 
   "plugins": [
-    "prettier",
-    "no-unused-vars-rest"
+    "prettier"
   ],
-
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
   "rules": {
     "prettier/prettier": "error"
   },
@@ -46,10 +48,11 @@
         "jsx-a11y",
         "@typescript-eslint"
       ],
-      "parser": "@typescript-eslint/parser",
+      "parser": "@babel/eslint-parser",
       "rules": {
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
+        // "no-unused-vars": "off",
+        // "@typescript-eslint/no-unused-vars": "error"
       }
     }
   ]
