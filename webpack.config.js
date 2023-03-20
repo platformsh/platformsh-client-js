@@ -3,10 +3,24 @@ const TerserPlugin = require("terser-webpack-plugin");
 var path = require("path");
 var env = require("yargs").argv.env;
 var merge = require("webpack-merge");
-
+const CircularDependencyPlugin = require("circular-dependency-plugin");
 var libraryName = "platform-api";
 
-var plugins = [],
+var plugins = [
+    new CircularDependencyPlugin({
+      // exclude detection of files based on a RegExp
+      exclude: /a\.js|node_modules/,
+      // include specific files based on a RegExp
+      include: /src/,
+      // add errors to webpack instead of warnings
+      failOnError: true,
+      // allow import cycles that include an asyncronous import,
+      // e.g. via import(/* webpackMode: "weak" */ './file.js')
+      allowAsyncCycles: false,
+      // set the current working directory for displaying module paths
+      cwd: process.cwd()
+    })
+  ],
   outputFile;
 let additionalSettings = {};
 
@@ -29,7 +43,7 @@ var config = {
     filename: outputFile
   },
   watchOptions: {
-    ignored: [/node_modules/, /types/]
+    ignored: /(node_modules|types)/
   },
   module: {
     rules: [
@@ -47,7 +61,10 @@ var config = {
   },
   resolve: {
     modules: [path.resolve("./src"), "node_modules"],
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
+    fallback: {
+      path: require.resolve("path-browserify")
+    }
   },
   plugins: plugins,
   ...additionalSettings
