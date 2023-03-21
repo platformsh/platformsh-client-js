@@ -1,7 +1,14 @@
 import parse_url from "parse_url";
 
 import _urlParser from "../urlParser";
-import { makeAbsoluteUrl, getRef, getRefs, hasLink, getLinkHref, Link } from "../refs";
+import {
+  makeAbsoluteUrl,
+  getRef,
+  getRefs,
+  hasLink,
+  getLinkHref,
+  Link
+} from "../refs";
 import request from "../api";
 import Result from "./Result";
 import Activity from "./Activity";
@@ -11,10 +18,10 @@ import { VoucherResponse } from "./OrganizationVoucher";
 import { RegionResponse } from "./Region";
 
 export interface APIObject {
-  [key: string]: any,
-  _links?: Record<string, Link>,
-  _embedded?: Record<string, Array<object>>
-};
+  [key: string]: any;
+  _links?: Record<string, Link>;
+  _embedded?: Record<string, Array<object>>;
+}
 
 export type ParamsType = Record<string, any>;
 
@@ -51,19 +58,17 @@ const pick = (data: APIObject, fields: string[]) => {
       acc[k] = data[k];
 
       return acc;
-    },
-    {});
+    }, {});
 };
 
-const secondaryActivityTypes = ['integration.webhook', 'integration.script']
+const secondaryActivityTypes = ["integration.webhook", "integration.script"];
 
-function getInstance<T>(context: typeof Ressource, ...args: any[]) : T {
+function getInstance<T>(context: typeof Ressource, ...args: any[]): T {
   var instance = Object.create(context?.prototype || null);
-  return <T> new instance.constructor(...args);
+  return <T>new instance.constructor(...args);
 }
 
 export default abstract class Ressource {
-
   protected _url: string;
   protected _params: ParamsType;
   protected _baseUrl?: string;
@@ -112,34 +117,51 @@ export default abstract class Ressource {
     return _url.substring(0, _url.lastIndexOf("/"));
   }
 
-  static _get<T>(_url: string, params?: ParamsType, paramDefaults?: ParamsType, queryParams?: ParamsType, options?: object): Promise<T> {
+  static _get<T>(
+    _url: string,
+    params?: ParamsType,
+    paramDefaults?: ParamsType,
+    queryParams?: ParamsType,
+    options?: object
+  ): Promise<T> {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: APIObject) => {
-      return getInstance<T>(this, data, parsedUrl, params);
-    });
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
+      (data: APIObject) => {
+        return getInstance<T>(this, data, parsedUrl, params);
+      }
+    );
   }
 
   static _query<T>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,
-    queryParams?: ParamsType ,
-    transformResultBeforeMap? : (data: Array<APIObject> | CursoredResult<T> | CommerceOrderResponse | VoucherResponse | RegionResponse) => Array<APIObject>,
-    options?:  object // Define that in api
-  ) : Promise<Array<T>>{
+    queryParams?: ParamsType,
+    transformResultBeforeMap?: (
+      data:
+        | Array<APIObject>
+        | CursoredResult<T>
+        | CommerceOrderResponse
+        | VoucherResponse
+        | RegionResponse
+    ) => Array<APIObject>,
+    options?: object // Define that in api
+  ): Promise<Array<T>> {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then((data: Array<APIObject>) => {
-      let dataToMap = data;
-      if (transformResultBeforeMap) {
-        dataToMap = transformResultBeforeMap(data);
-      }
+    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
+      (data: Array<APIObject>) => {
+        let dataToMap = data;
+        if (transformResultBeforeMap) {
+          dataToMap = transformResultBeforeMap(data);
+        }
 
-      return dataToMap.map(
-        (d: APIObject) => getInstance<T>(this, d, `${parsedUrl}/${d.id}`)
-      );
-    });
+        return dataToMap.map((d: APIObject) =>
+          getInstance<T>(this, d, `${parsedUrl}/${d.id}`)
+        );
+      }
+    );
   }
 
   checkProperty(property: string, value: any): object {
@@ -154,7 +176,7 @@ export default abstract class Ressource {
    * @return string{} An object of validation errors.
    */
   checkUpdate(values: APIObject | undefined) {
-    if(!values) {
+    if (!values) {
       return;
     }
 
@@ -162,10 +184,9 @@ export default abstract class Ressource {
 
     //checkProperty can be overrided by children
     for (let key in Object.keys(values)) {
-      errors =  this.checkProperty(key, values[key]);
+      errors = this.checkProperty(key, values[key]);
     }
     return Object.keys(errors).length ? errors : undefined;
-
   }
 
   update(data: APIObject, _url?: string) {
@@ -198,7 +219,11 @@ export default abstract class Ressource {
 
     return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
       (data: APIObject) => {
-        return new Result(data, this._url, this.constructor as RessourceChildClass<any>);
+        return new Result(
+          data,
+          this._url,
+          this.constructor as RessourceChildClass<any>
+        );
       }
     );
   }
@@ -227,10 +252,10 @@ export default abstract class Ressource {
     if (!values) {
       return;
     }
-    let errors: { [key: string] : string } = {};
+    let errors: { [key: string]: string } = {};
     const dataKeys = Object.keys(values);
 
-    const missing = this.getRequired().filter(function(i) {
+    const missing = this.getRequired().filter(function (i) {
       return dataKeys.indexOf(i) < 0;
     });
 
@@ -258,11 +283,17 @@ export default abstract class Ressource {
     }
     const url = this._queryUrl || this._url;
 
-    return request(url, "POST", this.data && pick(this.data, this._creatableField)).then(
-      (data: APIObject) => {
-        return new Result(data, url, this.constructor as RessourceChildClass<any>);
-      }
-    );
+    return request(
+      url,
+      "POST",
+      this.data && pick(this.data, this._creatableField)
+    ).then((data: APIObject) => {
+      return new Result(
+        data,
+        url,
+        this.constructor as RessourceChildClass<any>
+      );
+    });
   }
 
   delete(url?: string): Promise<Result> {
@@ -272,7 +303,12 @@ export default abstract class Ressource {
       throw new Error("Not allowed to delete");
     }
     return request(deleteLink, "DELETE", {}).then(
-      (result: APIObject) => new Result(result, this._url, this.constructor as RessourceChildClass<any>)
+      (result: APIObject) =>
+        new Result(
+          result,
+          this._url,
+          this.constructor as RessourceChildClass<any>
+        )
     );
   }
 
@@ -281,9 +317,7 @@ export default abstract class Ressource {
   }
 
   static wrap<T>(objs: T[]): T[] {
-    return objs.map(
-      (obj: APIObject) => getInstance(this, obj)
-    );
+    return objs.map((obj: APIObject) => getInstance(this, obj));
   }
 
   /**
@@ -329,10 +363,10 @@ export default abstract class Ressource {
    * @return bool
    */
   hasEmbedded(rel: string): boolean {
-    return (
-      !!(this.data?._embedded &&
+    return !!(
+      this.data?._embedded &&
       this.data._embedded[rel] &&
-      this.data._embedded[rel].length)
+      this.data._embedded[rel].length
     );
   }
 
@@ -361,7 +395,7 @@ export default abstract class Ressource {
   getLink(rel: string, absolute: boolean = true): string {
     const href = getLinkHref(this.data?._links, rel, absolute, this._baseUrl);
 
-    if(typeof href === "string") {
+    if (typeof href === "string") {
       return href;
     }
 
@@ -396,7 +430,10 @@ export default abstract class Ressource {
    *
    * @return string
    */
-  makeAbsoluteUrl(relativeUrl: string, _baseUrl: string | undefined = this._baseUrl) {
+  makeAbsoluteUrl(
+    relativeUrl: string,
+    _baseUrl: string | undefined = this._baseUrl
+  ) {
     return makeAbsoluteUrl(`${_baseUrl}${relativeUrl}`, _baseUrl);
   }
 
@@ -425,14 +462,22 @@ export default abstract class Ressource {
    *
    * @return Activity
    */
-  runLongOperation(op: string, method = "POST", body?: ParamsType): Promise<Activity> {
+  runLongOperation(
+    op: string,
+    method = "POST",
+    body?: ParamsType
+  ): Promise<Activity> {
     return this.runOperation(op, method, body).then((data: APIObject) => {
       const result = new Result(data, this.getUri());
-      const activities = result.getActivities()
-      const mainActivities = activities.filter((activity) => !secondaryActivityTypes.includes(activity.type))
+      const activities = result.getActivities();
+      const mainActivities = activities.filter(
+        activity => !secondaryActivityTypes.includes(activity.type)
+      );
 
       if (mainActivities.length !== 1) {
-        throw new Error(`Expected one activity, found ${mainActivities.length}`);
+        throw new Error(
+          `Expected one activity, found ${mainActivities.length}`
+        );
       }
 
       return mainActivities[0];
@@ -444,7 +489,11 @@ export default abstract class Ressource {
   }
 
   // Load a single object from the ref API
-  getRef<T>(linkKey: string, constructor: RessourceChildClass<T>, absolute = true) {
+  getRef<T>(
+    linkKey: string,
+    constructor: RessourceChildClass<T>,
+    absolute = true
+  ) {
     return getRef<T>(
       this.data?._links,
       linkKey,
@@ -455,7 +504,11 @@ export default abstract class Ressource {
   }
 
   // Load a list of objects from the ref API
-  async getRefs<T>(linkKey: string, constructor: RessourceChildClass<T>, absolute = true): Promise<T[]> {
+  async getRefs<T>(
+    linkKey: string,
+    constructor: RessourceChildClass<T>,
+    absolute = true
+  ): Promise<T[]> {
     return getRefs<T>(
       this.data?._links,
       linkKey,

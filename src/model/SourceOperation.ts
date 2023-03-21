@@ -11,11 +11,10 @@ const _url =
   "/projects/:projectId/environments/:environmentId/source-operation";
 
 export interface SourceOperationQueryParams {
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
-  
+}
 
 export default class SourceOperation extends Ressource {
   operation = "";

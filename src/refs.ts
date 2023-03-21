@@ -2,14 +2,16 @@ import request from "./api";
 import { APIObject, RessourceChildClass } from "./model/Ressource";
 
 export type Link = {
-  href: string,
-  [key: string]: unknown
-}
+  href: string;
+  [key: string]: unknown;
+};
 
 export type Links = Record<string, Link | Array<Link>>;
 
-type GetLinkOptions =  {
-  absolute?: boolean, baseUrl?: string, hrefOnly?: boolean
+type GetLinkOptions = {
+  absolute?: boolean;
+  baseUrl?: string;
+  hrefOnly?: boolean;
 };
 
 export const makeAbsoluteUrl = (relativeUrl: string, _baseUrl: string = "") => {
@@ -20,18 +22,22 @@ export const hasLink = (links: Links | undefined, rel: string): boolean => {
   return !!(links && links[rel]);
 };
 
-export const getLink = (links: Links | undefined, rel: string, {absolute = true, baseUrl = "", hrefOnly = false}: GetLinkOptions) => {
-  if(!links) {
+export const getLink = (
+  links: Links | undefined,
+  rel: string,
+  { absolute = true, baseUrl = "", hrefOnly = false }: GetLinkOptions
+) => {
+  if (!links) {
     return undefined;
   }
-  
+
   if (!hasLink(links, rel)) {
     throw new Error(`Link not found: ${rel}`);
   }
 
-  const link: Link | Array<Link>  = links[rel];
+  const link: Link | Array<Link> = links[rel];
 
-  if(!Array.isArray(link) && (Object.keys(link).length === 1 || hrefOnly)) {
+  if (!Array.isArray(link) && (Object.keys(link).length === 1 || hrefOnly)) {
     let _url = (links[rel] as Link).href;
 
     if (absolute && _url.indexOf("//") === -1) {
@@ -44,11 +50,18 @@ export const getLink = (links: Links | undefined, rel: string, {absolute = true,
   return link;
 };
 
-export const getLinkHref = (links: Links | undefined, rel: string, absolute = true, baseUrl = ""): string => {
+export const getLinkHref = (
+  links: Links | undefined,
+  rel: string,
+  absolute = true,
+  baseUrl = ""
+): string => {
   return getLink(links, rel, {
-    absolute, baseUrl, hrefOnly: true
+    absolute,
+    baseUrl,
+    hrefOnly: true
   }) as string;
-}
+};
 
 // Load a single object from the ref API
 export const getRef = async <T>(
@@ -79,7 +92,9 @@ export const getRefs = async <T>(
   for (let i = 0; i < refs.length; i++) {
     obj = {
       ...obj,
-      ...(await request(getLinkHref(links, `${linkKey}:${i}`, absolute, baseUrl)))
+      ...(await request(
+        getLinkHref(links, `${linkKey}:${i}`, absolute, baseUrl)
+      ))
     };
   }
 

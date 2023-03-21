@@ -26,16 +26,16 @@ const _url = "/projects/:projectId/environments/:environmentId/variables";
 
 export interface VariableGetParams {
   id: string;
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
+}
 
 export interface VariableQueryParams {
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
+}
 
 export default class Variable extends Ressource {
   id = "";
@@ -54,7 +54,14 @@ export default class Variable extends Ressource {
   visible_runtime = true;
 
   constructor(variable: APIObject, url?: string) {
-    super(url || "", paramDefaults, {}, variable, creatableField, modifialbleField);
+    super(
+      url || "",
+      paramDefaults,
+      {},
+      variable,
+      creatableField,
+      modifialbleField
+    );
   }
 
   static get(params: VariableGetParams, customUrl?: string) {
@@ -62,7 +69,12 @@ export default class Variable extends Ressource {
     const { api_url } = getConfig();
     const urlToCall = customUrl || `${api_url}${_url}`;
 
-    return super._get<Variable>(`${urlToCall}/:id`, { id }, paramDefaults, queryParams);
+    return super._get<Variable>(
+      `${urlToCall}/:id`,
+      { id },
+      paramDefaults,
+      queryParams
+    );
   }
 
   static query(params: VariableQueryParams, customUrl?: string) {

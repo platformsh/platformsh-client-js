@@ -2,36 +2,36 @@ const DEFAULT_ACCOUNT_URL = "https://accounts.platform.sh";
 const DEFAULT_API_URL = "https://api.platform.sh/api";
 
 export type ClientConfiguration = {
-  provider?: string,
-  client_id?: string,
-  account_url?: string,
-  api_url: string,
-  authentication_url?: string,
-  scope?: Array<string>,
-  authorization: string,
-  logout_url?: string,
-  access_token?: string,
-  api_token?: string,
-  popupMode?: boolean,
-  response_mode?: string,
-  prompt?: string,
-  base_url?: string,
-  redirect_uri?: string,
-  response_type?: string,
-  onBeforeRedirect?: (location: string) => void,
+  provider?: string;
+  client_id?: string;
+  account_url?: string;
+  api_url: string;
+  authentication_url?: string;
+  scope?: Array<string>;
+  authorization: string;
+  logout_url?: string;
+  access_token?: string;
+  api_token?: string;
+  popupMode?: boolean;
+  response_mode?: string;
+  prompt?: string;
+  base_url?: string;
+  redirect_uri?: string;
+  response_type?: string;
+  onBeforeRedirect?: (location: string) => void;
   extra_params?: Record<string, string>;
 };
 
 export type DefaultClientConfiguration = ClientConfiguration & {
-  scope: Array<string>
-  redirect_uri:string
-  provider:string
-  client_id:string
-  account_url:string
-  authentication_url:string
-  prompt:string
-  response_type:string
-}
+  scope: Array<string>;
+  redirect_uri: string;
+  provider: string;
+  client_id: string;
+  account_url: string;
+  authentication_url: string;
+  prompt: string;
+  response_type: string;
+};
 
 const getConfigDefault = (
   baseUrl: string = DEFAULT_ACCOUNT_URL,

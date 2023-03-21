@@ -11,7 +11,7 @@ export default class TwoFactorAuthentication extends Ressource {
   account_name: string;
   secret: string;
   qr_code: string;
-  
+
   constructor(account: APIObject) {
     const { id } = account;
     const { api_url } = getConfig();
@@ -27,7 +27,12 @@ export default class TwoFactorAuthentication extends Ressource {
 
   static get(userId: string) {
     const { api_url } = getConfig();
-    return super._get<TwoFactorAuthentication>(`${api_url}${url}`, { userId }, paramDefaults, {});
+    return super._get<TwoFactorAuthentication>(
+      `${api_url}${url}`,
+      { userId },
+      paramDefaults,
+      {}
+    );
   }
 
   static enroll(userId: string, secret: string, passcode: string) {

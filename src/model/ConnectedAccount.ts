@@ -12,7 +12,7 @@ export default class ConnectedAccount extends Ressource {
 
   constructor(connectedAccount: APIObject, url: string) {
     super(url, {}, {}, connectedAccount, [], []);
-    
+
     this.provider = "";
     this.subject = "";
     this.created_at = "";
@@ -22,20 +22,22 @@ export default class ConnectedAccount extends Ressource {
   static get(userId: string, provider: string) {
     const { api_url } = getConfig();
 
-    return super._get<ConnectedAccount>(`${api_url}${_url}/:provider`, { userId, provider });
+    return super._get<ConnectedAccount>(`${api_url}${_url}/:provider`, {
+      userId,
+      provider
+    });
   }
 
   static query(userId: string) {
     const { api_url } = getConfig();
 
     return super._query(`${api_url}${_url}`, { userId }, {}, {}, data => {
-      if(Array.isArray(data)) {
-        return data.map(d => ({ ...d, id: d.provider }))
+      if (Array.isArray(data)) {
+        return data.map(d => ({ ...d, id: d.provider }));
       }
 
       return [];
-    }
-    );
+    });
   }
 
   delete() {

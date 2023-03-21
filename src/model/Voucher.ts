@@ -8,11 +8,11 @@ const paramDefaults = {};
 export interface VoucherGetParams {
   uuid: string;
   [key: string]: any;
-};
+}
 
 export interface VoucherQueryParams {
   [key: string]: any;
-};
+}
 
 export default class Voucher extends Ressource {
   currency: string;

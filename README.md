@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/platformsh/platformsh-client-js.svg?branch=master)](https://travis-ci.org/platformsh/platformsh-client-js)
+
 # Platform.sh API client
 
 This is a isomorphic Javascript library for accessing the Platform.sh API.
@@ -7,7 +8,7 @@ We recommend you use the [Platform.sh CLI](https://github.com/platformsh/platfor
 
 ## Install
 
-Run ``` npm install platformsh-client ```
+Run `npm install platformsh-client`
 
 ## Usage
 
@@ -29,12 +30,12 @@ client.getProjects().then(projects => {
 
 ## Development mode
 
-Run ``` npm run dev ```
+Run `npm run dev`
 
 ## Build
 
-Run ``` npm run build ```
+Run `npm run build`
 
 ## Test
 
-Run ``` npm test ```
+Run `npm test`

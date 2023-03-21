@@ -58,12 +58,12 @@ export interface IntegrationGetParams {
   projectId: string;
   id: string;
   [key: string]: any;
-};
+}
 
 export interface IntegrationQueryParams {
   projectId: string;
   [key: string]: any;
-};
+}
 
 export default class Integration extends Ressource {
   id = "";
@@ -85,7 +85,7 @@ export default class Integration extends Ressource {
    * @inheritdoc
    */
   checkProperty(property: string, value: string) {
-    const errors:  Record<string, string> = {};
+    const errors: Record<string, string> = {};
 
     if (property === "type" && types.indexOf(value) === -1) {
       errors[property] = `Invalid type: '${value}'`;

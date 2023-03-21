@@ -5,8 +5,8 @@ import { getConfig } from "../../config";
 const _url = "/projects/:projectId/git/commits/:sha";
 
 export interface CommitParams {
-  projectId?: string,
-  [index: string]: any
+  projectId?: string;
+  [index: string]: any;
 }
 
 export default class Commit extends Ressource {
@@ -17,7 +17,6 @@ export default class Commit extends Ressource {
   message: string;
   tree: string;
   parents: string[];
-
 
   constructor(commit: Commit, url: string, params: CommitParams) {
     super(url, {}, params, commit, [], []);

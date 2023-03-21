@@ -13,12 +13,12 @@ export interface OrganizationMemberGetParams {
   id: string;
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export interface OrganizationMemberQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export default class OrganizationMember extends CursoredRessource {
   id: string;
@@ -28,7 +28,7 @@ export default class OrganizationMember extends CursoredRessource {
   owner: boolean;
   created_at: string;
   updated_at: string;
-  
+
   constructor(organizationMember: APIObject, url?: string) {
     const { organizationId } = organizationMember;
     const { api_url } = getConfig();

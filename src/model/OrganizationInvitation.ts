@@ -44,7 +44,7 @@ export default class OrganizationInvitation extends Ressource {
 
     return super._get<OrganizationInvitation>(`${api_url}${_url}`, {
       id,
-      organizationId,
+      organizationId
     });
   }
 

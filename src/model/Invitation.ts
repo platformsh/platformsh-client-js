@@ -15,7 +15,6 @@ const creatableField = [
 ];
 
 export default class Invitation extends Ressource {
-
   id: string;
   owner: any;
   projectId: string;
@@ -61,12 +60,18 @@ export default class Invitation extends Ressource {
   static query(projectId: string) {
     const { api_url } = getConfig();
 
-    return super._query<Invitation>(`${api_url}${_queryUrl}`, { projectId }, {}, {}, data => {
-      if(Array.isArray(data)) {
-        return data.map(d => ({ projectId, ...d }))
+    return super._query<Invitation>(
+      `${api_url}${_queryUrl}`,
+      { projectId },
+      {},
+      {},
+      data => {
+        if (Array.isArray(data)) {
+          return data.map(d => ({ projectId, ...d }));
+        }
+        return [];
       }
-      return [];
-    });
+    );
   }
 
   delete() {

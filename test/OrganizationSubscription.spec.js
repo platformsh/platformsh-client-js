@@ -10,11 +10,11 @@ import OrganizationSubscription from "../src/model/OrganizationSubscription";
 describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();
 
-  beforeEach(function() {
+  beforeEach(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 

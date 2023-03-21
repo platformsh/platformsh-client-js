@@ -8,7 +8,7 @@ export interface MetricsGetParams {
   projectId?: string;
   environmentId?: string;
   [key: string]: any;
-};
+}
 
 export default class Metrics extends Ressource {
   results = {};

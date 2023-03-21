@@ -41,30 +41,30 @@ export enum SubscriptionStatusEnum {
   STATUS_DELETED = "deleted",
   STATUS_ACTIVE = "active",
   STATUS_REQUESTED = "requested",
-  STATUS_PROVISIONING = "provisioning",
+  STATUS_PROVISIONING = "provisioning"
 }
 
 export interface SubscriptionGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export type SubscriptionEstimateQueryType = {
-  plan?: string
-  environments?: number
-  storage?: number
-  user_licenses?: number
-  format?: "formatted" | "complex"
-  big_dev?: string //Not available anymore on API
-}
+  plan?: string;
+  environments?: number;
+  storage?: number;
+  user_licenses?: number;
+  format?: "formatted" | "complex";
+  big_dev?: string; //Not available anymore on API
+};
 
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
-  created_at: string
+  created_at: string;
   owner_info: {
-    type: string
-  }
+    type: string;
+  };
   owner: string;
   plan: string;
   environments: number;
@@ -83,8 +83,8 @@ export default class Subscription extends Ressource {
   license_uri: string;
   organization_id: string;
   project_options: {
-    plan_title: Record<string, string>,
-  }
+    plan_title: Record<string, string>;
+  };
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -122,10 +122,10 @@ export default class Subscription extends Ressource {
     this.created_at = "";
     this.users_licenses = 0;
     this.license_uri = "";
-    this.organization_id = ""
+    this.organization_id = "";
     this.project_options = {
       plan_title: {}
-    }
+    };
   }
 
   static get(params: SubscriptionGetParams, customUrl?: string) {
@@ -261,10 +261,10 @@ export default class Subscription extends Ressource {
     return Project.get({ id: this.project_id }, url);
   }
 
-  /**   
+  /**
    * Get estimate associated with this subscription.
    * @param query the query parameter for this subscription estimate
-   * @return Project|false 
+   * @return Project|false
    */
   getEstimate(query?: SubscriptionEstimateQueryType) {
     const params = {
@@ -317,6 +317,6 @@ export default class Subscription extends Ressource {
    * @inheritdoc
    */
   copy(data: APIObject = {}) {
-    super.copy((data.subscriptions && data.subscriptions[0]) || data)
+    super.copy((data.subscriptions && data.subscriptions[0]) || data);
   }
 }

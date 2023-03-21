@@ -4,9 +4,13 @@ export default class Result {
   private _url: string | undefined;
   data: APIObject;
   detail: any;
-  private _ressourceClass: RessourceChildClass<any> | undefined
+  private _ressourceClass: RessourceChildClass<any> | undefined;
 
-  constructor(result: APIObject, url?: string, ressourceClass?: RessourceChildClass<any>) {
+  constructor(
+    result: APIObject,
+    url?: string,
+    ressourceClass?: RessourceChildClass<any>
+  ) {
     this._url = url;
     this.data = result;
     this._ressourceClass = ressourceClass;

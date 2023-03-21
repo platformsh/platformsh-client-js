@@ -26,12 +26,12 @@ export interface ProjectLevelVariableGetParams {
   name: string;
   projectId: string;
   [key: string]: any;
-};
+}
 
 export interface ProjectLevelVariableQueryParams {
   projectId: string;
   [key: string]: any;
-};
+}
 
 export default class ProjectLevelVariable extends Ressource {
   id = "";
@@ -68,7 +68,7 @@ export default class ProjectLevelVariable extends Ressource {
     );
   }
 
-  static query(params:ProjectLevelVariableQueryParams, customUrl?: string) {
+  static query(params: ProjectLevelVariableQueryParams, customUrl?: string) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 

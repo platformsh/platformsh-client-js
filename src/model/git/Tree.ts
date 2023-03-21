@@ -5,8 +5,8 @@ import Blob from "./Blob";
 const _url = "/projects/:projectId/git/trees/:sha";
 
 export type TreeParams = {
-  projectId?: string,
-  [key: string]: any
+  projectId?: string;
+  [key: string]: any;
 };
 
 function bind(trees: Array<Tree | Blob | undefined>, projectId: string) {
@@ -40,9 +40,12 @@ export default class Tree extends Ressource {
   static async get(projectId: string, sha: string): Promise<Tree | undefined> {
     const { api_url } = getConfig();
 
-    const tree = await super._get<Tree>(`${api_url}${_url}`, { projectId, sha });
+    const tree = await super._get<Tree>(`${api_url}${_url}`, {
+      projectId,
+      sha
+    });
 
-    if(tree) {
+    if (tree) {
       tree.tree = bind(tree?.tree, projectId);
 
       return tree;
@@ -51,7 +54,7 @@ export default class Tree extends Ressource {
 
   async getInstance() {
     const tree = await Tree.get(this._params.projectId, this.sha);
-    if(tree){
+    if (tree) {
       tree.path = this.path;
 
       tree.tree = bind(tree.tree, this._params.projectId);

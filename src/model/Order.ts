@@ -7,11 +7,11 @@ const paramDefaults = {};
 export interface OrdersGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface CommerceOrderResponse {
-  commerce_order: Array<APIObject>
-};
+  commerce_order: Array<APIObject>;
+}
 
 export default class Order extends Ressource {
   id: string;
@@ -66,7 +66,7 @@ export default class Order extends Ressource {
       {},
       paramDefaults,
       params,
-      (data) => (data as CommerceOrderResponse)?.commerce_order
+      data => (data as CommerceOrderResponse)?.commerce_order
     );
   }
 }

@@ -10,7 +10,7 @@ const url = "/v1/ssh_keys/:id";
 export interface SshKeyGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export default class SshKey extends Ressource {
   changed: string;
@@ -42,7 +42,12 @@ export default class SshKey extends Ressource {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._get<SshKey>(`${api_url}${url}`, { id }, paramDefaults, queryParams);
+    return super._get<SshKey>(
+      `${api_url}${url}`,
+      { id },
+      paramDefaults,
+      queryParams
+    );
   }
 
   /**

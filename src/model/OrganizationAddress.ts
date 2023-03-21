@@ -22,12 +22,12 @@ export interface OrganizationAddressGetParams {
   id?: string;
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export interface OrganizationAddressQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export default class OrganizationAddress extends Ressource {
   id: string;
@@ -79,7 +79,7 @@ export default class OrganizationAddress extends Ressource {
     let getURL = customUrl || `${api_url}${url}`;
 
     if (id) {
-      getURL = this.getQueryUrl(customUrl || `${api_url}${url}`, id)
+      getURL = this.getQueryUrl(customUrl || `${api_url}${url}`, id);
     }
 
     return super._get<OrganizationAddress>(

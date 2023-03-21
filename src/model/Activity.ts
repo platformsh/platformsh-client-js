@@ -6,17 +6,17 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
 
 export interface ActivityGetParams {
-  id?: string,
-  projectId?: string,
-  environmentId?: string,
-  [index: string]: any
-};
+  id?: string;
+  projectId?: string;
+  environmentId?: string;
+  [index: string]: any;
+}
 
 export interface ActivityQueryParams {
-  projectId?: string,
-  environmentId?: string,
-  [index: string]: any
-};
+  projectId?: string;
+  environmentId?: string;
+  [index: string]: any;
+}
 
 export default class Activity extends Ressource {
   readonly RESULT_SUCCESS = "success";
@@ -101,7 +101,11 @@ export default class Activity extends Ressource {
    *                                string.
    * @param int|float pollInterval The polling interval, in seconds.
    */
-  wait(onPoll?: (activity: Activity) => void, onLog?: (log: string) => void, pollInterval = 1) {
+  wait(
+    onPoll?: (activity: Activity) => void,
+    onLog?: (log: string) => void,
+    pollInterval = 1
+  ) {
     const log = this.log || "";
 
     if (onLog && log.trim().length) {
@@ -188,7 +192,9 @@ export default class Activity extends Ressource {
     return request(this.getLink("log"), "GET", { start_at });
   }
 
-  getLogs(callback: (log: Array<string> | string, response?: Response) => void) {
+  getLogs(
+    callback: (log: Array<string> | string, response?: Response) => void
+  ) {
     let canceled = false;
 
     const cancel = () => {
@@ -236,7 +242,10 @@ export default class Activity extends Ressource {
               break;
             }
           } catch (response) {
-            if (response instanceof Response && (response.status < 500 || response.status > 599)) {
+            if (
+              response instanceof Response &&
+              (response.status < 500 || response.status > 599)
+            ) {
               callback([], response);
             }
 
@@ -259,53 +268,29 @@ export default class Activity extends Ressource {
 
     switch (type) {
       case "project.domain.create":
-        return `${payload.user.display_name} added domain ${
-          payload.domain.name
-        }`;
+        return `${payload.user.display_name} added domain ${payload.domain.name}`;
       case "project.domain.delete":
-        return `${payload.user.display_name} deleted domain ${
-          payload.domain.name
-        }`;
+        return `${payload.user.display_name} deleted domain ${payload.domain.name}`;
       case "project.domain.update":
-        return `${payload.user.display_name} updated domain ${
-          payload.domain.name
-        }`;
+        return `${payload.user.display_name} updated domain ${payload.domain.name}`;
       case "project.modify.title":
-        return `${payload.user.display_name} changed project name to ${
-          payload.new_title
-        }`;
+        return `${payload.user.display_name} changed project name to ${payload.new_title}`;
       case "environment.activate":
-        return `${payload.user.display_name} activated environment ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} activated environment ${payload.environment.title}`;
       case "environment.backup":
-        return `${payload.user.display_name} created a snapshot of ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} created a snapshot of ${payload.environment.title}`;
       case "environment.branch":
-        return `${payload.user.display_name} branched ${
-          payload.outcome.title
-        } from ${payload.parent.title}`;
+        return `${payload.user.display_name} branched ${payload.outcome.title} from ${payload.parent.title}`;
       case "environment.delete":
-        return `${payload.user.display_name} deleted environment ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} deleted environment ${payload.environment.title}`;
       case "environment.deactivate":
-        return `${payload.user.display_name} deactivated environment ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} deactivated environment ${payload.environment.title}`;
       case "environment.initialize":
-        return `${payload.user.display_name} initialized environment ${
-          payload.outcome.title
-        } with profile ${payload.profile}`; // eslint-disable-line max-len
+        return `${payload.user.display_name} initialized environment ${payload.outcome.title} with profile ${payload.profile}`; // eslint-disable-line max-len
       case "environment.merge":
-        return `${payload.user.display_name} merged ${
-          payload.outcome.title
-        } into ${payload.environment.title}`;
+        return `${payload.user.display_name} merged ${payload.outcome.title} into ${payload.environment.title}`;
       case "environment.push":
-        return `${payload.user.display_name} pushed to ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} pushed to ${payload.environment.title}`;
       case "environment.restore":
         return `${payload.user.display_name} restored ${
           payload.environment
@@ -319,57 +304,31 @@ export default class Activity extends Ressource {
         } else if (syncedCode) {
           syncType = "code";
         }
-        return `${payload.user.display_name} synced ${
-          payload.outcome.title
-        }'s ${syncType} with ${payload.environment.title}`; // eslint-disable-line max-len
+        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${syncType} with ${payload.environment.title}`; // eslint-disable-line max-len
       case "environment.access.add":
-        return `${payload.user.display_name} added ${
-          payload.access.display_name
-        } to ${payload.environment.title}`;
+        return `${payload.user.display_name} added ${payload.access.display_name} to ${payload.environment.title}`;
       case "environment.access.remove":
-        return `${payload.user.display_name} removed ${
-          payload.access.display_name
-        } from ${payload.environment.title}`;
+        return `${payload.user.display_name} removed ${payload.access.display_name} from ${payload.environment.title}`;
       case "environment.variable.create":
-        return `${payload.user.display_name} added variable ${
-          payload.variable.name
-        }`;
+        return `${payload.user.display_name} added variable ${payload.variable.name}`;
       case "environment.variable.delete":
-        return `${payload.user.display_name} deleted variable ${
-          payload.variable.name
-        }`;
+        return `${payload.user.display_name} deleted variable ${payload.variable.name}`;
       case "environment.variable.update":
-        return `${payload.user.display_name} modified variable ${
-          payload.variable.name
-        }`;
+        return `${payload.user.display_name} modified variable ${payload.variable.name}`;
       case "environment.update.http_access":
-        return `${
-          payload.user.display_name
-        } updated HTTP Access settings on environment ${
-          payload.environment.title
-        }`;
+        return `${payload.user.display_name} updated HTTP Access settings on environment ${payload.environment.title}`;
       case "environment.update.smtp":
-        return `${
-          payload.user.display_name
-        } updated SMTP settings on environment ${payload.environment.title}`;
+        return `${payload.user.display_name} updated SMTP settings on environment ${payload.environment.title}`;
       case "environment.route.create":
-        return `${payload.user.display_name} added route ${
-          payload.route.route
-        }`;
+        return `${payload.user.display_name} added route ${payload.route.route}`;
       case "environment.route.delete":
-        return `${payload.user.display_name} deleted route ${
-          payload.route.route
-        }`;
+        return `${payload.user.display_name} deleted route ${payload.route.route}`;
       case "environment.route.update":
-        return `${payload.user.display_name} modified route ${
-          payload.route.route
-        }`;
+        return `${payload.user.display_name} modified route ${payload.route.route}`;
       case "environment.subscription.update":
         return `${payload.user.display_name} modified subscription`;
       case "project.create":
-        return `${payload.user.display_name} created a new project ${
-          payload.outcome.title
-        }`;
+        return `${payload.user.display_name} created a new project ${payload.outcome.title}`;
     }
     return type;
   }

@@ -15,15 +15,14 @@ const createableField = [
 ];
 
 export interface APITokenGetParams {
-  id?: string,
-  [index: string]: any
-};
+  id?: string;
+  [index: string]: any;
+}
 
 export interface APITokenQueryParams {
-  userId?: string,
-  [index: string]: any
-};
-
+  userId?: string;
+  [index: string]: any;
+}
 
 export default class ApiToken extends Ressource {
   id: string;
@@ -74,13 +73,13 @@ export default class ApiToken extends Ressource {
   // @deprecated use deleteWithParams instead
   delete(params: APITokenQueryParams) {
     const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
-    
+
     return super.delete(url);
   }
-  
+
   deleteWithParams(params: APITokenQueryParams) {
     const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
-    
+
     return super.delete(url);
   }
 }

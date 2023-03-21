@@ -6,7 +6,7 @@ const paramDefaults = {};
 
 export interface TicketCategoryGetParams {
   [key: string]: any;
-};
+}
 
 export default class TicketCategory extends Ressource {
   id: string;

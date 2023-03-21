@@ -5,19 +5,14 @@ import request from "../api";
 const url = "/v1/comments";
 const paramDefaults = {};
 
-const createableField = [
-  "body",
-  "ticket_id",
-  "attachments",
-  "author_id"
-];
+const createableField = ["body", "ticket_id", "attachments", "author_id"];
 
-export interface CommentsResponse{
+export interface CommentsResponse {
   data: {
-    comments: Array<Comment>,
-    count: number
-  } & APIObject
-};
+    comments: Array<Comment>;
+    count: number;
+  } & APIObject;
+}
 
 export default class Comment extends Ressource {
   id: string;

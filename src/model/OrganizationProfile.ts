@@ -21,7 +21,7 @@ const modifiableField = [
 export interface OrganizationProfilGetParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export default class OrganizationProfile extends Ressource {
   stripe: object;
@@ -59,6 +59,11 @@ export default class OrganizationProfile extends Ressource {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._get<OrganizationProfile>(`${api_url}${url}`, { organizationId }, {}, queryParams);
+    return super._get<OrganizationProfile>(
+      `${api_url}${url}`,
+      { organizationId },
+      {},
+      queryParams
+    );
   }
 }

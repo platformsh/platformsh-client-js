@@ -7,7 +7,7 @@ const url = "/organizations/:organizationId/regions/:id";
 export interface OrganizationRegionQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 // @ts-ignore
 // TODO: solve the query function inheritance ts error

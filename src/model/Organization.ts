@@ -3,8 +3,10 @@ import { getConfig } from "../config";
 import CursoredResult from "./CursoredResult";
 
 import OrganizationMember from "./OrganizationMember";
-import OrganizationVoucher from "./OrganizationVoucher"; 
-import OrganizationSubscription, { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
+import OrganizationVoucher from "./OrganizationVoucher";
+import OrganizationSubscription, {
+  CreateSubscriptionPayloadType
+} from "./OrganizationSubscription";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -14,16 +16,15 @@ const creatableField = ["name", "label", "country"];
 
 const modifiableField = ["name", "label", "country"];
 
-
 export interface OrganizationGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface OrganizationQueryParams {
   userId?: string;
   [key: string]: any;
-};
+}
 
 export default class Organization extends Ressource {
   id: string;
@@ -83,13 +84,14 @@ export default class Organization extends Ressource {
       { userId },
       paramDefaults,
       queryParams,
-      (data) => {
-        if(!Array.isArray(data)) {
+      data => {
+        if (!Array.isArray(data)) {
           return (data as CursoredResult<Organization>)?.items;
         }
 
         return [];
-      });
+      }
+    );
   }
 
   getMembers() {
@@ -111,11 +113,13 @@ export default class Organization extends Ressource {
 
   addVoucher(code: string) {
     const { api_url } = getConfig();
-    return new OrganizationVoucher({
-      organizationId: this.id,
-      code
-    }, `${api_url}/organizations/${this.id}/vouchers/apply`).save();
-
+    return new OrganizationVoucher(
+      {
+        organizationId: this.id,
+        code
+      },
+      `${api_url}/organizations/${this.id}/vouchers/apply`
+    ).save();
   }
 
   getLink(rel: string, absolute = true) {
@@ -136,9 +140,10 @@ export default class Organization extends Ressource {
   }
 
   addSubscription(payload: CreateSubscriptionPayloadType) {
-    const organizationSubscription = new OrganizationSubscription(
-      { ...payload, organizationId: this.id }
-    );
+    const organizationSubscription = new OrganizationSubscription({
+      ...payload,
+      organizationId: this.id
+    });
     return organizationSubscription.save();
   }
 }

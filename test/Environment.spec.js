@@ -8,11 +8,11 @@ import Environment from "../src/model/Environment";
 import { getConfig } from "../src/config";
 
 describe("Environment", () => {
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -117,8 +117,7 @@ describe("Environment", () => {
               id: "kwfj7emjcltpm",
               _links: {
                 self: {
-                  href:
-                    "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                  href: "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
                   meta: {
                     get: {
                       responses: {
@@ -284,8 +283,7 @@ describe("Environment", () => {
               id: "kwfj7emjcltpm",
               _links: {
                 self: {
-                  href:
-                    "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                  href: "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
                   meta: {
                     get: {
                       responses: {
@@ -581,8 +579,7 @@ describe("Environment", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/ffzefzef3/git/commits/shastring"
+          href: "https://region.platform.sh/api/projects/ffzefzef3/git/commits/shastring"
         }
       },
       sha: "shastring",

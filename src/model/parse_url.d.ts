@@ -1,1 +1,1 @@
-declare module 'parse_url';
+declare module "parse_url";

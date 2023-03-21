@@ -10,11 +10,11 @@ import Account from "../src/model/Account";
 describe("Account", () => {
   const { account_url } = getConfig();
 
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 

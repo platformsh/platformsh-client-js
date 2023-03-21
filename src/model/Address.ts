@@ -6,9 +6,9 @@ const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
 
 export interface AddressParams {
-  id: string,
-  [index: string]: any
-};
+  id: string;
+  [index: string]: any;
+}
 
 const _modifiableField = [
   "country",
@@ -96,7 +96,7 @@ export default class Address extends Ressource {
   update(address: APIObject, id?: string) {
     const { api_url } = getConfig();
 
-    let updateURL = `${api_url}${url}`
+    let updateURL = `${api_url}${url}`;
 
     if (id) {
       updateURL = Address.getQueryUrl(updateURL, id);

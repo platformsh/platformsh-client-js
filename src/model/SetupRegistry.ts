@@ -10,7 +10,7 @@ const paramDefaults = {};
 export interface SetupRegistryGetParams {
   name: string;
   [key: string]: any;
-};
+}
 
 export default class SetupRegistry extends Ressource {
   description = "";
@@ -24,7 +24,11 @@ export default class SetupRegistry extends Ressource {
   type = "";
   versions = {};
 
-  constructor(registry: APIObject, url = `${_url}?service=:name`, modifiableField = []) {
+  constructor(
+    registry: APIObject,
+    url = `${_url}?service=:name`,
+    modifiableField = []
+  ) {
     super(url, paramDefaults, {}, registry, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
   }

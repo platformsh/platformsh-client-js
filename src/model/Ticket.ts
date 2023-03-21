@@ -7,24 +7,24 @@ const paramDefaults = {};
 
 export interface TicketQueryParams {
   [key: string]: any;
-};
+}
 
 export interface Attachment {
-  filename: string,
-  uri: string,
-  content_type: string
-};
+  filename: string;
+  uri: string;
+  content_type: string;
+}
 
 export type TicketResponse = {
   data: {
-    count: number,
-    tickets: Array<Ticket>
-  }
+    count: number;
+    tickets: Array<Ticket>;
+  };
 } & APIObject;
 
 export interface AttachmentsResponse {
-  attachments: Array<Attachment>
-};
+  attachments: Array<Attachment>;
+}
 
 export default class Ticket extends Ressource {
   subject: string;
@@ -55,7 +55,12 @@ export default class Ticket extends Ressource {
     const { api_url } = getConfig();
     const url = `/v1/comments/${ticketId}/description`;
 
-    return super._get<AttachmentsResponse>(`${api_url}${url}`, {}, paramDefaults, {});
+    return super._get<AttachmentsResponse>(
+      `${api_url}${url}`,
+      {},
+      paramDefaults,
+      {}
+    );
   }
 
   static getAllAttachments(ticketId: string): Promise<Array<Attachment>> {
@@ -68,7 +73,12 @@ export default class Ticket extends Ressource {
   static query(queryParams: TicketQueryParams) {
     const { api_url } = getConfig();
 
-    return super._get<TicketResponse>(`${api_url}${url}`, {}, paramDefaults, queryParams);
+    return super._get<TicketResponse>(
+      `${api_url}${url}`,
+      {},
+      paramDefaults,
+      queryParams
+    );
   }
 
   static open(ticket: APIObject) {

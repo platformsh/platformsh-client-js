@@ -14,7 +14,7 @@ describe("Client", () => {
   let client;
   const { authentication_url, api_url } = getConfig();
 
-  beforeEach(function() {
+  beforeEach(function () {
     fetchMock.mock(`${authentication_url}/oauth2/token`, {
       access_token: "test"
     });
@@ -23,7 +23,7 @@ describe("Client", () => {
     });
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -1086,16 +1086,13 @@ describe("Client", () => {
           id: "development",
           _links: {
             self: {
-              href:
-                "http://admin.local.c-g.io/api/projects/test_project/environment-types/development"
+              href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/development"
             },
             "#edit": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/development"
+              href: "https://test.com/api/projects/test_project/environment-types/development"
             },
             "#access": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/development/access"
+              href: "https://test.com/api/projects/test_project/environment-types/development/access"
             }
           },
           attributes: {}
@@ -1104,16 +1101,13 @@ describe("Client", () => {
           id: "production",
           _links: {
             self: {
-              href:
-                "http://admin.local.c-g.io/api/projects/test_project/environment-types/production"
+              href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/production"
             },
             "#edit": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/production"
+              href: "https://test.com/api/projects/test_project/environment-types/production"
             },
             "#access": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/production/access"
+              href: "https://test.com/api/projects/test_project/environment-types/production/access"
             }
           },
           attributes: {}
@@ -1122,16 +1116,13 @@ describe("Client", () => {
           id: "staging",
           _links: {
             self: {
-              href:
-                "http://admin.local.c-g.io/api/projects/test_project/environment-types/staging"
+              href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/staging"
             },
             "#edit": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/staging"
+              href: "https://test.com/api/projects/test_project/environment-types/staging"
             },
             "#access": {
-              href:
-                "https://test.com/api/projects/test_project/environment-types/staging/access"
+              href: "https://test.com/api/projects/test_project/environment-types/staging/access"
             }
           },
           attributes: {}
@@ -1174,9 +1165,8 @@ describe("Client", () => {
         ]
       );
 
-      const environmentTypes = await client.getProjectEnvironmentTypesWithAccesses(
-        "project_id"
-      );
+      const environmentTypes =
+        await client.getProjectEnvironmentTypesWithAccesses("project_id");
 
       assert.equal(environmentTypes.length, 3);
       assert.equal(environmentTypes[0].id, "development");

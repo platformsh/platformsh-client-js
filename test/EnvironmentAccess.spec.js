@@ -8,11 +8,11 @@ import EnvironmentAccess from "../src/model/EnvironmentAccess";
 import Environment from "../src/model/Environment";
 
 describe("Environment Access", () => {
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -24,8 +24,7 @@ describe("Environment Access", () => {
           id: "alice",
           _links: {
             self: {
-              href:
-                "https://test.com/api/projects/ffzefzef3/environments/1/access/alice",
+              href: "https://test.com/api/projects/ffzefzef3/environments/1/access/alice",
               meta: {
                 get: {
                   responses: {

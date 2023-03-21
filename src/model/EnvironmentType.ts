@@ -10,34 +10,34 @@ const paramDefaults = {};
 export interface EnvironmentTypeGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface EnvironmentTypeQueryParams {
   projectId: string;
   [key: string]: any;
-};
+}
 
-export type AccessRole = "admin" | "contributor" | "viewer"
+export type AccessRole = "admin" | "contributor" | "viewer";
 
 export interface CreateAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  email?: string,
-  role: AccessRole,
-  user?: string
+  projectId: string;
+  environmentTypeId: string;
+  email?: string;
+  role: AccessRole;
+  user?: string;
 }
 
 export interface UpdateAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  accessId: string,
-  role: AccessRole
+  projectId: string;
+  environmentTypeId: string;
+  accessId: string;
+  role: AccessRole;
 }
 
 export interface DeleteAccessParams {
-  projectId: string,
-  environmentTypeId: string,
-  accessId: string,
+  projectId: string;
+  environmentTypeId: string;
+  accessId: string;
 }
 
 export default class EnvironmentType extends Ressource {
@@ -89,22 +89,20 @@ export default class EnvironmentType extends Ressource {
   }
 
   static async updateAccess(params: UpdateAccessParams) {
-    const { projectId, environmentTypeId, accessId, role } = params
+    const { projectId, environmentTypeId, accessId, role } = params;
     const { api_url } = getConfig();
-    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      accessId
-    }`;
+    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
     return request(url, "PATCH", {
       role
     }).then(response => new ProjectAccess(response._embedded.entity, url));
   }
 
-  static async deleteAccess(params: DeleteAccessParams): Promise<{status: string, code: number}> {
-    const { projectId, environmentTypeId, accessId } = params
+  static async deleteAccess(
+    params: DeleteAccessParams
+  ): Promise<{ status: string; code: number }> {
+    const { projectId, environmentTypeId, accessId } = params;
     const { api_url } = getConfig();
-    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${
-      accessId
-    }`;
+    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
     return request(url, "DELETE");
   }
 
