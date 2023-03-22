@@ -5,8 +5,8 @@ import AuthUser from "./AuthUser";
 import Ressource, { APIObject, RessourceChildClass } from "./Ressource";
 
 export enum Directions {
-  previous="Previous",
-  next="next",
+  previous = "Previous",
+  next = "next"
 }
 
 class CursoredLinksManager<T> {
@@ -24,7 +24,9 @@ class CursoredLinksManager<T> {
   async getPage(direction: Directions) {
     const { api_url } = getConfig();
 
-    const result = await request(getLinkHref(this.links, direction, true, api_url));
+    const result = await request(
+      getLinkHref(this.links, direction, true, api_url)
+    );
     return new CursoredResult(
       this.baseUrl,
       result?.items,
@@ -71,7 +73,12 @@ export default class CursoredResult<T> {
   DataType: RessourceChildClass<T>;
   linksManager: CursoredLinksManager<T>;
 
-  constructor(baseUrl: string, items: APIObject[], links: Links, DataType: RessourceChildClass<T>) {
+  constructor(
+    baseUrl: string,
+    items: APIObject[],
+    links: Links,
+    DataType: RessourceChildClass<T>
+  ) {
     this.baseUrl = baseUrl;
     this.items = items?.map(d => new DataType(d, `${baseUrl}/${d.id}`));
     this.links = links;

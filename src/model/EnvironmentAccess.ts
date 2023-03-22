@@ -20,13 +20,13 @@ export interface EnvironmentAccessGetParams {
   environmentId: string;
   id: string;
   [key: string]: any;
-};
+}
 
 export interface EnvironmentAccessQueryParams {
   projectId: string;
   environmentId: string;
   [key: string]: any;
-};
+}
 
 export default class EnvironmentAccess extends Ressource {
   id = "";
@@ -124,7 +124,7 @@ export default class EnvironmentAccess extends Ressource {
   getUser() {
     const embeddedUsers = this.getEmbedded("users");
 
-    if(embeddedUsers) {
+    if (embeddedUsers) {
       return new User(embeddedUsers[0]);
     }
   }

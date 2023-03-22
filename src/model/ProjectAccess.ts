@@ -18,7 +18,7 @@ const _url = "/projects/:projectId/access";
 export interface ProjectAccessQueryParams {
   projectId: string;
   [key: string]: any;
-};
+}
 
 export default class ProjectAccess extends Ressource {
   id = "";

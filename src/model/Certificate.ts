@@ -5,9 +5,9 @@ const paramDefaults = {};
 const _url = "/projects/:projectId/certificates";
 
 export interface CertificateQueryParams {
-  projectId?: string,
-  [index: string]: any
-};
+  projectId?: string;
+  [index: string]: any;
+}
 
 export default class Certificate extends Ressource {
   key: string;
@@ -16,8 +16,8 @@ export default class Certificate extends Ressource {
   chain: Array<string>;
   domains: Array<string>;
   expires_at: string;
-  updated_at: string
-  created_at: string
+  updated_at: string;
+  created_at: string;
   is_provisioned: boolean;
   issuer: Array<string>;
 

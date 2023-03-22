@@ -10,11 +10,11 @@ import Subscription from "../src/model/Subscription";
 describe("Subscribe", () => {
   const { account_url } = getConfig();
 
-  beforeEach(function() {
+  beforeEach(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 

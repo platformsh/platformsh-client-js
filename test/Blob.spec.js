@@ -8,11 +8,11 @@ import Blob from "../src/model/git/Blob";
 describe("Blob", () => {
   const { api_url } = getConfig();
 
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -21,8 +21,7 @@ describe("Blob", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/blobs/shastring"
+          href: "https://region.platform.sh/api/projects/projectid/git/blobs/shastring"
         }
       },
       sha: "shastring",

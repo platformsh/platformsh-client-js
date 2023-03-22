@@ -10,7 +10,7 @@ const paramDefaults = {};
 export interface OrganizationPaymentSourceParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 // @ts-ignore
 // TODO: solve the getAllowed and intent function inheritance ts error

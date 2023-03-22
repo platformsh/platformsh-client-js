@@ -8,11 +8,11 @@ import Commit from "../src/model/git/Commit";
 describe("Commit", () => {
   const { api_url } = getConfig();
 
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -21,8 +21,7 @@ describe("Commit", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/commits/shastring"
+          href: "https://region.platform.sh/api/projects/projectid/git/commits/shastring"
         }
       },
       sha: "shastring",
@@ -45,8 +44,7 @@ describe("Commit", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
+          href: "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
         }
       },
       sha: "shatree",

@@ -8,11 +8,11 @@ import Tree from "../src/model/git/Tree";
 describe("Tree", () => {
   const { api_url } = getConfig();
 
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -21,8 +21,7 @@ describe("Tree", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
+          href: "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
         }
       },
       sha: "shastring",
@@ -46,8 +45,7 @@ describe("Tree", () => {
       id: "shastringfolder",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
+          href: "https://region.platform.sh/api/projects/projectid/git/trees/shastring"
         }
       },
       sha: "shastringfolder",
@@ -65,8 +63,7 @@ describe("Tree", () => {
       id: "shastring",
       _links: {
         self: {
-          href:
-            "https://region.platform.sh/api/projects/projectid/git/blobs/shastringfile"
+          href: "https://region.platform.sh/api/projects/projectid/git/blobs/shastringfile"
         }
       },
       sha: "shastringfile",

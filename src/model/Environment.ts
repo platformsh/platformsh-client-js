@@ -29,19 +29,19 @@ export interface EnvironmentGetParams {
   projectId: string;
   id: string;
   [key: string]: any;
-};
+}
 
 export interface EnvironmentQueryParams {
   projectId: string;
   [key: string]: any;
-};
+}
 
 export enum Status {
-  active = "active", 
-  dirty = "dirty", 
-  inactive = "inactive", 
+  active = "active",
+  dirty = "dirty",
+  inactive = "inactive",
   deleting = "deleting"
-};
+}
 
 interface DeploymentState {
   crons: {
@@ -58,17 +58,17 @@ interface HttpAccess {
     permission: "allow" | "deny";
     address: string;
   }[];
-  basic_auth?: Record<string, string | undefined>
+  basic_auth?: Record<string, string | undefined>;
 }
 
 export default class Environment extends Ressource {
-  id: string = ""
+  id: string = "";
   status: Status = Status.inactive;
   head_commit: string = "";
   name: string = "";
   parent: string | null = null;
-  machine_name:string = "";
-  restrict_robots:boolean = false;
+  machine_name: string = "";
+  restrict_robots: boolean = false;
   title: string = "";
   created_at: string = "";
   updated_at: string = "";
@@ -85,14 +85,7 @@ export default class Environment extends Ressource {
   type: string = "";
 
   constructor(environment: APIObject, url: string) {
-    super(
-      url,
-      paramDefaults,
-      environment,
-      environment,
-      [],
-      modifiableField
-    );
+    super(url, paramDefaults, environment, environment, [], modifiableField);
   }
 
   static get(params: EnvironmentGetParams, customUrl?: string) {
@@ -155,7 +148,7 @@ export default class Environment extends Ressource {
 
   convertSshUrl(url: string, username_suffix = "") {
     const sshUrl = sshRegex.exec(url);
-    if(sshUrl) {
+    if (sshUrl) {
       const host = sshUrl[2];
       const user = sshUrl[1];
 
@@ -165,10 +158,10 @@ export default class Environment extends Ressource {
 
   getSshUrls() {
     const links = this.getLinks();
-    if(!links) {
+    if (!links) {
       return {};
     }
-    
+
     const sshUrls = Object.keys(links)
       .filter(linkKey => linkKey.indexOf(sshLinkKeyPrefix) === 0)
       .reduce((sshUrls: Record<string, string>, linkKey) => {
@@ -364,7 +357,10 @@ export default class Environment extends Ressource {
    * @return Variable[]
    */
   getVariables(limit: number) {
-    return Variable.query({ projectId: this.project, environmentId: this.id, limit }, this.getLink("#manage-variables"));
+    return Variable.query(
+      { projectId: this.project, environmentId: this.id, limit },
+      this.getLink("#manage-variables")
+    );
   }
 
   /**
@@ -431,7 +427,10 @@ export default class Environment extends Ressource {
    * @return Variable|false
    */
   getVariable(id: string) {
-    return Variable.get({ projectId: this.project, environmentId: this.id, id }, this.getLink("#manage-variables"));
+    return Variable.get(
+      { projectId: this.project, environmentId: this.id, id },
+      this.getLink("#manage-variables")
+    );
   }
 
   /**
@@ -468,7 +467,10 @@ export default class Environment extends Ressource {
    * @return Route
    */
   getRoute(id: string) {
-    return Route.get({ projectId: this.project, environmentId: this.id, id }, this.getLink("#manage-routes"));
+    return Route.get(
+      { projectId: this.project, environmentId: this.id, id },
+      this.getLink("#manage-routes")
+    );
   }
 
   /**
@@ -478,7 +480,10 @@ export default class Environment extends Ressource {
    * @return Route[]
    */
   getRoutes() {
-    return Route.query({ projectId: this.project, environmentId: this.id }, this.getLink("#manage-routes"));
+    return Route.query(
+      { projectId: this.project, environmentId: this.id },
+      this.getLink("#manage-routes")
+    );
   }
 
   /**
@@ -487,10 +492,10 @@ export default class Environment extends Ressource {
    * @return string[]
    */
   getRouteUrls() {
-    const links = this.getLinks()
+    const links = this.getLinks();
     if (!links) return [];
 
-    const routes =  links["pf:routes"]
+    const routes = links["pf:routes"];
     if (!routes || !Array.isArray(routes)) {
       return [];
     }
@@ -523,7 +528,10 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess|false
    */
   getUser(id: string) {
-    return EnvironmentAccess.get({ projectId: this.project, environmentId: this.id, id }, this.getLink("#manage-access"));
+    return EnvironmentAccess.get(
+      { projectId: this.project, environmentId: this.id, id },
+      this.getLink("#manage-access")
+    );
   }
   /**
    * Get the users with access to this environment.
@@ -531,7 +539,10 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess[]
    */
   getUsers() {
-    return EnvironmentAccess.query({ projectId: this.project, environmentId: this.id }, this.getLink("#manage-access"));
+    return EnvironmentAccess.query(
+      { projectId: this.project, environmentId: this.id },
+      this.getLink("#manage-access")
+    );
   }
   /**
    * Add a new user to the environment.
@@ -549,10 +560,10 @@ export default class Environment extends Ressource {
   addUser(user: string, role: string, byUuid = true) {
     const property = byUuid ? "user" : "email";
     const body: {
-      id: string,
-      role: string,
+      id: string;
+      role: string;
       user?: string;
-      email?: string
+      email?: string;
     } = { id: "", role, [property]: user };
 
     const environmentAccess = new EnvironmentAccess(
@@ -571,7 +582,10 @@ export default class Environment extends Ressource {
    * @return EnvironmentAccess|false
    */
   removeUser(id: string) {
-    return EnvironmentAccess.get({ projectId: this.project, environmentId: this.id, id }, this.getLink("#manage-access")).then(
+    return EnvironmentAccess.get(
+      { projectId: this.project, environmentId: this.id, id },
+      this.getLink("#manage-access")
+    ).then(
       environmentAccess => environmentAccess && environmentAccess.delete()
     );
   }

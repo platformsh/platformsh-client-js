@@ -8,14 +8,14 @@ const creatableField = ["role"];
 
 export interface TeamMemberGetParams {
   id: string;
-  teamId: string,
+  teamId: string;
   [key: string]: any;
-};
+}
 
 export interface TeamMemberQueryParams {
-  teamId: string,
+  teamId: string;
   [key: string]: any;
-};
+}
 
 export default class TeamMember extends Ressource {
   user: string;

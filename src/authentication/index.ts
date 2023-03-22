@@ -11,11 +11,11 @@ import { ClientConfiguration } from "../config";
 let authenticationInProgress: boolean = false;
 
 export type JWTToken = {
-  access_token: string,
-  expires: number,
-  expires_in: number,
-  token_type: string,
-  scope: string
+  access_token: string;
+  expires: number;
+  expires_in: number;
+  token_type: string;
+  scope: string;
 };
 
 export default (
@@ -26,7 +26,7 @@ export default (
     popupMode,
     response_mode,
     prompt,
-    extra_params,
+    extra_params
   }: ClientConfiguration,
   reset = false
 ): Promise<JWTToken> => {
@@ -46,11 +46,11 @@ export default (
       popupMode,
       response_mode,
       prompt,
-      extra_params,
+      extra_params
     });
   }
-  
-  if(promise) {
+
+  if (promise) {
     setAuthenticationPromise(promise);
 
     promise.then(() => {

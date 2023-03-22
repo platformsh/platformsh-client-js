@@ -10,11 +10,11 @@ import Me from "../src/model/Me";
 describe("Me", () => {
   const { api_url } = getConfig();
 
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 

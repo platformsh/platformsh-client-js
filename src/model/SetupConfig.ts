@@ -10,7 +10,10 @@ export default class SetupConfig extends Ressource {
   app = "";
   service = "";
 
-  constructor(setupConfig: APIObject, url = `${_url}?service=:service&format=:format`) {
+  constructor(
+    setupConfig: APIObject,
+    url = `${_url}?service=:service&format=:format`
+  ) {
     super(url, paramDefaults, {}, setupConfig, []);
     this._queryUrl = Ressource.getQueryUrl(url);
   }

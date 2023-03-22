@@ -76,7 +76,7 @@ export default class OrganizationSubscription extends Subscription {
       queryParams,
       OrganizationSubscription,
       {
-        queryStringArrayPrefix: "[]",
+        queryStringArrayPrefix: "[]"
       }
     );
   }

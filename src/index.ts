@@ -3,7 +3,12 @@ import connector, { JWTToken, wipeToken } from "./authentication";
 import { getConfig, setConfig, ClientConfiguration } from "./config";
 import entities from "./model";
 import Activity from "./model/Activity";
-import { AccessRole, CreateAccessParams, DeleteAccessParams, UpdateAccessParams } from "./model/EnvironmentType";
+import {
+  AccessRole,
+  CreateAccessParams,
+  DeleteAccessParams,
+  UpdateAccessParams
+} from "./model/EnvironmentType";
 import Me from "./model/Me";
 import { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
 import ProjectAccess from "./model/ProjectAccess";
@@ -68,7 +73,7 @@ export default class Client {
    */
   locateProject(id: string) {
     return this.getProjects().then(projects => {
-      if(!projects) {
+      if (!projects) {
         return undefined;
       }
       const project = projects.find(project => project.id === id);
@@ -149,7 +154,12 @@ export default class Client {
    *
    * @return Promise Activity[]
    */
-  getEnvironmentActivities(projectId: string, environmentId: string, type: string, starts_at: number) {
+  getEnvironmentActivities(
+    projectId: string,
+    environmentId: string,
+    type: string,
+    starts_at: number
+  ) {
     return entities.Activity.query({
       projectId,
       environmentId,
@@ -158,7 +168,11 @@ export default class Client {
     });
   }
 
-  getEnvironmentActivity(projectId: string, environmentId: string, activityId: string) {
+  getEnvironmentActivity(
+    projectId: string,
+    environmentId: string,
+    activityId: string
+  ) {
     return entities.Activity.get({
       projectId,
       environmentId,
@@ -184,7 +198,12 @@ export default class Client {
    * @param string key
    * @param array  chain
    */
-  addCertificate(projectId: string, certificate: string, key: string, chain = []) {
+  addCertificate(
+    projectId: string,
+    certificate: string,
+    key: string,
+    chain = []
+  ) {
     const { api_url } = getConfig();
     const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
     const certificateObj = new entities.Certificate(
@@ -260,7 +279,11 @@ export default class Client {
    *
    * @return ProjectLevelVariable[]
    */
-  getEnvironmentVariables(projectId: string, environmentId: string, limit?: number) {
+  getEnvironmentVariables(
+    projectId: string,
+    environmentId: string,
+    limit?: number
+  ) {
     return entities.Variable.query({ projectId, environmentId, limit });
   }
 
@@ -321,7 +344,12 @@ export default class Client {
    *
    * @return Promise Activity[]
    */
-  getIntegrationActivities(projectId: string, integrationId: string, type: string, starts_at: number) {
+  getIntegrationActivities(
+    projectId: string,
+    integrationId: string,
+    type: string,
+    starts_at: number
+  ) {
     const { api_url } = getConfig();
 
     const url = `${api_url}/projects/${projectId}/integrations/${integrationId}/activities`;
@@ -504,10 +532,13 @@ export default class Client {
    *
    * @return OrganizationSubscriptions[]
    */
-  getOrganizationSubscriptions(organizationId: string, params: OrganizationSubscriptionGetParams) {
+  getOrganizationSubscriptions(
+    organizationId: string,
+    params: OrganizationSubscriptionGetParams
+  ) {
     return entities.OrganizationSubscription.query({
       ...params,
-      organizationId,
+      organizationId
     });
   }
 
@@ -531,7 +562,11 @@ export default class Client {
    *
    * @return CursoredResult
    */
-  getOrganizationMembers(organizationId: string, filter?: object, sort?: string) {
+  getOrganizationMembers(
+    organizationId: string,
+    filter?: object,
+    sort?: string
+  ) {
     return entities.OrganizationMember.query({ organizationId, filter, sort });
   }
 
@@ -554,7 +589,11 @@ export default class Client {
    * @param object options
    * @param string environmentId
    */
-  initializeEnvironment(projectId: string, options: RequestOptions, environmentId = "master") {
+  initializeEnvironment(
+    projectId: string,
+    options: RequestOptions,
+    environmentId = "master"
+  ) {
     const { api_url } = getConfig();
 
     return request(
@@ -574,13 +613,15 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getSubscriptionEstimate(params: {plan: string,
-    storage: number,
-    environments: number,
-    user_licenses: number,
-    big_dev: string,
-    format? : string,
-    country_code?: string}) {
+  getSubscriptionEstimate(params: {
+    plan: string;
+    storage: number;
+    environments: number;
+    user_licenses: number;
+    big_dev: string;
+    format?: string;
+    country_code?: string;
+  }) {
     const { api_url } = getConfig();
 
     return request(`${api_url}/v1/subscriptions/estimate`, "GET", params);
@@ -597,17 +638,20 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getOrganizationSubscriptionEstimate(organizationId: string, params: {
+  getOrganizationSubscriptionEstimate(
     organizationId: string,
-    plan: string,
-    storage: number,
-    environments: number,
-    user_licenses: number,
-    big_dev: string,
-    backups?: string,
-    format?: string,
-    country_code?: string
-  }) {
+    params: {
+      organizationId: string;
+      plan: string;
+      storage: number;
+      environments: number;
+      user_licenses: number;
+      big_dev: string;
+      backups?: string;
+      format?: string;
+      country_code?: string;
+    }
+  ) {
     const { api_url } = getConfig();
 
     return request(
@@ -625,7 +669,11 @@ export default class Client {
    *
    * @return Deployment
    */
-  getCurrentDeployment(projectId: string, environmentId: string, params: object) {
+  getCurrentDeployment(
+    projectId: string,
+    environmentId: string,
+    params: object
+  ) {
     return entities.Deployment.get({ projectId, environmentId, ...params });
   }
 
@@ -828,10 +876,13 @@ export default class Client {
     const { api_url } = getConfig();
     const values = this.cleanRequest({ code });
 
-    return new entities.OrganizationVoucher({
-      organizationId,
-      ...values
-    }, `${api_url}/organizations/${organizationId}/vouchers/apply`).save();
+    return new entities.OrganizationVoucher(
+      {
+        organizationId,
+        ...values
+      },
+      `${api_url}/organizations/${organizationId}/vouchers/apply`
+    ).save();
   }
 
   /**
@@ -853,7 +904,7 @@ export default class Client {
    * @return Promise
    */
   getPaymentSource(owner?: string) {
-    return entities.PaymentSource.get({owner});
+    return entities.PaymentSource.get({ owner });
   }
 
   /**
@@ -893,7 +944,12 @@ export default class Client {
    *
    * @return Result
    */
-  addOrganizationPaymentSource(organizationId: string, type: string, token: string, email: string) {
+  addOrganizationPaymentSource(
+    organizationId: string,
+    type: string,
+    token: string,
+    email: string
+  ) {
     const values = this.cleanRequest({ type, token, email });
 
     return new entities.OrganizationPaymentSource({
@@ -1047,14 +1103,19 @@ export default class Client {
    */
   getSetupRegistry() {
     const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then((data: Record<string, APIObject>) => {
-      return typeof data === "undefined"
-        ? undefined
-        : Object.entries(data).reduce((items: Record<string, any>, [key, value]) => {
-            items[key] = new entities.SetupRegistry(value);
-            return items;
-          }, {});
-    });
+    return request(`${api_url}/platform/setup/registry`, "POST").then(
+      (data: Record<string, APIObject>) => {
+        return typeof data === "undefined"
+          ? undefined
+          : Object.entries(data).reduce(
+              (items: Record<string, any>, [key, value]) => {
+                items[key] = new entities.SetupRegistry(value);
+                return items;
+              },
+              {}
+            );
+      }
+    );
   }
 
   /**
@@ -1386,7 +1447,13 @@ export default class Client {
    *
    * @returns {Promise} Promise that return a Result.
    */
-  async createInvitation(email: string, projectId: string, role: string, environments: Array<{id: string, role: string}>, force = false) {
+  async createInvitation(
+    email: string,
+    projectId: string,
+    role: string,
+    environments: Array<{ id: string; role: string }>,
+    force = false
+  ) {
     const invitation = new entities.Invitation({
       email,
       projectId,
@@ -1536,7 +1603,11 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an access object.
    */
-  async getTopology(projectId: string, environmentId: string, params?: Record<string, any>) {
+  async getTopology(
+    projectId: string,
+    environmentId: string,
+    params?: Record<string, any>
+  ) {
     return entities.Topology.get({
       projectId,
       environmentId,

@@ -37,9 +37,9 @@ const modifiableField = [
 ];
 
 export interface AccountsProfileGetParams {
-  id: string,
-  [index: string]: any
-};
+  id: string;
+  [index: string]: any;
+}
 
 export default class AccountsProfile extends Ressource {
   id: string;
@@ -56,7 +56,6 @@ export default class AccountsProfile extends Ressource {
   ui_contrast: string;
   default_catalog: string;
   marketing: string;
-
 
   constructor(profile: APIObject) {
     const { api_url } = getConfig();

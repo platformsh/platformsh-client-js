@@ -15,7 +15,11 @@ export default class PaymentSource extends Ressource {
   card: string;
   mandate: string;
 
-  constructor(paymentSource: APIObject, customUrl?: string, params?: ParamsType) {
+  constructor(
+    paymentSource: APIObject,
+    customUrl?: string,
+    params?: ParamsType
+  ) {
     const { api_url } = getConfig();
 
     super(
@@ -45,9 +49,7 @@ export default class PaymentSource extends Ressource {
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
         if (typeof data === undefined) return {};
-        return new PaymentSource(
-          this.formatDetails(data.payment_source)
-        );
+        return new PaymentSource(this.formatDetails(data.payment_source));
       })
       .catch(err => new PaymentSource({}));
   }

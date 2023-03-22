@@ -13,17 +13,16 @@ const _url = "/projects/:projectId/environments/:environmentId/routes";
 
 export interface RouteGetParams {
   id: string;
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
+}
 
 export interface RouteQueryParams {
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
-
+}
 
 export default class Route extends Ressource {
   id = "";
@@ -35,7 +34,7 @@ export default class Route extends Ressource {
   upstream = "";
   to = "";
   type = "";
-  
+
   constructor(route: APIObject, url: string) {
     super(
       url,

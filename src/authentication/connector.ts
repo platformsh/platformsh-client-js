@@ -20,10 +20,14 @@ import {
   jso_getCodeVerifier,
   PKCERequest
 } from "../jso";
-import { getConfig, ClientConfiguration, DefaultClientConfiguration } from "../config";
+import {
+  getConfig,
+  ClientConfiguration,
+  DefaultClientConfiguration
+} from "../config";
 
 type IFrameOption = {
-  sandbox?: string
+  sandbox?: string;
 };
 
 let basicAuth: string;
@@ -34,8 +38,13 @@ if (isNode) {
   basicAuth = btoa("platform-cli:");
 }
 
-function createIFrame(src: string, options: IFrameOption = {}): HTMLIFrameElement {
-  let iframe: HTMLIFrameElement = document.getElementById("logiframe-platformsh") as HTMLIFrameElement;
+function createIFrame(
+  src: string,
+  options: IFrameOption = {}
+): HTMLIFrameElement {
+  let iframe: HTMLIFrameElement = document.getElementById(
+    "logiframe-platformsh"
+  ) as HTMLIFrameElement;
 
   if (iframe) {
     return iframe;
@@ -51,8 +60,8 @@ function createIFrame(src: string, options: IFrameOption = {}): HTMLIFrameElemen
   iframe.src = src;
   document.body.appendChild(iframe);
 
-  if(iframe.contentWindow) {
-    iframe.contentWindow.onerror = function(msg, url, line) {
+  if (iframe.contentWindow) {
+    iframe.contentWindow.onerror = function (msg, url, line) {
       if (msg === "[IFRAME ERROR MESSAGE]") {
         return true;
       }
@@ -148,7 +157,12 @@ const getTokenWithAuthorizationCode = async (
   return await resp.json();
 };
 
-async function authorizationCodeCallback(config: DefaultClientConfiguration, codeVerifier: string, code: string, state?: string) {
+async function authorizationCodeCallback(
+  config: DefaultClientConfiguration,
+  codeVerifier: string,
+  code: string,
+  state?: string
+) {
   const atoken = await getTokenWithAuthorizationCode(
     config.authentication_url,
     config.client_id,
@@ -167,14 +181,17 @@ async function authorizationCodeCallback(config: DefaultClientConfiguration, cod
   return atoken;
 }
 
-function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, string>) {
+function logInWithRedirect(
+  reset: boolean = false,
+  extraParams?: Record<string, string>
+) {
   console.log("In redirect...");
   return new Promise(async (resolve, reject) => {
     const config = getConfig();
     const auth = {
       ...config,
       response_mode: config.response_mode,
-      prompt: config.prompt,
+      prompt: config.prompt
     };
     let pkce: PKCERequest;
 
@@ -209,7 +226,7 @@ function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, 
 
       if (oauthResp) {
         const codeVerifier = jso_getCodeVerifier(config.provider);
-        if(codeVerifier && oauthResp.code) {
+        if (codeVerifier && oauthResp.code) {
           return resolve(
             await authorizationCodeCallback(
               auth,
@@ -236,14 +253,14 @@ function logInWithRedirect(reset: boolean = false, extraParams?: Record<string, 
       } catch {}
     }
 
-    const authUrl = encodeURL(auth.authorization, {...req, ...extraParams});
+    const authUrl = encodeURL(auth.authorization, { ...req, ...extraParams });
 
     const iframe = createIFrame(authUrl, {
       sandbox: "allow-same-origin"
     });
     let attempt = 0;
 
-    const listener = setInterval(async function() {
+    const listener = setInterval(async function () {
       let href;
       let iframeDidReturnError;
 
@@ -477,7 +494,11 @@ export const logInWithPopUp = async (reset: boolean = false) => {
   return jso_getToken(authConfig.provider);
 };
 
-export default (token?: string, reset: boolean = false, config?: Partial<ClientConfiguration>) => {
+export default (
+  token?: string,
+  reset: boolean = false,
+  config?: Partial<ClientConfiguration>
+) => {
   if (isNode && token) {
     return logInWithToken(token).catch(e => new Error(e));
   }
@@ -496,4 +517,3 @@ export default (token?: string, reset: boolean = false, config?: Partial<ClientC
 
   return logInWithRedirect(reset, config?.extra_params);
 };
-

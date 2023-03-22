@@ -30,7 +30,7 @@ let _source: EventSource;
 export interface ProjectGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface Repository {
   client_ssh_key: string;
@@ -96,7 +96,10 @@ export default class Project extends Ressource {
       return this.subscription_id;
     }
     if (this.subscription && this.subscription.license_uri) {
-      return  path.basename(this.subscription.license_uri, path.extname(this.subscription.license_uri))
+      return path.basename(
+        this.subscription.license_uri,
+        path.extname(this.subscription.license_uri)
+      );
     }
     throw new Error("Subscription ID not found");
   }
@@ -124,7 +127,7 @@ export default class Project extends Ressource {
    * @return ProjectAccess[]
    */
   getUsers() {
-    return ProjectAccess.query({ projectId: this.id}, this.getLink("#access"));
+    return ProjectAccess.query({ projectId: this.id }, this.getLink("#access"));
   }
 
   /**
@@ -157,7 +160,10 @@ export default class Project extends Ressource {
    * @return Environment|false
    */
   getEnvironment(id: string) {
-    return Environment.get({ projectId: this.id, id }, this.getLink("environments"));
+    return Environment.get(
+      { projectId: this.id, id },
+      this.getLink("environments")
+    );
   }
 
   /**
@@ -187,7 +193,10 @@ export default class Project extends Ressource {
    * @return Environment[]
    */
   getEnvironments(limit: number) {
-    return Environment.query({ projectId: this.id, limit }, this.getLink("environments"));
+    return Environment.query(
+      { projectId: this.id, limit },
+      this.getLink("environments")
+    );
   }
 
   /**
@@ -239,7 +248,10 @@ export default class Project extends Ressource {
    * @return Integration[]
    */
   getIntegrations(limit: number) {
-    return Integration.query({ projectId: this.id, limit }, this.getLink("integrations"));
+    return Integration.query(
+      { projectId: this.id, limit },
+      this.getLink("integrations")
+    );
   }
 
   /**
@@ -250,7 +262,10 @@ export default class Project extends Ressource {
    * @return Integration|false
    */
   getIntegration(id: string) {
-    return Integration.get({ projectId: this.id, id }, this.getLink("integrations"));
+    return Integration.get(
+      { projectId: this.id, id },
+      this.getLink("integrations")
+    );
   }
 
   /**

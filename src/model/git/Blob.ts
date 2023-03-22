@@ -6,8 +6,8 @@ import { getConfig } from "../../config";
 const _url = "/projects/:projectId/git/blobs/:sha";
 
 export type BlobParams = {
-  projectId: string,
-  sha: string
+  projectId: string;
+  sha: string;
 };
 
 export default class Blob extends Ressource {
@@ -31,16 +31,16 @@ export default class Blob extends Ressource {
     this.content = "";
   }
 
-  static get(projectId: string, sha: string) : Promise<Blob> {
+  static get(projectId: string, sha: string): Promise<Blob> {
     const { api_url } = getConfig();
 
     return super._get<Blob>(`${api_url}${_url}`, { projectId, sha });
   }
 
-  async getInstance(): Promise<Blob| undefined> {
+  async getInstance(): Promise<Blob | undefined> {
     const blob = await Blob.get(this._params.projectId, this._params.sha);
 
-    if(blob) {
+    if (blob) {
       blob.path = this.path;
 
       return blob;

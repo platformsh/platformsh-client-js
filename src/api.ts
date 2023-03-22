@@ -11,7 +11,7 @@ export type RequestOptions = {
 
 export type RequestConfiguration = RequestOptions & RequestInit;
 
-let authenticationPromise : Promise<JWTToken>;
+let authenticationPromise: Promise<JWTToken>;
 
 export const setAuthenticationPromise = (promise: Promise<JWTToken>) => {
   authenticationPromise = promise;
@@ -39,10 +39,7 @@ const decodeHeaderString = (header: string) => {
     .replace("Bearer", "")
     .split(",")
     .reduce<Record<string, string>>((acc, cu) => {
-      const [key, value] = cu
-        .replace(/"/g, "")
-        .trim()
-        .split("=");
+      const [key, value] = cu.replace(/"/g, "").trim().split("=");
       acc[key] = value;
       return acc;
     }, {});
@@ -85,7 +82,9 @@ export const request = (
   };
 
   if (method !== "GET" && method !== "HEAD" && body) {
-    const d: BodyInit = isFormData(data) ? data as FormData : JSON.stringify(body);
+    const d: BodyInit = isFormData(data)
+      ? (data as FormData)
+      : JSON.stringify(body);
     requestConfig.body = d;
   }
 
@@ -93,13 +92,13 @@ export const request = (
     fetch(apiUrl, requestConfig)
       .then(response => {
         if (response.status === 401) {
-          const config: ClientConfiguration  = getConfig();
+          const config: ClientConfiguration = getConfig();
           const extra_params = getChallengeExtraParams(response.headers);
 
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
           if (typeof config.access_token === "undefined" && retryNumber < 2) {
-            return authenticate({ ...config, extra_params }, true).then((t) => {
+            return authenticate({ ...config, extra_params }, true).then(t => {
               resolve(
                 authenticatedRequest(
                   url,
@@ -159,7 +158,7 @@ export const request = (
 
 export const authenticatedRequest = (
   url: string,
-  method: string  = "GET",
+  method: string = "GET",
   data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber: number = 0,

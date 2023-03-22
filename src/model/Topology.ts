@@ -9,14 +9,14 @@ export interface TopologyGetParams {
   projectId: string;
   environmentId: string;
   [key: string]: any;
-};
+}
 
 export default class Topology extends Ressource {
   id: string;
   name: string;
   constraints: Record<string, string>;
   services: Record<string, object>;
-  
+
   constructor(topology: APIObject, url: string) {
     super(url, paramDefaults, {}, topology);
     this.id = "";

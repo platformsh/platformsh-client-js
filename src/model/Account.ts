@@ -5,9 +5,9 @@ const url = "/platform/users/:id";
 const paramDefaults = {};
 
 export interface AccountGetParams {
-  id?: string,
-  [index: string]: any
-};
+  id?: string;
+  [index: string]: any;
+}
 
 export default class Account extends Ressource {
   id: string;

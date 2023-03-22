@@ -9,12 +9,12 @@ export interface OrganizationOrderGetParams {
   id: string;
   organizationId: string;
   [key: string]: any;
-};
+}
 
 export interface OrganizationOrderQueryParams {
   organizationId: string;
   [key: string]: any;
-};
+}
 
 // @ts-ignore
 // TODO: solve the get and query function inheritance ts error

@@ -6,7 +6,7 @@ const paramDefaults = {};
 
 export interface TicketPriorityGetParams {
   [key: string]: any;
-};
+}
 
 export default class TicketPriority extends Ressource {
   id: string;

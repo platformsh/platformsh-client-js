@@ -24,9 +24,9 @@ export default class ApiDefaultStorage {
   }
 
   /*
-  * Checks if a token, has includes a specific scope.
-  * If token has no scope at all, false is returned.
-  */
+   * Checks if a token, has includes a specific scope.
+   * If token has no scope at all, false is returned.
+   */
   hasScope(token, scope) {
     var i;
 
@@ -38,9 +38,9 @@ export default class ApiDefaultStorage {
   }
 
   /*
-  * Takes an array of tokens, and removes the ones that
-  * are expired, and the ones that do not meet a scopes requirement.
-  */
+   * Takes an array of tokens, and removes the ones that
+   * are expired, and the ones that do not meet a scopes requirement.
+   */
   filterTokens(tokens, scopes) {
     var i,
       j,
@@ -91,9 +91,9 @@ export default class ApiDefaultStorage {
   }
 
   /*
-  * Save a single token for a provider.
-  * This also cleans up expired tokens for the same provider.
-  */
+   * Save a single token for a provider.
+   * This also cleans up expired tokens for the same provider.
+   */
   saveToken(provider, token) {
     var tokens = this.getTokens(provider);
 
@@ -103,9 +103,9 @@ export default class ApiDefaultStorage {
   }
 
   /*
-  * Get a token if exists for a provider with a set of scopes.
-  * The scopes parameter is OPTIONAL.
-  */
+   * Get a token if exists for a provider with a set of scopes.
+   * The scopes parameter is OPTIONAL.
+   */
   getToken(provider, scopes) {
     var tokens = this.getTokens(provider);
 

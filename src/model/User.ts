@@ -7,13 +7,13 @@ const paramDefaults = {};
 export interface UserGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface UserQueryParams {
-  projectId: string,
-  environmentId: string,
+  projectId: string;
+  environmentId: string;
   [key: string]: any;
-};
+}
 
 export default class User extends Ressource {
   id: string;
@@ -24,7 +24,11 @@ export default class User extends Ressource {
   email: string;
   username: string;
 
-  constructor(user: APIObject, url = `${_url}/:id`, modifiableField: Array<string> = []) {
+  constructor(
+    user: APIObject,
+    url = `${_url}/:id`,
+    modifiableField: Array<string> = []
+  ) {
     const { id } = user;
 
     super(url, paramDefaults, { id }, user, [], modifiableField);

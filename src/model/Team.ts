@@ -12,11 +12,11 @@ const modifiableField = ["name"];
 export interface TeamGetParams {
   id: string;
   [key: string]: any;
-};
+}
 
 export interface TeamQueryParams {
   [key: string]: any;
-};
+}
 
 export default class Team extends Ressource {
   id: string;

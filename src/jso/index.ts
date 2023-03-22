@@ -4,34 +4,34 @@ import { Token } from "typescript";
 import ApiDefaultStorage from "./ApiDefaultStorage";
 
 export type PKCERequest = {
-  codeVerifier: string,
-  codeChallenge: string
+  codeVerifier: string;
+  codeChallenge: string;
 };
 
 export type OAuthRequest = {
-  code_challenge?: string,
-  code_challenge_method?: string,
-  scopes?: Array<string>,
-  scope?: string,
-  state?: string,
-  location?: string,
-  providerID?: string
+  code_challenge?: string;
+  code_challenge_method?: string;
+  scopes?: Array<string>;
+  scope?: string;
+  state?: string;
+  location?: string;
+  providerID?: string;
 } & Partial<Omit<ClientConfiguration, "scope">>;
 
 export type CodeOAuthRedirectResponse = {
-  code: string | null,
-  state: string | null
+  code: string | null;
+  state: string | null;
 };
 
 export type TokenOAuthRedirectResponse = {
-  [key: string]: any,
-  state?: string | null
+  [key: string]: any;
+  state?: string | null;
 };
 
 export type OAuthState = {
-  providerID: string,
-  scopes?: Array<string>,
-  location?: string
+  providerID: string;
+  scopes?: Array<string>;
+  location?: string;
 };
 
 let config: Record<string, ClientConfiguration>,
@@ -43,8 +43,8 @@ let config: Record<string, ClientConfiguration>,
   internalStates: Record<string, any> = {};
 
 /*
-* ------ SECTION: Utilities
-*/
+ * ------ SECTION: Utilities
+ */
 
 /**
  * A log wrapper, that only logs if logging is turned on in the config
@@ -56,14 +56,14 @@ const log = (msg: string) => {
   if (!console.log) return;
 
   // console.log("LOG(), Arguments", arguments, msg);
-    console.log(msg);
+  console.log(msg);
 };
 
 /*
-* Returns a random string used for state
-*/
+ * Returns a random string used for state
+ */
 const uuid = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0,
       v = c === "x" ? r : (r & 0x3) | 0x8;
 
@@ -84,9 +84,9 @@ const setOptions = (opts: Record<string, any> | undefined) => {
 };
 
 /*
-* Takes an URL as input and a params object.
-* Each property in the params is added to the url as query string parameters
-*/
+ * Takes an URL as input and a params object.
+ * Each property in the params is added to the url as query string parameters
+ */
 export const encodeURL = (url: string, params: Record<string, any>) => {
   let res = url;
   let k,
@@ -104,9 +104,9 @@ export const encodeURL = (url: string, params: Record<string, any>) => {
 };
 
 /*
-* Returns epoch, seconds since 1970.
-* Used for calculation of expire times.
-*/
+ * Returns epoch, seconds since 1970.
+ * Used for calculation of expire times.
+ */
 export const epoch = () => Math.round(new Date().getTime() / 1000.0);
 
 const parseQueryString = (qs: string) => {
@@ -126,12 +126,12 @@ const parseQueryString = (qs: string) => {
   return urlParams;
 };
 /*
-* ------ / SECTION: Utilities
-*/
+ * ------ / SECTION: Utilities
+ */
 
 /*
-* Redirects the user to a specific URL
-*/
+ * Redirects the user to a specific URL
+ */
 api_redirect = url => {
   window.location.href = url;
 };
@@ -142,11 +142,16 @@ export const jso_getCodeVerifier = (provider: string) => {
   return api_storage.getCodeVerifier(provider);
 };
 
-export const jso_saveCodeVerifier = (provider: string, codeVerifier: string) => {
+export const jso_saveCodeVerifier = (
+  provider: string,
+  codeVerifier: string
+) => {
   api_storage.saveCodeVerifier(provider, codeVerifier);
 };
 
-const getTokenOauthRedirectResponse = (url: string | undefined): TokenOAuthRedirectResponse | undefined => {
+const getTokenOauthRedirectResponse = (
+  url: string | undefined
+): TokenOAuthRedirectResponse | undefined => {
   let h = window.location.hash;
 
   // If a url is provided
@@ -158,7 +163,9 @@ const getTokenOauthRedirectResponse = (url: string | undefined): TokenOAuthRedir
   return parseQueryString(h.substring(1));
 };
 
-const getCodeOauthRedirectResponse = (url: string | undefined): CodeOAuthRedirectResponse | undefined => {
+const getCodeOauthRedirectResponse = (
+  url: string | undefined
+): CodeOAuthRedirectResponse | undefined => {
   const urlParams = new URLSearchParams(
     url ? `?${url.split("?")[1]}` : window.location.search
   );
@@ -182,7 +189,10 @@ export const jso_checkforcode = (url?: string) => {
   return oauthResponse;
 };
 
-export const set_token_expiration = (atoken: TokenOAuthRedirectResponse, co: ClientConfiguration) => {
+export const set_token_expiration = (
+  atoken: TokenOAuthRedirectResponse,
+  co: ClientConfiguration
+) => {
   const now = epoch();
   if (atoken["expires_in"]) {
     atoken["expires"] = now + parseInt(atoken["expires_in"], 10);
@@ -200,8 +210,15 @@ export const set_token_expiration = (atoken: TokenOAuthRedirectResponse, co: Cli
  * childbrowser when the jso context is not receiving the response,
  * instead the response is received on a child browser.
  */
-export const jso_checkfortoken = (clientId: string, provider: string, url?: string, disableRedirect?: boolean) => {
-  let atoken: TokenOAuthRedirectResponse | undefined, state: OAuthState, co: ClientConfiguration;
+export const jso_checkfortoken = (
+  clientId: string,
+  provider: string,
+  url?: string,
+  disableRedirect?: boolean
+) => {
+  let atoken: TokenOAuthRedirectResponse | undefined,
+    state: OAuthState,
+    co: ClientConfiguration;
 
   log(`jso_checkfortoken(${clientId})`);
 
@@ -237,8 +254,8 @@ export const jso_checkfortoken = (clientId: string, provider: string, url?: stri
   atoken = set_token_expiration(atoken, co);
 
   /*
-  * Handle scopes for this token
-  */
+   * Handle scopes for this token
+   */
   if (atoken?.scope) {
     atoken.scopes = atoken.scope.split(" ");
   } else if (state.scopes) {
@@ -265,7 +282,11 @@ export const jso_checkfortoken = (clientId: string, provider: string, url?: stri
   }
 };
 
-export const jso_getAuthUrl = (providerid: string, scopes: Array<string>, codeChallenge?: string) => {
+export const jso_getAuthUrl = (
+  providerid: string,
+  scopes: Array<string>,
+  codeChallenge?: string
+) => {
   let request: OAuthRequest, authurl, co;
   if (!config[providerid])
     throw new Error(`Could not find configuration for provider ${providerid}`);
@@ -288,7 +309,7 @@ export const jso_getAuthRequest = (
   scopes: Array<string>,
   response_mode?: string,
   prompt?: string
-) : OAuthRequest => {
+): OAuthRequest => {
   let state, request: OAuthRequest, co;
 
   if (!config[providerid])
@@ -346,9 +367,13 @@ export const jso_getAuthRequest = (
 };
 
 /*
-* A config object contains:
-*/
-const jso_authrequest = (providerid: string, scopes: Array<string>, codeChallenge?: string) => {
+ * A config object contains:
+ */
+const jso_authrequest = (
+  providerid: string,
+  scopes: Array<string>,
+  codeChallenge?: string
+) => {
   let authurl: string;
 
   authurl = jso_getAuthUrl(providerid, scopes, codeChallenge);
@@ -391,7 +416,11 @@ export const jso_ensureTokens = (
   return true;
 };
 
-export const jso_configure = (c: Record<string, DefaultClientConfiguration>, opts?: Record<string, any>, popupMode?: boolean) => {
+export const jso_configure = (
+  c: Record<string, DefaultClientConfiguration>,
+  opts?: Record<string, any>,
+  popupMode?: boolean
+) => {
   config = c;
   setOptions(opts);
   try {
@@ -414,7 +443,10 @@ export const jso_wipe = () => {
   }
 };
 
-export const jso_saveToken = (providerID: string, atoken: TokenOAuthRedirectResponse) => {
+export const jso_saveToken = (
+  providerID: string,
+  atoken: TokenOAuthRedirectResponse
+) => {
   api_storage.saveToken(providerID, atoken);
 };
 

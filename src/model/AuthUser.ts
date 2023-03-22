@@ -27,9 +27,9 @@ const modifiableField = [
 ];
 
 export interface AuthUserParams {
-  id?: string,
-  [index: string]: any
-};
+  id?: string;
+  [index: string]: any;
+}
 
 export default class AuthUser extends Ressource {
   id: string;

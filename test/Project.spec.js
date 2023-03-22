@@ -7,11 +7,11 @@ import { setAuthenticationPromise } from "../src/api";
 import Project from "../src/model/Project";
 
 describe("Project", () => {
-  before(function() {
+  before(function () {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     fetchMock.restore();
   });
 
@@ -732,8 +732,7 @@ describe("Project", () => {
       id: "capabilities",
       _links: {
         self: {
-          href:
-            "https://test.com/api/projects/ffzefzef3/capabilities/capabilities"
+          href: "https://test.com/api/projects/ffzefzef3/capabilities/capabilities"
         },
         "#edit": {
           href: "/api/projects/qtnfkpa5ehbxi/capabilities"

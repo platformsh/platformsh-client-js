@@ -6,11 +6,11 @@ const paramDefaults = {};
 
 export interface RegionGetParams {
   [key: string]: any;
-};
+}
 
 export interface RegionResponse {
-  regions: Array<Region>
-};
+  regions: Array<Region>;
+}
 
 export default class Region extends Ressource {
   id: string;
@@ -21,7 +21,7 @@ export default class Region extends Ressource {
   provider: string;
   zone: string;
   project_label: string;
-  
+
   constructor(region: APIObject) {
     const { id } = region;
     const { account_url } = getConfig();
