@@ -38,7 +38,7 @@
     "fake-fetch": "^1.0.0",
     "fetch-mock": "^5.9.4",
     "husky": "^0.14.3",
-    "jsdom": "^9.6.0",
+    "jsdom": "^16.5.0",
     "lint-staged": "^7.3.0",
     "mocha": "^6.0.2",
     "mock-local-storage": "^1.1.8",
