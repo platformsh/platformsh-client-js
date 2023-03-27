@@ -1,4 +1,4 @@
-import "isomorphic-fetch"; // fetch api polyfill
+import 'cross-fetch/polyfill'; // fetch api polyfill
 import parse_url from "parse_url";
 import path from "path";
 

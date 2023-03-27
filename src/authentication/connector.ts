@@ -1,6 +1,6 @@
 import isNode from "detect-node";
 import { OAuth2PopupFlow } from "oauth2-popup-flow";
-import "isomorphic-fetch"; // fetch api polyfill
+import 'cross-fetch/polyfill'; // fetch api polyfill
 
 import { request } from "../api";
 import {
