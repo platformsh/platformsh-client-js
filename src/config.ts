@@ -39,7 +39,7 @@ const getConfigDefault = (
 ): DefaultClientConfiguration => ({
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
-  // On development environment, "baseUrl" already has "/api" appended and this is required. But production doesn't, therefore "/api" must be added. 
+  // On development environment, "baseUrl" already has "/api" appended and this is required.
   account_url: `${baseUrl.replace(/(\/api\/?)$/, "")}/api`,
   api_url,
   authentication_url: baseUrl,
