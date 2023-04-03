@@ -41,6 +41,7 @@ export default class Activity extends Ressource {
   type: string;
   payload: Record<string, any>;
   description: string;
+  integration: string;
   timings: Record<string, string>;
 
   constructor(activity: APIObject, url: string) {
@@ -61,6 +62,7 @@ export default class Activity extends Ressource {
     this.type = "";
     this.payload = [];
     this.description = "";
+    this.integration = "";
     this.timings = {};
   }
 
