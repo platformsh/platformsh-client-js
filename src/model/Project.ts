@@ -66,6 +66,7 @@ export default class Project extends Ressource {
   default_domain = "";
   organization_id = "";
   default_branch = "";
+  timezone = "";
 
   constructor(project: APIObject, url: string) {
     super(url, paramDefaults, {}, project, [], modifiableField);

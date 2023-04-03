@@ -56,6 +56,8 @@ export default class AccountsProfile extends Ressource {
   ui_contrast: string;
   default_catalog: string;
   marketing: string;
+  billing_contact: string;
+  vat_number: string;
 
   constructor(profile: APIObject) {
     const { api_url } = getConfig();
@@ -83,6 +85,8 @@ export default class AccountsProfile extends Ressource {
     this.ui_contrast = "";
     this.default_catalog = "";
     this.marketing = "";
+    this.billing_contact = "";
+    this.vat_number = "";
   }
 
   static get(params: AccountsProfileGetParams, customUrl?: string) {

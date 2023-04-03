@@ -68,6 +68,7 @@ export interface IntegrationQueryParams {
 export default class Integration extends Ressource {
   id = "";
   type = "";
+  category = "";
 
   constructor(integration: APIObject, url: string) {
     super(
