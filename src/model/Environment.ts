@@ -79,7 +79,7 @@ export default class Environment extends Ressource {
   enable_smtp: boolean = false;
   has_code: boolean = false;
   deployment_target: string = "";
-  deployment_state: DeploymentState | object = {};
+  deployment_state: DeploymentState | undefined = undefined;
   http_access: HttpAccess = {};
   is_main: boolean = false;
   type: string = "";

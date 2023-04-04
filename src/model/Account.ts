@@ -17,7 +17,7 @@ export default class Account extends Ressource {
   display_name: string;
   email: string;
   picture: string;
-  roles: string;
+  roles: string[];
 
   constructor(account: APIObject) {
     const { id } = account;
@@ -32,7 +32,7 @@ export default class Account extends Ressource {
     this.display_name = "";
     this.email = "";
     this.picture = "";
-    this.roles = "";
+    this.roles = [];
   }
 
   static get(params: AccountGetParams, customUrl?: string): Promise<Account> {
