@@ -15,9 +15,27 @@ const types = [
   "health.pagerduty",
   "health.slack",
   "health.webhook",
-  "script"
+  "script",
+  "syslog",
+  "splunk",
+  "sumologic",
+  "newrelic"
 ];
 const fields = [
+  //syslog fields
+  "host",
+  "port",
+  "protocol",
+  "facility",
+  "message_format",
+  "auth_mode",
+  "tls_verify",
+  "auth_token",
+
+  //splunk
+  "index",
+  "sourcetype",
+
   "addon_credentials",
   "app_credentials",
   "base_url",
