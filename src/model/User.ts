@@ -22,7 +22,8 @@ export default class User extends Ressource {
   has_key: boolean;
   display_name: string;
   email: string;
-  username: string;
+  username: string;  
+  picture: string;
 
   constructor(
     user: APIObject,
@@ -40,12 +41,13 @@ export default class User extends Ressource {
     this.display_name = "";
     this.email = "";
     this.username = "";
+    this.picture = "";
   }
 
   static get(params: UserGetParams, customUrl?: string, options?: object) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
-
+    
     return super._get<User>(
       customUrl || `${api_url}${_url}/:id`,
       { id },
