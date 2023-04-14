@@ -1,9 +1,11 @@
-import 'cross-fetch/polyfill'; // fetch api polyfill
-import param from "to-querystring";
 import isNode from "detect-node";
+import param from "to-querystring";
+import "cross-fetch/polyfill"; // fetch api polyfill
 
-import { getConfig, ClientConfiguration } from "./config";
-import authenticate, { JWTToken } from "./authentication";
+import type { JWTToken } from "./authentication";
+import authenticate from "./authentication";
+import type { ClientConfiguration } from "./config";
+import { getConfig } from "./config";
 
 export type RequestOptions = {
   queryStringArrayPrefix?: string;
@@ -17,9 +19,7 @@ export const setAuthenticationPromise = (promise: Promise<JWTToken>) => {
   authenticationPromise = promise;
 };
 
-export const getAuthenticationPromise = () => {
-  return authenticationPromise;
-};
+export const getAuthenticationPromise = async () => authenticationPromise;
 
 const defaultHeaders: Record<string, string> = {};
 
@@ -34,20 +34,19 @@ const isFormData = (data: FormData | object | undefined) =>
 // 'Bearer error="insufficient_user_authentication",
 // error_description="More recent authentication is required",
 // max_age="5"'
-const decodeHeaderString = (header: string) => {
-  return header
+const decodeHeaderString = (header: string) =>
+  header
     .replace("Bearer", "")
     .split(",")
     .reduce<Record<string, string>>((acc, cu) => {
-      const [key, value] = cu.replace(/"/g, "").trim().split("=");
+      const [key, value] = cu.replace(/"/gu, "").trim().split("=");
       acc[key] = value;
       return acc;
     }, {});
-};
 
 const getChallengeExtraParams = (headers: Headers): Record<string, string> => {
   const wwwAuthentication = decodeHeaderString(
-    headers.get("WWW-Authenticate") || ""
+    headers.get("WWW-Authenticate") ?? ""
   );
   return ["max_age", "acr_values"].reduce<Record<string, string>>((acc, cu) => {
     if (wwwAuthentication[cu]) acc[cu] = wwwAuthentication[cu];
@@ -55,12 +54,12 @@ const getChallengeExtraParams = (headers: Headers): Record<string, string> => {
   }, {});
 };
 
-export const request = (
+export const request = async (
   url: string,
   method: string,
   data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
-  retryNumber: number = 0,
+  retryNumber = 0,
   options: RequestOptions = {}
 ): Promise<any> => {
   const body = data instanceof Array ? data && [...data] : data && { ...data };
@@ -68,8 +67,8 @@ export const request = (
   let apiUrl = url;
 
   if (method === "GET") {
-    const queryString = param(body || {}, "", {
-      arrayPrefix: options.queryStringArrayPrefix || ""
+    const queryString = param(body ?? {}, "", {
+      arrayPrefix: options.queryStringArrayPrefix ?? ""
     });
 
     apiUrl = `${url}${queryString.length ? `?${queryString}` : ""}`;
@@ -90,7 +89,7 @@ export const request = (
 
   return new Promise((resolve, reject) => {
     fetch(apiUrl, requestConfig)
-      .then(response => {
+      .then(async response => {
         if (response.status === 401) {
           const config: ClientConfiguration = getConfig();
           const extra_params = getChallengeExtraParams(response.headers);
@@ -98,8 +97,9 @@ export const request = (
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
           if (typeof config.access_token === "undefined" && retryNumber < 2) {
-            return authenticate({ ...config, extra_params }, true).then(t => {
+            return authenticate({ ...config, extra_params }, true).then(() => {
               resolve(
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 authenticatedRequest(
                   url,
                   method,
@@ -114,7 +114,7 @@ export const request = (
         }
 
         const imageTypes = ["image/gif", "image/jpeg", "image/png"];
-        const headers = response.headers;
+        const { headers } = response;
         const type = headers.get("Content-Type");
         const isJson =
           !type ||
@@ -123,32 +123,39 @@ export const request = (
 
         if (response.ok) {
           if ((type && imageTypes.includes(type)) || response.status === 202) {
-            return resolve(response);
+            resolve(response);
+            return;
           }
-          return resolve(
+
+          resolve(
             // This ensures that a response with type of JSON is actually valid
             // JSON before returning it.
             response.text().then(text => {
-              let body;
+              let responseBody;
               try {
-                body = JSON.parse(text);
+                responseBody = JSON.parse(text);
               } catch (err) {
-                body = text;
+                responseBody = text;
               }
-              return body;
+              return responseBody;
             })
           );
+          return;
         }
 
         if (isJson) {
           return response
             .json()
-            .then(data => reject(data))
+            .then(d => {
+              reject(d);
+            })
             .catch(error => {
               console.log(error);
             });
         }
-        return response.text().then(data => reject(data));
+        return response.text().then(d => {
+          reject(d);
+        });
       })
       .catch(err => {
         reject(err);
@@ -156,68 +163,58 @@ export const request = (
   });
 };
 
-export const authenticatedRequest = (
+export const authenticatedRequest = async (
   url: string,
-  method: string = "GET",
+  method = "GET",
   data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
-  retryNumber: number = 0,
+  retryNumber = 0,
   options: RequestOptions = {}
 ): Promise<any> => {
-  return authenticationPromise.then(token => {
-    if (!token) {
-      throw new Error("Token is mandatory");
-    }
+  const token = await authenticationPromise;
+  if (!token) {
+    throw new Error("Token is mandatory");
+  }
+  if (!additionalHeaders.hasOwnProperty("Content-Type") && !isFormData(data)) {
+    additionalHeaders["Content-Type"] = "application/json";
+  }
+  // Same calc in the jso lib
+  const currentDate = Math.round(new Date().getTime() / 1000);
+  const tokenExpirationDate = token.expires;
+  if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
+    const config = getConfig();
+    console.log("Token expiration detected");
 
-    if (
-      !additionalHeaders.hasOwnProperty("Content-Type") &&
-      !isFormData(data)
-    ) {
-      additionalHeaders["Content-Type"] = "application/json";
-    }
-
-    // Same calc in the jso lib
-    const currentDate = Math.round(new Date().getTime() / 1000.0);
-    const tokenExpirationDate = token.expires;
-
-    if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
-      const config = getConfig();
-      console.log("Token expiration detected");
-
-      return authenticate(config, true).then(t => {
-        return authenticatedRequest(
-          url,
-          method,
-          data,
-          additionalHeaders,
-          retryNumber + 1,
-          options
-        );
-      });
-    }
-
-    const authenticationHeaders = {
-      Authorization: `Bearer ${token["access_token"]}`
-    };
-
-    return request(
-      url,
-      method,
-      data,
-      {
-        ...additionalHeaders,
-        ...authenticationHeaders
-      },
-      retryNumber,
-      options
+    return authenticate(config, true).then(async () =>
+      authenticatedRequest(
+        url,
+        method,
+        data,
+        additionalHeaders,
+        retryNumber + 1,
+        options
+      )
     );
-  });
+  }
+  const authenticationHeaders = {
+    Authorization: `Bearer ${token.access_token}`
+  };
+  return request(
+    url,
+    method,
+    data,
+    {
+      ...additionalHeaders,
+      ...authenticationHeaders
+    },
+    retryNumber,
+    options
+  );
 };
 
-export const createEventSource = (url: string) =>
+export const createEventSource = async (url: string) =>
   authenticationPromise.then(
-    token =>
-      new window.EventSource(`${url}?access_token=${token["access_token"]}`)
+    token => new window.EventSource(`${url}?access_token=${token.access_token}`)
   );
 
 export default authenticatedRequest;

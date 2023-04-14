@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import ConnectedAccount from "../src/model/ConnectedAccount";
 
 describe("Connected Account", () => {
   const { api_url } = getConfig();
 
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -59,7 +59,7 @@ describe("Connected Account", () => {
     fetchMock.mock(`${api_url}/users/user_id/connections/1`, {}, "DELETE");
 
     ConnectedAccount.get("user_id", "1").then(account => {
-      account.delete().then(result => {
+      account.delete().then(() => {
         done();
       });
     });

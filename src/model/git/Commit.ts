@@ -1,13 +1,14 @@
-import Ressource from "../Ressource";
-import Tree from "./Tree";
 import { getConfig } from "../../config";
+import Ressource from "../Ressource";
+
+import Tree from "./Tree";
 
 const _url = "/projects/:projectId/git/commits/:sha";
 
-export interface CommitParams {
-  projectId?: string;
+export type CommitParams = {
   [index: string]: any;
-}
+  projectId?: string;
+};
 
 export default class Commit extends Ressource {
   id: string;
@@ -30,13 +31,13 @@ export default class Commit extends Ressource {
     this.parents = [];
   }
 
-  static get(projectId: string, sha: string): Promise<Commit> {
+  static async get(projectId: string, sha: string) {
     const { api_url } = getConfig();
 
     return super._get<Commit>(`${api_url}${_url}`, { projectId, sha });
   }
 
-  getTree(projectId = this._params.projectId): Promise<Tree | undefined> {
+  async getTree(projectId = this._params.projectId) {
     return Tree.get(projectId, this.tree);
   }
 }

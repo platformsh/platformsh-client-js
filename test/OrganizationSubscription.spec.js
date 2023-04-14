@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import OrganizationSubscription from "../src/model/OrganizationSubscription";
 
 describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();
 
-  beforeEach(function () {
+  beforeEach(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -71,7 +71,7 @@ describe("OrganizationSubscription", () => {
       subscription => {
         assert.equal(subscription.project_region, "region");
         assert.equal(subscription.constructor.name, "OrganizationSubscription");
-        subscription.getEstimate().then(es => {
+        subscription.getEstimate().then(() => {
           done();
         });
       }

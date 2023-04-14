@@ -1,28 +1,30 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 
 const _url = "/projects/:projectId/environments/:environmentId/backups";
 
-export interface EnvironmentBackupsGetParams {
+export type EnvironmentBackupsGetParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface EnvironmentBackupsQueryParams {
+export type EnvironmentBackupsQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
-export interface EnvironmentBackupsRestoreBody {
+export type EnvironmentBackupsRestoreBody = {
   environment_name: string;
   branch_from: string;
   restore_code: boolean;
-}
+};
 
 export default class EnvironmentBackup extends Ressource {
   id = "";
@@ -42,7 +44,7 @@ export default class EnvironmentBackup extends Ressource {
     super(url, paramDefaults, {}, environmentBackup, [], []);
   }
 
-  static get(params: EnvironmentBackupsGetParams, customUrl?: string) {
+  static async get(params: EnvironmentBackupsGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
@@ -55,19 +57,22 @@ export default class EnvironmentBackup extends Ressource {
     );
   }
 
-  static query(params: EnvironmentBackupsQueryParams, customUrl?: string) {
+  static async query(
+    params: EnvironmentBackupsQueryParams,
+    customUrl?: string
+  ) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<EnvironmentBackup>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
     );
   }
 
-  restore(body: EnvironmentBackupsRestoreBody) {
+  async restore(body: EnvironmentBackupsRestoreBody) {
     return this.runLongOperation("restore", "POST", body);
   }
 }

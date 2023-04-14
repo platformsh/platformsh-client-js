@@ -7,11 +7,11 @@ import { setAuthenticationPromise } from "../src/api";
 import Project from "../src/model/Project";
 
 describe("Project", () => {
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -468,7 +468,7 @@ describe("Project", () => {
   });
 
   it("Be suspended", () => {
-    let project = new Project(
+    const project = new Project(
       {
         _links: {
           self: {

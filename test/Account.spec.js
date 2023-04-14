@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import Account from "../src/model/Account";
 
 describe("Account", () => {
   const { account_url } = getConfig();
 
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -45,10 +45,10 @@ describe("Account", () => {
       accounts
     );
 
-    Account.query({ id: [1, 2, 3, 4] }).then(accounts => {
-      assert.equal(accounts.length, 4);
-      assert.equal(accounts[0].email, "test1");
-      assert.equal(accounts[0].constructor.name, "Account");
+    Account.query({ id: [1, 2, 3, 4] }).then(accts => {
+      assert.equal(accts.length, 4);
+      assert.equal(accts[0].email, "test1");
+      assert.equal(accts[0].constructor.name, "Account");
       done();
     });
   });

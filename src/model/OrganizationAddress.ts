@@ -1,6 +1,8 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/organizations/:organizationId/address";
 const paramDefaults = {};
@@ -18,16 +20,16 @@ const _modifiableField = [
   "postal_code"
 ];
 
-export interface OrganizationAddressGetParams {
+export type OrganizationAddressGetParams = {
+  [key: string]: any;
   id?: string;
   organizationId: string;
-  [key: string]: any;
-}
+};
 
-export interface OrganizationAddressQueryParams {
-  organizationId: string;
+export type OrganizationAddressQueryParams = {
   [key: string]: any;
-}
+  organizationId: string;
+};
 
 export default class OrganizationAddress extends Ressource {
   id: string;
@@ -47,14 +49,14 @@ export default class OrganizationAddress extends Ressource {
     const { account_url } = getConfig();
 
     super(
-      customUrl || `${account_url}${url}`,
+      customUrl ?? `${account_url}${url}`,
       paramDefaults,
       { id },
       account,
       [],
       _modifiableField
     );
-    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`, id);
+    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
     this.id = "";
     this.country = "";
     this.name_line = "";
@@ -72,14 +74,14 @@ export default class OrganizationAddress extends Ressource {
     return _urlParser(_url, { id });
   }
 
-  static get(params: OrganizationAddressGetParams, customUrl?: string) {
+  static async get(params: OrganizationAddressGetParams, customUrl?: string) {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    let getURL = customUrl || `${api_url}${url}`;
+    let getURL = customUrl ?? `${api_url}${url}`;
 
     if (id) {
-      getURL = this.getQueryUrl(customUrl || `${api_url}${url}`, id);
+      getURL = this.getQueryUrl(customUrl ?? `${api_url}${url}`, id);
     }
 
     return super._get<OrganizationAddress>(
@@ -90,7 +92,7 @@ export default class OrganizationAddress extends Ressource {
     );
   }
 
-  static query(params: OrganizationAddressQueryParams) {
+  static async query(params: OrganizationAddressQueryParams) {
     const { api_url } = getConfig();
     const { organizationId } = params;
 
@@ -102,7 +104,7 @@ export default class OrganizationAddress extends Ressource {
     );
   }
 
-  update(address: APIObject, organizationId: string) {
+  async update(address: APIObject, organizationId: string) {
     const { api_url } = getConfig();
     return super.update(
       address,

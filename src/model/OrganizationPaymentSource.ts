@@ -1,47 +1,50 @@
-import PaymentSource from "./PaymentSource";
+import request from "../api";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
-import { APIObject } from "./Ressource";
+
+import PaymentSource from "./PaymentSource";
+import type { APIObject } from "./Ressource";
 
 const url = "/organizations/:organizationId/payment-source";
 const paramDefaults = {};
 
-export interface OrganizationPaymentSourceParams {
-  organizationId: string;
+export type OrganizationPaymentSourceParams = {
   [key: string]: any;
-}
+  organizationId: string;
+};
 
-// @ts-ignore
-// TODO: solve the getAllowed and intent function inheritance ts error
+// @ts-expect-error solve the getAllowed and intent function inheritance ts error
 export default class OrganizationPaymentSource extends PaymentSource {
   constructor(paymentSource: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
     const { organizationId, ...paymentSourceData } = paymentSource;
 
-    super(paymentSourceData, customUrl || `${api_url}${url}`, {
+    super(paymentSourceData, customUrl ?? `${api_url}${url}`, {
       organizationId
     });
   }
 
-  static get(params: OrganizationPaymentSourceParams, customUrl?: string) {
+  static async get(
+    params: OrganizationPaymentSourceParams,
+    customUrl?: string
+  ) {
     const { api_url } = getConfig();
     const { organizationId, ...queryParams } = params;
 
     const parsedUrl = _urlParser(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { organizationId },
       paramDefaults
     );
 
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
-        if (typeof data === undefined) return {};
+        if (typeof data === "undefined") return {};
         return new OrganizationPaymentSource(
           this.formatDetails(data.payment_source)
         );
       })
-      .catch(err => new OrganizationPaymentSource({}));
+      .catch(() => new OrganizationPaymentSource({}));
   }
 
   /**
@@ -49,7 +52,7 @@ export default class OrganizationPaymentSource extends PaymentSource {
    *
    * @return object
    */
-  static delete() {
+  static async delete() {
     const { api_url } = getConfig();
     return request(`${api_url}${url}`, "DELETE");
   }
@@ -60,7 +63,7 @@ export default class OrganizationPaymentSource extends PaymentSource {
    *
    * @return object
    */
-  static getAllowed(organizationId: string) {
+  static async getAllowed(organizationId: string) {
     const { api_url } = getConfig();
     const parsedUrl = _urlParser(
       `${api_url}${url}`,
@@ -77,7 +80,7 @@ export default class OrganizationPaymentSource extends PaymentSource {
    *
    * @return object
    */
-  static intent(organizationId: string) {
+  static async intent(organizationId: string) {
     const { api_url } = getConfig();
     const parsedUrl = _urlParser(
       `${api_url}${url}`,

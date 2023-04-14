@@ -1,23 +1,25 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
-import Subscription from "./Subscription";
 import urlParser from "../urlParser";
+
 import CursoredRessource from "./CursoredRessource";
 import Organization from "./Organization";
+import Ressource from "./Ressource";
+import type { APIObject } from "./Ressource";
+import Subscription from "./Subscription";
 
 const url = "/organizations/:organizationId/subscriptions/:id";
 
-export interface OrganizationSubscriptionGetParams {
+export type OrganizationSubscriptionGetParams = {
+  [key: string]: any;
   id: string;
   organizationId: string;
+};
+export type OrganizationSubscriptionQueryParams = {
   [key: string]: any;
-}
-export interface OrganizationSubscriptionQueryParams {
   organizationId: string;
-  [key: string]: any;
-}
+};
 
-export interface CreateSubscriptionPayloadType {
+export type CreateSubscriptionPayloadType = {
   projectRegion: string;
   plan?: string;
   projectTitle?: string;
@@ -25,10 +27,9 @@ export interface CreateSubscriptionPayloadType {
   defaultBranch?: string;
   environments?: number;
   storage?: number;
-}
+};
 
-// @ts-ignore
-// TODO: solve the get and query function inheritance ts error
+// @ts-expect-error solve the get and query function inheritance ts error
 export default class OrganizationSubscription extends Subscription {
   organization_id: string;
   support_tier: string;
@@ -38,7 +39,7 @@ export default class OrganizationSubscription extends Subscription {
     const { api_url } = getConfig();
 
     const _url = urlParser(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { organizationId },
       {}
     );
@@ -58,16 +59,16 @@ export default class OrganizationSubscription extends Subscription {
     const { organizationId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return await Ressource._get.call(
+    return Ressource._get.call(
       this,
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { organizationId, id },
       {},
       queryParams
     );
   }
 
-  static query(params: OrganizationSubscriptionQueryParams) {
+  static async query(params: OrganizationSubscriptionQueryParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -83,7 +84,7 @@ export default class OrganizationSubscription extends Subscription {
     );
   }
 
-  getOrganizations() {
+  async getOrganizations() {
     return this.getRefs("ref:organizations", Organization);
   }
 }

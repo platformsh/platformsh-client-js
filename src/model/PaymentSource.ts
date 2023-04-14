@@ -1,7 +1,9 @@
-import Ressource, { APIObject, ParamsType } from "./Ressource";
+import request from "../api";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
+
+import type { APIObject, ParamsType } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/platform/payment_source";
 const paramDefaults = {};
@@ -23,9 +25,9 @@ export default class PaymentSource extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
-      params || {},
+      params ?? {},
       paymentSource,
       creatableField
     );
@@ -37,28 +39,28 @@ export default class PaymentSource extends Ressource {
     this.mandate = "";
   }
 
-  static get(queryParams = {}, customUrl?: string) {
+  static async get(queryParams = {}, customUrl?: string) {
     const { api_url } = getConfig();
 
     const parsedUrl = _urlParser(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
       queryParams
     );
 
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
-        if (typeof data === undefined) return {};
+        if (typeof data === "undefined") return {};
         return new PaymentSource(this.formatDetails(data.payment_source));
       })
-      .catch(err => new PaymentSource({}));
+      .catch(() => new PaymentSource({}));
   }
 
-  static query(params = {}, customUrl?: string) {
+  static async query(params = {}, customUrl?: string) {
     const { api_url } = getConfig();
 
     return super._query(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       {},
       paramDefaults,
       params
@@ -70,9 +72,9 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static delete(customUrl?: string) {
+  static async delete(customUrl?: string) {
     const { api_url } = getConfig();
-    return request(customUrl || `${api_url}${url}`, "DELETE");
+    return request(customUrl ?? `${api_url}${url}`, "DELETE");
   }
 
   /**
@@ -81,7 +83,7 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static getAllowed() {
+  static async getAllowed() {
     const { api_url } = getConfig();
     return request(`${api_url}${url}/allowed`, "GET");
   }
@@ -91,7 +93,7 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static intent() {
+  static async intent() {
     const { api_url } = getConfig();
     return request(`${api_url}${url}/intent`, "POST");
   }
@@ -110,6 +112,8 @@ export default class PaymentSource extends Ressource {
         break;
       case "stripe_sepa_debit":
         paymentSource.mandate = paymentSource.data;
+        break;
+      default:
         break;
     }
     return paymentSource;

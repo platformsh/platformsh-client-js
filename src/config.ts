@@ -7,7 +7,7 @@ export type ClientConfiguration = {
   account_url?: string;
   api_url: string;
   authentication_url?: string;
-  scope?: Array<string>;
+  scope?: string[];
   authorization: string;
   logout_url?: string;
   access_token?: string;
@@ -23,7 +23,7 @@ export type ClientConfiguration = {
 };
 
 export type DefaultClientConfiguration = ClientConfiguration & {
-  scope: Array<string>;
+  scope: string[];
   redirect_uri: string;
   provider: string;
   client_id: string;
@@ -40,7 +40,7 @@ const getConfigDefault = (
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
   // On development environment, "baseUrl" already has "/api" appended and this is required.
-  account_url: `${baseUrl.replace(/(\/api\/?)$/, "")}/api`,
+  account_url: `${baseUrl.replace(/(\/api\/?)$/u, "")}/api`,
   api_url,
   authentication_url: baseUrl,
   scope: [],
@@ -60,6 +60,4 @@ export const setConfig = (newConfig: ClientConfiguration) => {
   };
 };
 
-export const getConfig = () => {
-  return config;
-};
+export const getConfig = () => config;

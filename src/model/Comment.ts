@@ -1,18 +1,20 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/comments";
 const paramDefaults = {};
 
 const createableField = ["body", "ticket_id", "attachments", "author_id"];
 
-export interface CommentsResponse {
+export type CommentsResponse = {
   data: {
-    comments: Array<Comment>;
+    comments: Comment[];
     count: number;
   } & APIObject;
-}
+};
 
 export default class Comment extends Ressource {
   id: string;
@@ -22,7 +24,7 @@ export default class Comment extends Ressource {
   body: string;
   author_id: string;
   public: string;
-  attachments: Array<any>;
+  attachments: any[];
 
   constructor(comment: APIObject) {
     const { api_url } = getConfig();
@@ -39,7 +41,7 @@ export default class Comment extends Ressource {
     this.attachments = [];
   }
 
-  static query(ticketId: string, queryParams: Record<string, any>) {
+  static async query(ticketId: string, queryParams: Record<string, any>) {
     const { api_url } = getConfig();
 
     return super._get<CommentsResponse>(
@@ -51,7 +53,7 @@ export default class Comment extends Ressource {
   }
 
   // @deprecated use save() on the instance instead
-  static send(comment: Comment) {
+  static async send(comment: Comment) {
     const { api_url } = getConfig();
 
     return request(`${api_url}${url}`, "POST", comment);

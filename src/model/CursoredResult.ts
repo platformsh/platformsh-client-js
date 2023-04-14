@@ -1,8 +1,10 @@
 import request from "../api";
 import { getConfig } from "../config";
-import { getRef, getRefs, hasLink, getLinkHref, Links } from "../refs";
+import type { Links } from "../refs";
+import { getRef, getRefs, hasLink, getLinkHref } from "../refs";
+
 import AuthUser from "./AuthUser";
-import Ressource, { APIObject, RessourceChildClass } from "./Ressource";
+import type { APIObject, RessourceChildClass } from "./Ressource";
 
 export enum Directions {
   previous = "Previous",
@@ -27,6 +29,8 @@ class CursoredLinksManager<T> {
     const result = await request(
       getLinkHref(this.links, direction, true, api_url)
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return new CursoredResult(
       this.baseUrl,
       result?.items,
@@ -35,30 +39,30 @@ class CursoredLinksManager<T> {
     );
   }
 
-  next() {
+  async next() {
     return this.getPage(Directions.next);
   }
 
-  previous() {
+  async previous() {
     return this.getPage(Directions.previous);
   }
 
-  getUser() {
+  async getUser() {
     return this.getRef("ref:users:0", AuthUser);
   }
 
-  getUsers() {
+  async getUsers() {
     return this.getRefs("ref:users", AuthUser);
   }
 
-  async getRef<T>(linkKey: string, constructor: RessourceChildClass<T>) {
+  async getRef<C>(linkKey: string, constructor: RessourceChildClass<C>) {
     const { api_url } = getConfig();
     return getRef(this.links, linkKey, constructor, true, api_url);
   }
 
-  async getRefs<T>(linkKey: string, constructor: RessourceChildClass<T>) {
+  async getRefs<C>(linkKey: string, constructor: RessourceChildClass<C>) {
     const { api_url } = getConfig();
-    return getRefs<T>(this.links, linkKey, constructor, true, api_url);
+    return getRefs<C>(this.links, linkKey, constructor, true, api_url);
   }
 
   hasMore() {

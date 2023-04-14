@@ -1,6 +1,7 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 import TeamMember from "./TeamMember";
 
 const paramDefaults = {};
@@ -9,26 +10,24 @@ const _url = "/platform/teams";
 const creatableField = ["name", "parent", "id"];
 const modifiableField = ["name"];
 
-export interface TeamGetParams {
+export type TeamGetParams = {
+  [key: string]: any;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface TeamQueryParams {
-  [key: string]: any;
-}
+export type TeamQueryParams = Record<string, any>;
 
 export default class Team extends Ressource {
   id: string;
   name: string;
-  parent: string; // teamId or null
-  organization: string; // organizationId
+  parent: string;
+  organization: string;
 
   constructor(team: APIObject, url?: string) {
     const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url ?? `${api_url}${_url}`,
       paramDefaults,
       {},
       team,
@@ -37,38 +36,38 @@ export default class Team extends Ressource {
     );
     this.id = "";
     this.name = "";
-    this.parent = ""; // teamId or null
-    this.organization = ""; // organizationId
+    this.parent = "";
+    this.organization = "";
   }
 
-  static get(params: TeamGetParams, customUrl?: string) {
+  static async get(params: TeamGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Team>(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl ?? `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: TeamQueryParams, customUrl?: string) {
+  static async query(params: TeamQueryParams, customUrl?: string) {
     const { api_url } = getConfig();
 
     return super._query<Team>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       {},
       paramDefaults,
       params
     );
   }
 
-  getMembers() {
+  async getMembers() {
     return TeamMember.query({ teamId: this.id });
   }
 
-  addMember(member: APIObject) {
+  async addMember(member: APIObject) {
     const teamMember = new TeamMember({ ...member, teamId: this.id });
 
     return teamMember.save();

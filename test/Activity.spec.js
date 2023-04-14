@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import Activity from "../src/model/Activity";
 
 describe("Activity", () => {
   const { account_url } = getConfig();
 
-  beforeEach(function () {
+  beforeEach(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -44,10 +44,10 @@ describe("Activity", () => {
       onLogCalled = true;
     };
 
-    activity.wait(onPoll, onLog, 0.01).then(activity => {
+    activity.wait(onPoll, onLog, 0.01).then(a => {
       assert.equal(onPollCalled, true);
       assert.equal(onLogCalled, true);
-      assert.equal(activity.isComplete(), true);
+      assert.equal(a.isComplete(), true);
       done();
     });
   });
@@ -64,7 +64,7 @@ describe("Activity", () => {
       log: "The logs"
     });
 
-    const instance = activity.getLogs(function (log) {
+    const instance = activity.getLogs(log => {
       assert.equal(log, "The logs");
       done();
     });
@@ -92,7 +92,7 @@ describe("Activity", () => {
       completion_percent: 0
     });
 
-    const instance = activity.getLogs(function (logs) {
+    const instance = activity.getLogs(logs => {
       assert.equal(logs.length, 2);
       assert.equal(
         logs[0].data.message,

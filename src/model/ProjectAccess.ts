@@ -1,9 +1,11 @@
 import emailValidator from "email-validator";
 
-import Ressource, { APIObject } from "./Ressource";
-import Account from "./Account";
-import User from "./User";
 import { getConfig } from "../config";
+
+import Account from "./Account";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
+import User from "./User";
 
 const paramDefaults = {};
 
@@ -15,10 +17,10 @@ const createField = ["role", "user", "email"];
 const modifiableField = ["role"];
 const _url = "/projects/:projectId/access";
 
-export interface ProjectAccessQueryParams {
-  projectId: string;
+export type ProjectAccessQueryParams = {
   [key: string]: any;
-}
+  projectId: string;
+};
 
 export default class ProjectAccess extends Ressource {
   id = "";
@@ -30,11 +32,11 @@ export default class ProjectAccess extends Ressource {
     this._required = ["email"];
   }
 
-  static query(params: ProjectAccessQueryParams, customUrl?: string) {
+  static async query(params: ProjectAccessQueryParams, customUrl?: string) {
     const { projectId } = params;
     const { api_url } = getConfig();
 
-    return super._query(customUrl || `${api_url}${_url}`, { projectId });
+    return super._query(customUrl ?? `${api_url}${_url}`, { projectId });
   }
 
   /**
@@ -44,7 +46,7 @@ export default class ProjectAccess extends Ressource {
    *
    * @return Result
    */
-  getAccount() {
+  async getAccount() {
     return Account.get({ id: this.user }).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);
@@ -70,11 +72,11 @@ export default class ProjectAccess extends Ressource {
    * @inheritdoc
    */
   checkProperty(property: string, value: string) {
-    let errors: Record<string, string> = {};
+    const errors: Record<string, string> = {};
 
     if (property === "email" && !emailValidator.validate(value)) {
       errors[property] = `Invalid email address: '${value}'`;
-    } else if (property === "role" && roles.indexOf(value) === -1) {
+    } else if (property === "role" && !roles.includes(value)) {
       errors[property] = `Invalid role: '${value}'`;
     }
     return errors;

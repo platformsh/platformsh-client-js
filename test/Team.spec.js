@@ -7,11 +7,11 @@ import { setAuthenticationPromise } from "../src/api";
 import Team from "../src/model/Team";
 
 describe("Team", () => {
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 

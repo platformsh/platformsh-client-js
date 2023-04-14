@@ -1,14 +1,16 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/metrics";
 
-export interface MetricsGetParams {
+export type MetricsGetParams = {
+  [key: string]: any;
   projectId?: string;
   environmentId?: string;
-  [key: string]: any;
-}
+};
 
 export default class Metrics extends Ressource {
   results = {};
@@ -17,12 +19,12 @@ export default class Metrics extends Ressource {
     super(url, paramDefaults, {}, metrics);
   }
 
-  static get(params: MetricsGetParams, customUrl?: string) {
+  static async get(params: MetricsGetParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Metrics>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams

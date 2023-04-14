@@ -1,13 +1,15 @@
 import slugify from "slugify";
 
 import { getConfig } from "../config";
-import Ressource, { APIObject } from "./Ressource";
+
 import Activity from "./Activity";
-import Variable from "./Variable";
-import Route from "./Route";
 import EnvironmentAccess from "./EnvironmentAccess";
-import Metrics from "./Metrics";
 import Commit from "./git/Commit";
+import Metrics from "./Metrics";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
+import Route from "./Route";
+import Variable from "./Variable";
 
 const paramDefaults = {
   projectId: "project"
@@ -22,19 +24,19 @@ const modifiableField = [
 ];
 const _url = "/projects/:projectId/environments";
 
-const sshRegex = /^ssh:\/\/([a-zA-Z0-9_\-]+)@(.+)$/;
+const sshRegex = /^ssh:\/\/([a-zA-Z0-9_-]+)@(.+)$/u;
 const sshLinkKeyPrefix = "pf:ssh:";
 
-export interface EnvironmentGetParams {
+export type EnvironmentGetParams = {
+  [key: string]: any;
   projectId: string;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface EnvironmentQueryParams {
-  projectId: string;
+export type EnvironmentQueryParams = {
   [key: string]: any;
-}
+  projectId: string;
+};
 
 export enum Status {
   active = "active",
@@ -43,46 +45,46 @@ export enum Status {
   deleting = "deleting"
 }
 
-interface DeploymentState {
+type DeploymentState = {
   crons: {
     enabled: boolean;
     status: "running" | "paused";
   };
   last_deployment_at: string | null;
   last_deployment_successful: boolean;
-}
+};
 
-interface HttpAccess {
+type HttpAccess = {
   is_enabled?: boolean;
   addresses?: {
     permission: "allow" | "deny";
     address: string;
   }[];
   basic_auth?: Record<string, string | undefined>;
-}
+};
 
 export default class Environment extends Ressource {
-  id: string = "";
+  id = "";
   status: Status = Status.inactive;
-  head_commit: string = "";
-  name: string = "";
+  head_commit = "";
+  name = "";
   parent: string | null = null;
-  machine_name: string = "";
-  restrict_robots: boolean = false;
-  title: string = "";
-  created_at: string = "";
-  updated_at: string = "";
-  last_active_at: string = "";
-  last_backup_at: string = "";
-  project: string = "";
-  is_dirty: boolean = false;
-  enable_smtp: boolean = false;
-  has_code: boolean = false;
-  deployment_target: string = "";
+  machine_name = "";
+  restrict_robots = false;
+  title = "";
+  created_at = "";
+  updated_at = "";
+  last_active_at = "";
+  last_backup_at = "";
+  project = "";
+  is_dirty = false;
+  enable_smtp = false;
+  has_code = false;
+  deployment_target = "";
   deployment_state: DeploymentState | undefined = undefined;
   http_access: HttpAccess = {};
-  is_main: boolean = false;
-  type: string = "";
+  is_main = false;
+  type = "";
   edge_hostname = "";
   has_deployment = false;
 
@@ -90,7 +92,7 @@ export default class Environment extends Ressource {
     super(url, paramDefaults, environment, environment, [], modifiableField);
   }
 
-  static get(params: EnvironmentGetParams, customUrl?: string) {
+  static async get(params: EnvironmentGetParams, customUrl?: string) {
     const { projectId, id, ...queryParams } = params;
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
@@ -103,19 +105,19 @@ export default class Environment extends Ressource {
     );
   }
 
-  static query(params: EnvironmentQueryParams, customUrl?: string) {
+  static async query(params: EnvironmentQueryParams, customUrl?: string) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<Environment>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { project: projectId },
       paramDefaults,
       queryParams
     );
   }
 
-  update(data: Partial<Environment>) {
+  async update(data: Partial<Environment>) {
     return super.update(data);
   }
 
@@ -151,8 +153,7 @@ export default class Environment extends Ressource {
   convertSshUrl(url: string, username_suffix = "") {
     const sshUrl = sshRegex.exec(url);
     if (sshUrl) {
-      const host = sshUrl[2];
-      const user = sshUrl[1];
+      const [, user, host] = sshUrl;
 
       return `${user}${username_suffix}@${host}`;
     }
@@ -165,14 +166,14 @@ export default class Environment extends Ressource {
     }
 
     const sshUrls = Object.keys(links)
-      .filter(linkKey => linkKey.indexOf(sshLinkKeyPrefix) === 0)
-      .reduce((sshUrls: Record<string, string>, linkKey) => {
-        sshUrls[linkKey.substr(sshLinkKeyPrefix.length)] = links[linkKey].href;
-        return sshUrls;
+      .filter(linkKey => linkKey.startsWith(sshLinkKeyPrefix))
+      .reduce<Record<string, string>>((urls, linkKey) => {
+        urls[linkKey.substr(sshLinkKeyPrefix.length)] = links[linkKey].href;
+        return urls;
       }, {});
 
     if (this.hasLink("ssh") && Object.keys(sshUrls).length === 0) {
-      sshUrls["ssh"] = `ssh://${this.constructLegacySshUrl()}`;
+      sshUrls.ssh = `ssh://${this.constructLegacySshUrl()}`;
     }
 
     return sshUrls;
@@ -189,7 +190,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  branch(title: string, type: string, id = this.sanitizeId(title)) {
+  async branch(title: string, type: string, id = this.sanitizeId(title)) {
     const body = { name: id, title, type };
 
     return this.runLongOperation("branch", "POST", body);
@@ -211,7 +212,7 @@ export default class Environment extends Ressource {
    *
    * @return Result
    */
-  delete() {
+  async delete() {
     if (this.isActive()) {
       throw new Error("Active environments cannot be deleted");
     }
@@ -222,7 +223,7 @@ export default class Environment extends Ressource {
    * @return bool
    */
   isActive() {
-    return this.status === "active";
+    return this.status === Status.active;
   }
 
   /**
@@ -232,7 +233,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  activate() {
+  async activate() {
     if (this.isActive()) {
       throw new Error("Active environments cannot be activated");
     }
@@ -246,11 +247,11 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  deactivate() {
+  async deactivate() {
     if (!this.isActive()) {
       throw new Error("Inactive environments cannot be deactivated");
     }
-    return this.runLongOperation("deactivate", "POST", undefined);
+    return this.runLongOperation("deactivate", "POST");
   }
 
   /**
@@ -260,7 +261,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  merge() {
+  async merge() {
     if (!this.parent) {
       throw new Error(
         "The environment does not have a parent, so it cannot be merged"
@@ -279,7 +280,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  synchronize(data: boolean, code: boolean) {
+  async synchronize(data: boolean, code: boolean) {
     if (!data && !code) {
       throw new Error("Nothing to synchronize: you must specify data or code");
     }
@@ -293,7 +294,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  backup(safe = true) {
+  async backup(safe = true) {
     return this.runLongOperation("backup", "POST", { safe });
   }
 
@@ -302,7 +303,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  redeploy() {
+  async redeploy() {
     return this.runLongOperation("redeploy");
   }
 
@@ -311,7 +312,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  resume() {
+  async resume() {
     return this.runLongOperation("resume");
   }
 
@@ -320,7 +321,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  pause() {
+  async pause() {
     return this.runLongOperation("pause");
   }
 
@@ -331,7 +332,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity|false
    */
-  getActivity(id: string) {
+  async getActivity(id: string) {
     return Activity.get({ id }, `${this.getUri()}/activities`);
   }
 
@@ -345,7 +346,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity[]
    */
-  getActivities(type: string, starts_at: number) {
+  async getActivities(type: string, starts_at: number) {
     const params = { type, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
@@ -358,7 +359,7 @@ export default class Environment extends Ressource {
    *
    * @return Variable[]
    */
-  getVariables(limit: number) {
+  async getVariables(limit: number) {
     return Variable.query(
       { projectId: this.project, environmentId: this.id, limit },
       this.getLink("#manage-variables")
@@ -380,7 +381,7 @@ export default class Environment extends Ressource {
    * @return Result
    */
 
-  setVariable(
+  async setVariable(
     name: string,
     value: string,
     is_json = false,
@@ -402,8 +403,8 @@ export default class Environment extends Ressource {
     };
 
     return this.getVariable(name)
-      .then((existing: Variable) => {
-        if (existing && existing.id) {
+      .then(async (existing: Variable) => {
+        if (existing?.id) {
           return existing.update(values);
         }
       })
@@ -428,7 +429,7 @@ export default class Environment extends Ressource {
    *
    * @return Variable|false
    */
-  getVariable(id: string) {
+  async getVariable(id: string) {
     return Variable.get(
       { projectId: this.project, environmentId: this.id, id },
       this.getLink("#manage-variables")
@@ -442,14 +443,14 @@ export default class Environment extends Ressource {
    *
    * @return Route
    */
-  setRoute(values: Route) {
+  async setRoute(values: Route) {
     if (!values.id) {
       const route = new Route(values, this.getLink("#manage-routes"));
 
       return route.save();
     }
-    return this.getRoute(values.id).then(existing => {
-      if (existing && existing.id) {
+    return this.getRoute(values.id).then(async existing => {
+      if (existing?.id) {
         return existing.update(
           values,
           `${this.getLink("#manage-routes")}/${encodeURIComponent(existing.id)}`
@@ -468,7 +469,7 @@ export default class Environment extends Ressource {
    *
    * @return Route
    */
-  getRoute(id: string) {
+  async getRoute(id: string) {
     return Route.get(
       { projectId: this.project, environmentId: this.id, id },
       this.getLink("#manage-routes")
@@ -481,7 +482,7 @@ export default class Environment extends Ressource {
    *
    * @return Route[]
    */
-  getRoutes() {
+  async getRoutes() {
     return Route.query(
       { projectId: this.project, environmentId: this.id },
       this.getLink("#manage-routes")
@@ -518,7 +519,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  initialize(profile: string, repository: string) {
+  async initialize(profile: string, repository: string) {
     return this.runLongOperation("initialize", "post", { profile, repository });
   }
 
@@ -529,23 +530,25 @@ export default class Environment extends Ressource {
    *
    * @return EnvironmentAccess|false
    */
-  getUser(id: string) {
+  async getUser(id: string) {
     return EnvironmentAccess.get(
       { projectId: this.project, environmentId: this.id, id },
       this.getLink("#manage-access")
     );
   }
+
   /**
    * Get the users with access to this environment.
    *
    * @return EnvironmentAccess[]
    */
-  getUsers() {
+  async getUsers() {
     return EnvironmentAccess.query(
       { projectId: this.project, environmentId: this.id },
       this.getLink("#manage-access")
     );
   }
+
   /**
    * Add a new user to the environment.
    *
@@ -559,7 +562,7 @@ export default class Environment extends Ressource {
    *
    * @return Result
    */
-  addUser(user: string, role: string, byUuid = true) {
+  async addUser(user: string, role: string, byUuid = true) {
     const property = byUuid ? "user" : "email";
     const body: {
       id: string;
@@ -583,13 +586,11 @@ export default class Environment extends Ressource {
    *
    * @return EnvironmentAccess|false
    */
-  removeUser(id: string) {
+  async removeUser(id: string) {
     return EnvironmentAccess.get(
       { projectId: this.project, environmentId: this.id, id },
       this.getLink("#manage-access")
-    ).then(
-      environmentAccess => environmentAccess && environmentAccess.delete()
-    );
+    ).then(async environmentAccess => environmentAccess?.delete());
   }
 
   /**
@@ -600,7 +601,7 @@ export default class Environment extends Ressource {
    *
    * @return Metrics
    */
-  getMetrics(query: string) {
+  async getMetrics(query: string) {
     const params = query ? { q: query } : {};
 
     return Metrics.get(params, `${this.getUri()}/metrics`);
@@ -614,7 +615,7 @@ export default class Environment extends Ressource {
    *
    * @return Commit
    */
-  getHeadCommit() {
+  async getHeadCommit() {
     return Commit.get(this.project, this.head_commit);
   }
 }

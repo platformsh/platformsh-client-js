@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import Invitation from "../src/model/Invitation";
 
 describe("Invitation", () => {
   const { api_url } = getConfig();
 
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -62,7 +62,7 @@ describe("Invitation", () => {
     );
 
     Invitation.get("project_id", "1").then(invitation => {
-      invitation.delete().then(result => {
+      invitation.delete().then(() => {
         done();
       });
     });

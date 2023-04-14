@@ -1,12 +1,12 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/tickets/category";
 const paramDefaults = {};
 
-export interface TicketCategoryGetParams {
-  [key: string]: any;
-}
+export type TicketCategoryGetParams = Record<string, any>;
 
 export default class TicketCategory extends Ressource {
   id: string;
@@ -21,7 +21,7 @@ export default class TicketCategory extends Ressource {
     this.label = "";
   }
 
-  static get(queryParams?: TicketCategoryGetParams) {
+  static async get(queryParams?: TicketCategoryGetParams) {
     const { api_url } = getConfig();
 
     return super._query<TicketCategory>(

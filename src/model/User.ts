@@ -1,19 +1,21 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const _url = "/api/users";
 const paramDefaults = {};
 
-export interface UserGetParams {
-  id: string;
+export type UserGetParams = {
   [key: string]: any;
-}
+  id: string;
+};
 
-export interface UserQueryParams {
+export type UserQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class User extends Ressource {
   id: string;
@@ -27,7 +29,7 @@ export default class User extends Ressource {
   constructor(
     user: APIObject,
     url = `${_url}/:id`,
-    modifiableField: Array<string> = []
+    modifiableField: string[] = []
   ) {
     const { id } = user;
 
@@ -42,12 +44,16 @@ export default class User extends Ressource {
     this.username = "";
   }
 
-  static get(params: UserGetParams, customUrl?: string, options?: object) {
+  static async get(
+    params: UserGetParams,
+    customUrl?: string,
+    options?: object
+  ) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<User>(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl ?? `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
       queryParams,
@@ -55,11 +61,11 @@ export default class User extends Ressource {
     );
   }
 
-  static query(params: UserQueryParams, customUrl?: string) {
+  static async query(params: UserQueryParams, customUrl?: string) {
     const { api_url } = getConfig();
 
     return super._query<User>(
-      this.getQueryUrl(customUrl || `${api_url}${_url}`),
+      this.getQueryUrl(customUrl ?? `${api_url}${_url}`),
       {},
       paramDefaults,
       params

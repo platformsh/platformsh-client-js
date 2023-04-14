@@ -2,13 +2,12 @@ import api, {
   setAuthenticationPromise,
   getAuthenticationPromise
 } from "../api";
-import connector from "./connector";
-
+import type { ClientConfiguration } from "../config";
 import { jso_wipe } from "../jso";
 
-import { ClientConfiguration } from "../config";
+import connector from "./connector";
 
-let authenticationInProgress: boolean = false;
+let authenticationInProgress = false;
 
 export type JWTToken = {
   access_token: string;
@@ -18,7 +17,7 @@ export type JWTToken = {
   scope: string;
 };
 
-export default (
+export default async (
   {
     api_token,
     access_token,
@@ -30,37 +29,33 @@ export default (
   }: ClientConfiguration,
   reset = false
 ): Promise<JWTToken> => {
-  let promise;
-
   if (authenticationInProgress) {
     return getAuthenticationPromise();
   }
 
   authenticationInProgress = true;
 
-  if (access_token) {
-    promise = Promise.resolve({ access_token, expires: -1 });
-  } else {
-    promise = connector(api_token, reset, {
-      provider,
-      popupMode,
-      response_mode,
-      prompt,
-      extra_params
-    });
-  }
+  const promise = access_token
+    ? Promise.resolve({ access_token, expires: -1 })
+    : connector(api_token, reset, {
+        provider,
+        popupMode,
+        response_mode,
+        prompt,
+        extra_params
+      });
 
   if (promise) {
     setAuthenticationPromise(promise);
 
-    promise.then(() => {
+    void promise.then(() => {
       authenticationInProgress = false;
     });
 
     return promise;
   }
 
-  return Promise.reject();
+  return Promise.reject(new Error());
 };
 
 export const authenticatedRequest = api;

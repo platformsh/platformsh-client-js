@@ -1,5 +1,7 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {
   id: "name"
@@ -22,16 +24,16 @@ const modifiableField = [
 
 const _url = "/projects/:projectId/variables";
 
-export interface ProjectLevelVariableGetParams {
+export type ProjectLevelVariableGetParams = {
+  [key: string]: any;
   name: string;
   projectId: string;
-  [key: string]: any;
-}
+};
 
-export interface ProjectLevelVariableQueryParams {
-  projectId: string;
+export type ProjectLevelVariableQueryParams = {
   [key: string]: any;
-}
+  projectId: string;
+};
 
 export default class ProjectLevelVariable extends Ressource {
   id = "";
@@ -55,10 +57,10 @@ export default class ProjectLevelVariable extends Ressource {
     );
   }
 
-  static get(params: ProjectLevelVariableGetParams, customUrl?: string) {
+  static async get(params: ProjectLevelVariableGetParams, customUrl?: string) {
     const { name, projectId, ...queryParams } = params;
     const { api_url } = getConfig();
-    const urlToCall = customUrl || `${api_url}${_url}`;
+    const urlToCall = customUrl ?? `${api_url}${_url}`;
 
     return super._get<ProjectLevelVariable>(
       `${urlToCall}/:id`,
@@ -68,12 +70,15 @@ export default class ProjectLevelVariable extends Ressource {
     );
   }
 
-  static query(params: ProjectLevelVariableQueryParams, customUrl?: string) {
+  static async query(
+    params: ProjectLevelVariableQueryParams,
+    customUrl?: string
+  ) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<ProjectLevelVariable>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId },
       paramDefaults,
       queryParams

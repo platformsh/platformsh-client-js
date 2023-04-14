@@ -1,10 +1,10 @@
-import { APIObject, RessourceChildClass } from "./Ressource";
+import type { APIObject, RessourceChildClass } from "./Ressource";
 
 export default class Result {
-  private _url: string | undefined;
   data: APIObject;
   detail: any;
-  private _ressourceClass: RessourceChildClass<any> | undefined;
+  private readonly _url: string | undefined;
+  private readonly _ressourceClass: RessourceChildClass<any> | undefined;
 
   constructor(
     result: APIObject,
@@ -40,6 +40,7 @@ export default class Result {
       return [];
     }
     // Workaround the cycle dependency with webpack Ressource->Result->Activity->Ressouce...
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
     const Activity = require("./Activity").default;
 
     return this.data._embedded.activities.map(
@@ -56,7 +57,7 @@ export default class Result {
    *   An instance of Resource.
    */
   getEntity() {
-    const data = this.data["_embedded"]?.["entity"] || this.data;
+    const data = this.data._embedded?.entity ?? this.data;
 
     if (!data || !this._ressourceClass) {
       throw new Error("No entity found in result");

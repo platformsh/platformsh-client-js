@@ -4,15 +4,14 @@ import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
 import { setAuthenticationPromise } from "../src/api";
-import EnvironmentAccess from "../src/model/EnvironmentAccess";
 import Environment from "../src/model/Environment";
 
 describe("Environment Access", () => {
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 

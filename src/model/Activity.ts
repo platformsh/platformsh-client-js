@@ -1,22 +1,24 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
 
-export interface ActivityGetParams {
+export type ActivityGetParams = {
+  [index: string]: any;
   id?: string;
   projectId?: string;
   environmentId?: string;
-  [index: string]: any;
-}
+};
 
-export interface ActivityQueryParams {
+export type ActivityQueryParams = {
+  [index: string]: any;
   projectId?: string;
   environmentId?: string;
-  [index: string]: any;
-}
+};
 
 export default class Activity extends Ressource {
   readonly RESULT_SUCCESS = "success";
@@ -66,7 +68,7 @@ export default class Activity extends Ressource {
     this.timings = {};
   }
 
-  static get(params: ActivityGetParams, customUrl?: string) {
+  static async get(params: ActivityGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -78,12 +80,12 @@ export default class Activity extends Ressource {
     );
   }
 
-  static query(params: ActivityQueryParams, customUrl?: string) {
+  static async query(params: ActivityQueryParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<Activity>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
@@ -105,7 +107,7 @@ export default class Activity extends Ressource {
    *                                string.
    * @param int|float pollInterval The polling interval, in seconds.
    */
-  wait(
+  async wait(
     onPoll?: (activity: Activity) => void,
     onLog?: (log: string) => void,
     pollInterval = 1
@@ -115,7 +117,7 @@ export default class Activity extends Ressource {
     if (onLog && log.trim().length) {
       onLog(`${log.trim()}\n`);
     }
-    let length = log.length;
+    let { length } = log;
     let retries = 0;
 
     return new Promise<Activity>((resolve, reject) => {
@@ -135,12 +137,14 @@ export default class Activity extends Ressource {
               const newLog = (this.log || "").substring(length);
 
               onLog(`${newLog.trim()}\n`);
+              // eslint-disable-next-line prefer-destructuring
               length = newLog.length;
             }
           })
           .catch(err => {
             if (err.message.indexOf("cURL error 28") !== -1 && retries <= 5) {
-              return retries++;
+              retries++;
+              return;
             }
 
             reject(err);
@@ -172,7 +176,7 @@ export default class Activity extends Ressource {
    *
    * @return Activity
    */
-  restore() {
+  async restore() {
     if (this.type !== "environment.backup") {
       throw new Error("Cannot restore activity (wrong type)");
     }
@@ -183,22 +187,19 @@ export default class Activity extends Ressource {
     return this.runLongOperation("restore", "POST", {});
   }
 
-  getLogAt(start_at: number, delay: number): Promise<string> {
+  async getLogAt(start_at: number, delay: number): Promise<string> {
     if (delay) {
       return new Promise(resolve => {
-        setTimeout(
-          () => resolve(request(this.getLink("log"), "GET", { start_at })),
-          delay
-        );
+        setTimeout(() => {
+          resolve(request(this.getLink("log"), "GET", { start_at }));
+        }, delay);
       });
     }
 
     return request(this.getLink("log"), "GET", { start_at });
   }
 
-  getLogs(
-    callback: (log: Array<string> | string, response?: Response) => void
-  ) {
+  getLogs(callback: (log: string[] | string, response?: Response) => void) {
     let canceled = false;
 
     const cancel = () => {
@@ -209,7 +210,8 @@ export default class Activity extends Ressource {
       cancel,
       exec: async () => {
         if (!this.hasLink("log")) {
-          return callback(this.log);
+          callback(this.log);
+          return;
         }
 
         let starts_at = 0;
@@ -220,30 +222,31 @@ export default class Activity extends Ressource {
         while (
           (!lastResponse || !lastResponse[lastResponse.data.length - 1].seal) &&
           attempts < 5 &&
+          // eslint-disable-next-line no-unmodified-loop-condition
           !canceled
         ) {
           try {
+            // eslint-disable-next-line no-await-in-loop
             const textJsonLog = await this.getLogAt(starts_at, delay);
 
-            if (!textJsonLog || !textJsonLog.length) {
+            if (textJsonLog?.length) {
+              delay = 0;
+              attempts = 0;
+              const logs = textJsonLog
+                .split("\n")
+                .filter(line => line.length)
+                .map(log => JSON.parse(log));
+
+              lastResponse = logs[logs.length - 1];
+              starts_at++;
+              callback(logs);
+
+              if (logs[logs.length - 1].seal) {
+                break;
+              }
+            } else {
               delay = 3000;
               attempts++;
-              continue;
-            }
-
-            delay = 0;
-            attempts = 0;
-            const logs = textJsonLog
-              .split("\n")
-              .filter(line => line.length)
-              .map(log => JSON.parse(log));
-
-            lastResponse = logs[logs.length - 1];
-            starts_at++;
-            callback(logs);
-
-            if (logs[logs.length - 1].seal) {
-              break;
             }
           } catch (response) {
             if (
@@ -263,12 +266,9 @@ export default class Activity extends Ressource {
 
   /**
    * Get a human-readable description of the activity.
-   *
-   * @return string
    */
   getDescription() {
-    const type = this.type;
-    const payload = this.payload;
+    const { type, payload } = this;
 
     switch (type) {
       case "project.domain.create":
@@ -290,7 +290,7 @@ export default class Activity extends Ressource {
       case "environment.deactivate":
         return `${payload.user.display_name} deactivated environment ${payload.environment.title}`;
       case "environment.initialize":
-        return `${payload.user.display_name} initialized environment ${payload.outcome.title} with profile ${payload.profile}`; // eslint-disable-line max-len
+        return `${payload.user.display_name} initialized environment ${payload.outcome.title} with profile ${payload.profile}`;
       case "environment.merge":
         return `${payload.user.display_name} merged ${payload.outcome.title} into ${payload.environment.title}`;
       case "environment.push":
@@ -298,17 +298,18 @@ export default class Activity extends Ressource {
       case "environment.restore":
         return `${payload.user.display_name} restored ${
           payload.environment
-        } from snapshot ${payload.backup_name.substr(0, 7)}`; // eslint-disable-line max-len
-      case "environment.synchronize":
-        const syncedCode = !payload["synchronize_code"];
+        } from snapshot ${payload.backup_name.substr(0, 7)}`;
+      case "environment.synchronize": {
+        const syncedCode = !payload.synchronize_code;
         let syncType = "data";
 
-        if (syncedCode && !payload["synchronize_data"]) {
+        if (syncedCode && !payload.synchronize_data) {
           syncType = "code and data";
         } else if (syncedCode) {
           syncType = "code";
         }
-        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${syncType} with ${payload.environment.title}`; // eslint-disable-line max-len
+        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${syncType} with ${payload.environment.title}`;
+      }
       case "environment.access.add":
         return `${payload.user.display_name} added ${payload.access.display_name} to ${payload.environment.title}`;
       case "environment.access.remove":
@@ -333,7 +334,8 @@ export default class Activity extends Ressource {
         return `${payload.user.display_name} modified subscription`;
       case "project.create":
         return `${payload.user.display_name} created a new project ${payload.outcome.title}`;
+      default:
+        return type;
     }
-    return type;
   }
 }

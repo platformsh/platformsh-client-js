@@ -1,7 +1,9 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/users/:id";
 const paramDefaults = {};
@@ -26,10 +28,10 @@ const modifiableField = [
   "website"
 ];
 
-export interface AuthUserParams {
-  id?: string;
+export type AuthUserParams = {
   [index: string]: any;
-}
+  id?: string;
+};
 
 export default class AuthUser extends Ressource {
   id: string;
@@ -75,12 +77,12 @@ export default class AuthUser extends Ressource {
     this.updated_at = "";
   }
 
-  static get(params: AuthUserParams, customUrl?: string) {
+  static async get(params: AuthUserParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<AuthUser>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
@@ -98,10 +100,11 @@ export default class AuthUser extends Ressource {
   static async updateEmailAddress(id: string, emailAddress: string) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}/emailaddress`;
-    return await request(endpoint, "POST", {
+    return request(endpoint, "POST", {
       email_address: emailAddress
     });
   }
+
   static async getUserByUsername(username: string) {
     const { api_url } = getConfig();
 

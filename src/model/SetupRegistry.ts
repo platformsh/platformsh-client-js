@@ -1,16 +1,18 @@
-import Ressource, { APIObject } from "./Ressource";
+import request from "../api";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const _url = "/platform/setup/registry";
 const paramDefaults = {};
 // /api/platform/setup/registry\?service\=redis-persistent
 
-export interface SetupRegistryGetParams {
-  name: string;
+export type SetupRegistryGetParams = {
   [key: string]: any;
-}
+  name: string;
+};
 
 export default class SetupRegistry extends Ressource {
   description = "";
@@ -33,16 +35,14 @@ export default class SetupRegistry extends Ressource {
     this._queryUrl = Ressource.getQueryUrl(url);
   }
 
-  static get(params: SetupRegistryGetParams, customUrl?: string) {
+  static async get(params: SetupRegistryGetParams, customUrl?: string) {
     const { name, ...queryParams } = params;
     const { api_url } = getConfig();
-    const url = customUrl || `${api_url}${_url}?service=:name`;
+    const url = customUrl ?? `${api_url}${_url}?service=:name`;
     const parsedUrl = _urlParser(url, params);
 
-    return request(parsedUrl, "POST", queryParams).then(data => {
-      return typeof data === "undefined"
-        ? undefined
-        : new SetupRegistry(data, _url);
-    });
+    return request(parsedUrl, "POST", queryParams).then(data =>
+      typeof data === "undefined" ? undefined : new SetupRegistry(data, _url)
+    );
   }
 }

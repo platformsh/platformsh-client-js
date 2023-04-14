@@ -1,13 +1,15 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/platform/users/:id";
 const paramDefaults = {};
 
-export interface AccountGetParams {
-  id?: string;
+export type AccountGetParams = {
   [index: string]: any;
-}
+  id?: string;
+};
 
 export default class Account extends Ressource {
   id: string;
@@ -35,19 +37,22 @@ export default class Account extends Ressource {
     this.roles = [];
   }
 
-  static get(params: AccountGetParams, customUrl?: string): Promise<Account> {
+  static async get(
+    params: AccountGetParams,
+    customUrl?: string
+  ): Promise<Account> {
     const { id, ...queryParams } = params;
     const { account_url } = getConfig();
 
     return super._get<Account>(
-      customUrl || `${account_url}${url}`,
+      customUrl ?? `${account_url}${url}`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: AccountGetParams): Promise<Account[]> {
+  static async query(params: AccountGetParams): Promise<Account[]> {
     const { account_url } = getConfig();
 
     return super._query<Account>(

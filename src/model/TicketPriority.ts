@@ -1,12 +1,12 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/tickets/priority";
 const paramDefaults = {};
 
-export interface TicketPriorityGetParams {
-  [key: string]: any;
-}
+export type TicketPriorityGetParams = Record<string, any>;
 
 export default class TicketPriority extends Ressource {
   id: string;
@@ -25,7 +25,7 @@ export default class TicketPriority extends Ressource {
     this.description = "";
   }
 
-  static get(queryParams: TicketPriorityGetParams) {
+  static async get(queryParams: TicketPriorityGetParams) {
     const { api_url } = getConfig();
 
     return super._query<TicketPriority>(

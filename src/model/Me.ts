@@ -1,12 +1,13 @@
-import User from "./User";
-import { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
 import Organization from "./Organization";
-import Project from "./Project";
-import SshKey from "./SshKey";
+import type Project from "./Project";
+import type { APIObject } from "./Ressource";
 import Result from "./Result";
-import Team from "./Team";
+import type SshKey from "./SshKey";
+import type Team from "./Team";
+import User from "./User";
 
 const url = "/platform/me";
 const modifiableField = [
@@ -22,17 +23,16 @@ const modifiableField = [
   "ssh_keys"
 ];
 
-export interface PhoneVerificationResponse {
+export type PhoneVerificationResponse = {
   verify_phone: boolean;
-}
+};
 
-// @ts-ignore
-// TODO: fix the get method inheritance error
+// @ts-expect-error fix the get method inheritance error
 export default class Me extends User {
-  projects: Array<Project>;
-  ssh_keys: Array<SshKey>;
-  roles: Array<string>;
-  teams: Array<Team>;
+  projects: Project[];
+  ssh_keys: SshKey[];
+  roles: string[];
+  teams: Team[];
   picture: string;
   newsletter: boolean;
   plaintext: boolean;
@@ -64,7 +64,7 @@ export default class Me extends User {
     this.current_trial = {};
   }
 
-  static get(reset = false) {
+  static async get(reset = false) {
     const { api_url } = getConfig();
 
     return super._get<Me>(
@@ -86,14 +86,14 @@ export default class Me extends User {
     return new Result(new Me(result.data)); // Account API does not return a Result
   }
 
-  phone(refresh: boolean = false): Promise<PhoneVerificationResponse> {
+  async phone(refresh = false): Promise<PhoneVerificationResponse> {
     const { api_url } = getConfig();
 
     const params = refresh ? "force_refresh=1" : "";
     return request(`${api_url}${url}/phone?${params}`, "POST");
   }
 
-  getOrganizations() {
+  async getOrganizations() {
     return this.getRefs<Organization>("ref:organizations", Organization);
   }
 }

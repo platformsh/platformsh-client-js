@@ -1,48 +1,49 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
-import ProjectAccess from "./ProjectAccess";
-
 import request from "../api";
+import { getConfig } from "../config";
+
+import ProjectAccess from "./ProjectAccess";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/projects/:projectId/environment-types/:id";
 const paramDefaults = {};
 
-export interface EnvironmentTypeGetParams {
+export type EnvironmentTypeGetParams = {
+  [key: string]: any;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface EnvironmentTypeQueryParams {
-  projectId: string;
+export type EnvironmentTypeQueryParams = {
   [key: string]: any;
-}
+  projectId: string;
+};
 
 export type AccessRole = "admin" | "contributor" | "viewer";
 
-export interface CreateAccessParams {
+export type CreateAccessParams = {
   projectId: string;
   environmentTypeId: string;
   email?: string;
   role: AccessRole;
   user?: string;
-}
+};
 
-export interface UpdateAccessParams {
+export type UpdateAccessParams = {
   projectId: string;
   environmentTypeId: string;
   accessId: string;
   role: AccessRole;
-}
+};
 
-export interface DeleteAccessParams {
+export type DeleteAccessParams = {
   projectId: string;
   environmentTypeId: string;
   accessId: string;
-}
+};
 
 export default class EnvironmentType extends Ressource {
   id: string;
-  accesses: Array<any>;
+  accesses: any[];
 
   constructor(environmentType: APIObject) {
     const { id } = environmentType;
@@ -53,19 +54,19 @@ export default class EnvironmentType extends Ressource {
     this.accesses = [];
   }
 
-  static get(params: EnvironmentTypeGetParams, customUrl?: string) {
+  static async get(params: EnvironmentTypeGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<EnvironmentType>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: EnvironmentTypeQueryParams) {
+  static async query(params: EnvironmentTypeQueryParams) {
     const { api_url } = getConfig();
     const { projectId, ...queryString } = params;
 
@@ -80,21 +81,23 @@ export default class EnvironmentType extends Ressource {
   static async createAccess(params: CreateAccessParams) {
     const { projectId, environmentTypeId, email, role, user } = params;
     const { api_url } = getConfig();
-    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
-    return request(url, "POST", {
+    const accessUrl = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
+    const response = await request(accessUrl, "POST", {
       email,
       role,
       user
-    }).then(response => new ProjectAccess(response._embedded.entity, url));
+    });
+    return new ProjectAccess(response._embedded.entity, accessUrl);
   }
 
   static async updateAccess(params: UpdateAccessParams) {
     const { projectId, environmentTypeId, accessId, role } = params;
     const { api_url } = getConfig();
-    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
-    return request(url, "PATCH", {
+    const accessUrl = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
+    const response = await request(accessUrl, "PATCH", {
       role
-    }).then(response => new ProjectAccess(response._embedded.entity, url));
+    });
+    return new ProjectAccess(response._embedded.entity, accessUrl);
   }
 
   static async deleteAccess(
@@ -102,19 +105,23 @@ export default class EnvironmentType extends Ressource {
   ): Promise<{ status: string; code: number }> {
     const { projectId, environmentTypeId, accessId } = params;
     const { api_url } = getConfig();
-    const url = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
-    return request(url, "DELETE");
+    return request(
+      `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`,
+      "DELETE"
+    );
   }
 
   async getAccesses() {
     const accessLink = this.getLink("#access");
     const accesses = await request(accessLink);
     this.accesses = [];
-    for (let i = 0; i < accesses.length; i++) {
+
+    for (const access of accesses) {
       this.accesses.push(
-        new ProjectAccess(accesses[i], `${accessLink}/${accesses[i].id}`)
+        new ProjectAccess(access, `${accessLink}/${access.id}`)
       );
     }
+
     return this.accesses;
   }
 }

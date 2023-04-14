@@ -1,18 +1,20 @@
+/* global afterEach, before*/
+
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import Tree from "../src/model/git/Tree";
 
 describe("Tree", () => {
   const { api_url } = getConfig();
 
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -76,7 +78,7 @@ describe("Tree", () => {
       assert.equal(tree.sha, "shastring");
       assert.equal(tree.tree.length, 2);
 
-      const blob = tree.tree[1].getInstance().then(b => {
+      tree.tree[1].getInstance().then(b => {
         assert.equal(b.path, "file2.js");
         tree.tree[1].getRawContent().then(c => {
           assert.equal(c, "awesome file");

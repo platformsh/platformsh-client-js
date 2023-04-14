@@ -1,21 +1,23 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/platform/teams/:teamId/members";
 
 const creatableField = ["role"];
 
-export interface TeamMemberGetParams {
+export type TeamMemberGetParams = {
+  [key: string]: any;
   id: string;
   teamId: string;
-  [key: string]: any;
-}
+};
 
-export interface TeamMemberQueryParams {
-  teamId: string;
+export type TeamMemberQueryParams = {
   [key: string]: any;
-}
+  teamId: string;
+};
 
 export default class TeamMember extends Ressource {
   user: string;
@@ -25,34 +27,34 @@ export default class TeamMember extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url ?? `${api_url}${_url}`,
       paramDefaults,
       { teamId },
       teamMember,
       creatableField,
       creatableField
     );
-    this.user = ""; // userId
+    this.user = "";
   }
 
-  static get(params: TeamMemberGetParams, customUrl?: string) {
+  static async get(params: TeamMemberGetParams, customUrl?: string) {
     const { teamId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<TeamMember>(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl ?? `${api_url}${_url}/:id`,
       { teamId, id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: TeamMemberQueryParams, customUrl?: string) {
+  static async query(params: TeamMemberQueryParams, customUrl?: string) {
     const { teamId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<TeamMember>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { teamId },
       paramDefaults,
       queryParams

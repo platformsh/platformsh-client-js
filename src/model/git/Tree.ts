@@ -1,31 +1,21 @@
-import Ressource from "../Ressource";
 import { getConfig } from "../../config";
+import Ressource from "../Ressource";
+
 import Blob from "./Blob";
 
 const _url = "/projects/:projectId/git/trees/:sha";
 
 export type TreeParams = {
-  projectId?: string;
   [key: string]: any;
+  projectId?: string;
 };
-
-function bind(trees: Array<Tree | Blob | undefined>, projectId: string) {
-  return trees.map((o: Tree | Blob | undefined) => {
-    switch (o?.type) {
-      case "tree":
-        return new Tree(o as Tree, undefined, { projectId, sha: o.sha });
-      case "blob":
-        return new Blob(o as Blob, undefined, { projectId, sha: o.sha });
-    }
-  });
-}
 
 export default class Tree extends Ressource {
   id: string;
   sha: string;
-  type: string;
+  type: "tree";
   path: string;
-  tree: Array<Tree | Blob | undefined>;
+  tree: (Tree | Blob | undefined)[];
 
   constructor(tree: Tree, url = _url, params: TreeParams) {
     super(url, {}, params, tree, [], []);
@@ -37,7 +27,7 @@ export default class Tree extends Ressource {
     this.tree = [];
   }
 
-  static async get(projectId: string, sha: string): Promise<Tree | undefined> {
+  static async get(projectId: string, sha: string) {
     const { api_url } = getConfig();
 
     const tree = await super._get<Tree>(`${api_url}${_url}`, {
@@ -46,10 +36,23 @@ export default class Tree extends Ressource {
     });
 
     if (tree) {
-      tree.tree = bind(tree?.tree, projectId);
+      tree.tree = Tree.bind(tree?.tree, projectId);
 
       return tree;
     }
+  }
+
+  private static bind(trees: (Tree | Blob | undefined)[], projectId: string) {
+    return trees.map(o => {
+      switch (o?.type) {
+        case "tree":
+          return new Tree(o, undefined, { projectId, sha: o.sha });
+        case "blob":
+          return new Blob(o, undefined, { projectId, sha: o.sha });
+        default:
+          return undefined;
+      }
+    });
   }
 
   async getInstance() {
@@ -57,7 +60,7 @@ export default class Tree extends Ressource {
     if (tree) {
       tree.path = this.path;
 
-      tree.tree = bind(tree.tree, this._params.projectId);
+      tree.tree = Tree.bind(tree.tree, this._params.projectId);
 
       return tree;
     }

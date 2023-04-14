@@ -3,18 +3,18 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import OrganizationMember from "../src/model/OrganizationMember";
 
 describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();
 
-  beforeEach(function () {
+  beforeEach(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 

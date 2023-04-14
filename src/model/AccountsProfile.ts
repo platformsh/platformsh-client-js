@@ -1,7 +1,9 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -36,10 +38,10 @@ const modifiableField = [
   "marketing"
 ];
 
-export interface AccountsProfileGetParams {
-  id: string;
+export type AccountsProfileGetParams = {
   [index: string]: any;
-}
+  id: string;
+};
 
 export default class AccountsProfile extends Ressource {
   id: string;
@@ -89,12 +91,12 @@ export default class AccountsProfile extends Ressource {
     this.vat_number = "";
   }
 
-  static get(params: AccountsProfileGetParams, customUrl?: string) {
+  static async get(params: AccountsProfileGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<AccountsProfile>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
@@ -119,7 +121,7 @@ export default class AccountsProfile extends Ressource {
     return new AccountsProfile(user.profiles[0]);
   }
 
-  static updateProfilePicture(userId: string, picture: FormData) {
+  static async updateProfilePicture(userId: string, picture: FormData) {
     const { api_url } = getConfig();
     return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
   }

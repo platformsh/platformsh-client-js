@@ -17,7 +17,9 @@ export default class ApiDefaultStorage {
    * @type {Object}
    */
   getState(state, providerId) {
-    var obj = JSON.parse(localStorage.getItem(`state-${providerId}-${state}`));
+    const obj = JSON.parse(
+      localStorage.getItem(`state-${providerId}-${state}`)
+    );
 
     localStorage.removeItem(`state-${providerId}-${state}`);
     return obj;
@@ -28,10 +30,8 @@ export default class ApiDefaultStorage {
    * If token has no scope at all, false is returned.
    */
   hasScope(token, scope) {
-    var i;
-
     if (!token.scopes) return false;
-    for (i = 0; i < token.scopes.length; i++) {
+    for (let i = 0; i < token.scopes.length; i++) {
       if (token.scopes[i] === scope) return true;
     }
     return false;
@@ -41,23 +41,19 @@ export default class ApiDefaultStorage {
    * Takes an array of tokens, and removes the ones that
    * are expired, and the ones that do not meet a scopes requirement.
    */
-  filterTokens(tokens, scopes) {
-    var i,
-      j,
-      result = [],
-      now = Math.round(new Date().getTime() / 1000.0),
-      usethis;
+  filterTokens(tokens, scopes = []) {
+    const result = [];
+    const now = Math.round(new Date().getTime() / 1000.0);
+    let usethis;
 
-    if (!scopes) scopes = [];
-
-    for (i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
       usethis = true;
 
       // Filter out expired tokens. Tokens that is expired in 1 second from now.
       if (tokens[i].expires && tokens[i].expires < now + 1) usethis = false;
 
       // Filter out this token if not all scope requirements are met
-      for (j = 0; j < scopes.length; j++) {
+      for (let j = 0; j < scopes.length; j++) {
         if (!this.hasScope(tokens[i], scopes[j])) usethis = false;
       }
 
@@ -79,7 +75,7 @@ export default class ApiDefaultStorage {
   }
 
   getTokens(provider) {
-    var tokens = JSON.parse(localStorage.getItem(`tokens-${provider}`));
+    let tokens = JSON.parse(localStorage.getItem(`tokens-${provider}`));
 
     if (!tokens) tokens = [];
 
@@ -95,7 +91,7 @@ export default class ApiDefaultStorage {
    * This also cleans up expired tokens for the same provider.
    */
   saveToken(provider, token) {
-    var tokens = this.getTokens(provider);
+    let tokens = this.getTokens(provider);
 
     tokens = this.filterTokens(tokens);
     tokens.push(token);
@@ -107,7 +103,7 @@ export default class ApiDefaultStorage {
    * The scopes parameter is OPTIONAL.
    */
   getToken(provider, scopes) {
-    var tokens = this.getTokens(provider);
+    let tokens = this.getTokens(provider);
 
     tokens = this.filterTokens(tokens, scopes);
     if (tokens.length < 1) return null;

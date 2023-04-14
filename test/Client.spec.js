@@ -3,8 +3,8 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import Client from "../src";
+import { getConfig } from "../src/config";
 import Invitation from "../src/model/Invitation";
 
 const _fetch = (url, data, ...params) =>
@@ -14,7 +14,7 @@ describe("Client", () => {
   let client;
   const { authentication_url, api_url } = getConfig();
 
-  beforeEach(function () {
+  beforeEach(() => {
     fetchMock.mock(`${authentication_url}/oauth2/token`, {
       access_token: "test"
     });
@@ -23,7 +23,7 @@ describe("Client", () => {
     });
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -287,7 +287,7 @@ describe("Client", () => {
       },
       { method: "POST" }
     );
-    client.addSshKey("valueofsshkey", "titleofsshkey").catch(err => {
+    client.addSshKey("valueofsshkey", "titleofsshkey").catch(() => {
       done();
     });
   });
@@ -301,7 +301,7 @@ describe("Client", () => {
       { method: "POST" }
     );
     const validSshKey =
-      "ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB"; // eslint-disable-line max-len
+      "ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB";
 
     client.addSshKey(validSshKey, "titleofsshkey").then(result => {
       assert.equal(result.constructor.name, "SshKey");
@@ -404,7 +404,7 @@ describe("Client", () => {
 
   it("Get subscriptions with filters", done => {
     fetchMock.mock(
-      `${api_url}/v1/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`, //eslint-disable-line
+      `${api_url}/v1/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`,
       {
         subscriptions: [
           {
@@ -1035,7 +1035,7 @@ describe("Client", () => {
     });
   });
 
-  describe("Invitations", done => {
+  describe("Invitations", () => {
     it("Get invitations", async () => {
       const invitationsMock = [
         { state: "pending", id: "1" },
@@ -1079,7 +1079,7 @@ describe("Client", () => {
     });
   });
 
-  describe("Environment types", done => {
+  describe("Environment types", () => {
     it("Get environment types", async () => {
       const environmentTypesMock = [
         {
@@ -1178,7 +1178,7 @@ describe("Client", () => {
       );
     });
   });
-  describe("Organization members", done => {
+  describe("Organization members", () => {
     it("Get organization members", done => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/members`, {
         items: [
@@ -1205,7 +1205,7 @@ describe("Client", () => {
       });
     });
   });
-  describe("Organization payment", done => {
+  describe("Organization payment", () => {
     it("Create payment intent", done => {
       fetchMock.mock(
         `${api_url}/organizations/aliceOrgId/payment-source/intent`,
@@ -1223,7 +1223,7 @@ describe("Client", () => {
         });
     });
   });
-  describe("Comments", done => {
+  describe("Comments", () => {
     it("Create comments", done => {
       fetchMock.mock(
         `${api_url}/v1/comments`,
@@ -1242,7 +1242,7 @@ describe("Client", () => {
         });
     });
   });
-  describe("Organization vouchers", done => {
+  describe("Organization vouchers", () => {
     it("Get organization vouchers", done => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/vouchers`, {
         vouchers: [
