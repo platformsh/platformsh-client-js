@@ -1,4 +1,4 @@
-import "isomorphic-fetch"; // fetch api polyfill
+import 'cross-fetch/polyfill'; // fetch api polyfill
 import param from "to-querystring";
 import isNode from "detect-node";
 
