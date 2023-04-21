@@ -32,6 +32,7 @@ export default class OrganizationProfile extends Ressource {
   company_name: string;
   current_trial: string;
   website_url: string;
+  account_tier: string;
 
   constructor(profile: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -53,6 +54,7 @@ export default class OrganizationProfile extends Ressource {
     this.company_name = "";
     this.website_url = "";
     this.current_trial = "";
+    this.account_tier = "";
   }
 
   static get(params: OrganizationProfilGetParams) {
