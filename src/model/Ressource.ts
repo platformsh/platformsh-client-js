@@ -7,7 +7,8 @@ import {
   getRefs,
   hasLink,
   getLinkHref,
-  Link
+  Link,
+  Links
 } from "../refs";
 import request from "../api";
 import Result from "./Result";
@@ -31,9 +32,11 @@ const handler = {
   get(target: any, key: string) {
     if (
       typeof key !== "symbol" &&
-      !key.startsWith("_") &&
       key !== "data" &&
-      target.hasOwnProperty(key)
+      ((
+        (!key.startsWith("_")) &&
+        target.hasOwnProperty(key)
+      ) || ["_embedded", "_links"].includes(key))
     ) {
       return target.data && target.data[key];
     }
@@ -79,6 +82,9 @@ export default abstract class Ressource {
   protected _queryUrl?: string;
 
   private data?: APIObject;
+
+  public _links?: Record<string, Link>;
+  public _embedded?: Record<string, Array<object>>;
 
   constructor(
     _url: string,

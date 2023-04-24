@@ -15,7 +15,9 @@ const modifiableField = [
   "marketing",
   "company_name",
   "security_contact",
-  "website_url"
+  "website_url",
+  "vat_number",
+  "billing_contact"
 ];
 
 export interface OrganizationProfilGetParams {

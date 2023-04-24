@@ -83,9 +83,101 @@ export interface IntegrationQueryParams {
   [key: string]: any;
 }
 
+interface BitbucketAppCredentials {
+  key: string;
+  secret: string;
+}
+interface BitbucketAddonCredentials {
+  addon_key: string;
+  client_key: string;
+  shared_secret: string;
+};
+
 export default class Integration extends Ressource {
   id = "";
   type = "";
+
+  // These properties may or may not exist on this object, depending on which
+  // type of integration it is.
+  // We need to add them all so that they can be accessed directly rather than
+  // going through the `.data` property that exists on Proxy objects.
+  //
+  // See https://api.platform.sh/docs/#tag/Third-Party-Integrations/operation/get-projects-integrations
+  // for examples of integration data returned for each integration type.
+
+  // BitbucketIntegration
+  app_credentials: BitbucketAppCredentials | undefined = undefined;
+  addon_credentials: BitbucketAddonCredentials | undefined = undefined;
+  repository: string | undefined = undefined;
+  fetch_branches: boolean | undefined = undefined;
+  prune_branches: boolean | undefined = undefined;
+  build_pull_requests: boolean | undefined = undefined;
+  resync_pull_requests: boolean | undefined = undefined;
+
+  // BitBucketServerIntegration
+  url: string | undefined = undefined;
+  username: string | undefined = undefined;
+  project: string | undefined = undefined;
+  pull_requests_clone_parent_data: boolean | undefined = undefined;
+
+  // BlackfireIntegration
+  environments_credentials: { [prop: string]: any } | undefined = undefined;
+  supported_runtimes: string[] | undefined = undefined;
+
+  // FastlyIntegration
+  events: string[] | undefined = undefined;
+  environments: string[] | undefined = undefined;
+  excluded_environments: string[] | undefined = undefined;
+  states: string[] | undefined = undefined;
+  result: string | undefined = undefined;
+  service_id: string | undefined = undefined;
+
+  // GithubIntegration
+  base_url: string | undefined = undefined;
+  build_draft_pull_requests: boolean | undefined = undefined;
+  build_pull_requests_post_merge: boolean | undefined = undefined;
+
+  // GitLabIntegration
+  // No new properties
+
+  // EmailIntegration
+  from_address: string | undefined = undefined;
+  recipients: string[] | undefined = undefined;
+
+  // PagerDutyIntegration
+  routing_key: string | undefined = undefined;
+
+  // SlackIntegration
+  channel: string | undefined = undefined;
+
+  // HealthWebHookIntegration
+  // No new properties
+
+  // HipChatIntegration
+  room: string | undefined = undefined;
+
+  // NewRelicIntegration
+  tls_verify: boolean | undefined = undefined;
+
+  // ScriptIntegration
+  script: string | undefined = undefined;
+
+  // SplunkIntegration
+  index: string | undefined = undefined;
+  sourcetype: string | undefined = undefined;
+
+  // SumologicIntegration
+  category: string | undefined = undefined;
+
+  // SyslongIntegration
+  host: string | undefined = undefined;
+  port: number | undefined = undefined;
+  protocol: string | undefined = undefined;
+  facility: number | undefined = undefined;
+  message_format: string | undefined = undefined;
+
+  // WebHookIntegration
+  shared_key: string | undefined = undefined;
 
   constructor(integration: APIObject, url: string) {
     super(
