@@ -1,7 +1,6 @@
 import "cross-fetch/polyfill"; // fetch api polyfill
-import path from "path";
-
 import parse_url from "parse_url";
+import path from "path";
 
 import request, { createEventSource } from "../api";
 import { getConfig } from "../config";
@@ -308,7 +307,7 @@ export default class Project extends Ressource {
    *
    * @return Activity[]
    */
-  async getActivities(types: string[], starts_at: number) {
+  getActivities(types: Array<string>, starts_at: string|boolean) {
     const params = { type: types, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
