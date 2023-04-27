@@ -1,8 +1,14 @@
 import isNode from "detect-node";
 import { OAuth2PopupFlow } from "oauth2-popup-flow";
-import 'cross-fetch/polyfill'; // fetch api polyfill
+import "cross-fetch/polyfill"; // fetch api polyfill
 
 import { request } from "../api";
+import type {
+  ClientConfiguration,
+  DefaultClientConfiguration
+} from "../config";
+import { getConfig } from "../config";
+import type { PKCERequest } from "../jso";
 import {
   jso_configure,
   jso_ensureTokens,
@@ -17,14 +23,8 @@ import {
   generatePKCE,
   jso_checkforcode,
   jso_saveCodeVerifier,
-  jso_getCodeVerifier,
-  PKCERequest
+  jso_getCodeVerifier
 } from "../jso";
-import {
-  getConfig,
-  ClientConfiguration,
-  DefaultClientConfiguration
-} from "../config";
 
 type IFrameOption = {
   sandbox?: string;
@@ -38,10 +38,10 @@ if (isNode) {
   basicAuth = btoa("platform-cli:");
 }
 
-function createIFrame(
+const createIFrame = (
   src: string,
   options: IFrameOption = {}
-): HTMLIFrameElement {
+): HTMLIFrameElement => {
   let iframe: HTMLIFrameElement = document.getElementById(
     "logiframe-platformsh"
   ) as HTMLIFrameElement;
@@ -61,7 +61,7 @@ function createIFrame(
   document.body.appendChild(iframe);
 
   if (iframe.contentWindow) {
-    iframe.contentWindow.onerror = function (msg, url, line) {
+    iframe.contentWindow.onerror = msg => {
       if (msg === "[IFRAME ERROR MESSAGE]") {
         return true;
       }
@@ -69,28 +69,28 @@ function createIFrame(
   }
 
   return iframe;
-}
+};
 
-function removeIFrame() {
-  let iframe = document.getElementById("logiframe-platformsh");
+const removeIFrame = () => {
+  const iframe = document.getElementById("logiframe-platformsh");
 
   if (!iframe) {
-    return false;
+    return;
   }
 
   document.body.removeChild(iframe);
-}
+};
 
-function checkForStorageAccess(auth: ClientConfiguration) {
-  return new Promise((resolve, reject) => {
+const checkForStorageAccess = async (auth: ClientConfiguration) =>
+  new Promise((resolve, reject) => {
     removeIFrame();
 
     createIFrame(`${auth.authentication_url}/request-storage-access.html`);
-    async function receiveMessage(event: MessageEvent) {
+    const receiveMessage = (event: MessageEvent) => {
       if (event.origin !== auth.authentication_url) {
         return false;
       }
-      const data = event.data;
+      const { data } = event;
 
       window.removeEventListener("message", receiveMessage, false);
 
@@ -99,15 +99,14 @@ function checkForStorageAccess(auth: ClientConfiguration) {
       if (data.granted) {
         resolve(data);
       } else {
-        reject();
+        reject(new Error());
       }
-    }
+    };
 
     window.addEventListener("message", receiveMessage, false);
   });
-}
 
-function logInWithToken(token: string) {
+const logInWithToken = async (token: string) => {
   const credentials = {
     grant_type: "api_token",
     api_token: token
@@ -123,7 +122,7 @@ function logInWithToken(token: string) {
     credentials,
     headers
   );
-}
+};
 
 const getTokenWithAuthorizationCode = async (
   authenticationUrl: string,
@@ -151,18 +150,19 @@ const getTokenWithAuthorizationCode = async (
   });
 
   if (resp.status !== 200) {
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw resp;
   }
 
-  return await resp.json();
+  return resp.json();
 };
 
-async function authorizationCodeCallback(
+const authorizationCodeCallback = async (
   config: DefaultClientConfiguration,
   codeVerifier: string,
   code: string,
   state?: string
-) {
+) => {
   const atoken = await getTokenWithAuthorizationCode(
     config.authentication_url,
     config.client_id,
@@ -171,7 +171,7 @@ async function authorizationCodeCallback(
     code
   );
 
-  set_token_expiration(atoken, config);
+  set_token_expiration(atoken);
 
   jso_saveToken(config.provider, atoken);
 
@@ -179,13 +179,14 @@ async function authorizationCodeCallback(
   localStorage.removeItem(`${config.provider}-code-verifier`);
 
   return atoken;
-}
+};
 
-function logInWithRedirect(
-  reset: boolean = false,
+const logInWithRedirect = async (
+  reset = false,
   extraParams?: Record<string, string>
-) {
+) => {
   console.log("In redirect...");
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     const config = getConfig();
     const auth = {
@@ -196,7 +197,7 @@ function logInWithRedirect(
     let pkce: PKCERequest;
 
     if (!auth.client_id) {
-      reject("Client_id in AUTH_CONFIG is mandatory");
+      reject(new Error("Client_id in AUTH_CONFIG is mandatory"));
     }
     // ensure that there is an access token, redirecting to auth if needed
     if (!auth.redirect_uri) {
@@ -209,7 +210,7 @@ function logInWithRedirect(
     const storedToken = jso_getToken(auth.provider);
 
     if (storedToken && !reset) {
-      return resolve(storedToken);
+      resolve(storedToken);
     }
 
     jso_wipe();
@@ -227,7 +228,7 @@ function logInWithRedirect(
       if (oauthResp) {
         const codeVerifier = jso_getCodeVerifier(config.provider);
         if (codeVerifier && oauthResp.code) {
-          return resolve(
+          resolve(
             await authorizationCodeCallback(
               auth,
               codeVerifier,
@@ -240,8 +241,10 @@ function logInWithRedirect(
 
       pkce = await generatePKCE();
 
-      req["code_challenge"] = pkce.codeChallenge;
-      req["code_challenge_method"] = "S256";
+      // eslint-disable-next-line require-atomic-updates
+      req.code_challenge = pkce.codeChallenge;
+      // eslint-disable-next-line require-atomic-updates
+      req.code_challenge_method = "S256";
 
       jso_saveCodeVerifier(auth.provider, pkce.codeVerifier);
     } else {
@@ -249,8 +252,10 @@ function logInWithRedirect(
         jso_checkfortoken(auth.client_id, auth.provider, undefined, false);
         const token = jso_getToken(auth.provider);
         localStorage.removeItem(`state-${req.providerID}-${req.state}`);
-        return resolve(token);
-      } catch {}
+        resolve(token);
+      } catch {
+        //
+      }
     }
 
     const authUrl = encodeURL(auth.authorization, { ...req, ...extraParams });
@@ -260,7 +265,7 @@ function logInWithRedirect(
     });
     let attempt = 0;
 
-    const listener = setInterval(async function () {
+    const listener = setInterval(async () => {
       let href;
       let iframeDidReturnError;
 
@@ -295,17 +300,14 @@ function logInWithRedirect(
         );
       }
 
-      if (
-        href &&
-        (href.indexOf("access_token") !== -1 || href.indexOf("code") !== -1)
-      ) {
+      if (href && (href.includes("access_token") || href.includes("code"))) {
         clearInterval(listener);
         if (auth.response_type === "code") {
           // Check for code
           const oauthResp = jso_checkforcode(href);
 
           if (oauthResp?.code) {
-            return resolve(
+            resolve(
               await authorizationCodeCallback(
                 auth,
                 pkce.codeVerifier,
@@ -313,6 +315,7 @@ function logInWithRedirect(
                 req.state
               )
             );
+            return;
           }
         }
         jso_checkfortoken(auth.client_id, auth.provider, href, true);
@@ -323,122 +326,12 @@ function logInWithRedirect(
       }
     }, 500);
   });
-}
-
-const logInWithWebMessageAndPKCE = async (reset: boolean) => {
-  const auth = getConfig();
-
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!auth.client_id) {
-        reject("Client_id in AUTH_CONFIG is mandatory");
-      }
-
-      // ensure that there is an access token, redirecting to auth if needed
-      if (!auth.redirect_uri) {
-        // Some targets just need some dynamism
-        auth.redirect_uri = window.location.origin;
-      }
-
-      jso_configure({ [auth.provider]: auth });
-      const storedToken = jso_getToken(auth.provider);
-
-      if (storedToken && !reset) {
-        return resolve(storedToken);
-      }
-
-      jso_wipe();
-      removeIFrame();
-
-      // If we come from a redirect
-      const oauthResp = jso_checkforcode();
-      if (oauthResp) {
-        const codeVerifier = jso_getCodeVerifier(auth.provider);
-
-        if (codeVerifier && oauthResp.code && oauthResp.state) {
-          return resolve(
-            await authorizationCodeCallback(
-              auth,
-              codeVerifier,
-              oauthResp.code,
-              oauthResp.state
-            )
-          );
-        }
-      }
-
-      // Remove this when google chrome is compatible
-      // @ts-ignore
-      if (document.hasStorageAccess) {
-        await checkForStorageAccess(auth);
-      }
-
-      const req = jso_getAuthRequest(auth.provider, auth.scope);
-
-      const pkce = await generatePKCE();
-
-      req["code_challenge"] = pkce.codeChallenge;
-      req["code_challenge_method"] = "S256";
-
-      const timeout = setTimeout(() => {
-        if (auth.popupMode) {
-          return resolve(logInWithPopUp());
-        }
-
-        resolve(logInWithRedirect());
-      }, 5000);
-
-      async function receiveMessage(event: MessageEvent) {
-        if (event.origin !== auth.authentication_url) {
-          return false;
-        }
-        const data = event.data;
-
-        if (data.error || !data.payload || data.state !== req.state) {
-          if (auth.popupMode) {
-            return logInWithPopUp();
-          }
-
-          return logInWithRedirect();
-        }
-
-        localStorage.removeItem(`state-${req.providerID}-${req.state}`);
-        window.removeEventListener("message", receiveMessage, false);
-
-        clearTimeout(timeout);
-
-        const code = data.payload;
-
-        return resolve(
-          await authorizationCodeCallback(
-            auth,
-            pkce.codeVerifier,
-            code,
-            req.state
-          )
-        );
-      }
-
-      window.addEventListener("message", receiveMessage, false);
-
-      const authUrl = encodeURL(auth.authorization, req);
-      createIFrame(authUrl);
-    } catch (err) {
-      console.log("Error Silent refresh");
-      console.log(err);
-      if (auth.popupMode) {
-        return logInWithPopUp();
-      }
-      console.log("Error In web message mode, trying redirect...");
-      return logInWithRedirect();
-    }
-  });
 };
 
-export const logInWithPopUp = async (reset: boolean = false) => {
+export const logInWithPopUp = async (reset = false) => {
   if (localStorage.getItem("redirectFallBack") === "true") {
     localStorage.removeItem("redirectFallBack");
-    return await logInWithRedirect();
+    return logInWithRedirect();
   }
 
   const authConfig = getConfig();
@@ -451,7 +344,7 @@ export const logInWithPopUp = async (reset: boolean = false) => {
     return storedToken;
   }
 
-  const request = jso_getAuthRequest(
+  const authRequest = jso_getAuthRequest(
     authConfig.provider,
     authConfig.scope,
     undefined,
@@ -463,11 +356,11 @@ export const logInWithPopUp = async (reset: boolean = false) => {
     clientId: authConfig.client_id,
     redirectUri: authConfig.redirect_uri,
     scope: authConfig.scope?.join(","),
-    accessTokenStorageKey: `raw-token-${request.providerID}`,
+    accessTokenStorageKey: `raw-token-${authRequest.providerID}`,
     additionalAuthorizationParameters: {
-      state: request.state || ""
+      state: authRequest.state ?? ""
     },
-    afterResponse: r => {
+    afterResponse: () => {
       // Check that the redirect response state is valid
       jso_checkfortoken(
         authConfig.client_id,
@@ -484,7 +377,7 @@ export const logInWithPopUp = async (reset: boolean = false) => {
   // If the popup fail, fallback to redirect
   if (popupResp === "POPUP_FAILED") {
     localStorage.setItem("redirectFallBack", "true");
-    return await logInWithRedirect();
+    return logInWithRedirect();
   }
 
   // Authentication in the popup is successfull
@@ -494,9 +387,120 @@ export const logInWithPopUp = async (reset: boolean = false) => {
   return jso_getToken(authConfig.provider);
 };
 
-export default (
+const logInWithWebMessageAndPKCE = async (reset: boolean) => {
+  const auth = getConfig();
+
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!auth.client_id) {
+        reject(new Error("Client_id in AUTH_CONFIG is mandatory"));
+      }
+
+      // ensure that there is an access token, redirecting to auth if needed
+      if (!auth.redirect_uri) {
+        // Some targets just need some dynamism
+        auth.redirect_uri = window.location.origin;
+      }
+
+      jso_configure({ [auth.provider]: auth });
+      const storedToken = jso_getToken(auth.provider);
+
+      if (storedToken && !reset) {
+        resolve(storedToken);
+      }
+
+      jso_wipe();
+      removeIFrame();
+
+      // If we come from a redirect
+      const oauthResp = jso_checkforcode();
+      if (oauthResp) {
+        const codeVerifier = jso_getCodeVerifier(auth.provider);
+
+        if (codeVerifier && oauthResp.code && oauthResp.state) {
+          resolve(
+            await authorizationCodeCallback(
+              auth,
+              codeVerifier,
+              oauthResp.code,
+              oauthResp.state
+            )
+          );
+        }
+      }
+
+      if (document.hasStorageAccess !== null) {
+        await checkForStorageAccess(auth);
+      }
+
+      const req = jso_getAuthRequest(auth.provider, auth.scope);
+
+      const pkce = await generatePKCE();
+
+      req.code_challenge = pkce.codeChallenge;
+      req.code_challenge_method = "S256";
+
+      const timeout = setTimeout(() => {
+        if (auth.popupMode) {
+          resolve(logInWithPopUp());
+          return;
+        }
+
+        resolve(logInWithRedirect());
+      }, 5000);
+
+      const receiveMessage = async (event: MessageEvent) => {
+        if (event.origin !== auth.authentication_url) {
+          return false;
+        }
+        const { data } = event;
+
+        if (data.error || !data.payload || data.state !== req.state) {
+          if (auth.popupMode) {
+            return logInWithPopUp();
+          }
+
+          return logInWithRedirect();
+        }
+
+        localStorage.removeItem(`state-${req.providerID}-${req.state}`);
+        window.removeEventListener("message", receiveMessage, false);
+
+        clearTimeout(timeout);
+
+        const code = data.payload;
+
+        resolve(
+          await authorizationCodeCallback(
+            auth,
+            pkce.codeVerifier,
+            code,
+            req.state
+          )
+        );
+        return;
+      };
+
+      window.addEventListener("message", receiveMessage, false);
+
+      const authUrl = encodeURL(auth.authorization, req);
+      createIFrame(authUrl);
+    } catch (err) {
+      console.log("Error Silent refresh");
+      console.log(err);
+      if (auth.popupMode) {
+        void logInWithPopUp();
+      }
+      console.log("Error In web message mode, trying redirect...");
+      void logInWithRedirect();
+    }
+  });
+};
+
+export default async (
   token?: string,
-  reset: boolean = false,
+  reset = false,
   config?: Partial<ClientConfiguration>
 ) => {
   if (isNode && token) {

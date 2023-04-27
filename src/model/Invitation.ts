@@ -1,6 +1,8 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const _queryUrl = "/projects/:projectId/invitations";
 const _url = `${_queryUrl}/:id`;
@@ -18,8 +20,8 @@ export default class Invitation extends Ressource {
   id: string;
   owner: any;
   projectId: string;
-  environments: Array<any>; // This field is deprecated, use permissions instead
-  permissions: Array<any>;
+  environments: any[]; // This field is deprecated, use permissions instead
+  permissions: any[];
   state: string;
   email: string;
   role: string;
@@ -30,7 +32,7 @@ export default class Invitation extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}`,
+      url ?? `${api_url}${_url}`,
       {},
       { projectId, id },
       invitation,
@@ -51,13 +53,13 @@ export default class Invitation extends Ressource {
     this.force = false;
   }
 
-  static get(projectId: string, id: string) {
+  static async get(projectId: string, id: string) {
     const { api_url } = getConfig();
 
     return super._get<Invitation>(`${api_url}${_url}`, { id, projectId });
   }
 
-  static query(projectId: string) {
+  static async query(projectId: string) {
     const { api_url } = getConfig();
 
     return super._query<Invitation>(
@@ -74,7 +76,7 @@ export default class Invitation extends Ressource {
     );
   }
 
-  delete() {
+  async delete() {
     return request(this._url, "DELETE");
   }
 }

@@ -1,7 +1,9 @@
-import Ressource, { APIObject } from "./Ressource";
-import Activity from "./Activity";
 import { request } from "../api";
 import { getConfig } from "../config";
+
+import Activity from "./Activity";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const types = [
@@ -22,7 +24,7 @@ const types = [
   "newrelic"
 ];
 const fields = [
-  //syslog fields
+  // syslog fields
   "host",
   "port",
   "protocol",
@@ -32,7 +34,7 @@ const fields = [
   "tls_verify",
   "auth_token",
 
-  //splunk
+  // splunk
   "index",
   "sourcetype",
 
@@ -72,22 +74,23 @@ const fields = [
 ];
 const _url = "/projects/:projectId/integrations";
 
-export interface IntegrationGetParams {
+export type IntegrationGetParams = {
+  [key: string]: any;
   projectId: string;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface IntegrationQueryParams {
+export type IntegrationQueryParams = {
+  [key: string]: any;
   projectId: string;
-  [key: string]: any;
-}
+};
 
-interface BitbucketAppCredentials {
+type BitbucketAppCredentials = {
   key: string;
   secret: string;
-}
-interface BitbucketAddonCredentials {
+};
+
+type BitbucketAddonCredentials = {
   addon_key: string;
   client_key: string;
   shared_secret: string;
@@ -121,7 +124,7 @@ export default class Integration extends Ressource {
   pull_requests_clone_parent_data: boolean | undefined = undefined;
 
   // BlackfireIntegration
-  environments_credentials: { [prop: string]: any } | undefined = undefined;
+  environments_credentials: Record<string, any> | undefined = undefined;
   supported_runtimes: string[] | undefined = undefined;
 
   // FastlyIntegration
@@ -191,19 +194,7 @@ export default class Integration extends Ressource {
     this._required = ["type"];
   }
 
-  /**
-   * @inheritdoc
-   */
-  checkProperty(property: string, value: string) {
-    const errors: Record<string, string> = {};
-
-    if (property === "type" && types.indexOf(value) === -1) {
-      errors[property] = `Invalid type: '${value}'`;
-    }
-    return errors;
-  }
-
-  static get(params: IntegrationGetParams, customUrl?: string) {
+  static async get(params: IntegrationGetParams, customUrl?: string) {
     const { projectId, id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -215,16 +206,28 @@ export default class Integration extends Ressource {
     );
   }
 
-  static query(params: IntegrationQueryParams, customUrl?: string) {
+  static async query(params: IntegrationQueryParams, customUrl?: string) {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<Integration>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId },
       paramDefaults,
       queryParams
     );
+  }
+
+  /**
+   * @inheritdoc
+   */
+  checkProperty(property: string, value: string) {
+    const errors: Record<string, string> = {};
+
+    if (property === "type" && !types.includes(value)) {
+      errors[property] = `Invalid type: '${value}'`;
+    }
+    return errors;
   }
 
   /**
@@ -234,7 +237,7 @@ export default class Integration extends Ressource {
    *
    * @return Activity|false
    */
-  getActivity(id: string) {
+  async getActivity(id: string) {
     return Activity.get({ id }, `${this.getUri()}/activities`);
   }
 
@@ -250,7 +253,7 @@ export default class Integration extends Ressource {
    *
    * @return Activity[]
    */
-  getActivities(type: string, starts_at: number) {
+  async getActivities(type: string, starts_at: number) {
     const params = { type, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
@@ -262,7 +265,7 @@ export default class Integration extends Ressource {
    * Normally the external service should do this in response to events, but
    * it may be useful to trigger the hook manually in certain cases.
    */
-  triggerHook() {
+  async triggerHook() {
     const hookUrl = this.getLink("#hook");
 
     return request(hookUrl, "post");

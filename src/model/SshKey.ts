@@ -1,16 +1,18 @@
 import atob from "atob";
 
-import Ressource, { APIObject } from "./Ressource";
-import _urlParser from "../urlParser";
 import { getConfig } from "../config";
+import _urlParser from "../urlParser";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const url = "/v1/ssh_keys/:id";
 
-export interface SshKeyGetParams {
-  id: string;
+export type SshKeyGetParams = {
   [key: string]: any;
-}
+  id: string;
+};
 
 export default class SshKey extends Ressource {
   changed: string;
@@ -38,7 +40,7 @@ export default class SshKey extends Ressource {
     this.value = "";
   }
 
-  static get(params: SshKeyGetParams) {
+  static async get(params: SshKeyGetParams) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -55,10 +57,9 @@ export default class SshKey extends Ressource {
    *
    * @return object
    */
-  // @ts-ignore
-  // TODO: fix inheritance error
+  // @ts-expect-error fix inheritance error
   async save() {
-    let sshKey = await super.save();
+    const sshKey = await super.save();
     return new SshKey(sshKey.data);
   }
 
@@ -96,13 +97,13 @@ export default class SshKey extends Ressource {
    * @return bool
    */
   validatePublicKey(value: string) {
-    const filteredValue = value.replace(/\s+/, " ");
+    const filteredValue = value.replace(/\s+/u, " ");
 
-    if (filteredValue.indexOf(" ") === -1) {
+    if (!filteredValue.includes(" ")) {
       return false;
     }
     const match = value.split(" ", 3);
-    const type = match[0];
+    const [type] = match;
     let key;
 
     try {
@@ -111,7 +112,7 @@ export default class SshKey extends Ressource {
       return false;
     }
 
-    if (["ssh-rsa", "ssh-ed25519", "ssh-ecdsa"].indexOf(type) === -1 || !key) {
+    if (!["ssh-rsa", "ssh-ed25519", "ssh-ecdsa"].includes(type) || !key) {
       return false;
     }
     return true;

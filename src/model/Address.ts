@@ -1,14 +1,16 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
 
-export interface AddressParams {
-  id: string;
+export type AddressParams = {
   [index: string]: any;
-}
+  id: string;
+};
 
 const _modifiableField = [
   "country",
@@ -69,19 +71,19 @@ export default class Address extends Ressource {
     return "";
   }
 
-  static get(params: AddressParams, customUrl?: string) {
+  static async get(params: AddressParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Address>(
-      this.getQueryUrl(customUrl || `${api_url}${url}`, id),
+      this.getQueryUrl(customUrl ?? `${api_url}${url}`, id),
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: AddressParams) {
+  static async query(params: AddressParams) {
     const { api_url } = getConfig();
     const { id } = params;
 
@@ -93,7 +95,7 @@ export default class Address extends Ressource {
     );
   }
 
-  update(address: APIObject, id?: string) {
+  async update(address: APIObject, id?: string) {
     const { api_url } = getConfig();
 
     let updateURL = `${api_url}${url}`;

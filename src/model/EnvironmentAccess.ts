@@ -1,7 +1,9 @@
-import Ressource, { APIObject } from "./Ressource";
-import Account from "./Account";
-import User from "./User";
 import { getConfig } from "../config";
+
+import Account from "./Account";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
+import User from "./User";
 
 const paramDefaults = {};
 
@@ -15,18 +17,18 @@ const creatableField = ["user", "role", "email"];
 const modifiableField = ["role"];
 const _url = "/projects/:projectId/environments/:environmentId/access";
 
-export interface EnvironmentAccessGetParams {
+export type EnvironmentAccessGetParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface EnvironmentAccessQueryParams {
+export type EnvironmentAccessQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class EnvironmentAccess extends Ressource {
   id = "";
@@ -49,7 +51,7 @@ export default class EnvironmentAccess extends Ressource {
     this._required = ["role"];
   }
 
-  static get(params: EnvironmentAccessGetParams, customUrl?: string) {
+  static async get(params: EnvironmentAccessGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
@@ -62,19 +64,19 @@ export default class EnvironmentAccess extends Ressource {
     );
   }
 
-  static query(params: EnvironmentAccessQueryParams, customUrl?: string) {
+  static async query(params: EnvironmentAccessQueryParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<EnvironmentAccess>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
     );
   }
 
-  update(access: EnvironmentAccess) {
+  async update(access: EnvironmentAccess) {
     return super.update(access);
   }
 
@@ -84,11 +86,12 @@ export default class EnvironmentAccess extends Ressource {
   checkProperty(property: string, value: string) {
     const errors: Record<string, string> = {};
 
-    if (property === "role" && roles.indexOf(value) === -1) {
+    if (property === "role" && !roles.includes(value)) {
       errors[property] = `Invalid environment role: '${value}'`;
     }
     return errors;
   }
+
   /**
    * {@inheritdoc}
    */
@@ -98,6 +101,7 @@ export default class EnvironmentAccess extends Ressource {
     }
     return super.getLink(rel, absolute);
   }
+
   /**
    * Get the account information for this user.
    *
@@ -105,7 +109,7 @@ export default class EnvironmentAccess extends Ressource {
    *
    * @return Result
    */
-  getAccount() {
+  async getAccount() {
     return Account.get({ id: this.id }).then(account => {
       if (!account) {
         throw new Error(`Account not found for user: ${this.id}`);

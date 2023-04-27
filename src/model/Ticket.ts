@@ -1,30 +1,30 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/tickets";
 const paramDefaults = {};
 
-export interface TicketQueryParams {
-  [key: string]: any;
-}
+export type TicketQueryParams = Record<string, any>;
 
-export interface Attachment {
+export type Attachment = {
   filename: string;
   uri: string;
   content_type: string;
-}
+};
 
 export type TicketResponse = {
   data: {
     count: number;
-    tickets: Array<Ticket>;
+    tickets: Ticket[];
   };
 } & APIObject;
 
-export interface AttachmentsResponse {
-  attachments: Array<Attachment>;
-}
+export type AttachmentsResponse = {
+  attachments: Attachment[];
+};
 
 export default class Ticket extends Ressource {
   subject: string;
@@ -51,26 +51,24 @@ export default class Ticket extends Ressource {
     this.attachment_filename = "";
   }
 
-  static getAttachments(ticketId: string) {
+  static async getAttachments(ticketId: string) {
     const { api_url } = getConfig();
-    const url = `/v1/comments/${ticketId}/description`;
 
     return super._get<AttachmentsResponse>(
-      `${api_url}${url}`,
+      `${api_url}/v1/comments/${ticketId}/description`,
       {},
       paramDefaults,
       {}
     );
   }
 
-  static getAllAttachments(ticketId: string): Promise<Array<Attachment>> {
+  static async getAllAttachments(ticketId: string): Promise<Attachment[]> {
     const { api_url } = getConfig();
-    const url = `/v1/comments/${ticketId}/attachments`;
 
-    return request(`${api_url}${url}`, "GET");
+    return request(`${api_url}/v1/comments/${ticketId}/attachments`, "GET");
   }
 
-  static query(queryParams: TicketQueryParams) {
+  static async query(queryParams: TicketQueryParams) {
     const { api_url } = getConfig();
 
     return super._get<TicketResponse>(
@@ -81,13 +79,13 @@ export default class Ticket extends Ressource {
     );
   }
 
-  static open(ticket: APIObject) {
+  static async open(ticket: APIObject) {
     const { api_url } = getConfig();
 
     return request(`${api_url}${url}`, "POST", ticket);
   }
 
-  static patch(ticketId: string, ticket: APIObject) {
+  static async patch(ticketId: string, ticket: APIObject) {
     const { api_url } = getConfig();
 
     return request(`${api_url}${url}/${ticketId}`, "PATCH", ticket);

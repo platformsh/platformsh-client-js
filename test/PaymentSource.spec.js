@@ -3,8 +3,8 @@
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import PaymentSource from "../src/model/PaymentSource";
 
 describe("PaymentSource", () => {
@@ -166,7 +166,7 @@ describe("PaymentSource", () => {
       }
     );
 
-    PaymentSource.delete().then(res => {
+    PaymentSource.delete().then(() => {
       assert.isTrue(mock.called());
       done();
     });

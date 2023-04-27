@@ -1,6 +1,8 @@
-import Ressource, { APIObject } from "./Ressource";
-import Result from "./Result";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
+import Result from "./Result";
 
 const paramDefaults = {};
 const creatableField = [
@@ -24,18 +26,18 @@ const modifialbleField = [
 ];
 const _url = "/projects/:projectId/environments/:environmentId/variables";
 
-export interface VariableGetParams {
+export type VariableGetParams = {
+  [key: string]: any;
   id: string;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
-export interface VariableQueryParams {
+export type VariableQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class Variable extends Ressource {
   id = "";
@@ -55,7 +57,7 @@ export default class Variable extends Ressource {
 
   constructor(variable: APIObject, url?: string) {
     super(
-      url || "",
+      url ?? "",
       paramDefaults,
       {},
       variable,
@@ -64,10 +66,10 @@ export default class Variable extends Ressource {
     );
   }
 
-  static get(params: VariableGetParams, customUrl?: string) {
+  static async get(params: VariableGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
-    const urlToCall = customUrl || `${api_url}${_url}`;
+    const urlToCall = customUrl ?? `${api_url}${_url}`;
 
     return super._get<Variable>(
       `${urlToCall}/:id`,
@@ -77,12 +79,12 @@ export default class Variable extends Ressource {
     );
   }
 
-  static query(params: VariableQueryParams, customUrl?: string) {
+  static async query(params: VariableQueryParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<Variable>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
@@ -94,10 +96,8 @@ export default class Variable extends Ressource {
    *
    * This is only useful if the variable is both inherited and enabled.
    * Non-inherited variables can be deleted.
-   *
-   * @return Result
    */
-  disable() {
+  async disable() {
     if (!this.is_enabled) {
       return new Result({}, this._url, Variable);
     }

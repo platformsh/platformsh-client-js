@@ -1,28 +1,28 @@
 import parse_url from "parse_url";
 
-import _urlParser from "../urlParser";
+import request from "../api";
+import type { Link } from "../refs";
 import {
   makeAbsoluteUrl,
   getRef,
   getRefs,
   hasLink,
-  getLinkHref,
-  Link,
-  Links
+  getLinkHref
 } from "../refs";
-import request from "../api";
-import Result from "./Result";
-import Activity from "./Activity";
-import CursoredResult from "./CursoredResult";
-import { CommerceOrderResponse } from "./Order";
-import { VoucherResponse } from "./OrganizationVoucher";
-import { RegionResponse } from "./Region";
+import _urlParser from "../urlParser";
 
-export interface APIObject {
+import type Activity from "./Activity";
+import type CursoredResult from "./CursoredResult";
+import type { CommerceOrderResponse } from "./Order";
+import type { VoucherResponse } from "./OrganizationVoucher";
+import type { RegionResponse } from "./Region";
+import Result from "./Result";
+
+export type APIObject = {
   [key: string]: any;
   _links?: Record<string, Link>;
-  _embedded?: Record<string, Array<object>>;
-}
+  _embedded?: Record<string, object[]>;
+};
 
 export type ParamsType = Record<string, any>;
 
@@ -33,12 +33,10 @@ const handler = {
     if (
       typeof key !== "symbol" &&
       key !== "data" &&
-      ((
-        (!key.startsWith("_")) &&
-        target.hasOwnProperty(key)
-      ) || ["_embedded", "_links"].includes(key))
+      ((!key.startsWith("_") && target.hasOwnProperty(key)) ||
+        ["_embedded", "_links"].includes(key))
     ) {
-      return target.data && target.data[key];
+      return target.data?.[key];
     }
 
     return target[key];
@@ -54,24 +52,26 @@ const handler = {
   }
 };
 
-const pick = (data: APIObject, fields: string[]) => {
-  return Object.keys(data)
-    .filter(k => fields.indexOf(k) !== -1)
+const pick = (data: APIObject, fields: string[]) =>
+  Object.keys(data)
+    .filter(k => fields.includes(k))
     .reduce<APIObject>((acc: APIObject, k: string) => {
       acc[k] = data[k];
 
       return acc;
     }, {});
-};
 
 const secondaryActivityTypes = ["integration.webhook", "integration.script"];
 
-function getInstance<T>(context: typeof Ressource, ...args: any[]): T {
-  var instance = Object.create(context?.prototype || null);
-  return <T>new instance.constructor(...args);
-}
+const getInstance = <T>(context: typeof Ressource, ...args: any[]) => {
+  const instance = Object.create(context?.prototype || null);
+  return new instance.constructor(...args) as T;
+};
 
 export default abstract class Ressource {
+  public _links?: Record<string, Link>;
+  public _embedded?: Record<string, object[]>;
+
   protected _url: string;
   protected _params: ParamsType;
   protected _baseUrl?: string;
@@ -82,9 +82,6 @@ export default abstract class Ressource {
   protected _queryUrl?: string;
 
   private data?: APIObject;
-
-  public _links?: Record<string, Link>;
-  public _embedded?: Record<string, Array<object>>;
 
   constructor(
     _url: string,
@@ -107,23 +104,24 @@ export default abstract class Ressource {
     this._url = _urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
 
-    if (parsedUrl[1] === "http" || parsedUrl[1] === "https") {
-      this._baseUrl = `${parsedUrl[1]}:${parsedUrl[2]}${parsedUrl[3]}${
-        parsedUrl[4] ? `:${parsedUrl[4]}` : ""
+    if (parsedUrl?.[1] === "http" || parsedUrl?.[1] === "https") {
+      this._baseUrl = `${parsedUrl?.[1]}:${parsedUrl?.[2]}${parsedUrl?.[3]}${
+        parsedUrl?.[4] ? `:${parsedUrl?.[4]}` : ""
       }`;
     }
     this._creatableField = _creatableField;
     this._modifiableField = _modifiableField;
     this._paramDefaults = paramDefaults;
 
+    // eslint-disable-next-line no-constructor-return
     return new Proxy(this, handler);
   }
 
-  static getQueryUrl(_url = "", id?: string) {
-    return _url.substring(0, _url.lastIndexOf("/"));
+  static getQueryUrl(url: string, _id?: string) {
+    return url.substring(0, url.lastIndexOf("/"));
   }
 
-  static _get<T>(
+  static async _get<T>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,
@@ -133,31 +131,29 @@ export default abstract class Ressource {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
-      (data: APIObject) => {
-        return getInstance<T>(this, data, parsedUrl, params);
-      }
+      (data: APIObject) => getInstance<T>(this, data, parsedUrl, params)
     );
   }
 
-  static _query<T>(
+  static async _query<T>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,
     queryParams?: ParamsType,
     transformResultBeforeMap?: (
       data:
-        | Array<APIObject>
+        | APIObject[]
         | CursoredResult<T>
         | CommerceOrderResponse
         | VoucherResponse
         | RegionResponse
-    ) => Array<APIObject>,
-    options?: object // Define that in api
-  ): Promise<Array<T>> {
+    ) => APIObject[],
+    options?: object
+  ): Promise<T[]> {
     const parsedUrl = _urlParser(_url, params, paramDefaults);
 
     return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
-      (data: Array<APIObject>) => {
+      (data: APIObject[]) => {
         let dataToMap = data;
         if (transformResultBeforeMap) {
           dataToMap = transformResultBeforeMap(data);
@@ -170,7 +166,11 @@ export default abstract class Ressource {
     );
   }
 
-  checkProperty(property: string, value: any): object {
+  static wrap<T extends APIObject>(objs: T[]): T[] {
+    return objs.map(obj => getInstance(this, obj));
+  }
+
+  checkProperty(_property: string, _value: unknown): object {
     return {};
   }
 
@@ -188,14 +188,14 @@ export default abstract class Ressource {
 
     let errors: object = {};
 
-    //checkProperty can be overrided by children
-    for (let key in Object.keys(values)) {
+    // checkProperty can be overrided by children
+    Object.keys(values).forEach(key => {
       errors = this.checkProperty(key, values[key]);
-    }
+    });
     return Object.keys(errors).length ? errors : undefined;
   }
 
-  update(data: APIObject, _url?: string) {
+  async update(data: APIObject, _url?: string) {
     if (!this._modifiableField.length) {
       throw new Error("Can't call update on this ressource");
     }
@@ -217,20 +217,19 @@ export default abstract class Ressource {
 
     if (!updateLink) {
       updateLink = _urlParser(
-        _url || this._url,
+        _url ?? this._url,
         this.data,
         this._paramDefaults
       );
     }
 
     return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
-      (data: APIObject) => {
-        return new Result(
-          data,
+      (apiObject: APIObject) =>
+        new Result(
+          apiObject,
           this._url,
           this.constructor as RessourceChildClass<any>
-        );
-      }
+        )
     );
   }
 
@@ -244,7 +243,7 @@ export default abstract class Ressource {
    * @return array
    */
   getRequired() {
-    return this._required || [];
+    return this._required ?? [];
   }
 
   /**
@@ -258,27 +257,23 @@ export default abstract class Ressource {
     if (!values) {
       return;
     }
-    let errors: { [key: string]: string } = {};
+    let errors: Record<string, string> = {};
     const dataKeys = Object.keys(values);
 
-    const missing = this.getRequired().filter(function (i) {
-      return dataKeys.indexOf(i) < 0;
-    });
+    const missing = this.getRequired().filter(i => !dataKeys.includes(i));
 
     if (missing.length) {
       errors._error = `Missing ${missing.join(", ")}`;
     }
 
-    for (let i = 0; i < dataKeys.length; i++) {
-      const key = dataKeys[i];
-
+    for (const key of dataKeys) {
       errors = { ...errors, ...this.checkProperty(key, values[key]) };
     }
 
     return Object.keys(errors).length ? errors : undefined;
   }
 
-  save(): Promise<Result> {
+  async save(): Promise<Result> {
     if (!this._creatableField.length) {
       throw new Error("Can't call save on this ressource");
     }
@@ -287,23 +282,20 @@ export default abstract class Ressource {
     if (errors) {
       return Promise.reject(errors);
     }
-    const url = this._queryUrl || this._url;
+    const url = this._queryUrl ?? this._url;
 
     return request(
       url,
       "POST",
       this.data && pick(this.data, this._creatableField)
-    ).then((data: APIObject) => {
-      return new Result(
-        data,
-        url,
-        this.constructor as RessourceChildClass<any>
-      );
-    });
+    ).then(
+      (data: APIObject) =>
+        new Result(data, url, this.constructor as RessourceChildClass<any>)
+    );
   }
 
-  delete(url?: string): Promise<Result> {
-    const deleteLink = url || this.getLink("#delete");
+  async delete(url?: string): Promise<Result> {
+    const deleteLink = url ?? this.getLink("#delete");
 
     if (!deleteLink) {
       throw new Error("Not allowed to delete");
@@ -322,15 +314,11 @@ export default abstract class Ressource {
     this.data = { ...this.data, ...data };
   }
 
-  static wrap<T>(objs: T[]): T[] {
-    return objs.map((obj) => getInstance(this, obj));
-  }
-
   /**
    * Refresh the resource.
    *
    */
-  refresh(params?: ParamsType) {
+  async refresh(params?: ParamsType) {
     return request(this.getUri(), "GET", params).then((data: APIObject) => {
       this.copy(data);
       return this;
@@ -346,7 +334,7 @@ export default abstract class Ressource {
    */
   operationAvailable(operationName: string): boolean {
     const links = this.data?._links;
-    const operation = links && links[`#${operationName}`];
+    const operation = links?.[`#${operationName}`];
     return !!operation?.href;
   }
 
@@ -398,7 +386,7 @@ export default abstract class Ressource {
    *
    * @return string
    */
-  getLink(rel: string, absolute: boolean = true): string {
+  getLink(rel: string, absolute = true): string {
     const href = getLinkHref(this.data?._links, rel, absolute, this._baseUrl);
 
     if (typeof href === "string") {
@@ -445,14 +433,9 @@ export default abstract class Ressource {
 
   /**
    * Execute an operation on the resource.
-   *
-   * @param string op
-   * @param string method
-   * @param array  body
-   *
-   * @return array
    */
-  runOperation(op: string, method = "POST", body?: object): Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  runOperation(op: string, method = "POST", body?: object) {
     if (!this.operationAvailable(op)) {
       throw new Error(`Operation not available: ${op}`);
     }
@@ -461,14 +444,8 @@ export default abstract class Ressource {
 
   /**
    * Run a long-running operation.
-   *
-   * @param string op
-   * @param string method
-   * @param array  body
-   *
-   * @return Activity
    */
-  runLongOperation(
+  async runLongOperation(
     op: string,
     method = "POST",
     body?: ParamsType
@@ -495,7 +472,7 @@ export default abstract class Ressource {
   }
 
   // Load a single object from the ref API
-  getRef<T>(
+  async getRef<T>(
     linkKey: string,
     constructor: RessourceChildClass<T>,
     absolute = true
@@ -514,7 +491,7 @@ export default abstract class Ressource {
     linkKey: string,
     constructor: RessourceChildClass<T>,
     absolute = true
-  ): Promise<T[]> {
+  ) {
     return getRefs<T>(
       this.data?._links,
       linkKey,

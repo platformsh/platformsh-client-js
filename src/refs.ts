@@ -1,12 +1,12 @@
 import request from "./api";
-import { APIObject, RessourceChildClass } from "./model/Ressource";
+import type { APIObject, RessourceChildClass } from "./model/Ressource";
 
 export type Link = {
-  href: string;
   [key: string]: unknown;
+  href: string;
 };
 
-export type Links = Record<string, Link | Array<Link>>;
+export type Links = Record<string, Link | Link[]>;
 
 type GetLinkOptions = {
   absolute?: boolean;
@@ -14,13 +14,11 @@ type GetLinkOptions = {
   hrefOnly?: boolean;
 };
 
-export const makeAbsoluteUrl = (relativeUrl: string, _baseUrl: string = "") => {
-  return `${_baseUrl}${relativeUrl}`;
-};
+export const makeAbsoluteUrl = (relativeUrl: string, _baseUrl = "") =>
+  `${_baseUrl}${relativeUrl}`;
 
-export const hasLink = (links: Links | undefined, rel: string): boolean => {
-  return !!(links && links[rel]);
-};
+export const hasLink = (links: Links | undefined, rel: string): boolean =>
+  !!links?.[rel];
 
 export const getLink = (
   links: Links | undefined,
@@ -28,19 +26,19 @@ export const getLink = (
   { absolute = true, baseUrl = "", hrefOnly = false }: GetLinkOptions
 ) => {
   if (!links) {
-    return undefined;
+    return;
   }
 
   if (!hasLink(links, rel)) {
     throw new Error(`Link not found: ${rel}`);
   }
 
-  const link: Link | Array<Link> = links[rel];
+  const link = links[rel];
 
   if (!Array.isArray(link) && (Object.keys(link).length === 1 || hrefOnly)) {
     let _url = (links[rel] as Link).href;
 
-    if (absolute && _url.indexOf("//") === -1) {
+    if (absolute && !_url.includes("//")) {
       _url = makeAbsoluteUrl(_url, baseUrl);
     }
 
@@ -55,21 +53,20 @@ export const getLinkHref = (
   rel: string,
   absolute = true,
   baseUrl = ""
-): string => {
-  return getLink(links, rel, {
+): string =>
+  getLink(links, rel, {
     absolute,
     baseUrl,
     hrefOnly: true
   }) as string;
-};
 
 // Load a single object from the ref API
 export const getRef = async <T>(
   links: Links | undefined,
   linkKey: string,
   constructor: RessourceChildClass<T>,
-  absolute: boolean = true,
-  baseUrl: string = ""
+  absolute = true,
+  baseUrl = ""
 ) => {
   const obj = await request(getLinkHref(links, linkKey, absolute, baseUrl));
   return new constructor(obj);
@@ -81,7 +78,7 @@ export const getRefs = async <T>(
   linkKey: string,
   constructor: RessourceChildClass<T>,
   absolute: boolean,
-  baseUrl: string = ""
+  baseUrl = ""
 ): Promise<T[]> => {
   if (!links) {
     return Promise.resolve([]);
@@ -92,6 +89,7 @@ export const getRefs = async <T>(
   for (let i = 0; i < refs.length; i++) {
     obj = {
       ...obj,
+      // eslint-disable-next-line no-await-in-loop
       ...(await request(
         getLinkHref(links, `${linkKey}:${i}`, absolute, baseUrl)
       ))

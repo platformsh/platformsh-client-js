@@ -1,20 +1,22 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const modifiableField = ["is_default"];
 const _url = "/projects/:projectId/domains";
 
-export interface DomainGetParams {
+export type DomainGetParams = {
+  [index: string]: any;
   name: string;
   projectId?: string;
-  [index: string]: any;
-}
+};
 
-export interface DomainQueryParams {
-  projectId: string;
+export type DomainQueryParams = {
   [index: string]: any;
-}
+  projectId: string;
+};
 
 export default class Domain extends Ressource {
   id = "";
@@ -36,7 +38,10 @@ export default class Domain extends Ressource {
     this._required = ["name"];
   }
 
-  static get(params: DomainGetParams, customUrl?: string): Promise<Domain> {
+  static async get(
+    params: DomainGetParams,
+    customUrl?: string
+  ): Promise<Domain> {
     const { name, projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -48,7 +53,7 @@ export default class Domain extends Ressource {
     );
   }
 
-  static query(
+  static async query(
     params: DomainQueryParams,
     customUrl?: string
   ): Promise<Domain[]> {
@@ -56,7 +61,7 @@ export default class Domain extends Ressource {
     const { api_url } = getConfig();
 
     return super._query(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId },
       paramDefaults,
       queryParams

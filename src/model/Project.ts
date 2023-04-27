@@ -1,21 +1,21 @@
-import 'cross-fetch/polyfill'; // fetch api polyfill
-import parse_url from "parse_url";
+import "cross-fetch/polyfill"; // fetch api polyfill
 import path from "path";
 
-import { createEventSource } from "../api";
+import parse_url from "parse_url";
+
+import request, { createEventSource } from "../api";
 import { getConfig } from "../config";
 
-import Ressource, { APIObject } from "./Ressource";
-import ProjectAccess from "./ProjectAccess";
-import Environment from "./Environment";
-import Domain from "./Domain";
-import Integration from "./Integration";
-import ProjectLevelVariable from "./ProjectLevelVariable";
 import Activity from "./Activity";
 import Certificate from "./Certificate";
-import request from "../api";
+import Domain from "./Domain";
+import Environment from "./Environment";
+import Integration from "./Integration";
+import ProjectAccess from "./ProjectAccess";
+import ProjectLevelVariable from "./ProjectLevelVariable";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 import Subscription, { SubscriptionStatusEnum } from "./Subscription";
-import Variable from "./Variable";
 
 const paramDefaults = {};
 const modifiableField = [
@@ -24,18 +24,18 @@ const modifiableField = [
   "default_branch",
   "timezone"
 ];
-const url = "/projects/:id";
+
 let _source: EventSource;
 
-export interface ProjectGetParams {
-  id: string;
+export type ProjectGetParams = {
   [key: string]: any;
-}
+  id: string;
+};
 
-export interface Repository {
+export type Repository = {
   client_ssh_key: string;
   url: string;
-}
+};
 
 export default class Project extends Ressource {
   id = "";
@@ -57,6 +57,7 @@ export default class Project extends Ressource {
     url: "",
     client_ssh_key: ""
   };
+
   region = "";
   region_label = "";
   vendor = "";
@@ -73,12 +74,12 @@ export default class Project extends Ressource {
     this._queryUrl = Ressource.getQueryUrl(url);
   }
 
-  static get(params: ProjectGetParams, customUrl?: string) {
+  static async get(params: ProjectGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Project>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}/projects/:id`,
       { id },
       paramDefaults,
       queryParams
@@ -96,7 +97,7 @@ export default class Project extends Ressource {
     if (this.subscription_id) {
       return this.subscription_id;
     }
-    if (this.subscription && this.subscription.license_uri) {
+    if (this.subscription?.license_uri) {
       return path.basename(
         this.subscription.license_uri,
         path.extname(this.subscription.license_uri)
@@ -116,7 +117,7 @@ export default class Project extends Ressource {
     if (!this.repository) {
       const parsedUrl = parse_url(this.getUri());
 
-      return `${this.id}@git.${parsedUrl[3]}:${this.id}.git`;
+      return `${this.id}@git.${parsedUrl?.[3]}:${this.id}.git`;
     }
 
     return this.repository.url;
@@ -127,7 +128,7 @@ export default class Project extends Ressource {
    *
    * @return ProjectAccess[]
    */
-  getUsers() {
+  async getUsers() {
     return ProjectAccess.query({ projectId: this.id }, this.getLink("#access"));
   }
 
@@ -144,9 +145,9 @@ export default class Project extends Ressource {
    *
    * @return Result
    */
-  addUser(user: string, role: string, byUuid = false) {
+  async addUser(user: string, role: string, byUuid = false) {
     const property = byUuid ? "user" : "email";
-    let body = { role, [property]: user };
+    const body = { role, [property]: user };
 
     const projectAccess = new ProjectAccess(body, this.getLink("access"));
 
@@ -160,7 +161,7 @@ export default class Project extends Ressource {
    *
    * @return Environment|false
    */
-  getEnvironment(id: string) {
+  async getEnvironment(id: string) {
     return Environment.get(
       { projectId: this.id, id },
       this.getLink("environments")
@@ -193,7 +194,7 @@ export default class Project extends Ressource {
    *
    * @return Environment[]
    */
-  getEnvironments(limit: number) {
+  async getEnvironments(limit: number) {
     return Environment.query(
       { projectId: this.id, limit },
       this.getLink("environments")
@@ -207,7 +208,7 @@ export default class Project extends Ressource {
    *
    * @return Domain[]
    */
-  getDomains(limit?: number) {
+  async getDomains(limit?: number) {
     return Domain.query({ projectId: this.id, limit }, this.getLink("domains"));
   }
 
@@ -218,7 +219,7 @@ export default class Project extends Ressource {
    *
    * @return Domain|false
    */
-  getDomain(name: string) {
+  async getDomain(name: string) {
     return Domain.get({ name }, this.getLink("domains"));
   }
 
@@ -230,7 +231,7 @@ export default class Project extends Ressource {
    *
    * @return Result
    */
-  addDomain(name: string, ssl = []) {
+  async addDomain(name: string, ssl = []) {
     const body: Partial<Domain> = { name };
 
     if (ssl.length) {
@@ -248,7 +249,7 @@ export default class Project extends Ressource {
    *
    * @return Integration[]
    */
-  getIntegrations(limit: number) {
+  async getIntegrations(limit: number) {
     return Integration.query(
       { projectId: this.id, limit },
       this.getLink("integrations")
@@ -262,7 +263,7 @@ export default class Project extends Ressource {
    *
    * @return Integration|false
    */
-  getIntegration(id: string) {
+  async getIntegration(id: string) {
     return Integration.get(
       { projectId: this.id, id },
       this.getLink("integrations")
@@ -277,7 +278,7 @@ export default class Project extends Ressource {
    *
    * @return Result
    */
-  addIntegration(type: string, data = []) {
+  async addIntegration(type: string, data = []) {
     const body = { type, ...data };
     const integration = new Integration(body, this.getLink("integrations"));
 
@@ -291,7 +292,7 @@ export default class Project extends Ressource {
    *
    * @return Activity|false
    */
-  getActivity(id: string) {
+  async getActivity(id: string) {
     return Activity.get({ id }, `${this.getUri()}/activities`);
   }
 
@@ -307,7 +308,7 @@ export default class Project extends Ressource {
    *
    * @return Activity[]
    */
-  getActivities(types: Array<string>, starts_at: number) {
+  async getActivities(types: string[], starts_at: number) {
     const params = { type: types, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);
@@ -321,6 +322,7 @@ export default class Project extends Ressource {
   isSuspended() {
     console.log("TEST");
     console.log(this.status);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     return this.status === SubscriptionStatusEnum.STATUS_SUSPENDED;
   }
 
@@ -331,7 +333,7 @@ export default class Project extends Ressource {
    *
    * @return ProjectLevelVariable[]
    */
-  getVariables(limit: number) {
+  async getVariables(limit: number) {
     return ProjectLevelVariable.query(
       { projectId: this.id, limit },
       this.getLink("#manage-variables")
@@ -356,7 +358,7 @@ export default class Project extends Ressource {
    *
    * @return Result
    */
-  setVariable(
+  async setVariable(
     name: string,
     value: any,
     is_json = false,
@@ -374,8 +376,8 @@ export default class Project extends Ressource {
     };
 
     return this.getVariable(name)
-      .then(variable => {
-        if (variable && variable.name) {
+      .then(async variable => {
+        if (variable?.name) {
           return variable.update(values);
         }
       })
@@ -402,7 +404,7 @@ export default class Project extends Ressource {
    * @return ProjectLevelVariable|false
    *   The variable requested, or False if it is not defined.
    */
-  getVariable(name: string) {
+  async getVariable(name: string) {
     return ProjectLevelVariable.get(
       { projectId: this.id, name },
       this.getLink("#manage-variables")
@@ -412,7 +414,7 @@ export default class Project extends Ressource {
   /**
    * get certificates
    */
-  getCertificates() {
+  async getCertificates() {
     return Certificate.query({}, `${this.getUri()}/certificates`);
   }
 
@@ -422,7 +424,7 @@ export default class Project extends Ressource {
    * @param string key
    * @param array  chain
    */
-  addCertificate(certificate: string, key: string, chain = []) {
+  async addCertificate(certificate: string, key: string, chain = []) {
     const certificateObj = new Certificate(
       { certificate, key, chain },
       `${this.getUri()}/certificates`
@@ -434,7 +436,7 @@ export default class Project extends Ressource {
   /**
    * subscribe to project updates
    */
-  subscribe() {
+  async subscribe() {
     if (_source) {
       _source.close();
     }
@@ -448,9 +450,9 @@ export default class Project extends Ressource {
    * Load the theme of the project
    * That contain colors and logo urls
    */
-  loadTheme() {
+  async loadTheme() {
     return fetch(`${this.vendor_resources}/vendor.json`)
-      .then(response => response.json())
+      .then(async response => response.json())
       .then(theme => ({
         logo: `${this.vendor_resources}/images/logo.svg`,
         smallLogo: `${this.vendor_resources}/images/logo-ui.svg`,
@@ -463,7 +465,7 @@ export default class Project extends Ressource {
    * Retrieve list of Capabilities supported
    * by this project
    */
-  getCapabilities() {
+  async getCapabilities() {
     return request(this.getLink("capabilities"));
   }
 }

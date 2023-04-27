@@ -1,8 +1,10 @@
-import Ressource, { APIObject } from "./Ressource";
-import Result from "./Result";
+import request from "../api";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
-import request from "../api";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
+import Result from "./Result";
 
 const paramDefaults = {};
 const _queryUrl =
@@ -10,11 +12,11 @@ const _queryUrl =
 const _url =
   "/projects/:projectId/environments/:environmentId/source-operation";
 
-export interface SourceOperationQueryParams {
+export type SourceOperationQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class SourceOperation extends Ressource {
   operation = "";
@@ -27,7 +29,7 @@ export default class SourceOperation extends Ressource {
 
   // This is a custom method because we have to override the url
   // that gets passed into the prototype.constructor().
-  static query(params: SourceOperationQueryParams) {
+  static async query(params: SourceOperationQueryParams) {
     const { api_url } = getConfig();
     const queryUrl = _urlParser(
       `${api_url}${_queryUrl}`,
@@ -37,14 +39,14 @@ export default class SourceOperation extends Ressource {
 
     const url = _urlParser(`${api_url}${_url}`, params, paramDefaults);
 
-    return request(queryUrl, "GET").then(data => {
-      return data.map((d: APIObject) => new SourceOperation(d, url));
-    });
+    return request(queryUrl, "GET").then(data =>
+      data.map((d: APIObject) => new SourceOperation(d, url))
+    );
   }
 
   // We have a custom method here because .runLongOperation()
   // requires a HAL link. This link is not available on this endpoint.
-  run(variables: Record<string, any>) {
+  async run(variables: Record<string, any>) {
     const body: Record<string, any> = { operation: this.operation };
     if (typeof variables !== "undefined") {
       body.variables = { ...variables };

@@ -1,13 +1,13 @@
-var webpack = require("webpack");
+const path = require("path");
+
 const TerserPlugin = require("terser-webpack-plugin");
-var path = require("path");
-var env = require("yargs").argv.env;
-var merge = require("webpack-merge");
+const merge = require("webpack-merge");
+const { env } = require("yargs").argv;
 
-var libraryName = "platform-api";
+const libraryName = "platform-api";
 
-var plugins = [],
-  outputFile;
+const plugins = [];
+let outputFile;
 let additionalSettings = {};
 
 if (env.mode === "build") {
@@ -19,29 +19,29 @@ if (env.mode === "build") {
   };
 }
 
-var config = {
+const config = {
   mode: "development",
   entry: {
-    [libraryName]: __dirname + "/src/index.ts",
-    "authentication/index": __dirname + "/src/authentication"
+    [libraryName]: `${__dirname}/src/index.ts`,
+    "authentication/index": `${__dirname}/src/authentication`
   },
   output: {
     filename: outputFile
   },
   watchOptions: {
-    ignored: [/node_modules/, /types/]
+    ignored: [/node_modules/u, /types/u]
   },
   module: {
     rules: [
       {
-        test: /\.ts(x?)$/,
-        exclude: [/node_modules/, /^.*\.spec\.tsx$/, /^.*\.spec\.ts$/],
+        test: /\.ts(x?)$/u,
+        exclude: [/node_modules/u, /^.*\.spec\.tsx$/u, /^.*\.spec\.ts$/u],
         use: ["babel-loader", "ts-loader"]
       },
       {
-        test: /(\.js)$/,
+        test: /(\.js)$/u,
         use: "babel-loader",
-        exclude: /node_modules/
+        exclude: /node_modules/u
       }
     ]
   },
@@ -49,7 +49,7 @@ var config = {
     modules: [path.resolve("./src"), "node_modules"],
     extensions: [".js", ".ts"]
   },
-  plugins: plugins,
+  plugins,
   ...additionalSettings
 };
 
@@ -68,20 +68,20 @@ if (env.mode === "build") {
   };
 }
 
-var client = merge(config, {
+const client = merge(config, {
   target: "web",
   output: {
-    path: __dirname + "/lib/client",
+    path: `${__dirname}/lib/client`,
     library: libraryName,
     libraryTarget: "umd",
     umdNamedDefine: true
   }
 });
 
-var server = merge(config, {
+const server = merge(config, {
   target: "node",
   output: {
-    path: __dirname + "/lib/server",
+    path: `${__dirname}/lib/server`,
     libraryTarget: "umd"
   }
 });

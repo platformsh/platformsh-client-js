@@ -1,1 +1,3 @@
-declare module "parse_url";
+declare module "parse_url" {
+  export default function (url: string): RegExpExecArray | null;
+}

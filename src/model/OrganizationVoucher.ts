@@ -1,27 +1,29 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/organizations/:organizationId/vouchers";
 const paramDefaults = {};
 const creatableField = ["code"];
 
-export interface OrganizationVoucherGetParams {
-  organizationId: string;
+export type OrganizationVoucherGetParams = {
   [key: string]: any;
-}
-export interface OrganizationVoucherQueryParams {
   organizationId: string;
+};
+export type OrganizationVoucherQueryParams = {
   [key: string]: any;
-}
+  organizationId: string;
+};
 
-export interface VoucherResponse {
-  vouchers: Array<OrganizationVoucher>;
-}
+export type VoucherResponse = {
+  vouchers: OrganizationVoucher[];
+};
 
 export default class OrganizationVoucher extends Ressource {
   currency: string;
-  discounted_orders: Array<any>;
-  vouchers: Array<any>;
+  discounted_orders: any[];
+  vouchers: any[];
   vouchers_applied: number;
   vouchers_remaining_balance: number;
   vouchers_total: number;
@@ -30,7 +32,7 @@ export default class OrganizationVoucher extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
       {},
       voucher,
@@ -44,19 +46,19 @@ export default class OrganizationVoucher extends Ressource {
     this.vouchers_total = 0;
   }
 
-  static get(params: OrganizationVoucherGetParams, customUrl?: string) {
+  static async get(params: OrganizationVoucherGetParams, customUrl?: string) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<OrganizationVoucher>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { organizationId },
       {},
       queryParams
     );
   }
 
-  static query(params: OrganizationVoucherQueryParams) {
+  static async query(params: OrganizationVoucherQueryParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 

@@ -1,16 +1,17 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
-import Topology from "./Topology";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const _url =
   "/projects/:projectId/environments/:environmentId/deployments/current";
 
-export interface DeploymentGetParams {
+export type DeploymentGetParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class Deployment extends Ressource {
   id: string;
@@ -28,12 +29,12 @@ export default class Deployment extends Ressource {
     this.id = "";
   }
 
-  static get(params: DeploymentGetParams, customUrl?: string) {
+  static async get(params: DeploymentGetParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Deployment>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams

@@ -1,7 +1,9 @@
-import Ressource, { APIObject } from "./Ressource";
 import request from "../api";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import Ressource from "./Ressource";
+import type { APIObject } from "./Ressource";
 
 const url = "/users/:userId/totp";
 const paramDefaults = {};
@@ -25,7 +27,7 @@ export default class TwoFactorAuthentication extends Ressource {
     this.qr_code = "";
   }
 
-  static get(userId: string) {
+  static async get(userId: string) {
     const { api_url } = getConfig();
     return super._get<TwoFactorAuthentication>(
       `${api_url}${url}`,
@@ -35,19 +37,19 @@ export default class TwoFactorAuthentication extends Ressource {
     );
   }
 
-  static enroll(userId: string, secret: string, passcode: string) {
+  static async enroll(userId: string, secret: string, passcode: string) {
     const { api_url } = getConfig();
     const endpoint = _urlParser(`${api_url}${url}`, { userId });
     return request(endpoint, "POST", { secret, passcode });
   }
 
-  static reset(userId: string) {
+  static async reset(userId: string) {
     const { api_url } = getConfig();
     const endpoint = _urlParser(`${api_url}/users/:userId/codes`, { userId });
     return request(endpoint, "POST");
   }
 
-  static delete(userId: string) {
+  static async delete(userId: string) {
     const { api_url } = getConfig();
     const endpoint = _urlParser(`${api_url}${url}`, { userId });
     return request(endpoint, "DELETE");

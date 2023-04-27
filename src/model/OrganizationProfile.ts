@@ -1,5 +1,7 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/organizations/:organizationId/profile";
 const paramDefaults = {};
@@ -20,10 +22,10 @@ const modifiableField = [
   "billing_contact"
 ];
 
-export interface OrganizationProfilGetParams {
-  organizationId: string;
+export type OrganizationProfilGetParams = {
   [key: string]: any;
-}
+  organizationId: string;
+};
 
 export default class OrganizationProfile extends Ressource {
   stripe: object;
@@ -40,7 +42,7 @@ export default class OrganizationProfile extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
       { organizationId: profile.organizationId },
       profile,
@@ -59,7 +61,7 @@ export default class OrganizationProfile extends Ressource {
     this.account_tier = "";
   }
 
-  static get(params: OrganizationProfilGetParams) {
+  static async get(params: OrganizationProfilGetParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();
 

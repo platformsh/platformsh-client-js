@@ -1,19 +1,20 @@
-import request, { RequestOptions } from "./api";
-import connector, { JWTToken, wipeToken } from "./authentication";
-import { getConfig, setConfig, ClientConfiguration } from "./config";
+import type { RequestOptions } from "./api";
+import request from "./api";
+import type { JWTToken } from "./authentication";
+import connector, { wipeToken } from "./authentication";
+import type { ClientConfiguration } from "./config";
+import { getConfig, setConfig } from "./config";
 import entities from "./model";
-import Activity from "./model/Activity";
-import {
-  AccessRole,
+import type Activity from "./model/Activity";
+import type {
   CreateAccessParams,
   DeleteAccessParams,
   UpdateAccessParams
 } from "./model/EnvironmentType";
-import Me from "./model/Me";
-import { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
-import ProjectAccess from "./model/ProjectAccess";
-import { APIObject } from "./model/Ressource";
-import { TicketQueryParams } from "./model/Ticket";
+import type Me from "./model/Me";
+import type { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
+import type { APIObject } from "./model/Ressource";
+import type { TicketQueryParams } from "./model/Ticket";
 
 export const models = entities;
 
@@ -29,7 +30,7 @@ export default class Client {
     this.authenticationPromise = connector(authenticationConfig);
   }
 
-  getAccessToken() {
+  async getAccessToken() {
     return this.authenticationPromise;
   }
 
@@ -41,7 +42,7 @@ export default class Client {
     wipeToken();
   }
 
-  reAuthenticate() {
+  async reAuthenticate() {
     this.authenticationPromise = connector(getConfig(), true);
 
     return this.authenticationPromise;
@@ -54,7 +55,7 @@ export default class Client {
    *
    * @return promise
    */
-  getAccountInfo(reset = false) {
+  async getAccountInfo(reset = false) {
     if (!this.getAccountInfoPromise || reset) {
       this.getAccountInfoPromise = entities.Me.get(reset);
     }
@@ -71,22 +72,20 @@ export default class Client {
    * @return string
    *   The project's API endpoint.
    */
-  locateProject(id: string) {
-    return this.getProjects().then(projects => {
+  async locateProject(id: string) {
+    return this.getProjects().then(async projects => {
       if (!projects) {
-        return undefined;
+        return;
       }
-      const project = projects.find(project => project.id === id);
+      const project = projects.find(p => p.id === id);
 
-      if (project && project.endpoint) {
+      if (project?.endpoint) {
         return project.endpoint;
       }
       const { account_url } = getConfig();
 
       return request(`${account_url}/platform/projects/${id}`, "GET").then(
-        result => {
-          return result.endpoint || false;
-        }
+        result => result.endpoint || false
       );
     });
   }
@@ -98,7 +97,7 @@ export default class Client {
    *
    * @return Promise Project[]
    */
-  getProjects() {
+  async getProjects() {
     return this.getAccountInfo().then(me => {
       if (!me) {
         return false;
@@ -119,7 +118,7 @@ export default class Client {
    *
    * @return Project|false
    */
-  getProject(id: string) {
+  async getProject(id: string) {
     return entities.Project.get({ id });
   }
 
@@ -130,7 +129,7 @@ export default class Client {
    *
    * @return Promise Environment[]
    */
-  getEnvironments(projectId: string) {
+  async getEnvironments(projectId: string) {
     return entities.Environment.query({ projectId });
   }
 
@@ -142,7 +141,7 @@ export default class Client {
    *
    * @return Promise Environment
    */
-  getEnvironment(projectId: string, environmentId: string) {
+  async getEnvironment(projectId: string, environmentId: string) {
     return entities.Environment.get({ projectId, id: environmentId });
   }
 
@@ -154,7 +153,7 @@ export default class Client {
    *
    * @return Promise Activity[]
    */
-  getEnvironmentActivities(
+  async getEnvironmentActivities(
     projectId: string,
     environmentId: string,
     type: string,
@@ -168,7 +167,7 @@ export default class Client {
     });
   }
 
-  getEnvironmentActivity(
+  async getEnvironmentActivity(
     projectId: string,
     environmentId: string,
     activityId: string
@@ -187,7 +186,7 @@ export default class Client {
    *
    * @return Promise Certificate[]
    */
-  getCertificates(projectId: string) {
+  async getCertificates(projectId: string) {
     return entities.Certificate.query({ projectId });
   }
 
@@ -198,7 +197,7 @@ export default class Client {
    * @param string key
    * @param array  chain
    */
-  addCertificate(
+  async addCertificate(
     projectId: string,
     certificate: string,
     key: string,
@@ -221,7 +220,7 @@ export default class Client {
    *
    * @return Promise Domain[]
    */
-  getDomains(projectId: string, limit: number) {
+  async getDomains(projectId: string, limit: number) {
     return entities.Domain.query({ projectId, limit });
   }
 
@@ -233,7 +232,7 @@ export default class Client {
    *
    * @return Promise EnvironmentAccess[]
    */
-  getEnvironmentUsers(projectId: string, environmentId: string) {
+  async getEnvironmentUsers(projectId: string, environmentId: string) {
     return entities.EnvironmentAccess.query({ projectId, environmentId });
   }
 
@@ -243,7 +242,7 @@ export default class Client {
    *
    * @return Route
    */
-  getRoutes(projectId: string, environmentId: string) {
+  async getRoutes(projectId: string, environmentId: string) {
     return entities.Route.query({ projectId, environmentId });
   }
 
@@ -255,7 +254,7 @@ export default class Client {
    *
    * @return Promise EnvironmentAccess[]
    */
-  getProjectUsers(projectId: string) {
+  async getProjectUsers(projectId: string) {
     return entities.ProjectAccess.query({ projectId });
   }
 
@@ -267,7 +266,7 @@ export default class Client {
    *
    * @return ProjectLevelVariable[]
    */
-  getProjectVariables(projectId: string, limit?: number) {
+  async getProjectVariables(projectId: string, limit?: number) {
     return entities.ProjectLevelVariable.query({ projectId, limit });
   }
 
@@ -279,7 +278,7 @@ export default class Client {
    *
    * @return ProjectLevelVariable[]
    */
-  getEnvironmentVariables(
+  async getEnvironmentVariables(
     projectId: string,
     environmentId: string,
     limit?: number
@@ -296,7 +295,11 @@ export default class Client {
    *
    * @return Promise Metrics[]
    */
-  getEnvironmentMetrics(projectId: string, environmentId: string, q: string) {
+  async getEnvironmentMetrics(
+    projectId: string,
+    environmentId: string,
+    q: string
+  ) {
     return entities.Metrics.get({ projectId, environmentId, q });
   }
 
@@ -308,7 +311,7 @@ export default class Client {
    *
    * @return Promise EnvironmentBackup[]
    */
-  getEnvironmentBackups(projectId: string, environmentId: string) {
+  async getEnvironmentBackups(projectId: string, environmentId: string) {
     return entities.EnvironmentBackup.query({ projectId, environmentId });
   }
 
@@ -320,7 +323,7 @@ export default class Client {
    *
    * @return Promise Integration[]
    */
-  getIntegrations(projectId: string) {
+  async getIntegrations(projectId: string) {
     return entities.Integration.query({ projectId });
   }
 
@@ -332,7 +335,7 @@ export default class Client {
    *
    * @return Promise Integration
    */
-  getIntegration(projectId: string, integrationId: string) {
+  async getIntegration(projectId: string, integrationId: string) {
     return entities.Integration.get({ projectId, id: integrationId });
   }
 
@@ -344,7 +347,7 @@ export default class Client {
    *
    * @return Promise Activity[]
    */
-  getIntegrationActivities(
+  async getIntegrationActivities(
     projectId: string,
     integrationId: string,
     type: string,
@@ -369,10 +372,8 @@ export default class Client {
    *
    * @return SshKey[]
    */
-  getSshKeys() {
-    return this.getAccountInfo().then(me => {
-      return entities.SshKey.wrap(me.ssh_keys);
-    });
+  async getSshKeys() {
+    return this.getAccountInfo().then(me => entities.SshKey.wrap(me.ssh_keys));
   }
 
   /**
@@ -382,7 +383,7 @@ export default class Client {
    *
    * @return SshKey|false
    */
-  getSshKey(id: string) {
+  async getSshKey(id: string) {
     return entities.SshKey.get({ id });
   }
 
@@ -394,7 +395,7 @@ export default class Client {
    *
    * @return Result
    */
-  addSshKey(value: string, title: string) {
+  async addSshKey(value: string, title: string) {
     const values = this.cleanRequest({ value, title });
 
     return new entities.SshKey(values).save();
@@ -408,13 +409,13 @@ export default class Client {
    * @return object
    */
   cleanRequest(req: Record<string, any>) {
-    let cleanedReq: Record<string, any> = {};
+    const cleanedReq: Record<string, any> = {};
     const keys = Object.keys(req).filter(
       key => req[key] !== null && typeof req[key] !== "undefined"
     );
 
-    for (let i = 0; i < keys.length; i++) {
-      cleanedReq[keys[i]] = req[keys[i]];
+    for (const key of keys) {
+      cleanedReq[key] = req[key];
     }
 
     return cleanedReq;
@@ -433,7 +434,7 @@ export default class Client {
    *
    * @return Subscription
    */
-  createSubscription(config: APIObject) {
+  async createSubscription(config: APIObject) {
     const {
       region,
       plan = "development",
@@ -473,7 +474,7 @@ export default class Client {
    *
    * @return Subscription
    */
-  createOrganizationSubscription(config: APIObject) {
+  async createOrganizationSubscription(config: APIObject) {
     const {
       organizationId,
       region,
@@ -509,7 +510,7 @@ export default class Client {
    *
    * @return Subscription|false
    */
-  getSubscription(id: string) {
+  async getSubscription(id: string) {
     return entities.Subscription.get({ id });
   }
 
@@ -520,7 +521,7 @@ export default class Client {
    *
    * @return Subscriptions[]
    */
-  getSubscriptions(filter: object, all: boolean) {
+  async getSubscriptions(filter: object, all: boolean) {
     return entities.Subscription.query({ filter, all: all && 1 });
   }
 
@@ -532,7 +533,7 @@ export default class Client {
    *
    * @return OrganizationSubscriptions[]
    */
-  getOrganizationSubscriptions(
+  async getOrganizationSubscriptions(
     organizationId: string,
     params: OrganizationSubscriptionGetParams
   ) {
@@ -550,7 +551,7 @@ export default class Client {
    *
    * @return OrganizationSubscription
    */
-  getOrganizationSubscription(organizationId: string, id: string) {
+  async getOrganizationSubscription(organizationId: string, id: string) {
     return entities.OrganizationSubscription.get({ organizationId, id });
   }
 
@@ -562,7 +563,7 @@ export default class Client {
    *
    * @return CursoredResult
    */
-  getOrganizationMembers(
+  async getOrganizationMembers(
     organizationId: string,
     filter?: object,
     sort?: string
@@ -578,7 +579,7 @@ export default class Client {
    *
    * @return OrganizationMember
    */
-  getOrganizationMember(organizationId: string, id: string) {
+  async getOrganizationMember(organizationId: string, id: string) {
     return entities.OrganizationMember.get({ organizationId, id });
   }
 
@@ -589,7 +590,7 @@ export default class Client {
    * @param object options
    * @param string environmentId
    */
-  initializeEnvironment(
+  async initializeEnvironment(
     projectId: string,
     options: RequestOptions,
     environmentId = "master"
@@ -613,7 +614,7 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getSubscriptionEstimate(params: {
+  async getSubscriptionEstimate(params: {
     plan: string;
     storage: number;
     environments: number;
@@ -638,7 +639,7 @@ export default class Client {
    *
    * @return array An array containing at least 'total' (a formatted price).
    */
-  getOrganizationSubscriptionEstimate(
+  async getOrganizationSubscriptionEstimate(
     organizationId: string,
     params: {
       organizationId: string;
@@ -669,7 +670,7 @@ export default class Client {
    *
    * @return Deployment
    */
-  getCurrentDeployment(
+  async getCurrentDeployment(
     projectId: string,
     environmentId: string,
     params: object
@@ -683,7 +684,7 @@ export default class Client {
    *
    * @return Organization[]
    */
-  getOrganizations(params: object) {
+  async getOrganizations(params: object) {
     return entities.Organization.query(params);
   }
 
@@ -694,7 +695,7 @@ export default class Client {
    *
    * @return Organization
    */
-  getOrganization(id: string) {
+  async getOrganization(id: string) {
     return entities.Organization.get({ id });
   }
 
@@ -705,7 +706,7 @@ export default class Client {
    *
    * @return Organization
    */
-  createOrganization(organization: APIObject) {
+  async createOrganization(organization: APIObject) {
     const newOrganization = new entities.Organization(organization);
 
     return newOrganization.save();
@@ -718,7 +719,7 @@ export default class Client {
    *
    * @return Team
    */
-  createTeam(team: APIObject) {
+  async createTeam(team: APIObject) {
     const newTeam = new entities.Team(team);
 
     return newTeam.save();
@@ -730,7 +731,7 @@ export default class Client {
    *
    * @return Team[]
    */
-  getTeams() {
+  async getTeams() {
     return this.getAccountInfo().then(me => {
       if (!me) {
         return false;
@@ -747,7 +748,7 @@ export default class Client {
    *
    * @return Team
    */
-  getTeam(id: string) {
+  async getTeam(id: string) {
     return entities.Team.get({ id });
   }
 
@@ -757,7 +758,7 @@ export default class Client {
    *
    * @return Region[]
    */
-  getRegions() {
+  async getRegions() {
     return entities.Region.query({});
   }
 
@@ -767,7 +768,7 @@ export default class Client {
    *
    * @return CursoredResult
    */
-  getOrganizationRegions(organizationId: string, params: object) {
+  async getOrganizationRegions(organizationId: string, params: object) {
     return entities.OrganizationRegion.query({ organizationId, ...params });
   }
 
@@ -777,7 +778,7 @@ export default class Client {
    *
    * @return Account
    */
-  getAccount(id: string) {
+  async getAccount(id: string) {
     return entities.Account.get({ id });
   }
 
@@ -787,7 +788,7 @@ export default class Client {
    *
    * @return Address
    */
-  getAddress(id: string) {
+  async getAddress(id: string) {
     return entities.Address.get({ id });
   }
 
@@ -797,7 +798,7 @@ export default class Client {
    *
    * @return Address
    */
-  getOrganizationAddress(organizationId: string) {
+  async getOrganizationAddress(organizationId: string) {
     return entities.OrganizationAddress.query({ organizationId });
   }
 
@@ -807,7 +808,7 @@ export default class Client {
    *
    * @return Account
    */
-  getOrders(owner: string) {
+  async getOrders(owner: string) {
     return entities.Order.query({ filter: { owner } });
   }
 
@@ -817,7 +818,7 @@ export default class Client {
    *
    * @return Account
    */
-  getOrder(id: string) {
+  async getOrder(id: string) {
     return entities.Order.get({ id });
   }
 
@@ -827,7 +828,7 @@ export default class Client {
    *
    * @return Account
    */
-  getOrganizationOrders(organizationId: string, filter: object) {
+  async getOrganizationOrders(organizationId: string, filter: object) {
     return entities.OrganizationOrder.query({
       organizationId,
       filter
@@ -840,7 +841,7 @@ export default class Client {
    *
    * @return Account
    */
-  getOrganizationOrder(organizationId: string, id: string) {
+  async getOrganizationOrder(organizationId: string, id: string) {
     return entities.OrganizationOrder.get({ organizationId, id });
   }
 
@@ -850,7 +851,7 @@ export default class Client {
    *
    * @return Voucher
    */
-  getVouchers(uuid: string) {
+  async getVouchers(uuid: string) {
     return entities.Voucher.get({ uuid });
   }
 
@@ -860,7 +861,7 @@ export default class Client {
    *
    * @return Voucher
    */
-  getOrganizationVouchers(organizationId: string) {
+  async getOrganizationVouchers(organizationId: string) {
     return entities.OrganizationVoucher.get({ organizationId });
   }
 
@@ -872,7 +873,7 @@ export default class Client {
    *
    * @return Result
    */
-  addOrganizationVoucher(organizationId: string, code: string) {
+  async addOrganizationVoucher(organizationId: string, code: string) {
     const { api_url } = getConfig();
     const values = this.cleanRequest({ code });
 
@@ -890,7 +891,7 @@ export default class Client {
    *
    * @return Promise
    */
-  getCardOnFile() {
+  async getCardOnFile() {
     const { api_url } = getConfig();
     const card = request(`${api_url}/platform/cardonfile`, "GET");
     return card;
@@ -903,7 +904,7 @@ export default class Client {
    *
    * @return Promise
    */
-  getPaymentSource(owner?: string) {
+  async getPaymentSource(owner?: string) {
     return entities.PaymentSource.get({ owner });
   }
 
@@ -914,7 +915,7 @@ export default class Client {
    *
    * @return Promise
    */
-  getOrganizationPaymentSource(organizationId: string) {
+  async getOrganizationPaymentSource(organizationId: string) {
     return entities.OrganizationPaymentSource.get({ organizationId });
   }
 
@@ -928,7 +929,7 @@ export default class Client {
    *
    * @return Result
    */
-  addPaymentSource(type: string, token: string, email: string) {
+  async addPaymentSource(type: string, token: string, email: string) {
     const values = this.cleanRequest({ type, token, email });
 
     return new entities.PaymentSource(values).save();
@@ -944,7 +945,7 @@ export default class Client {
    *
    * @return Result
    */
-  addOrganizationPaymentSource(
+  async addOrganizationPaymentSource(
     organizationId: string,
     type: string,
     token: string,
@@ -966,7 +967,7 @@ export default class Client {
    * @return {Promise} It resolves if the payment source is deleted,
    * rejects otherwise
    */
-  deletePaymentSource(uuid: string) {
+  async deletePaymentSource(uuid: string) {
     return entities.PaymentSource.delete(uuid);
   }
 
@@ -978,7 +979,7 @@ export default class Client {
    * @return {Promise} It resolves if the payment source is deleted,
    * rejects otherwise
    */
-  deleteOrganizationPaymentSource() {
+  async deleteOrganizationPaymentSource() {
     return entities.OrganizationPaymentSource.delete();
   }
 
@@ -987,7 +988,7 @@ export default class Client {
    *
    * @return Promise
    */
-  getPaymentSourcesAllowed() {
+  async getPaymentSourcesAllowed() {
     return entities.PaymentSource.getAllowed();
   }
 
@@ -996,7 +997,7 @@ export default class Client {
    *
    * @return Promise
    */
-  getOrganizationPaymentSourcesAllowed(organizationId: string) {
+  async getOrganizationPaymentSourcesAllowed(organizationId: string) {
     return entities.OrganizationPaymentSource.getAllowed(organizationId);
   }
 
@@ -1005,7 +1006,7 @@ export default class Client {
    *
    * @return Promise: { client_secret, public_key }
    */
-  createPaymentSourceIntent() {
+  async createPaymentSourceIntent() {
     return entities.PaymentSource.intent();
   }
 
@@ -1014,7 +1015,7 @@ export default class Client {
    *
    * @return Promise: { client_secret, public_key }
    */
-  createOrganizationPaymentSourceIntent(organizationId: string) {
+  async createOrganizationPaymentSourceIntent(organizationId: string) {
     return entities.OrganizationPaymentSource.intent(organizationId);
   }
 
@@ -1024,7 +1025,7 @@ export default class Client {
    * @param {string} id - UUID of the user.
    * @return Promise
    */
-  getUserProfile(id: string) {
+  async getUserProfile(id: string) {
     return entities.AccountsProfile.get({ id });
   }
 
@@ -1034,7 +1035,7 @@ export default class Client {
    * @param {string} organizationId - id of the organization.
    * @return Promise
    */
-  getOrganizationProfile(organizationId: string) {
+  async getOrganizationProfile(organizationId: string) {
     return entities.OrganizationProfile.get({ organizationId });
   }
 
@@ -1101,20 +1102,19 @@ export default class Client {
    *
    * @return Promise
    */
-  getSetupRegistry() {
+  async getSetupRegistry() {
     const { api_url } = getConfig();
     return request(`${api_url}/platform/setup/registry`, "POST").then(
-      (data: Record<string, APIObject>) => {
-        return typeof data === "undefined"
+      (data: Record<string, APIObject>) =>
+        typeof data === "undefined"
           ? undefined
-          : Object.entries(data).reduce(
-              (items: Record<string, any>, [key, value]) => {
+          : Object.entries(data).reduce<Record<string, any>>(
+              (items, [key, value]) => {
                 items[key] = new entities.SetupRegistry(value);
                 return items;
               },
               {}
-            );
-      }
+            )
     );
   }
 
@@ -1124,7 +1124,7 @@ export default class Client {
    * @param {string} name - name of the registry item.
    * @return Promise
    */
-  getSetupRegistryItem(name: string) {
+  async getSetupRegistryItem(name: string) {
     return entities.SetupRegistry.get({ name });
   }
 
@@ -1134,7 +1134,7 @@ export default class Client {
    * @param {string} name - name of the registry item.
    * @return Promise
    */
-  getSetupConfig(settings: object) {
+  async getSetupConfig(settings: object) {
     return entities.SetupConfig.get(settings);
   }
 
@@ -1144,7 +1144,7 @@ export default class Client {
    * @param { string } id - UUID of the user.
    * @return Promise
    */
-  getUser(id: string) {
+  async getUser(id: string) {
     return entities.AuthUser.get({ id });
   }
 
@@ -1174,7 +1174,11 @@ export default class Client {
    *
    * @return Promise Activity[]
    */
-  getProjectActivities(projectId: string, types: string, starts_at: number) {
+  async getProjectActivities(
+    projectId: string,
+    types: string,
+    starts_at: number
+  ) {
     const params = { type: types, starts_at, projectId };
 
     const { api_url } = getConfig();
@@ -1193,7 +1197,7 @@ export default class Client {
    *
    * @return Promise Activity
    */
-  getProjectActivity(projectId: string, activityId: string) {
+  async getProjectActivity(projectId: string, activityId: string) {
     const params = { id: activityId, projectId };
     const { api_url } = getConfig();
 
@@ -1211,7 +1215,7 @@ export default class Client {
    * @returns {Promise<{qr_code, secret, issuer, account_name}>} Promise that
    * returns the information required to enroll the user if resolves
    */
-  getTFA(userId: string) {
+  async getTFA(userId: string) {
     return entities.TwoFactorAuthentication.get(userId);
   }
 
@@ -1225,7 +1229,7 @@ export default class Client {
    * @returns {Promise<[string]>} Promise that returns a list of recovery codes
    * if resolves
    */
-  enrollTFA(userId: string, secret: string, passcode: string) {
+  async enrollTFA(userId: string, secret: string, passcode: string) {
     return entities.TwoFactorAuthentication.enroll(userId, secret, passcode);
   }
 
@@ -1237,7 +1241,7 @@ export default class Client {
    * @return {Promise} It resolves if the user is succesfully unenrolled,
    * rejects otherwise
    */
-  disableTFA(userId: string) {
+  async disableTFA(userId: string) {
     return entities.TwoFactorAuthentication.delete(userId);
   }
 
@@ -1249,7 +1253,7 @@ export default class Client {
    * @returns {Promise<[string]>} Promise that returns a list of recovery codes
    * if resolves
    */
-  resetRecoveryCodes(userId: string) {
+  async resetRecoveryCodes(userId: string) {
     return entities.TwoFactorAuthentication.reset(userId);
   }
 
@@ -1260,7 +1264,7 @@ export default class Client {
    *
    * @return Promise ConnectedAccounts[]
    */
-  getConnectedAccounts(userId: string) {
+  async getConnectedAccounts(userId: string) {
     return entities.ConnectedAccount.query(userId);
   }
 
@@ -1271,10 +1275,7 @@ export default class Client {
    * @return Promise<TicketResponse>
    */
   async getTickets(settings: TicketQueryParams) {
-    return entities.Ticket.query(settings).then(ticketResponse => {
-      // TODO: fix this hack
-      return ticketResponse.data;
-    });
+    return entities.Ticket.query(settings).then(({ data }) => data);
   }
 
   /**
@@ -1285,7 +1286,7 @@ export default class Client {
    *
    * @return Promise<Ticket>
    */
-  updateTicketStatus(ticketId: string, status: string) {
+  async updateTicketStatus(ticketId: string, status: string) {
     return entities.Ticket.patch(ticketId, { status }).then(ticket => ticket);
   }
 
@@ -1324,9 +1325,9 @@ export default class Client {
    */
   async getTicketAttachments(ticketId: string) {
     const response = await entities.Ticket.getAttachments(ticketId);
-    const attachments = response.attachments;
+    const { attachments } = response;
     return Object.entries(attachments || {}).map(([filename, attachment]) => ({
-      filename: filename,
+      filename,
       url: attachment.uri,
       contentType: attachment.content_type
     }));
@@ -1367,7 +1368,6 @@ export default class Client {
    * @return Promise<Comment[]>
    */
   async loadComments(ticketId: string, params: Record<string, any>) {
-    // TODO: fix this hack
     const { data } = await entities.Comment.query(ticketId, params);
     const page = params.page || 1;
     const PAGE_SIZE = 50;
@@ -1379,7 +1379,7 @@ export default class Client {
       delete data._links?.next;
     }
 
-    data.count = data.count - 1;
+    data.count -= 1;
 
     if (isLastPage) {
       data.comments = data.comments.slice(0, -1);
@@ -1408,7 +1408,7 @@ export default class Client {
    * @return Promise<Comment>
    */
   async sendComment(comment: APIObject) {
-    return await new entities.Comment(comment).save();
+    return new entities.Comment(comment).save();
   }
 
   /**
@@ -1421,7 +1421,7 @@ export default class Client {
    * @returns {Promise<{url: string}>} Promise that returns the url to the new
    * profile picture
    */
-  updateProfilePicture(userId: string, picture: FormData) {
+  async updateProfilePicture(userId: string, picture: FormData) {
     return entities.AccountsProfile.updateProfilePicture(userId, picture);
   }
 
@@ -1432,7 +1432,7 @@ export default class Client {
    *
    * @returns {Promise} Resolves if the picture was deleted.
    */
-  deleteProfilePicture(userId: string) {
+  async deleteProfilePicture(userId: string) {
     return entities.AccountsProfile.deleteProfilePicture(userId);
   }
 
@@ -1451,7 +1451,7 @@ export default class Client {
     email: string,
     projectId: string,
     role: string,
-    environments: Array<{ id: string; role: string }>,
+    environments: { id: string; role: string }[],
     force = false
   ) {
     const invitation = new entities.Invitation({
@@ -1462,7 +1462,7 @@ export default class Client {
       force
     });
 
-    return await invitation.save();
+    return invitation.save();
   }
 
   /**
@@ -1478,7 +1478,7 @@ export default class Client {
   async createOrganizationInvitation(
     email: string,
     organizationId: string,
-    permissions: Array<string>,
+    permissions: string[],
     force = false
   ) {
     const invitation = new entities.OrganizationInvitation({
@@ -1488,7 +1488,7 @@ export default class Client {
       force
     });
 
-    return await invitation.save();
+    return invitation.save();
   }
 
   /**
@@ -1499,9 +1499,13 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an organization inivitations list.
    */
-  getOrganizationInvitations(organizationId: string, queryParams?: string) {
+  async getOrganizationInvitations(
+    organizationId: string,
+    queryParams?: string
+  ) {
     return entities.OrganizationInvitation.getList(organizationId, queryParams);
   }
+
   /**
    * Create an invitation with environment types
    *
@@ -1530,8 +1534,9 @@ export default class Client {
       force
     });
 
-    return await invitation.save();
+    return invitation.save();
   }
+
   /**
    * Get project invitations list
    *
@@ -1540,9 +1545,10 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an inivitations list.
    */
-  getInvitations(projectId: string) {
+  async getInvitations(projectId: string) {
     return entities.Invitation.query(projectId);
   }
+
   /**
    * Get project environment types
    *
@@ -1550,9 +1556,10 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an environment types list.
    */
-  getProjectEnvironmentTypes(projectId: string) {
+  async getProjectEnvironmentTypes(projectId: string) {
     return entities.EnvironmentType.query({ projectId });
   }
+
   /**
    * Get project environment type
    *
@@ -1561,9 +1568,10 @@ export default class Client {
    *
    * @returns {Promise} Promise that return an environment types list.
    */
-  getProjectEnvironmentType(projectId: string, id: string) {
+  async getProjectEnvironmentType(projectId: string, id: string) {
     return entities.EnvironmentType.get({ projectId, id });
   }
+
   /**
    * Get project environment types accesses
    *
@@ -1573,9 +1581,8 @@ export default class Client {
    */
   async getProjectEnvironmentTypesWithAccesses(projectId: string) {
     const environmentTypes = await this.getProjectEnvironmentTypes(projectId);
-    const accesses = [];
-    for (let i = 0; i < environmentTypes.length; i++) {
-      const environmentType = environmentTypes[i];
+    for (const environmentType of environmentTypes) {
+      // eslint-disable-next-line no-await-in-loop
       await environmentType.getAccesses();
     }
 

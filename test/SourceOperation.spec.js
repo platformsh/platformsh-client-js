@@ -7,11 +7,11 @@ import { setAuthenticationPromise } from "../src/api";
 import SourceOperation from "../src/model/SourceOperation";
 
 describe("Source operation", () => {
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 
@@ -23,7 +23,7 @@ describe("Source operation", () => {
         {
           operation: "Test",
           app: "app",
-          command: command
+          command
         }
       ]
     );

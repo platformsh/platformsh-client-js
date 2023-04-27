@@ -1,4 +1,4 @@
-const paramsRegex = /(:[0-z]+)/g;
+const paramsRegex = /(:[0-z]+)/gu;
 
 export default (
   url = "",
@@ -7,18 +7,18 @@ export default (
 ) => {
   const paramsList = url.match(paramsRegex);
 
-  if (!paramsList || !paramsList.length) {
+  if (!paramsList?.length) {
     return url;
   }
 
   let parsedUrl = url;
 
-  for (let i = 0; i < paramsList.length; i++) {
-    const paramName = paramsList[i].substring(1);
+  for (const param of paramsList) {
+    const paramName = param.substring(1);
     const fieldName = paramDefaults[paramName] || paramName;
 
     if (params[fieldName]) {
-      parsedUrl = parsedUrl.replace(paramsList[i], params[fieldName]);
+      parsedUrl = parsedUrl.replace(param, params[fieldName]);
     }
   }
 

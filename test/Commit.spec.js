@@ -1,18 +1,20 @@
+/* global afterEach, before*/
+
 import { assert } from "chai";
 import fetchMock from "fetch-mock";
 
-import { getConfig } from "../src/config";
 import { setAuthenticationPromise } from "../src/api";
+import { getConfig } from "../src/config";
 import Commit from "../src/model/git/Commit";
 
 describe("Commit", () => {
   const { api_url } = getConfig();
 
-  before(function () {
+  before(() => {
     setAuthenticationPromise(Promise.resolve("testToken"));
   });
 
-  afterEach(function () {
+  afterEach(() => {
     fetchMock.restore();
   });
 

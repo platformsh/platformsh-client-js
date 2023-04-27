@@ -1,10 +1,12 @@
 import isUrl from "is-url";
 
-import Ressource, { APIObject } from "./Ressource";
+import { authenticatedRequest } from "../api";
+import { getConfig } from "../config";
+
 import Account from "./Account";
 import Project from "./Project";
-import { getConfig } from "../config";
-import { authenticatedRequest } from "../api";
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const creatableField = [
@@ -28,9 +30,6 @@ const modifiableField = [
 ];
 
 const url = "/v1/subscriptions/:id";
-const STATUS_ACTIVE = "active";
-const STATUS_REQUESTED = "requested";
-const STATUS_PROVISIONING = "provisioning";
 
 const availablePlans = ["development", "standard", "medium", "large"];
 const availableRegions = ["eu.platform.sh", "us.platform.sh"];
@@ -44,10 +43,10 @@ export enum SubscriptionStatusEnum {
   STATUS_PROVISIONING = "provisioning"
 }
 
-export interface SubscriptionGetParams {
-  id: string;
+export type SubscriptionGetParams = {
   [key: string]: any;
-}
+  id: string;
+};
 
 export type SubscriptionEstimateQueryType = {
   plan?: string;
@@ -55,7 +54,7 @@ export type SubscriptionEstimateQueryType = {
   storage?: number;
   user_licenses?: number;
   format?: "formatted" | "complex";
-  big_dev?: string; //Not available anymore on API
+  big_dev?: string; // Not available anymore on API
 };
 
 export default class Subscription extends Ressource {
@@ -65,6 +64,7 @@ export default class Subscription extends Ressource {
   owner_info: {
     type: string;
   };
+
   owner: string;
   plan: string;
   environments: number;
@@ -83,15 +83,16 @@ export default class Subscription extends Ressource {
   license_uri: string;
   organization_id: string;
   project_options: {
-    plan_title: Record<string, string>,
+    plan_title: Record<string, string>;
   };
+
   enterprise_tag: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
 
     super(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
       subscription,
       subscription,
@@ -99,7 +100,7 @@ export default class Subscription extends Ressource {
       modifiableField
     );
 
-    this._queryUrl = Ressource.getQueryUrl(customUrl || `${api_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(customUrl ?? `${api_url}${url}`);
     this._required = ["project_region"];
     this.id = "";
     this.status = SubscriptionStatusEnum.STATUS_FAILED;
@@ -130,19 +131,19 @@ export default class Subscription extends Ressource {
     this.enterprise_tag = "";
   }
 
-  static get(params: SubscriptionGetParams, customUrl?: string) {
+  static async get(params: SubscriptionGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Subscription>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: Record<string, any>) {
+  static async query(params: Record<string, any>) {
     const { api_url } = getConfig();
 
     return super._query<Subscription>(
@@ -170,16 +171,20 @@ export default class Subscription extends Ressource {
    *                            one argument: the Subscription object.
    * @param int       interval The polling interval, in seconds.
    */
-  wait(onPoll: (subscription: Subscription) => void, interval = 2) {
-    const millisecInterval = interval * 1000;
+  async wait(
+    onPoll: (subscription: Subscription) => void,
+    intervalSeconds = 2
+  ) {
+    const millisecInterval = intervalSeconds * 1000;
 
     return new Promise(resolve => {
-      const interval: NodeJS.Timeout = setInterval(() => {
+      const interval: ReturnType<typeof setInterval> = setInterval(() => {
         if (!this.isPending()) {
           resolve(this);
-          return clearInterval(interval);
+          clearInterval(interval);
+          return;
         }
-        this.refresh().then(() => {
+        void this.refresh().then(() => {
           if (onPoll) {
             onPoll(this);
           }
@@ -196,7 +201,10 @@ export default class Subscription extends Ressource {
 
     if (property === "storage" && typeof value === "number" && value < 1024) {
       errors[property] = "Surltorage must be at least 1024 MiB";
-    } else if (property === "activation_callback" && typeof value != "number") {
+    } else if (
+      property === "activation_callback" &&
+      typeof value !== "number"
+    ) {
       if (!value?.uri) {
         errors[property] = "A 'uri' key is required in the activation callback";
       } else if (!isUrl(value.uri)) {
@@ -215,16 +223,21 @@ export default class Subscription extends Ressource {
   isPending() {
     const status = this.getStatus();
 
-    return status === STATUS_PROVISIONING || status === STATUS_REQUESTED;
+    return (
+      status === SubscriptionStatusEnum.STATUS_PROVISIONING ||
+      status === SubscriptionStatusEnum.STATUS_REQUESTED
+    );
   }
+
   /**
    * Find whether the subscription is active.
    *
    * @return bool
    */
   isActive() {
-    return this.getStatus() === STATUS_ACTIVE;
+    return this.getStatus() === SubscriptionStatusEnum.STATUS_ACTIVE;
   }
+
   /**
    * Get the subscription status.
    *
@@ -237,16 +250,19 @@ export default class Subscription extends Ressource {
   getStatus() {
     return this.status;
   }
+
   /**
    * Get the account for the project's owner.
    *
    * @return Account|false
    */
-  getOwner() {
+  async getOwner() {
     const id = this.owner;
-    const url = this.makeAbsoluteUrl("/api/users", this.getLink("project"));
 
-    return Account.get({ id }, url);
+    return Account.get(
+      { id },
+      this.makeAbsoluteUrl("/api/users", this.getLink("project"))
+    );
   }
 
   /**
@@ -254,13 +270,12 @@ export default class Subscription extends Ressource {
    *
    * @return Project|false
    */
-  getProject() {
+  async getProject() {
     if (!this.hasLink("project") && !this.isActive()) {
       throw new Error("Inactive subscriptions do not have projects.");
     }
-    const url = this.getLink("project");
 
-    return Project.get({ id: this.project_id }, url);
+    return Project.get({ id: this.project_id }, this.getLink("project"));
   }
 
   /**
@@ -268,12 +283,12 @@ export default class Subscription extends Ressource {
    * @param query the query parameter for this subscription estimate
    * @return Project|false
    */
-  getEstimate(query?: SubscriptionEstimateQueryType) {
+  async getEstimate(query?: SubscriptionEstimateQueryType) {
     const params = {
-      plan: query?.plan || this.plan,
-      storage: query?.storage || this.storage,
-      environments: query?.environments || this.environments,
-      user_licenses: query?.user_licenses || this.users_licenses,
+      plan: query?.plan ?? this.plan,
+      storage: query?.storage ?? this.storage,
+      environments: query?.environments ?? this.environments,
+      user_licenses: query?.user_licenses ?? this.users_licenses,
       big_dev: this.big_dev || undefined,
       backups: this.backups || undefined,
       format: query?.format,
@@ -290,7 +305,7 @@ export default class Subscription extends Ressource {
   /**
    * @inheritdoc
    */
-  wrap(data: { subscriptions?: Array<Subscription> }) {
+  wrap(data: { subscriptions?: Subscription[] }) {
     return Ressource.wrap(data?.subscriptions ? data.subscriptions : []);
   }
 
@@ -319,6 +334,6 @@ export default class Subscription extends Ressource {
    * @inheritdoc
    */
   copy(data: APIObject = {}) {
-    super.copy((data.subscriptions && data.subscriptions[0]) || data);
+    super.copy(data.subscriptions?.[0] || data);
   }
 }

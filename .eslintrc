@@ -4,7 +4,6 @@
     "es6": true,
     "node": true
   },
-
   "globals": {
     "document": false,
     "escape": false,
@@ -12,14 +11,11 @@
     "unescape": false,
     "window": false,
     "describe": true,
-    "before": true,
     "it": true,
     "expect": true,
     "sinon": true
   },
-
-  "parser": "babel-eslint",
-
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
@@ -27,29 +23,100 @@
       "modules": true
     }
   },
-
-  "plugins": [
-    "prettier",
-    "no-unused-vars-rest"
+  "plugins": ["prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "plugin:eslint-comments/recommended",
+    "prettier"
   ],
-
   "rules": {
-    "prettier/prettier": "error"
+    "arrow-body-style": "error",
+    "array-callback-return": "error",
+    "default-case": "error",
+    "dot-notation": "error",
+    "eslint-comments/no-unused-disable": "error",
+    "eqeqeq": "error",
+    "func-names": "error",
+    "func-style": "error",
+    "import/no-named-as-default": "off",
+    "import/order": ["error", {
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between": "always",
+      "alphabetize": {"order": "asc", "caseInsensitive": true}
+    }],
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "no-await-in-loop": "error",
+    "no-console": "off",
+    "no-constructor-return": "error",
+    "no-continue": "error",
+    "no-negated-condition": "error",
+    "no-param-reassign": "error",
+    "no-return-await": "error",
+    "no-prototype-builtins": "off",
+    "no-shadow": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-warning-comments": "error",
+    "object-shorthand": "error",
+    "one-var": ["error", "never"],
+    "operator-assignment": "error",
+    "prefer-arrow-callback": "error",
+    "prefer-const": "error",
+    "prefer-destructuring": "error",
+    "prefer-promise-reject-errors": "error",
+    "prettier/prettier": "error",
+    "require-atomic-updates": "error",
+    "require-await": "error",
+    "require-unicode-regexp": "error",
+    "sort-imports": "off"
   },
   "overrides": [
     {
-      "files": ["**/*.{ts,tsx}"],
-      "plugins": [
-        "prettier",
-        "react",
-        "react-hooks",
-        "jsx-a11y",
-        "@typescript-eslint"
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "plugins": ["@typescript-eslint"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/strict",
+        "prettier"
       ],
-      "parser": "@typescript-eslint/parser",
       "rules": {
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "no-shadow": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/member-ordering": "error",
+        "@typescript-eslint/no-confusing-void-expression": "error",
+        "@typescript-eslint/no-require-imports": "error",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-use-before-define": "error",
+        "@typescript-eslint/prefer-readonly": "error",
+        "@typescript-eslint/promise-function-async": "error",
+        /**
+         * Temporary. The below rules should ideally be enabled, but will require more effort.
+         */
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-misused-promises": "off",
+        "@typescript-eslint/no-unnecessary-condition": "off",
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/restrict-template-expressions": "off"
       }
     }
   ]

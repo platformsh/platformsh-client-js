@@ -1,16 +1,16 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/platform/regions";
 const paramDefaults = {};
 
-export interface RegionGetParams {
-  [key: string]: any;
-}
+export type RegionGetParams = Record<string, any>;
 
-export interface RegionResponse {
-  regions: Array<Region>;
-}
+export type RegionResponse = {
+  regions: Region[];
+};
 
 export default class Region extends Ressource {
   id: string;
@@ -38,7 +38,7 @@ export default class Region extends Ressource {
     this.project_label = "";
   }
 
-  static query(params: RegionGetParams) {
+  static async query(params: RegionGetParams) {
     const { account_url } = getConfig();
 
     return super._query(

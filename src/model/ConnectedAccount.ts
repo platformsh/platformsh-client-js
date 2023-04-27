@@ -1,6 +1,8 @@
-import Ressource, { APIObject } from "./Ressource";
-import { getConfig } from "../config";
 import request from "../api";
+import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const _url = "/users/:userId/connections";
 
@@ -19,7 +21,7 @@ export default class ConnectedAccount extends Ressource {
     this.updated_at = "";
   }
 
-  static get(userId: string, provider: string) {
+  static async get(userId: string, provider: string) {
     const { api_url } = getConfig();
 
     return super._get<ConnectedAccount>(`${api_url}${_url}/:provider`, {
@@ -28,7 +30,7 @@ export default class ConnectedAccount extends Ressource {
     });
   }
 
-  static query(userId: string) {
+  static async query(userId: string) {
     const { api_url } = getConfig();
 
     return super._query(`${api_url}${_url}`, { userId }, {}, {}, data => {
@@ -40,7 +42,7 @@ export default class ConnectedAccount extends Ressource {
     });
   }
 
-  delete() {
+  async delete() {
     return request(this._url, "DELETE");
   }
 }

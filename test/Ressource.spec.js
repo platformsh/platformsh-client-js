@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import Ressource from "../src/model/Ressource";
 
 class MockResource extends Ressource {}

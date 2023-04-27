@@ -1,5 +1,7 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const paramDefaults = {};
 const creatableAndModifiableField = [
@@ -11,18 +13,18 @@ const creatableAndModifiableField = [
 ];
 const _url = "/projects/:projectId/environments/:environmentId/routes";
 
-export interface RouteGetParams {
+export type RouteGetParams = {
+  [key: string]: any;
   id: string;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
-export interface RouteQueryParams {
+export type RouteQueryParams = {
+  [key: string]: any;
   projectId: string;
   environmentId: string;
-  [key: string]: any;
-}
+};
 
 export default class Route extends Ressource {
   id = "";
@@ -46,7 +48,7 @@ export default class Route extends Ressource {
     );
   }
 
-  static get(params: RouteGetParams, customUrl?: string) {
+  static async get(params: RouteGetParams, customUrl?: string) {
     const { projectId, environmentId, id, ...queryParams } = params;
     const { api_url } = getConfig();
     const urlToCall = customUrl ? `${customUrl}/:id` : `${api_url}${_url}/:id`;
@@ -59,12 +61,12 @@ export default class Route extends Ressource {
     );
   }
 
-  static query(params: RouteQueryParams, customUrl?: string) {
+  static async query(params: RouteQueryParams, customUrl?: string) {
     const { projectId, environmentId, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._query<Route>(
-      customUrl || `${api_url}${_url}`,
+      customUrl ?? `${api_url}${_url}`,
       { projectId, environmentId },
       paramDefaults,
       queryParams

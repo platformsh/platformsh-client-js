@@ -1,8 +1,10 @@
-import Ressource, { ParamsType, RessourceChildClass } from "./Ressource";
-
+import type { RequestOptions } from "../api";
+import request from "../api";
 import _urlParser from "../urlParser";
-import request, { RequestOptions } from "../api";
+
 import CursoredResult from "./CursoredResult";
+import Ressource from "./Ressource";
+import type { ParamsType, RessourceChildClass } from "./Ressource";
 
 export default abstract class CursoredRessource extends Ressource {
   static async queryCursoredResult<T>(

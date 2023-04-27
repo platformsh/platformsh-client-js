@@ -1,7 +1,7 @@
 import isNode from "detect-node";
 
-import Ressource from "../Ressource";
 import { getConfig } from "../../config";
+import Ressource from "../Ressource";
 
 const _url = "/projects/:projectId/git/blobs/:sha";
 
@@ -12,7 +12,7 @@ export type BlobParams = {
 
 export default class Blob extends Ressource {
   id: string;
-  type: string;
+  type: "blob";
   path: string;
   sha: string;
   size: string;
@@ -31,7 +31,7 @@ export default class Blob extends Ressource {
     this.content = "";
   }
 
-  static get(projectId: string, sha: string): Promise<Blob> {
+  static async get(projectId: string, sha: string) {
     const { api_url } = getConfig();
 
     return super._get<Blob>(`${api_url}${_url}`, { projectId, sha });
@@ -74,6 +74,6 @@ export default class Blob extends Ressource {
       return this.decodeBase64();
     }
 
-    throw new Error("Unrecognised blob encoding: " + this.encoding);
+    throw new Error(`Unrecognised blob encoding: ${this.encoding}`);
   }
 }

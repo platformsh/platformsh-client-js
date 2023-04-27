@@ -1,12 +1,12 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
-import CursoredResult from "./CursoredResult";
 
+import type CursoredResult from "./CursoredResult";
 import OrganizationMember from "./OrganizationMember";
+import type { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
+import OrganizationSubscription from "./OrganizationSubscription";
 import OrganizationVoucher from "./OrganizationVoucher";
-import OrganizationSubscription, {
-  CreateSubscriptionPayloadType
-} from "./OrganizationSubscription";
+import Ressource from "./Ressource";
+import type { APIObject } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/organizations";
@@ -16,15 +16,15 @@ const creatableField = ["name", "label", "country"];
 
 const modifiableField = ["name", "label", "country"];
 
-export interface OrganizationGetParams {
+export type OrganizationGetParams = {
+  [key: string]: any;
   id: string;
-  [key: string]: any;
-}
+};
 
-export interface OrganizationQueryParams {
-  userId?: string;
+export type OrganizationQueryParams = {
   [key: string]: any;
-}
+  userId?: string;
+};
 
 export default class Organization extends Ressource {
   id: string;
@@ -40,7 +40,7 @@ export default class Organization extends Ressource {
     const { api_url } = getConfig();
 
     super(
-      url || `${api_url}${_url}/:id`,
+      url ?? `${api_url}${_url}/:id`,
       paramDefaults,
       {},
       organization,
@@ -55,22 +55,22 @@ export default class Organization extends Ressource {
     this.owner_id = "";
     this.created_at = "";
     this.updated_at = "";
-    this._queryUrl = url || `${api_url}${_url}`;
+    this._queryUrl = url ?? `${api_url}${_url}`;
   }
 
-  static get(params: OrganizationGetParams, customUrl?: string) {
+  static async get(params: OrganizationGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Organization>(
-      customUrl || `${api_url}${_url}/:id`,
+      customUrl ?? `${api_url}${_url}/:id`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: OrganizationQueryParams = {}, customUrl?: string) {
+  static async query(params: OrganizationQueryParams = {}, customUrl?: string) {
     const { api_url } = getConfig();
     const { userId, ...queryParams } = params;
 
@@ -80,7 +80,7 @@ export default class Organization extends Ressource {
     }
 
     return super._query<Organization>(
-      customUrl || url,
+      customUrl ?? url,
       { userId },
       paramDefaults,
       queryParams,
@@ -94,11 +94,11 @@ export default class Organization extends Ressource {
     );
   }
 
-  getMembers() {
+  async getMembers() {
     return OrganizationMember.query({ organizationId: this.id });
   }
 
-  addMember(member: OrganizationMember) {
+  async addMember(member: OrganizationMember) {
     const organizationMember = new OrganizationMember({
       organizationId: this.id,
       ...member
@@ -107,11 +107,11 @@ export default class Organization extends Ressource {
     return organizationMember.save();
   }
 
-  getVouchers() {
+  async getVouchers() {
     return OrganizationVoucher.get({ organizationId: this.id });
   }
 
-  addVoucher(code: string) {
+  async addVoucher(code: string) {
     const { api_url } = getConfig();
     return new OrganizationVoucher(
       {
@@ -135,11 +135,11 @@ export default class Organization extends Ressource {
    * we have to override super.delete()
    * since organization links are not prefixed with # as implemented in Resouce
    */
-  delete() {
+  async delete() {
     return super.delete(this.getLink("delete"));
   }
 
-  addSubscription(payload: CreateSubscriptionPayloadType) {
+  async addSubscription(payload: CreateSubscriptionPayloadType) {
     const organizationSubscription = new OrganizationSubscription({
       ...payload,
       organizationId: this.id

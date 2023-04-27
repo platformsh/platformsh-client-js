@@ -1,17 +1,19 @@
-import Ressource, { APIObject } from "./Ressource";
 import { getConfig } from "../config";
+
+import type { APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/v1/orders/:id";
 const paramDefaults = {};
 
-export interface OrdersGetParams {
-  id: string;
+export type OrdersGetParams = {
   [key: string]: any;
-}
+  id: string;
+};
 
-export interface CommerceOrderResponse {
-  commerce_order: Array<APIObject>;
-}
+export type CommerceOrderResponse = {
+  commerce_order: APIObject[];
+};
 
 export default class Order extends Ressource {
   id: string;
@@ -25,7 +27,7 @@ export default class Order extends Ressource {
   components: object;
   currency: string;
   invoice_url: string;
-  line_items: Array<any>;
+  line_items: any[];
 
   constructor(account: APIObject) {
     const { id } = account;
@@ -46,19 +48,19 @@ export default class Order extends Ressource {
     this.line_items = [];
   }
 
-  static get(params: OrdersGetParams, customUrl?: string) {
+  static async get(params: OrdersGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
     return super._get<Order>(
-      customUrl || `${api_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
     );
   }
 
-  static query(params: Record<string, any>) {
+  static async query(params: Record<string, any>) {
     const { api_url } = getConfig();
 
     return super._query<Order>(

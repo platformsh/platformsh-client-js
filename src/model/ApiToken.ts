@@ -1,6 +1,8 @@
-import Ressource, { ParamsType, APIObject } from "./Ressource";
 import { getConfig } from "../config";
 import _urlParser from "../urlParser";
+
+import type { ParamsType, APIObject } from "./Ressource";
+import Ressource from "./Ressource";
 
 const url = "/users/:userId/api-tokens/:id";
 const paramDefaults = {};
@@ -14,15 +16,15 @@ const createableField = [
   "token"
 ];
 
-export interface APITokenGetParams {
+export type APITokenGetParams = {
+  [index: string]: any;
   id?: string;
-  [index: string]: any;
-}
+};
 
-export interface APITokenQueryParams {
-  userId?: string;
+export type APITokenQueryParams = {
   [index: string]: any;
-}
+  userId?: string;
+};
 
 export default class ApiToken extends Ressource {
   id: string;
@@ -46,7 +48,7 @@ export default class ApiToken extends Ressource {
     this.token = "";
   }
 
-  static get(params: APITokenGetParams, customUrl: string) {
+  static async get(params: APITokenGetParams, customUrl: string) {
     const { id, ...queryParams } = params;
     const { api_url } = getConfig();
 
@@ -58,7 +60,7 @@ export default class ApiToken extends Ressource {
     );
   }
 
-  static query(params: APITokenQueryParams) {
+  static async query(params: APITokenQueryParams) {
     const { api_url } = getConfig();
     const { userId } = params;
 
@@ -69,17 +71,16 @@ export default class ApiToken extends Ressource {
     );
   }
 
-  // @ts-ignore
-  // @deprecated use deleteWithParams instead
-  delete(params: APITokenQueryParams) {
-    const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
-
-    return super.delete(url);
+  // @ts-expect-error @deprecated use deleteWithParams instead
+  async delete(params: APITokenQueryParams) {
+    return super.delete(
+      `${_urlParser(this._queryUrl, { ...params })}/${this.id}`
+    );
   }
 
-  deleteWithParams(params: APITokenQueryParams) {
-    const url = `${_urlParser(this._queryUrl, { ...params })}/${this.id}`;
-
-    return super.delete(url);
+  async deleteWithParams(params: APITokenQueryParams) {
+    return super.delete(
+      `${_urlParser(this._queryUrl, { ...params })}/${this.id}`
+    );
   }
 }
