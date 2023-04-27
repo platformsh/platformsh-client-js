@@ -308,7 +308,8 @@ export default class Project extends Ressource {
    * @return Activity[]
    */
   getActivities(types: Array<string>, starts_at?: Date) {
-    const params = { type: types, starts_at:starts_at?.toISOString() };
+    const startsAt = starts_at?.toISOString()
+    const params = { type: types, starts_at: startsAt };
 
     return Activity.query(params, `${this.getUri()}/activities`);
   }
