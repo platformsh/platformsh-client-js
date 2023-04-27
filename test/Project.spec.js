@@ -459,7 +459,7 @@ describe("Project", () => {
     );
 
     project
-      .getActivities("theType", "2017-03-21T09:06:30.550116+00:00")
+      .getActivities("theType", new Date("2017-03-21T09:06:30.550116+00:00"))
       .then(activities => {
         assert.equal(activities[0].constructor.name, "Activity");
         assert.equal(activities[0].id, 1);
