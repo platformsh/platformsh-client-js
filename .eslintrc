@@ -18,6 +18,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 6,
+    "requireConfigFile": false,
     "sourceType": "module",
     "ecmaFeatures": {
       "modules": true

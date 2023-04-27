@@ -117,7 +117,7 @@ export default abstract class Ressource {
     return new Proxy(this, handler);
   }
 
-  static getQueryUrl(url: string, _id?: string) {
+  static getQueryUrl(url = "", _id?: string) {
     return url.substring(0, url.lastIndexOf("/"));
   }
 
