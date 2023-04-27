@@ -78,7 +78,7 @@ export default class Me extends User {
     );
   }
 
-  async update(data: APIObject, _url?: string) {
+  async update(data: APIObject) {
     const { api_url } = getConfig();
 
     const result = await super.update(data, `${api_url}/platform/profiles/:id`);

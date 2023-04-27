@@ -62,10 +62,9 @@ export default class ApiToken extends Ressource {
 
   static async query(params: APITokenQueryParams) {
     const { api_url } = getConfig();
-    const { userId } = params;
 
     return super._query<ApiToken>(
-      Ressource.getQueryUrl(`${api_url}${url}`, userId),
+      Ressource.getQueryUrl(`${api_url}${url}`),
       params,
       paramDefaults
     );
