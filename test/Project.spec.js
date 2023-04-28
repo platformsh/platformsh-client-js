@@ -434,8 +434,7 @@ describe("Project", () => {
   });
 
   it("Get activities", done => {
-    const queryString =
-      "?type=theType&starts_at=2017-03-21T09%3A06%3A30.550116%2B00%3A00";
+    const queryString = "?type=theType&starts_at=2017-03-21T09%3A06%3A30.550Z";
 
     fetchMock.mock(
       `https://test.com/api/projects/ffzefzef3/activities${queryString}`,
