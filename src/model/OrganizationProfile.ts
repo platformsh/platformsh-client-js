@@ -37,6 +37,7 @@ export default class OrganizationProfile extends Ressource {
   current_trial: string;
   website_url: string;
   account_tier: string;
+  currency: string;
 
   constructor(profile: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -59,6 +60,7 @@ export default class OrganizationProfile extends Ressource {
     this.website_url = "";
     this.current_trial = "";
     this.account_tier = "";
+    this.currency = "";
   }
 
   static async get(params: OrganizationProfilGetParams) {
