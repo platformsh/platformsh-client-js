@@ -160,7 +160,6 @@ export default class Client {
     starts_at: Date
   ) {
     const startsAt = starts_at?.toISOString();
-    console.log({ startsAt, starts_at });
     return entities.Activity.query({
       projectId,
       environmentId,
