@@ -157,13 +157,14 @@ export default class Client {
     projectId: string,
     environmentId: string,
     type: string,
-    starts_at: number
+    starts_at?: Date
   ) {
+    const startsAt = starts_at?.toISOString();
     return entities.Activity.query({
       projectId,
       environmentId,
       type,
-      starts_at
+      starts_at: startsAt
     });
   }
 
@@ -351,15 +352,15 @@ export default class Client {
     projectId: string,
     integrationId: string,
     type: string,
-    starts_at: number
+    starts_at?: Date
   ) {
     const { api_url } = getConfig();
-
+    const startsAt = starts_at?.toISOString();
     const url = `${api_url}/projects/${projectId}/integrations/${integrationId}/activities`;
     return entities.Activity.query(
       {
         type,
-        starts_at
+        starts_at: startsAt
       },
       url
     );
