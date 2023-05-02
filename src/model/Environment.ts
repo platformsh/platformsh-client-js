@@ -346,10 +346,8 @@ export default class Environment extends Ressource {
    *
    * @return Activity[]
    */
-  async getActivities(type: string, starts_at?: Date) {
-    const startsAt = starts_at?.toISOString();
-    const params = { type, starts_at: startsAt };
-
+  async getActivities(type: string, starts_at?: number) {
+    const params = { type, starts_at };
     return Activity.query(params, `${this.getUri()}/activities`);
   }
 
