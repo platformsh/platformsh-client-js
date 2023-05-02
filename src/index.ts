@@ -157,7 +157,7 @@ export default class Client {
     projectId: string,
     environmentId: string,
     type: string,
-    starts_at: Date
+    starts_at?: Date
   ) {
     const startsAt = starts_at?.toISOString();
     return entities.Activity.query({
