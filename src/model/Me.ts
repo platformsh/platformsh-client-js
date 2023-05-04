@@ -43,6 +43,9 @@ export default class Me extends User {
   trial: boolean;
   uuid: string;
   current_trial: object;
+  stripe?: {
+    public_key: string;
+  };
 
   constructor(account: APIObject) {
     const { api_url } = getConfig();
@@ -62,6 +65,9 @@ export default class Me extends User {
     this.trial = false;
     this.uuid = "";
     this.current_trial = {};
+    this.stripe = {
+      public_key: ""
+    };
   }
 
   static async get(reset = false) {
