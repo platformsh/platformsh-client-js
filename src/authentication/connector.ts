@@ -211,6 +211,7 @@ const logInWithRedirect = async (
 
     if (storedToken && !reset) {
       resolve(storedToken);
+      return;
     }
 
     jso_wipe();
@@ -236,14 +237,14 @@ const logInWithRedirect = async (
               req.state
             )
           );
+          return;
         }
       }
 
       pkce = await generatePKCE();
 
-      // eslint-disable-next-line require-atomic-updates
       req.code_challenge = pkce.codeChallenge;
-      // eslint-disable-next-line require-atomic-updates
+
       req.code_challenge_method = "S256";
 
       jso_saveCodeVerifier(auth.provider, pkce.codeVerifier);
@@ -253,6 +254,7 @@ const logInWithRedirect = async (
         const token = jso_getToken(auth.provider);
         localStorage.removeItem(`state-${req.providerID}-${req.state}`);
         resolve(token);
+        return;
       } catch {
         //
       }
