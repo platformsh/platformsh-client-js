@@ -30,22 +30,20 @@ export default async (
   }: ClientConfiguration,
   reset = false
 ): Promise<JWTToken> => {
-  if (
-    ignoredSubdirectories?.some(subdirectory =>
-      window.location.pathname.startsWith(subdirectory)
-    )
-  ) {
-    return Promise.resolve({} as JWTToken);
-  }
-
   if (authenticationInProgress) {
     return getAuthenticationPromise();
   }
 
   authenticationInProgress = true;
 
+  const shouldIgnore = ignoredSubdirectories?.some(subdirectory =>
+    window.location.pathname.startsWith(subdirectory)
+  );
+
   const promise = access_token
     ? Promise.resolve({ access_token, expires: -1 })
+    : shouldIgnore
+    ? Promise.resolve({ access_token: "", expires: -2 } as JWTToken)
     : connector(api_token, reset, {
         provider,
         popupMode,
