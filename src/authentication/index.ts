@@ -41,8 +41,9 @@ export default async (
   authenticationInProgress = true;
 
   // If we received an access_token in the config, we can resolve the promise with it.
-  // Note that it will we are setting this token with a negative expiration. When we
-  // call the function filterTokens() this token will be wiped out
+  // Note that it will we are setting this token with expires: -1. We use this so that
+  // when we call the authenticatedRequests function, it doesn't fail even if the token
+  // is expired
   const promise = access_token
     ? Promise.resolve({ access_token, expires: -1 })
     : // If not, we will try to get an access token. API tokens are used if you are running
