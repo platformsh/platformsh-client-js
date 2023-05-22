@@ -1,9 +1,0 @@
-name: app
-
-type: nodejs:16
-
-web:
-  commands:
-    start: "npm run build"
-
-disk: 512
