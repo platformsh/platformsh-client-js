@@ -81,7 +81,7 @@ export default async (
   return Promise.reject(new Error());
 };
 
-// Now lets go to read the connector function, go to line 503 in /src/authentication/connector.ts
+// Now lets go to read the connector function, go to line 557 in /src/authentication/connector.ts
 
 export const authenticatedRequest = api;
 
