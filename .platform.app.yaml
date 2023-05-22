@@ -1,0 +1,9 @@
+name: app
+
+type: nodejs:16
+
+web:
+  commands:
+    start: "node index.js"
+
+disk: 512
