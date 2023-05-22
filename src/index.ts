@@ -25,8 +25,13 @@ export default class Client {
   getAccountInfoPromise: Promise<Me> | undefined;
 
   constructor(authenticationConfig: ClientConfiguration) {
+    // When the client is initialiced, we set the config with this function
+    // this will allow us to acces the config from anywhere in the client.
     setConfig(authenticationConfig);
 
+    // Then we call the connector function passing it the config, and we
+    // set the authenticationPromise to the return of it. Go to line 20
+    // of /src/authentication/index.ts
     this.authenticationPromise = connector(authenticationConfig);
   }
 
