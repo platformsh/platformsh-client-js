@@ -4,6 +4,6 @@ type: nodejs:16
 
 web:
   commands:
-    start: "node index.js"
+    start: "npm run build"
 
 disk: 512
