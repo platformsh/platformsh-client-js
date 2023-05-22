@@ -19,6 +19,7 @@ export type ClientConfiguration = {
   redirect_uri?: string;
   response_type?: string;
   onBeforeRedirect?: (location: string) => void;
+  ignoredSubdirectories?: string[];
   extra_params?: Record<string, string>;
 };
 
@@ -48,7 +49,8 @@ const getConfigDefault = (
   logout_url: `${baseUrl}/user/logout`,
   prompt: "",
   redirect_uri: "",
-  response_type: "code"
+  response_type: "code",
+  ignoredSubdirectories: []
 });
 
 let config = getConfigDefault();

@@ -25,10 +25,19 @@ export default async (
     popupMode,
     response_mode,
     prompt,
+    ignoredSubdirectories,
     extra_params
   }: ClientConfiguration,
   reset = false
 ): Promise<JWTToken> => {
+  if (
+    ignoredSubdirectories?.some(subdirectory =>
+      window.location.pathname.startsWith(subdirectory)
+    )
+  ) {
+    return Promise.resolve({} as JWTToken);
+  }
+
   if (authenticationInProgress) {
     return getAuthenticationPromise();
   }
