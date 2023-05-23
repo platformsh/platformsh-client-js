@@ -181,6 +181,9 @@ export const authenticatedRequest = async (
   // Same calc in the jso lib
   const currentDate = Math.round(new Date().getTime() / 1000);
   const tokenExpirationDate = token.expires;
+  if (tokenExpirationDate === -2) {
+    return;
+  }
   if (tokenExpirationDate !== -1 && currentDate >= tokenExpirationDate) {
     const config = getConfig();
     console.log("Token expiration detected");
@@ -196,6 +199,7 @@ export const authenticatedRequest = async (
       )
     );
   }
+
   const authenticationHeaders = {
     Authorization: `Bearer ${token.access_token}`
   };

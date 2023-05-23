@@ -25,6 +25,7 @@ export default async (
     popupMode,
     response_mode,
     prompt,
+    ignoredSubdirectories,
     extra_params
   }: ClientConfiguration,
   reset = false
@@ -35,8 +36,14 @@ export default async (
 
   authenticationInProgress = true;
 
+  const shouldIgnore = ignoredSubdirectories?.some(subdirectory =>
+    window.location.pathname.startsWith(subdirectory)
+  );
+
   const promise = access_token
     ? Promise.resolve({ access_token, expires: -1 })
+    : shouldIgnore
+    ? Promise.resolve({ access_token: "", expires: -2 } as JWTToken)
     : connector(api_token, reset, {
         provider,
         popupMode,
