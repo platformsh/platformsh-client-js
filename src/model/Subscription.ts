@@ -26,7 +26,9 @@ const modifiableField = [
   "environments",
   "storage",
   "big_dev",
-  "backups"
+  "backups",
+  "blackfire",
+  "observability_suite"
 ];
 
 const url = "/v1/subscriptions/:id";
@@ -57,6 +59,14 @@ export type SubscriptionEstimateQueryType = {
   big_dev?: string; // Not available anymore on API
 };
 
+type SellablesNameType = "observability_suite" | "blackfire";
+type SellableType = {
+  [x in SellablesNameType]?: {
+    available: boolean;
+    products: string[];
+  };
+};
+
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
@@ -65,6 +75,8 @@ export default class Subscription extends Ressource {
     type: string;
   };
 
+  blackfire?: string;
+  observability_suite?: string;
   owner: string;
   plan: string;
   environments: number;
@@ -84,6 +96,7 @@ export default class Subscription extends Ressource {
   organization_id: string;
   project_options: {
     plan_title: Record<string, string>;
+    sellables?: SellableType;
   };
 
   enterprise_tag: string;
@@ -126,9 +139,15 @@ export default class Subscription extends Ressource {
     this.license_uri = "";
     this.organization_id = "";
     this.project_options = {
-      plan_title: {}
+      plan_title: {},
+      sellables: {
+        blackfire: { products: [], available: false },
+        observability_suite: { products: [], available: false }
+      }
     };
     this.enterprise_tag = "";
+    this.blackfire = "";
+    this.observability_suite = "";
   }
 
   static async get(params: SubscriptionGetParams, customUrl?: string) {
