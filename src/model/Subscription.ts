@@ -100,6 +100,7 @@ export default class Subscription extends Ressource {
   };
 
   enterprise_tag: string;
+  support_tier: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -146,6 +147,7 @@ export default class Subscription extends Ressource {
       }
     };
     this.enterprise_tag = "";
+    this.support_tier = "";
     this.blackfire = "";
     this.observability_suite = "";
   }

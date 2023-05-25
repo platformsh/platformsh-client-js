@@ -141,7 +141,9 @@ export default class Integration extends Ressource {
   build_pull_requests_post_merge: boolean | undefined = undefined;
 
   // GitLabIntegration
-  // No new properties
+  build_wip_merge_requests: boolean | undefined = undefined;
+  build_merge_requests: boolean | undefined = undefined;
+  merge_requests_clone_parent_data: boolean | undefined = undefined;
 
   // EmailIntegration
   from_address: string | undefined = undefined;
