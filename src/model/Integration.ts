@@ -21,9 +21,12 @@ const types = [
   "syslog",
   "splunk",
   "sumologic",
-  "newrelic"
+  "newrelic",
+  "httplog"
 ];
 const fields = [
+  //httplog
+  "headers",
   // syslog fields
   "host",
   "port",
@@ -180,7 +183,7 @@ export default class Integration extends Ressource {
   protocol: string | undefined = undefined;
   facility: number | undefined = undefined;
   message_format: string | undefined = undefined;
-
+  headers?: Record<string, string> = {};
   // WebHookIntegration
   shared_key: string | undefined = undefined;
 
