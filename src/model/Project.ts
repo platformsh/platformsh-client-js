@@ -244,20 +244,18 @@ export default class Project extends Ressource {
     environmentId: string,
     type = "replacement",
     replacement_for?: string,
-    ssl?: Array<string>
+    ssl = []
   ) {
     const body: Partial<EnvironmentDomain> = { name, type, replacement_for };
 
-    if (ssl.length) {
+    if (ssl) {
       body.ssl = ssl;
     }
 
     if (replacement_for) {
-          body.replacement_for = replacement_for;
-    } else {
-          body.is_default = true;
-    }
       body.replacement_for = replacement_for;
+    } else {
+      body.is_default = true;
     }
 
     if (!replacement_for) {
