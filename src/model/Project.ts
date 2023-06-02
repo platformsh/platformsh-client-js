@@ -253,6 +253,10 @@ export default class Project extends Ressource {
     }
 
     if (replacement_for) {
+          body.replacement_for = replacement_for;
+    } else {
+          body.is_default = true;
+    }
       body.replacement_for = replacement_for;
     }
 
