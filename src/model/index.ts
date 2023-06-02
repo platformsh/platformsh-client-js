@@ -12,6 +12,7 @@ import Domain from "./Domain";
 import Environment from "./Environment";
 import EnvironmentAccess from "./EnvironmentAccess";
 import EnvironmentBackup from "./EnvironmentBackup";
+import EnvironmentDomain from "./EnvironmentDomain";
 import EnvironmentType from "./EnvironmentType";
 import Blob from "./git/Blob";
 import Commit from "./git/Commit";
@@ -64,6 +65,7 @@ export default {
   Domain,
   EnvironmentAccess,
   EnvironmentBackup,
+  EnvironmentDomain,
   Metrics,
   ProjectAccess,
   ProjectLevelVariable,

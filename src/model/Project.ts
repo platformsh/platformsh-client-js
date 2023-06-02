@@ -1,6 +1,7 @@
 import "cross-fetch/polyfill"; // fetch api polyfill
-import parse_url from "parse_url";
 import path from "path";
+
+import parse_url from "parse_url";
 
 import request, { createEventSource } from "../api";
 import { getConfig } from "../config";
@@ -9,6 +10,7 @@ import Activity from "./Activity";
 import Certificate from "./Certificate";
 import Domain from "./Domain";
 import Environment from "./Environment";
+import EnvironmentDomain from "./EnvironmentDomain";
 import Integration from "./Integration";
 import ProjectAccess from "./ProjectAccess";
 import ProjectLevelVariable from "./ProjectLevelVariable";
@@ -50,6 +52,7 @@ export default class Project extends Ressource {
   plan_uri = "";
   subscription: Subscription = new Subscription({});
   subscription_id = "";
+  environment_id = "";
   status = "";
   endpoint = "";
   repository: Repository = {
@@ -212,6 +215,61 @@ export default class Project extends Ressource {
   }
 
   /**
+   * Get a list of environment domains for the project.
+   *
+   * @param int limit
+   *
+   * @return EnvironmentDomain[]
+   */
+  async getEnvironmentDomains(environmentId: string) {
+    return EnvironmentDomain.query(
+      { projectId: this.id, environmentId },
+      this.getLink(`environments/${environmentId}/domains`)
+    );
+  }
+
+  /**
+   * Add a environmentDomain to the environment project.
+   *
+   * @param string name
+   * @param string environmentId
+   * @param string type
+   * @param string replacement_for
+   * @param array  ssl
+   *
+   * @return Result
+   */
+  async addEnvironmentDomain(
+    name: string,
+    environmentId: string,
+    type = "replacement",
+    replacement_for?: string,
+    ssl = []
+  ) {
+    const body: Partial<EnvironmentDomain> = { name, type, replacement_for };
+
+    if (ssl.length) {
+      body.ssl = ssl;
+    }
+
+    if (replacement_for) {
+      body.replacement_for = replacement_for;
+    }
+
+    if (!replacement_for) {
+      body.is_default = true;
+    }
+    body.type = type;
+
+    const environmentDomain = new EnvironmentDomain(
+      body,
+      this.getLink(`environments/${environmentId}/domains`)
+    );
+
+    return environmentDomain.save();
+  }
+
+  /**
    * Get a single domain of the project.
    *
    * @param string name
@@ -307,8 +365,8 @@ export default class Project extends Ressource {
    *
    * @return Activity[]
    */
-  getActivities(types: Array<string>, starts_at?: Date) {
-    const startsAt = starts_at?.toISOString()
+  async getActivities(types: string[], starts_at?: Date) {
+    const startsAt = starts_at?.toISOString();
     const params = { type: types, starts_at: startsAt };
 
     return Activity.query(params, `${this.getUri()}/activities`);

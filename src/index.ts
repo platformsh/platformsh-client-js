@@ -317,6 +317,18 @@ export default class Client {
   }
 
   /**
+   * Get domains of environment {environmentId} of project {projectId}
+   *
+   * @param projectId
+   * @param environmentId
+   *
+   * @return Promise EnvironmentDomains[]
+   */
+  async getEnvironmentDomains(projectId: string, environmentId: string) {
+    return entities.EnvironmentDomain.query({ projectId, environmentId });
+  }
+
+  /**
    * Get the integrations of project projectId
    *
    * @param string projectId
