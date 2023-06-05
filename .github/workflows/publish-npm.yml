@@ -1,20 +1,32 @@
 name: Publish npm
 on:
   push:
+    branches:
+      - master
     tags:
-      - v0.**
+      - 'v0.**'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
       - run: yarn
-      - run: npm test
-      - run: npm run build
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+      - run: yarn test
+      - run: yarn build
+
+      - name: Beta
+        if: ${{ contains(github.ref, '-beta') }}
+        run: yarn publish --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Current version
+        if: ${{ !contains(github.ref, '-beta') }}
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
