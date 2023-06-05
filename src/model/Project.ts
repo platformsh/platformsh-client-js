@@ -244,7 +244,7 @@ export default class Project extends Ressource {
     environmentId: string,
     type = "replacement",
     replacement_for?: string,
-    ssl?: never[] | undefined
+    ssl?: never[]
   ) {
     const body: Partial<EnvironmentDomain> = { name, type, replacement_for };
 
