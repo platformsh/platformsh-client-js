@@ -7,7 +7,7 @@ on:
 jobs:
   publish-version:
     name: Publish new npm version
-    if: github.ref == 'refs/heads/master' && ${{ !endsWith(github.ref, '-beta') }}
+    if: ${{ github.ref == 'refs/heads/master' && !contains(github.ref, '-beta') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
 
   publish-beta:
     name: Publish new npm beta version
-    if: ${{ endsWith(github.ref, '-beta') }}
+    if: ${{ contains(github.ref, '-beta') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
