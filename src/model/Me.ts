@@ -27,6 +27,11 @@ export type PhoneVerificationResponse = {
   verify_phone: boolean;
 };
 
+export type KYCVerificationResponse = {
+  state: boolean;
+  type: "credit-card" | "phone" | "ticket" | null;
+};
+
 // @ts-expect-error fix the get method inheritance error
 export default class Me extends User {
   projects: Project[];
@@ -92,11 +97,20 @@ export default class Me extends User {
     return new Result(new Me(result.data)); // Account API does not return a Result
   }
 
+  // Deprecated
+  // remove after the next release
   async phone(refresh = false): Promise<PhoneVerificationResponse> {
     const { api_url } = getConfig();
 
     const params = refresh ? "force_refresh=1" : "";
     return request(`${api_url}${url}/phone?${params}`, "POST");
+  }
+
+  async kycVerification(refresh = false): Promise<KYCVerificationResponse> {
+    const { api_url } = getConfig();
+
+    const params = refresh ? "force_refresh=1" : "";
+    return request(`${api_url}${url}/verification?${params}`, "POST");
   }
 
   async getOrganizations() {
