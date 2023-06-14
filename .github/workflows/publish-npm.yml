@@ -5,8 +5,9 @@ on:
       - v0.*
 
 jobs:
-  publish:
-    if: { github.ref == 'refs/heads/master' }
+  publish-version:
+    name: Publish new npm version
+    if: github.ref == 'refs/heads/master' && ${{ !endsWith(github.ref, '-beta') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,15 +18,23 @@ jobs:
       - run: yarn
       - run: yarn test
       - run: yarn build
-
-      - name: Beta
-        if: ${{ endsWith(github.ref, '-beta') }}
-        run: yarn publish --tag beta
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Current version
-        if: ${{ !endsWith(github.ref, '-beta') }}
-        run: yarn publish
+  publish-beta:
+    name: Publish new npm beta version
+    if: ${{ endsWith(github.ref, '-beta') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn
+      - run: yarn test
+      - run: yarn build
+      - run: yarn publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
