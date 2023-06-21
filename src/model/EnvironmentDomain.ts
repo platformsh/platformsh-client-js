@@ -28,7 +28,6 @@ export default class EnvironmentDomain extends Ressource {
   ssl = [];
   updated_at = "";
   replacement_for = "";
-  type = "";
 
   constructor(environmentDomain: APIObject, url: string) {
     super(
@@ -36,7 +35,7 @@ export default class EnvironmentDomain extends Ressource {
       paramDefaults,
       {},
       environmentDomain,
-      ["name", "ssl", "is_default", "type", "replacement_for"],
+      ["name", "ssl", "is_default", "replacement_for"],
       modifiableField
     );
     this._required = ["name"];
