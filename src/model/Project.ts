@@ -233,7 +233,6 @@ export default class Project extends Ressource {
    *
    * @param string name
    * @param string environmentId
-   * @param string type
    * @param string replacement_for
    * @param array  ssl
    *
@@ -242,11 +241,10 @@ export default class Project extends Ressource {
   async addEnvironmentDomain(
     name: string,
     environmentId: string,
-    type = "replacement",
     replacement_for?: string,
     ssl?: never[]
   ) {
-    const body: Partial<EnvironmentDomain> = { name, type, replacement_for };
+    const body: Partial<EnvironmentDomain> = { name, replacement_for };
 
     if (ssl) {
       body.ssl = ssl;
@@ -261,7 +259,6 @@ export default class Project extends Ressource {
     if (!replacement_for) {
       body.is_default = true;
     }
-    body.type = type;
 
     const environmentDomain = new EnvironmentDomain(
       body,
