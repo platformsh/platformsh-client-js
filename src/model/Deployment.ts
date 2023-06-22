@@ -6,11 +6,19 @@ import Ressource from "./Ressource";
 const paramDefaults = {};
 const _url =
   "/projects/:projectId/environments/:environmentId/deployments/current";
+const modifiableField = ["services", "webapps"];
 
 export type DeploymentGetParams = {
   [key: string]: any;
   projectId: string;
   environmentId: string;
+};
+
+type DeploymentUpdateParams = {
+  projectId: string;
+  environmentId: string;
+  services?: any;
+  webapps?: any;
 };
 
 export default class Deployment extends Ressource {
@@ -21,7 +29,7 @@ export default class Deployment extends Ressource {
   routes: object;
 
   constructor(deployment: APIObject, url: string) {
-    super(url, paramDefaults, {}, deployment);
+    super(url, paramDefaults, {}, deployment, [], modifiableField);
     this.webapps = {};
     this.services = {};
     this.workers = {};
@@ -39,5 +47,16 @@ export default class Deployment extends Ressource {
       paramDefaults,
       queryParams
     );
+  }
+
+  async update(params: DeploymentUpdateParams, customUrl?: string) {
+    const { projectId, environmentId, ...data } = params;
+    const { api_url } = getConfig();
+
+    const url =
+      customUrl ??
+      `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/next`;
+
+    return super.update(data, url);
   }
 }
