@@ -42,7 +42,8 @@ export enum Status {
   active = "active",
   dirty = "dirty",
   inactive = "inactive",
-  deleting = "deleting"
+  deleting = "deleting",
+  paused = "paused"
 }
 
 type DeploymentState = {
