@@ -262,6 +262,19 @@ const logInWithRedirect = async (
 
     const authUrl = encodeURL(auth.authorization, { ...req, ...extraParams });
 
+    if (extraParams) {
+      const { prompt, response_mode, ...params } = {
+        ...req,
+        ...extraParams
+      };
+
+      // eslint-disable-next-line require-atomic-updates
+      window.location.href = encodeURL(auth.authorization, {
+        ...params
+      });
+      return;
+    }
+
     const iframe = createIFrame(authUrl, {
       sandbox: "allow-same-origin"
     });
