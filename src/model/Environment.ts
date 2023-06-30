@@ -249,7 +249,7 @@ export default class Environment extends Ressource {
    * @return Activity
    */
   async deactivate() {
-    if (!this.isActive()) {
+    if (!this.isActive() && this.status !== Status.paused) {
       throw new Error("Inactive environments cannot be deactivated");
     }
     return this.runLongOperation("deactivate", "POST");
