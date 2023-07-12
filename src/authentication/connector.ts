@@ -301,6 +301,15 @@ const logInWithRedirect = async (
         if (attempt < 1) {
           attempt++;
           return false;
+        } else {
+          const { prompt, response_mode, ...params } = {
+            ...req
+          };
+
+          window.location.href = encodeURL(auth.authorization, {
+            ...params
+          });
+          return;
         }
 
         clearInterval(listener);
