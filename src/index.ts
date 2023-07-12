@@ -692,6 +692,21 @@ export default class Client {
   }
 
   /**
+   * Run runtime operation on deployment
+   *
+   * @param string projectId
+   * @param string environmentId
+   * @param string deploymentId
+   * @param string operation
+   * @param string service
+   *
+   * @return Activity
+   */
+  async runRuntimeOperationDeployment(params: object) {
+    return entities.Deployment.run(params);
+  }
+
+  /**
    * Get organizations of the logged user
    *
    *

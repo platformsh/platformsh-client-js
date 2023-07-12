@@ -1,11 +1,14 @@
+import request from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
 import Ressource from "./Ressource";
+import Result from "./Result";
 
 const paramDefaults = {};
 const _url =
   "/projects/:projectId/environments/:environmentId/deployments/current";
+
 const modifiableField = ["services", "webapps"];
 
 export type DeploymentGetParams = {
@@ -47,6 +50,26 @@ export default class Deployment extends Ressource {
       paramDefaults,
       queryParams
     );
+  }
+
+  static async run(params: Record<string, any>) {
+    const { api_url } = getConfig();
+    const body: Record<string, any> = {
+      operation: params.operation,
+      service: params.service
+    };
+    const url = `${api_url}/projects/${params.projectId}/environments/${params.environmentId}/deployments/${params.deploymentId}/operations`;
+
+    return request(url, "POST", body).then(data => {
+      const result = new Result(data, url);
+      const activities = result.getActivities();
+
+      if (activities.length !== 1) {
+        throw new Error(`Expected one activity, found ${activities.length}`);
+      }
+
+      return activities[0];
+    });
   }
 
   async update(params: DeploymentUpdateParams, customUrl?: string) {
