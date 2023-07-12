@@ -24,6 +24,14 @@ type DeploymentUpdateParams = {
   webapps?: any;
 };
 
+type RunRuntimeOpParams = {
+  projectId: string;
+  deploymentId: string;
+  environmentId: string;
+  service: string;
+  operation: string;
+};
+
 export default class Deployment extends Ressource {
   id: string;
   webapps: object;
@@ -52,7 +60,7 @@ export default class Deployment extends Ressource {
     );
   }
 
-  static async run(params: Record<string, any>) {
+  static async run(params: RunRuntimeOpParams) {
     const { api_url } = getConfig();
     const body: Record<string, any> = {
       operation: params.operation,

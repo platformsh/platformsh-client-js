@@ -702,7 +702,13 @@ export default class Client {
    *
    * @return Activity
    */
-  async runRuntimeOperationDeployment(params: object) {
+  async runRuntimeOperationDeployment(params: {
+    projectId: string;
+    deploymentId: string;
+    environmentId: string;
+    service: string;
+    operation: string;
+  }) {
     return entities.Deployment.run(params);
   }
 
