@@ -1,11 +1,14 @@
+import request from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
 import Ressource from "./Ressource";
+import Result from "./Result";
 
 const paramDefaults = {};
 const _url =
   "/projects/:projectId/environments/:environmentId/deployments/current";
+
 const modifiableField = ["services", "webapps"];
 
 export type DeploymentGetParams = {
@@ -19,6 +22,14 @@ type DeploymentUpdateParams = {
   environmentId: string;
   services?: any;
   webapps?: any;
+};
+
+type RunRuntimeOpParams = {
+  projectId: string;
+  deploymentId: string;
+  environmentId: string;
+  service: string;
+  operation: string;
 };
 
 export default class Deployment extends Ressource {
@@ -47,6 +58,28 @@ export default class Deployment extends Ressource {
       paramDefaults,
       queryParams
     );
+  }
+
+  static async run(params: RunRuntimeOpParams) {
+    const { api_url } = getConfig();
+    const { projectId, deploymentId, environmentId, service, operation } =
+      params;
+    const body: Record<string, any> = {
+      operation,
+      service
+    };
+    const url = `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/${deploymentId}/operations`;
+
+    return request(url, "POST", body).then(data => {
+      const result = new Result(data, url);
+      const activities = result.getActivities();
+
+      if (activities.length !== 1) {
+        throw new Error(`Expected one activity, found ${activities.length}`);
+      }
+
+      return activities[0];
+    });
   }
 
   async update(params: DeploymentUpdateParams, customUrl?: string) {
