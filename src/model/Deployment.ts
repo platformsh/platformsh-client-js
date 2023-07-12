@@ -62,11 +62,13 @@ export default class Deployment extends Ressource {
 
   static async run(params: RunRuntimeOpParams) {
     const { api_url } = getConfig();
+    const { projectId, deploymentId, environmentId, service, operation } =
+      params;
     const body: Record<string, any> = {
-      operation: params.operation,
-      service: params.service
+      operation,
+      service
     };
-    const url = `${api_url}/projects/${params.projectId}/environments/${params.environmentId}/deployments/${params.deploymentId}/operations`;
+    const url = `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/${deploymentId}/operations`;
 
     return request(url, "POST", body).then(data => {
       const result = new Result(data, url);
