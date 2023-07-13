@@ -38,6 +38,16 @@ export default class Deployment extends Ressource {
   services: object;
   workers: object;
   routes: object;
+  container_profiles: Record<
+    string,
+    Record<
+      string,
+      {
+        cpu: number;
+        memory: number;
+      }
+    >
+  >;
 
   constructor(deployment: APIObject, url: string) {
     super(url, paramDefaults, {}, deployment, [], modifiableField);
@@ -45,6 +55,7 @@ export default class Deployment extends Ressource {
     this.services = {};
     this.workers = {};
     this.routes = {};
+    this.container_profiles = {};
     this.id = "";
   }
 
