@@ -18,9 +18,10 @@ export default class Region extends Ressource {
   endpoint: string;
   label: string;
   private: boolean;
-  provider: string;
+  provider: Record<string, any>;
   zone: string;
   project_label: string;
+  environmental_impact: Record<string, any>;
 
   constructor(region: APIObject) {
     const { id } = region;
@@ -33,9 +34,10 @@ export default class Region extends Ressource {
     this.endpoint = "";
     this.label = "";
     this.private = true;
-    this.provider = "";
+    this.provider = {};
     this.zone = "";
     this.project_label = "";
+    this.environmental_impact = {};
   }
 
   static async query(params: RegionGetParams) {
