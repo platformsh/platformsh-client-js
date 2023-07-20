@@ -61,7 +61,7 @@ type HttpAccess = {
     permission: "allow" | "deny";
     address: string;
   }[];
-  basic_auth?: Record<string, string | undefined>;
+  basic_auth?: Record<string, string | undefined | null>;
 };
 
 export default class Environment extends Ressource {
