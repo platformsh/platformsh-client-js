@@ -1,4 +1,5 @@
 import isNode from "detect-node";
+import EventSource from "eventsource";
 import param from "to-querystring";
 import "cross-fetch/polyfill"; // fetch api polyfill
 
@@ -218,7 +219,10 @@ export const authenticatedRequest = async (
 
 export const createEventSource = async (url: string) =>
   authenticationPromise.then(
-    token => new window.EventSource(`${url}?access_token=${token.access_token}`)
+    token =>
+      new EventSource(url, {
+        headers: { Authorization: `Bearer ${token.access_token}` }
+      })
   );
 
 export default authenticatedRequest;

@@ -1,6 +1,7 @@
 import "cross-fetch/polyfill"; // fetch api polyfill
 import path from "path";
 
+import type EventSource from "eventsource";
 import parse_url from "parse_url";
 
 import request, { createEventSource } from "../api";
@@ -497,10 +498,13 @@ export default class Project extends Ressource {
     if (_source) {
       _source.close();
     }
-    return createEventSource(`${this.getUri()}/subscribe`).then(source => {
-      _source = source;
-      return _source;
-    });
+    const { api_url } = getConfig();
+    return createEventSource(`${api_url}/projects/${this.id}/subscribe`).then(
+      source => {
+        _source = source;
+        return _source;
+      }
+    );
   }
 
   /**
