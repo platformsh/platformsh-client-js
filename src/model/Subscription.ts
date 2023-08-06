@@ -97,6 +97,7 @@ export default class Subscription extends Ressource {
   project_options: {
     plan_title: Record<string, string>;
     sellables?: SellableType;
+    initialize?: Record<string, string>;
   };
 
   enterprise_tag: string;
@@ -144,7 +145,8 @@ export default class Subscription extends Ressource {
       sellables: {
         blackfire: { products: [], available: false },
         observability_suite: { products: [], available: false }
-      }
+      },
+      initialize: {}
     };
     this.enterprise_tag = "";
     this.support_tier = "";
