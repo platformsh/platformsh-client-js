@@ -6,8 +6,6 @@ import Ressource from "./Ressource";
 import Result from "./Result";
 
 const paramDefaults = {};
-const _url =
-  "/projects/:projectId/environments/:environmentId/deployments/current";
 
 const modifiableField = ["services", "webapps"];
 
@@ -64,7 +62,21 @@ export default class Deployment extends Ressource {
     const { api_url } = getConfig();
 
     return super._get<Deployment>(
-      customUrl ?? `${api_url}${_url}`,
+      customUrl ??
+        `${api_url}/projects/:projectId/environments/:environmentId/deployments/current`,
+      { projectId, environmentId },
+      paramDefaults,
+      queryParams
+    );
+  }
+
+  static async getNext(params: DeploymentGetParams, customUrl?: string) {
+    const { projectId, environmentId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super._get<Deployment>(
+      customUrl ??
+        `${api_url}/projects/:projectId/environments/:environmentId/deployments/next`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
