@@ -34,7 +34,7 @@ export default class OrganizationProfile extends Ressource {
   billing_contact: string;
   default_catalog: string;
   company_name: string;
-  current_trial: string;
+  current_trial: Record<string, any>;
   website_url: string;
   account_tier: string;
   currency: string;
@@ -58,7 +58,7 @@ export default class OrganizationProfile extends Ressource {
     this.default_catalog = "";
     this.company_name = "";
     this.website_url = "";
-    this.current_trial = "";
+    this.current_trial = {};
     this.account_tier = "";
     this.currency = "";
   }
