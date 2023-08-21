@@ -20,6 +20,8 @@ export const models = entities;
 
 export const api = request;
 
+export type { default as EventSource } from "eventsource";
+
 export default class Client {
   authenticationPromise: Promise<JWTToken>;
   getAccountInfoPromise: Promise<Me> | undefined;
@@ -965,8 +967,14 @@ export default class Client {
    *
    * @return Promise
    */
-  async getOrganizationPaymentSource(organizationId: string) {
-    return entities.OrganizationPaymentSource.get({ organizationId });
+  async getOrganizationPaymentSource(
+    organizationId: string,
+    include_nonchargeable?: 1 | 0
+  ) {
+    return entities.OrganizationPaymentSource.get({
+      organizationId,
+      include_nonchargeable: include_nonchargeable ?? 0
+    });
   }
 
   /**
@@ -999,9 +1007,15 @@ export default class Client {
     organizationId: string,
     type: string,
     token: string,
-    email: string
+    email: string,
+    chargeable?: boolean
   ) {
-    const values = this.cleanRequest({ type, token, email });
+    const values = this.cleanRequest({
+      type,
+      token,
+      email,
+      chargeable: chargeable ?? true
+    });
 
     return new entities.OrganizationPaymentSource({
       organizationId,
@@ -1226,8 +1240,8 @@ export default class Client {
    */
   async getProjectActivities(
     projectId: string,
-    types: string,
-    starts_at: number
+    types?: string[],
+    starts_at?: number
   ) {
     const params = { type: types, starts_at, projectId };
 
