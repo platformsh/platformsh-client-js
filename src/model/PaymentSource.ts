@@ -16,6 +16,7 @@ export default class PaymentSource extends Ressource {
   number: string;
   card: string;
   mandate: string;
+  chargeable: boolean;
 
   constructor(
     paymentSource: APIObject,
@@ -37,6 +38,7 @@ export default class PaymentSource extends Ressource {
     this.number = "";
     this.card = "";
     this.mandate = "";
+    this.chargeable = false;
   }
 
   static async get(queryParams = {}, customUrl?: string) {
