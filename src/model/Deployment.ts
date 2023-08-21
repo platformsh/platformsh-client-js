@@ -15,7 +15,7 @@ export type DeploymentGetParams = {
   environmentId: string;
 };
 
-type DeploymentUpdateParams = {
+export type DeploymentUpdateParams = {
   projectId: string;
   environmentId: string;
   services?: any;
@@ -36,6 +36,8 @@ export default class Deployment extends Ressource {
   services: object;
   workers: object;
   routes: object;
+  project_info: object;
+  environment_info: object;
   container_profiles: Record<
     string,
     Record<
@@ -47,6 +49,12 @@ export default class Deployment extends Ressource {
     >
   >;
 
+  variables: {
+    name: string;
+    value: string;
+    is_sensitive: boolean;
+  }[];
+
   constructor(deployment: APIObject, url: string) {
     super(url, paramDefaults, {}, deployment, [], modifiableField);
     this.webapps = {};
@@ -54,6 +62,9 @@ export default class Deployment extends Ressource {
     this.workers = {};
     this.routes = {};
     this.container_profiles = {};
+    this.variables = [];
+    this.project_info = {};
+    this.environment_info = {};
     this.id = "";
   }
 
