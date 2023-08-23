@@ -692,6 +692,22 @@ export default class Client {
   }
 
   /**
+   * Get next deployment information
+   *
+   * @param string projectId
+   * @param string environmentId
+   *
+   * @return Deployment
+   */
+  async getNextDeployment(
+    projectId: string,
+    environmentId: string,
+    params: object
+  ) {
+    return entities.Deployment.getNext({ projectId, environmentId, ...params });
+  }
+
+  /**
    * Run runtime operation on deployment
    *
    * @param string projectId
