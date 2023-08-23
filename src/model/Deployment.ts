@@ -7,7 +7,7 @@ import Result from "./Result";
 
 const paramDefaults = {};
 
-const modifiableField = ["services", "webapps"];
+const modifiableField = ["services", "webapps", "workers"];
 
 export type DeploymentGetParams = {
   [key: string]: any;
