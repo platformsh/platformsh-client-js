@@ -13,6 +13,7 @@ import type {
 } from "./model/EnvironmentType";
 import type Me from "./model/Me";
 import type { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
+import type Project from "./model/Project";
 import type { APIObject } from "./model/Ressource";
 import type { TicketQueryParams } from "./model/Ticket";
 
@@ -77,7 +78,7 @@ export default class Client {
       if (!projects) {
         return;
       }
-      const project = projects.find(p => p.id === id);
+      const project = projects.find((p: Project) => p.id === id);
 
       if (project?.endpoint) {
         return project.endpoint;
@@ -98,13 +99,14 @@ export default class Client {
    * @return Promise Project[]
    */
   async getProjects() {
-    return this.getAccountInfo().then(me => {
+    const { api_url } = getConfig();
+
+    return this.getAccountInfo().then(async me => {
       if (!me) {
         return false;
       }
-
-      return me.projects.map(
-        project => new entities.Project(project, project.endpoint)
+      return request(`${api_url}/users/${me.id}/extended-access`, "GET").then(
+        result => result._links["ref:projects:0"].href
       );
     });
   }
