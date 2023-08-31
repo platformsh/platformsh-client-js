@@ -1,89 +1,86 @@
 const path = require("path");
 
-const TerserPlugin = require("terser-webpack-plugin");
-const merge = require("webpack-merge");
-const { env } = require("yargs").argv;
+const webpack = require("webpack");
+const { merge } = require("webpack-merge");
 
-const libraryName = "platform-api";
+module.exports = env => {
+  const libraryName = "platform-api";
 
-const plugins = [];
-let outputFile;
-let additionalSettings = {};
+  const plugins = [
+    new webpack.ProvidePlugin({
+      process: "process/browser"
+    })
+  ];
 
-if (env.mode === "build") {
-  outputFile = "[name].js";
-} else {
-  outputFile = "[name].js";
-  additionalSettings = {
-    devtool: "eval-source-map"
-  };
-}
+  const additionalSettings = {};
 
-const config = {
-  mode: "development",
-  entry: {
-    [libraryName]: `${__dirname}/src/index.ts`,
-    "authentication/index": `${__dirname}/src/authentication`
-  },
-  output: {
-    filename: outputFile
-  },
-  watchOptions: {
-    ignored: [/node_modules/u, /types/u]
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts(x?)$/u,
-        exclude: [/node_modules/u, /^.*\.spec\.tsx$/u, /^.*\.spec\.ts$/u],
-        use: ["babel-loader", "ts-loader"]
-      },
-      {
-        test: /(\.js)$/u,
-        use: "babel-loader",
-        exclude: /node_modules/u
+  if (env.mode !== "build") {
+    additionalSettings.devtool = "eval-source-map";
+  }
+
+  const config = {
+    mode: "development",
+    entry: {
+      [libraryName]: `${__dirname}/src/index.ts`,
+      "authentication/index": `${__dirname}/src/authentication`
+    },
+    watchOptions: {
+      ignored: /(node_modules|types)/u
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ts(x?)$/u,
+          exclude: [/node_modules/u, /^.*\.spec\.tsx$/u, /^.*\.spec\.ts$/u],
+          use: ["babel-loader", "ts-loader"]
+        },
+        {
+          test: /(\.js)$/u,
+          use: "babel-loader",
+          exclude: /node_modules/u
+        }
+      ]
+    },
+    resolve: {
+      modules: [path.resolve("./src"), "node_modules"],
+      extensions: [".js", ".ts"],
+      fallback: {
+        buffer: require.resolve("buffer/"),
+        http: require.resolve("stream-http"),
+        https: require.resolve("https-browserify"),
+        path: require.resolve("path-browserify"),
+        url: require.resolve("url/")
       }
-    ]
-  },
-  resolve: {
-    modules: [path.resolve("./src"), "node_modules"],
-    extensions: [".js", ".ts"]
-  },
-  plugins,
-  ...additionalSettings
-};
-
-if (env.mode === "build") {
-  config.mode = "production";
-  config.optimization = {
-    noEmitOnErrors: true,
-    minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true
-      })
-    ],
-    removeEmptyChunks: true
+    },
+    plugins,
+    ...additionalSettings
   };
-}
 
-const client = merge(config, {
-  target: "web",
-  output: {
-    path: `${__dirname}/lib/client`,
-    library: libraryName,
-    libraryTarget: "umd",
-    umdNamedDefine: true
+  if (env.mode === "build") {
+    config.mode = "production";
+    config.optimization = {
+      emitOnErrors: false,
+      removeEmptyChunks: true
+    };
   }
-});
 
-const server = merge(config, {
-  target: "node",
-  output: {
-    path: `${__dirname}/lib/server`,
-    libraryTarget: "umd"
-  }
-});
+  const client = merge(config, {
+    target: "web",
+    output: {
+      path: `${__dirname}/lib/client`,
+      library: libraryName,
+      libraryTarget: "umd",
+      umdNamedDefine: true
+    }
+  });
 
-module.exports = [client, server];
+  const server = merge(config, {
+    target: "node",
+    output: {
+      path: `${__dirname}/lib/server`,
+      libraryTarget: "umd"
+    }
+  });
+
+  return [client, server];
+};
