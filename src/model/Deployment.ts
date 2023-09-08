@@ -38,6 +38,7 @@ export default class Deployment extends Ressource {
   routes: object;
   project_info: object;
   environment_info: object;
+  fingerprint: string;
   container_profiles: Record<
     string,
     Record<
@@ -65,6 +66,7 @@ export default class Deployment extends Ressource {
     this.variables = [];
     this.project_info = {};
     this.environment_info = {};
+    this.fingerprint = "";
     this.id = "";
   }
 
