@@ -16,10 +16,9 @@ export type DeploymentGetParams = {
 };
 
 export type DeploymentUpdateParams = {
-  projectId: string;
-  environmentId: string;
   services?: any;
   webapps?: any;
+  workers?: any;
 };
 
 type RunRuntimeOpParams = {
@@ -116,16 +115,5 @@ export default class Deployment extends Ressource {
 
       return activities[0];
     });
-  }
-
-  async update(params: DeploymentUpdateParams, customUrl?: string) {
-    const { projectId, environmentId, ...data } = params;
-    const { api_url } = getConfig();
-
-    const url =
-      customUrl ??
-      `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/next`;
-
-    return super.update(data, url);
   }
 }
