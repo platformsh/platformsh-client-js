@@ -642,6 +642,19 @@ export default class Client {
   }
 
   /**
+   * Estimate the cost for an organization.
+   */
+  async getOrganizationEstimate(organizationId: string) {
+    const { api_url } = getConfig();
+
+    return request(
+      `${api_url}/organizations/${organizationId}/estimate`,
+      "POST",
+      {}
+    );
+  }
+
+  /**
    * Estimate the cost of a subscription for an organization.
    *
    * @param string plan         The plan (see Subscription::$availablePlans).
