@@ -498,10 +498,13 @@ export default class Project extends Ressource {
     if (_source) {
       _source.close();
     }
-    return createEventSource(`${this.getUri()}/subscribe`).then(source => {
-      _source = source;
-      return _source;
-    });
+    const { api_url } = getConfig();
+    return createEventSource(`${api_url}/projects/${this.id}/subscribe`).then(
+      source => {
+        _source = source;
+        return _source;
+      }
+    );
   }
 
   /**
