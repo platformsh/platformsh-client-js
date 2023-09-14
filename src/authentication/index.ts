@@ -1,9 +1,7 @@
-import api, {
-  setAuthenticationPromise,
-  getAuthenticationPromise
-} from "../api";
+import { setAuthenticationPromise, getAuthenticationPromise } from "../api";
 import type { ClientConfiguration } from "../config";
 import { jso_wipe } from "../jso";
+export { default as authenticatedRequest } from "../api";
 
 import connector from "./connector";
 
@@ -64,7 +62,5 @@ export default async (
 
   return Promise.reject(new Error());
 };
-
-export const authenticatedRequest = api;
 
 export const wipeToken = jso_wipe;
