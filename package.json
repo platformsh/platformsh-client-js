@@ -7,7 +7,7 @@
   "types": "types/index.d.ts",
   "scripts": {
     "build": "rm -rf ./types && rm -rf ./lib && webpack --env mode=build",
-    "dev": "webpack --progress --colors --watch --env mode=dev",
+    "dev": "webpack --progress --watch --env mode=dev",
     "test": "yarn run test-web && yarn run test-node",
     "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
     "test-node": "mocha -r ./test/.setup-node.js ./test/**/*.spec.js",
