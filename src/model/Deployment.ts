@@ -31,7 +31,6 @@ type RunRuntimeOpParams = {
 
 export default class Deployment extends Ressource {
   id: string;
-  fingerprint: string;
   webapps: object;
   services: object;
   workers: object;
@@ -68,7 +67,6 @@ export default class Deployment extends Ressource {
     this.environment_info = {};
     this.fingerprint = "";
     this.id = "";
-    this.fingerprint = "";
   }
 
   static async get(params: DeploymentGetParams, customUrl?: string) {

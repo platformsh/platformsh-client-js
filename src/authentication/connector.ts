@@ -276,7 +276,7 @@ const logInWithRedirect = async (
     }
 
     const iframe = createIFrame(authUrl, {
-      sandbox: "allow-same-origin allow-scripts"
+      sandbox: "allow-same-origin"
     });
     let attempt = 0;
 
