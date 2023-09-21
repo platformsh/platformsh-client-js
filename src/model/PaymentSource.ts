@@ -7,7 +7,7 @@ import Ressource from "./Ressource";
 
 const url = "/platform/payment_source";
 const paramDefaults = {};
-const creatableField = ["type", "token", "email"];
+const creatableField = ["type", "token", "email", "chargeable"];
 
 export default class PaymentSource extends Ressource {
   id: string;
