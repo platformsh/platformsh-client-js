@@ -1,7 +1,6 @@
 import "cross-fetch/polyfill"; // fetch api polyfill
 import path from "path";
 
-import type EventSource from "eventsource";
 import parse_url from "parse_url";
 
 import request, { createEventSource } from "../api";
