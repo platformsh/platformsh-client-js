@@ -48,6 +48,7 @@ export default class Me extends User {
   trial: boolean;
   uuid: string;
   current_trial: object;
+  country: string;
   stripe?: {
     public_key: string;
   };
@@ -70,6 +71,7 @@ export default class Me extends User {
     this.trial = false;
     this.uuid = "";
     this.current_trial = {};
+    this.country = "";
     this.stripe = {
       public_key: ""
     };
