@@ -20,8 +20,6 @@ export const models = entities;
 
 export const api = request;
 
-export type { default as EventSource } from "eventsource";
-
 export default class Client {
   authenticationPromise: Promise<JWTToken>;
   getAccountInfoPromise: Promise<Me> | undefined;
