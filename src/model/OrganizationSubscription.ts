@@ -1,3 +1,4 @@
+import { authenticatedRequest } from "../authentication";
 import { getConfig } from "../config";
 import urlParser from "../urlParser";
 
@@ -79,6 +80,15 @@ export default class OrganizationSubscription extends Subscription {
       {
         queryStringArrayPrefix: "[]"
       }
+    );
+  }
+
+  static async getCanCreate(params: OrganizationSubscriptionQueryParams) {
+    const { api_url } = getConfig();
+
+    return authenticatedRequest(
+      `${api_url}/organizations/${params.organizationId}/subscriptions/can-create`,
+      "GET"
     );
   }
 
