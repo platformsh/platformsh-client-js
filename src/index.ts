@@ -569,6 +569,16 @@ export default class Client {
   }
 
   /**
+   * Get organization subscription can create, which determines if a
+   * new subscription can be created under an organization.
+   *
+   * @param string organizationId
+   */
+  async getOrganizationSubscriptionCanCreate(organizationId: string) {
+    return entities.OrganizationSubscription.getCanCreate({ organizationId });
+  }
+
+  /**
    * Get organization members.
    *
    * @param string organizationId
