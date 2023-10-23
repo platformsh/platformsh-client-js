@@ -30,7 +30,7 @@ export type CreateSubscriptionPayloadType = {
   storage?: number;
 };
 
-// @ts-expect-error solve the get and query function inheritance ts error
+// @ts-expect-error solve the query function inheritance ts error
 export default class OrganizationSubscription extends Subscription {
   organization_id: string;
 
@@ -64,7 +64,7 @@ export default class OrganizationSubscription extends Subscription {
       { organizationId, id },
       {},
       queryParams
-    );
+    ) as Promise<OrganizationSubscription>;
   }
 
   static async query(params: OrganizationSubscriptionQueryParams) {

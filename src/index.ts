@@ -12,7 +12,6 @@ import type {
   UpdateAccessParams
 } from "./model/EnvironmentType";
 import type Me from "./model/Me";
-import type { OrganizationSubscriptionGetParams } from "./model/OrganizationSubscription";
 import type { APIObject } from "./model/Ressource";
 import type { TicketQueryParams } from "./model/Ticket";
 
@@ -548,7 +547,7 @@ export default class Client {
    */
   async getOrganizationSubscriptions(
     organizationId: string,
-    params: OrganizationSubscriptionGetParams
+    params: Record<string, any>
   ) {
     return entities.OrganizationSubscription.query({
       ...params,
