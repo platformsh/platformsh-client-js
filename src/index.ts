@@ -1705,4 +1705,22 @@ export default class Client {
       ...params
     });
   }
+
+  async getDunningActions(organizationId: string) {
+    const { api_url } = getConfig();
+
+    return request(
+      `${api_url}/organizations/${organizationId}/dunning-actions`
+    ) as Promise<{
+      items: {
+        date: string;
+        days_until: number;
+        id: string;
+        order_id: string;
+        type: "charge" | "suspend" | "revoke";
+        uid: string;
+      }[];
+      _links: { self: { href: string } };
+    }>;
+  }
 }
