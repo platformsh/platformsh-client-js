@@ -918,6 +918,28 @@ export default class Client {
   }
 
   /**
+   * Get organization orders
+   *
+   *
+   * @return Account
+   */
+  async getOrganizationInvoices(organizationId: string) {
+    return entities.OrganizationOrder.query({
+      organizationId
+    });
+  }
+
+  /**
+   * Get organization order
+   *
+   *
+   * @return Account
+   */
+  async getOrganizationInvoice(organizationId: string, id: string) {
+    return entities.OrganizationOrder.get({ organizationId, id });
+  }
+
+  /**
    * Get vouchers
    *
    *
