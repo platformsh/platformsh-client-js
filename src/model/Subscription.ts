@@ -100,6 +100,7 @@ export default class Subscription extends Ressource {
     initialize?: Record<string, string>;
   };
 
+  environment_options: string[];
   enterprise_tag: string;
   support_tier: string;
 
@@ -152,6 +153,7 @@ export default class Subscription extends Ressource {
     this.support_tier = "";
     this.blackfire = "";
     this.observability_suite = "";
+    this.environment_options = [];
   }
 
   static async get(params: SubscriptionGetParams, customUrl?: string) {
