@@ -45,6 +45,7 @@ export default class Activity extends Ressource {
   description: string;
   integration: string;
   timings: Record<string, string>;
+  text: string;
 
   constructor(activity: APIObject, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
@@ -66,6 +67,7 @@ export default class Activity extends Ressource {
     this.description = "";
     this.integration = "";
     this.timings = {};
+    this.text = "";
   }
 
   static async get(params: ActivityGetParams, customUrl?: string) {
