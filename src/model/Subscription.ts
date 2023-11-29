@@ -74,6 +74,8 @@ type ResourceType = {
   storage?: number;
 };
 
+type ProjectResourcesType = ResourceType & { subscription_id: number };
+
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
@@ -110,7 +112,7 @@ export default class Subscription extends Ressource {
   resources_limit?: {
     limit: ResourceType;
     used: {
-      projects: Record<string, ResourceType>;
+      projects: ProjectResourcesType[];
       totals: ResourceType;
     };
   };
@@ -167,7 +169,7 @@ export default class Subscription extends Ressource {
     this.resources_limit = {
       limit: {},
       used: {
-        projects: {},
+        projects: [],
         totals: {}
       }
     };
