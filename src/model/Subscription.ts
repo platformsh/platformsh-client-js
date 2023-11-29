@@ -67,6 +67,13 @@ type SellableType = {
   };
 };
 
+type ResourceType = {
+  cpu?: number;
+  environments?: number;
+  memory?: number;
+  storage?: number;
+};
+
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
@@ -98,6 +105,14 @@ export default class Subscription extends Ressource {
     plan_title: Record<string, string>;
     sellables?: SellableType;
     initialize?: Record<string, string>;
+  };
+
+  resources_limit?: {
+    limit: ResourceType;
+    used: {
+      projects: Record<string, ResourceType>;
+      totals: ResourceType;
+    };
   };
 
   environment_options: string[];
@@ -148,6 +163,13 @@ export default class Subscription extends Ressource {
         observability_suite: { products: [], available: false }
       },
       initialize: {}
+    };
+    this.resources_limit = {
+      limit: {},
+      used: {
+        projects: {},
+        totals: {}
+      }
     };
     this.enterprise_tag = "";
     this.support_tier = "";
