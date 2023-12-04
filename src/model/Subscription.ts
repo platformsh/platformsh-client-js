@@ -76,6 +76,41 @@ type ResourceType = {
 
 type ProjectResourcesType = ResourceType & { subscription_id: number };
 
+type EnvironmentDataRetention = {
+  default_config: {
+    manual_count: number;
+    schedule: {
+      count: number;
+      interval: string;
+    }[];
+  };
+  max_backups: number;
+};
+
+type SubscriptionIntegrationType = {
+  enabled: boolean;
+  role: string;
+};
+
+type EnforcedType = {
+  capabilities: {
+    integrations: {
+      config: Record<string, SubscriptionIntegrationType>;
+      enabled: boolean;
+    };
+    metrics: {
+      max_range: string;
+    };
+  };
+  integrations: {
+    create: string[];
+  };
+  settings: {
+    data_retention: Record<string, EnvironmentDataRetention>;
+    enable_paused_environments: boolean;
+  };
+};
+
 export default class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
@@ -107,6 +142,7 @@ export default class Subscription extends Ressource {
     plan_title: Record<string, string>;
     sellables?: SellableType;
     initialize?: Record<string, string>;
+    enforced?: EnforcedType;
   };
 
   resources_limit?: {
