@@ -47,7 +47,7 @@ export type RoutesRedirectInfo = {
   redirects: RoutesRedirects;
 };
 
-export type DeploymentRoute = Record<string, RoutesRedirectInfo>;
+export type DeploymentRoutes = Record<string, RoutesRedirectInfo>;
 
 export type DataRetentionConfig = {
   manual_count: number;
@@ -263,12 +263,14 @@ export type RunRuntimeOpParams = {
   operation: string;
 };
 
+export type DeploymentServices = Record<string, DeploymentService>;
+
 export default class Deployment extends Ressource {
   id: string;
-  webapps: DeploymentService;
-  services: DeploymentService;
-  workers: DeploymentService;
-  routes: DeploymentRoute;
+  webapps: DeploymentServices;
+  services: DeploymentServices;
+  workers: DeploymentServices;
+  routes: DeploymentRoutes;
   project_info: DeploymentProjectInfo;
   environment_info: DeploymentEnvironmentInfo;
   fingerprint: string;
@@ -291,9 +293,9 @@ export default class Deployment extends Ressource {
 
   constructor(deployment: APIObject, url: string) {
     super(url, paramDefaults, {}, deployment, [], modifiableField);
-    this.webapps = {} as DeploymentService;
-    this.services = {} as DeploymentService;
-    this.workers = {} as DeploymentService;
+    this.webapps = {} as Record<string, DeploymentService>;
+    this.services = {} as Record<string, DeploymentService>;
+    this.workers = {} as Record<string, DeploymentService>;
     this.routes = {};
     this.container_profiles = {};
     this.variables = [];
