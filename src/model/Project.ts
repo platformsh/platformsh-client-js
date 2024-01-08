@@ -50,6 +50,7 @@ export default class Project extends Ressource {
   owner_info = {};
   plan = "";
   plan_uri = "";
+  enterprise_tag = "";
   subscription: Subscription = new Subscription({});
   subscription_id = "";
   environment_id = "";
