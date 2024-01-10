@@ -45,6 +45,12 @@ export type RoutesRedirectInfo = {
   restrict_robots: boolean;
   to: string;
   redirects: RoutesRedirects;
+  cache?: {
+    enabled: boolean;
+  };
+  ssi?: {
+    enabled: boolean;
+  };
 };
 
 export type DeploymentRoutes = Record<string, RoutesRedirectInfo>;
@@ -325,6 +331,19 @@ export default class Deployment extends Ressource {
     return super._get<Deployment>(
       customUrl ??
         `${api_url}/projects/:projectId/environments/:environmentId/deployments/next`,
+      { projectId, environmentId },
+      paramDefaults,
+      queryParams
+    );
+  }
+
+  static async getDeployments(params: DeploymentGetParams, customUrl?: string) {
+    const { projectId, environmentId, ...queryParams } = params;
+    const { api_url } = getConfig();
+
+    return super._get<Deployment[]>(
+      customUrl ??
+        `${api_url}/projects/:projectId/environments/:environmentId/deployments`,
       { projectId, environmentId },
       paramDefaults,
       queryParams
