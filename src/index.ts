@@ -928,8 +928,16 @@ export default class Client {
    *
    * @return Account
    */
-  async getOrganizationOrder(organizationId: string, id: string) {
-    return entities.OrganizationOrder.get({ organizationId, id });
+  async getOrganizationOrder(
+    organizationId: string,
+    id: string,
+    includeDetails?: boolean
+  ) {
+    return entities.OrganizationOrder.get({
+      organizationId,
+      id,
+      includeDetails
+    });
   }
 
   /**
