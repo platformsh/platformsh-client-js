@@ -28,6 +28,12 @@ export default class Order extends Ressource {
   currency: string;
   invoice_url: string;
   line_items: any[];
+  billing_period_label?: {
+    formatted: string;
+    month: string;
+    next_month: string;
+    year: string;
+  };
 
   constructor(account: APIObject) {
     const { id } = account;
@@ -46,6 +52,7 @@ export default class Order extends Ressource {
     this.currency = "";
     this.invoice_url = "";
     this.line_items = [];
+    this.billing_period_label = undefined;
   }
 
   static async get(params: OrdersGetParams, customUrl?: string) {

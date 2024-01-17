@@ -20,8 +20,12 @@ export type OrganizationOrderQueryParams = {
 // @ts-expect-error solve the get and query function inheritance ts error
 export default class OrganizationOrder extends Order {
   static async get(params: OrganizationOrderGetParams, customUrl?: string) {
-    const { organizationId, id, ...queryParams } = params;
+    const { organizationId, id, includeDetails, ...queryParams } = params;
     const { api_url } = getConfig();
+
+    if (includeDetails) {
+      queryParams.mode = "details";
+    }
 
     return Ressource._get.call(
       this,
