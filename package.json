@@ -8,14 +8,14 @@
   "scripts": {
     "build": "rm -rf ./types && rm -rf ./lib && webpack --env mode=build",
     "dev": "webpack --progress --watch --env mode=dev",
-    "test": "yarn run test-web && yarn run test-node",
+    "test": "npm run test-web && npm run test-node",
     "test-web": "mocha -r mock-local-storage ./test/.setup.js ./test/**/*.spec.js",
     "test-node": "mocha -r ./test/.setup-node.js ./test/**/*.spec.js",
     "eslint": "eslint .",
     "eslint:fix": "eslint . --fix",
-    "precommit": "lint-staged && yarn run build",
-    "prepush": "yarn test",
-    "typecheck": "yarn tsc --noEmit"
+    "precommit": "lint-staged && npm run build",
+    "prepush": "npm test",
+    "typecheck": "npx tsc --noEmit"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

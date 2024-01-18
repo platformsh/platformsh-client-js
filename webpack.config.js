@@ -49,6 +49,7 @@ module.exports = env => {
         http: require.resolve("stream-http"),
         https: require.resolve("https-browserify"),
         path: require.resolve("path-browserify"),
+        "process/browser": require.resolve("process/browser"),
         url: require.resolve("url/")
       }
     },
