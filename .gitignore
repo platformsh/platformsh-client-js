@@ -10,5 +10,3 @@ lib
 types
 
 *.log
-
-package-lock.json
