@@ -170,11 +170,18 @@ export type DeploymentEnvironmentInfo = {
 export type ServiceResource = {
   base_memory?: number;
   memory_ratio?: number;
-  profile_size: string;
-  minimum: {
+  profile_size: string | null;
+  minimum?: {
     cpu?: number;
     memory?: number;
-    disk?: number;
+    disk?: number | null;
+    profile_size?: string;
+  };
+  default?: {
+    cpu?: number;
+    memory?: number;
+    disk?: number | null;
+    profile_size?: string;
   };
 };
 
