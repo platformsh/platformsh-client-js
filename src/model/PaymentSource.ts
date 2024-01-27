@@ -120,9 +120,4 @@ export default class PaymentSource extends Ressource {
     }
     return paymentSource;
   }
-
-  static async setVerificationMethodAsPaymentMethod() {
-    const { api_url } = getConfig();
-    return request(`${api_url}${url}`, "PATCH", { chargeable: true });
-  }
 }

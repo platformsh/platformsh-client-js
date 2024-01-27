@@ -91,4 +91,16 @@ export default class OrganizationPaymentSource extends PaymentSource {
     );
     return request(`${parsedUrl}/intent`, "POST");
   }
+
+  static async setVerificationMethodAsPaymentMethod(organizationId: string) {
+    const { api_url } = getConfig();
+    const parsedUrl = _urlParser(
+      `${api_url}${url}`,
+      {
+        organizationId
+      },
+      {}
+    );
+    return request(`${parsedUrl}`, "PATCH", { chargeable: true });
+  }
 }
