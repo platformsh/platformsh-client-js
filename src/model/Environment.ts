@@ -6,7 +6,7 @@ import Activity from "./Activity";
 import EnvironmentAccess from "./EnvironmentAccess";
 import Commit from "./git/Commit";
 import Metrics from "./Metrics";
-import type { APIObject } from "./Ressource";
+import type { APIObject, ParamsType } from "./Ressource";
 import Ressource from "./Ressource";
 import Route from "./Route";
 import Variable from "./Variable";
@@ -262,13 +262,14 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  async merge() {
+  async merge(body?: ParamsType) {
     if (!this.parent) {
       throw new Error(
         "The environment does not have a parent, so it cannot be merged"
       );
     }
-    return this.runLongOperation("merge", "POST");
+
+    return this.runLongOperation("merge", "POST", body);
   }
 
   /**
