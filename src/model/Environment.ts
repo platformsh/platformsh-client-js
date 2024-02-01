@@ -191,8 +191,21 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  async branch(title: string, type: string, id = this.sanitizeId(title)) {
-    const body = { name: id, title, type };
+  async branch(
+    title: string,
+    type: string,
+    resourcesInit?: string,
+    id = this.sanitizeId(title)
+  ) {
+    const body: Record<string, string | Record<string, string>> = {
+      name: id,
+      title,
+      type
+    };
+
+    if (resourcesInit) {
+      body.resources = { init: resourcesInit };
+    }
 
     return this.runLongOperation("branch", "POST", body);
   }
