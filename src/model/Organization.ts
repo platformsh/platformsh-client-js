@@ -37,6 +37,7 @@ export default class Organization extends Ressource {
   country: string;
   capabilities: string[];
   status?: "active" | "restricted" | "suspended" | "deleted";
+  vendor: string;
 
   constructor(organization: APIObject, url?: string) {
     const { api_url } = getConfig();
@@ -59,6 +60,7 @@ export default class Organization extends Ressource {
     this.updated_at = "";
     this.capabilities = [];
     this.status = undefined;
+    this.vendor = "";
 
     this._queryUrl = url ?? `${api_url}${_url}`;
   }
