@@ -1733,4 +1733,10 @@ export default class Client {
       _links: { self: { href: string } };
     }>;
   }
+
+  async setVerificationMethodAsPaymentMethod(organizationId: string) {
+    return entities.OrganizationPaymentSource.setVerificationMethodAsPaymentMethod(
+      organizationId
+    );
+  }
 }
