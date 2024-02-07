@@ -23,6 +23,8 @@ export default class Region extends Ressource {
   project_label: string;
   environmental_impact: {
     carbon_intensity: number;
+    zone?: string;
+    green?: boolean;
   };
 
   constructor(region: APIObject) {
