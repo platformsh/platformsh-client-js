@@ -295,11 +295,17 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  async synchronize(data: boolean, code: boolean) {
-    if (!data && !code) {
-      throw new Error("Nothing to synchronize: you must specify data or code");
+  async synchronize(data: boolean, code: boolean, resources = false) {
+    if (!data && !code && !resources) {
+      throw new Error(
+        "Nothing to synchronize: you must specify data, code or resources"
+      );
     }
-    const body = { synchronize_data: data, synchronize_code: code };
+    const body = {
+      synchronize_data: data,
+      synchronize_code: code,
+      synchronize_resources: resources
+    };
 
     return this.runLongOperation("synchronize", "post", body);
   }
