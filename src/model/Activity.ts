@@ -302,15 +302,7 @@ export default class Activity extends Ressource {
           payload.environment
         } from snapshot ${payload.backup_name.substr(0, 7)}`;
       case "environment.synchronize": {
-        const syncedCode = !payload.synchronize_code;
-        let syncType = "data";
-
-        if (syncedCode && !payload.synchronize_data) {
-          syncType = "code and data";
-        } else if (syncedCode) {
-          syncType = "code";
-        }
-        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${syncType} with ${payload.environment.title}`;
+        return `${payload.user.display_name} synced ${payload.outcome.title}'s ${payload.synchronization_type} with ${payload.environment.title}`;
       }
       case "environment.access.add":
         return `${payload.user.display_name} added ${payload.access.display_name} to ${payload.environment.title}`;

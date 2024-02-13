@@ -295,7 +295,7 @@ export default class Environment extends Ressource {
    *
    * @return Activity
    */
-  async synchronize(data: boolean, code: boolean, resources?: boolean) {
+  async synchronize(data: boolean, code: boolean, resources = false) {
     if (!data && !code && !resources) {
       throw new Error(
         "Nothing to synchronize: you must specify data, code or resources"
