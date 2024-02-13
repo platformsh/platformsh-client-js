@@ -114,10 +114,8 @@ export default class PaymentSource extends Ressource {
       case "credit-card":
         paymentSource.card = paymentSource.data;
         break;
-      case "stripe_sepa_debit":
-        paymentSource.mandate = paymentSource.data;
-        break;
       default:
+        paymentSource.mandate = paymentSource.data;
         break;
     }
     return paymentSource;
