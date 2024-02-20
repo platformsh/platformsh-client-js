@@ -145,6 +145,7 @@ export default class Subscription extends Ressource {
     enforced?: EnforcedType;
   };
 
+  green?: boolean;
   resources_limit?: {
     limit: ResourceType;
     used: {
@@ -169,6 +170,7 @@ export default class Subscription extends Ressource {
       modifiableField
     );
 
+    this.green = false;
     this._queryUrl = Ressource.getQueryUrl(customUrl ?? `${api_url}${url}`);
     this._required = ["project_region"];
     this.id = "";
