@@ -35,6 +35,7 @@ export default class OrganizationProfile extends Ressource {
   default_catalog: string;
   company_name: string;
   current_trial: Record<string, any>;
+  resources_limit: Record<string, any>;
   website_url: string;
   account_tier: string;
   currency: string;
@@ -59,6 +60,7 @@ export default class OrganizationProfile extends Ressource {
     this.company_name = "";
     this.website_url = "";
     this.current_trial = {};
+    this.resources_limit = {};
     this.account_tier = "";
     this.currency = "";
   }
