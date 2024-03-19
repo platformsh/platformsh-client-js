@@ -21,6 +21,9 @@ export type ClientConfiguration = {
   onBeforeRedirect?: (location: string) => void;
   ignoredSubdirectories?: string[];
   extra_params?: Record<string, string>;
+  // @return a boolean indicating whether the client should retry the request,
+  // including the www-authenticate header content.
+  hold401Responses?: (httpresponse: Response) => Promise<boolean>;
 };
 
 export type DefaultClientConfiguration = ClientConfiguration & {

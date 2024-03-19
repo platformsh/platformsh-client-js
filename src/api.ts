@@ -91,9 +91,19 @@ export const request = async (
   return new Promise((resolve, reject) => {
     fetch(apiUrl, requestConfig)
       .then(async response => {
+        const config: ClientConfiguration = getConfig();
+
         if (response.status === 401) {
-          const config: ClientConfiguration = getConfig();
           const extra_params = getChallengeExtraParams(response.headers);
+
+          if (config.hold401Responses) {
+            const retry = await config.hold401Responses(response);
+            if (!retry) {
+              const responseAsText = await response.text();
+              reject(responseAsText);
+              return;
+            }
+          }
 
           // Prevent an endless loop which happens in case of re-authentication with the access token.
           // We want to retry only once, trying to renew the token.
