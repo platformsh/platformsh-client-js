@@ -39,13 +39,15 @@ export default class AuthUser extends Ressource {
   first_name: string;
   last_name: string;
   email: string;
-  email_verified: string;
+  email_verified: boolean;
+  phone_number_verified: boolean;
   picture: string;
   website: string;
   country: string;
   company: string;
-  mfa_enabled: string;
-  deactivated: string;
+  mfa_enabled: boolean;
+  sso_enabled: boolean;
+  deactivated: boolean;
   created_at: string;
   updated_at: string;
 
@@ -66,13 +68,15 @@ export default class AuthUser extends Ressource {
     this.first_name = "";
     this.last_name = "";
     this.email = "";
-    this.email_verified = "";
+    this.email_verified = false;
+    this.phone_number_verified = false;
     this.picture = "";
     this.website = "";
     this.country = "";
     this.company = "";
-    this.mfa_enabled = "";
-    this.deactivated = "";
+    this.mfa_enabled = false;
+    this.sso_enabled = false;
+    this.deactivated = false;
     this.created_at = "";
     this.updated_at = "";
   }
