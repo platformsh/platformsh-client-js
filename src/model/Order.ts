@@ -15,6 +15,24 @@ export type CommerceOrderResponse = {
   commerce_order: APIObject[];
 };
 
+export type LineItemComponent = {
+  amount: number;
+  currency?: string;
+  display_title: string;
+};
+
+export type OrderLineItem = {
+  project: string | null;
+  product: string;
+  subscription_id: string;
+  type: string;
+  components: Record<string, LineItemComponent>;
+  start: string;
+  end: string;
+  unit_price: number;
+  quantity: string;
+};
+
 export default class Order extends Ressource {
   id: string;
   status: string;
@@ -23,11 +41,12 @@ export default class Order extends Ressource {
   vat_number: number;
   billing_period_start: string;
   billing_period_end: string;
+  last_refreshed: string;
   total: number;
-  components: object;
+  components: Record<string, LineItemComponent>;
   currency: string;
   invoice_url: string;
-  line_items: any[];
+  line_items: OrderLineItem[];
   billing_period_label?: {
     formatted: string;
     month: string;
@@ -47,6 +66,7 @@ export default class Order extends Ressource {
     this.vat_number = 0;
     this.billing_period_start = "";
     this.billing_period_end = "";
+    this.last_refreshed = "";
     this.total = 0;
     this.components = {};
     this.currency = "";

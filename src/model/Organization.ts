@@ -1,3 +1,10 @@
+import type {
+  MaybeComplexFormattedCost,
+  MaybeComplexFormattedCostMeasure,
+  MaybeComplexFormattedCostWithQuantity
+} from "src/model/Cost";
+
+import authenticatedRequest from "../api";
 import { getConfig } from "../config";
 
 import type CursoredResult from "./CursoredResult";
@@ -25,6 +32,79 @@ export type OrganizationQueryParams = {
   [key: string]: any;
   userId?: string;
 };
+
+type _OrganizationEstimate<IsComplex> = {
+  total: MaybeComplexFormattedCost<IsComplex>;
+  sub_total: MaybeComplexFormattedCost<IsComplex>;
+  vouchers: MaybeComplexFormattedCost<IsComplex>;
+  options: {
+    support_level: MaybeComplexFormattedCost<IsComplex>;
+    user_management: MaybeComplexFormattedCost<IsComplex>;
+    viewer_user: MaybeComplexFormattedCost<IsComplex>;
+    admin_user: MaybeComplexFormattedCost<IsComplex>;
+    standard_management_user: MaybeComplexFormattedCost<IsComplex>;
+    advanced_management_user: MaybeComplexFormattedCost<IsComplex>;
+  };
+
+  user_licenses: {
+    base: {
+      total: MaybeComplexFormattedCost<IsComplex>;
+      count: number;
+      list: {
+        viewer_user: {
+          count: number;
+          total: MaybeComplexFormattedCostMeasure<IsComplex>;
+        };
+        admin_user: {
+          count: number;
+          total: MaybeComplexFormattedCostMeasure<IsComplex>;
+        };
+      };
+    };
+    total: MaybeComplexFormattedCost<IsComplex>;
+    user_management: {
+      total: MaybeComplexFormattedCost<IsComplex>;
+      count: number;
+      list: {
+        standard_management_user: {
+          count: number;
+          total: MaybeComplexFormattedCostMeasure<IsComplex>;
+        };
+        advanced_management_user: {
+          count: number;
+          total: MaybeComplexFormattedCostMeasure<IsComplex>;
+        };
+      };
+    };
+  };
+
+  subscriptions: {
+    total: MaybeComplexFormattedCost<IsComplex>;
+    list: {
+      license_id: string;
+      project_title: string;
+      total: MaybeComplexFormattedCost<IsComplex>;
+      usage: {
+        cpu: number;
+        memory: number;
+        storage: number;
+        environments: number;
+        backup_storage: number;
+        build_cpu: number;
+        build_memory: number;
+        egress_bandwidth: null;
+        ingress_requests: null;
+        logs_fwd_content_size: number;
+      };
+    }[];
+  };
+
+  support_level: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  user_management: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+};
+
+export type OrganizationEstimate = _OrganizationEstimate<false>;
+export type OrganizationEstimateComplex = _OrganizationEstimate<true>;
 
 export default class Organization extends Ressource {
   id: string;
@@ -127,6 +207,20 @@ export default class Organization extends Ressource {
       },
       `${api_url}/organizations/${this.id}/vouchers/apply`
     ).save();
+  }
+
+  async getEstimate<Format extends "formatted" | "complex">(params?: {
+    format?: Format;
+    current_month?: boolean;
+  }): Promise<
+    Format extends "complex"
+      ? OrganizationEstimateComplex
+      : OrganizationEstimate
+  > {
+    const { api_url } = getConfig();
+    const url = `${api_url}/organizations/${this.id}/estimate`;
+
+    return authenticatedRequest(url, "GET", params);
   }
 
   getLink(rel: string, absolute = true) {

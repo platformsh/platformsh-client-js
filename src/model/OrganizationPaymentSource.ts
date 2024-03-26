@@ -13,7 +13,6 @@ export type OrganizationPaymentSourceParams = {
   organizationId: string;
 };
 
-// @ts-expect-error solve the getAllowed and intent function inheritance ts error
 export default class OrganizationPaymentSource extends PaymentSource {
   constructor(paymentSource: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -39,7 +38,7 @@ export default class OrganizationPaymentSource extends PaymentSource {
 
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
-        if (typeof data === "undefined") return {};
+        if (typeof data === "undefined") return;
         return new OrganizationPaymentSource(
           this.formatDetails(data.payment_source)
         );
