@@ -1,4 +1,10 @@
 import isUrl from "is-url";
+import type {
+  MaybeComplexFormattedCost,
+  MaybeComplexFormattedCostCounter,
+  MaybeComplexFormattedCostMeasure,
+  MaybeComplexFormattedCostWithQuantity
+} from "src/model/Cost";
 
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
@@ -48,15 +54,6 @@ export enum SubscriptionStatusEnum {
 export type SubscriptionGetParams = {
   [key: string]: any;
   id: string;
-};
-
-export type SubscriptionEstimateQueryType = {
-  plan?: string;
-  environments?: number;
-  storage?: number;
-  user_licenses?: number;
-  format?: "formatted" | "complex";
-  big_dev?: string; // Not available anymore on API
 };
 
 type SellablesNameType = "observability_suite" | "blackfire";
@@ -110,6 +107,63 @@ type EnforcedType = {
     enable_paused_environments: boolean;
   };
 };
+
+export type _SubscriptionEstimate<IsComplex extends boolean> = {
+  plan: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  total: MaybeComplexFormattedCost<IsComplex>;
+  options: {
+    storage: MaybeComplexFormattedCost<IsComplex>;
+    environments: MaybeComplexFormattedCost<IsComplex>;
+    user_licenses: MaybeComplexFormattedCost<IsComplex>;
+    cpu_development: MaybeComplexFormattedCost<IsComplex>;
+    storage_development: MaybeComplexFormattedCost<IsComplex>;
+    memory_development: MaybeComplexFormattedCost<IsComplex>;
+    cpu_production: MaybeComplexFormattedCost<IsComplex>;
+    storage_production: MaybeComplexFormattedCost<IsComplex>;
+    memory_production: MaybeComplexFormattedCost<IsComplex>;
+    cpu_app: MaybeComplexFormattedCost<IsComplex>;
+    storage_app_services: MaybeComplexFormattedCost<IsComplex>;
+    memory_app: MaybeComplexFormattedCost<IsComplex>;
+    cpu_services: MaybeComplexFormattedCost<IsComplex>;
+    memory_services: MaybeComplexFormattedCost<IsComplex>;
+    backup_storage: MaybeComplexFormattedCost<IsComplex>;
+    build_cpu: MaybeComplexFormattedCost<IsComplex>;
+    build_memory: MaybeComplexFormattedCost<IsComplex>;
+    egress_bandwidth: MaybeComplexFormattedCost<IsComplex>;
+    ingress_requests: MaybeComplexFormattedCost<IsComplex>;
+    logs_fwd_content_size: MaybeComplexFormattedCost<IsComplex>;
+  };
+  storage: MaybeComplexFormattedCostMeasure<IsComplex>;
+  environments: MaybeComplexFormattedCostMeasure<IsComplex>;
+  user_licenses: MaybeComplexFormattedCostMeasure<IsComplex>;
+  cpu_development: MaybeComplexFormattedCostMeasure<IsComplex>;
+  storage_development: MaybeComplexFormattedCostMeasure<IsComplex>;
+  memory_development: MaybeComplexFormattedCostMeasure<IsComplex>;
+  cpu_production: MaybeComplexFormattedCostMeasure<IsComplex>;
+  storage_production: MaybeComplexFormattedCostMeasure<IsComplex>;
+  memory_production: MaybeComplexFormattedCostMeasure<IsComplex>;
+  cpu_app: MaybeComplexFormattedCostMeasure<IsComplex>;
+  storage_app_services: MaybeComplexFormattedCostMeasure<IsComplex>;
+  memory_app: MaybeComplexFormattedCostMeasure<IsComplex>;
+  cpu_services: MaybeComplexFormattedCostMeasure<IsComplex>;
+  memory_services: MaybeComplexFormattedCostMeasure<IsComplex>;
+  backup_storage: MaybeComplexFormattedCostMeasure<IsComplex>;
+  build_cpu: MaybeComplexFormattedCostCounter<IsComplex>;
+  build_memory: MaybeComplexFormattedCostCounter<IsComplex>;
+  egress_bandwidth: MaybeComplexFormattedCostCounter<IsComplex>;
+  ingress_requests: MaybeComplexFormattedCostCounter<IsComplex>;
+  logs_fwd_content_size: MaybeComplexFormattedCostCounter<IsComplex>;
+  big_dev: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  backups: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  big_dev_service: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  blackfire: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  continuous_profiling: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  observability_suite: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  resources_total: MaybeComplexFormattedCost<IsComplex>;
+};
+
+export type SubscriptionEstimate = _SubscriptionEstimate<false>;
+export type SubscriptionEstimateComplex = _SubscriptionEstimate<true>;
 
 export default class Subscription extends Ressource {
   id: string;
@@ -370,7 +424,19 @@ export default class Subscription extends Ressource {
    * @param query the query parameter for this subscription estimate
    * @return Project|false
    */
-  async getEstimate(query?: SubscriptionEstimateQueryType) {
+  async getEstimate<Format extends "formatted" | "complex">(query?: {
+    plan?: string;
+    environments?: number;
+    storage?: number;
+    user_licenses?: number;
+    format?: Format;
+    current_month?: boolean;
+    big_dev?: string; // Not available anymore on API
+  }): Promise<
+    Format extends "complex"
+      ? SubscriptionEstimateComplex
+      : SubscriptionEstimate
+  > {
     const params = {
       plan: query?.plan ?? this.plan,
       storage: query?.storage ?? this.storage,

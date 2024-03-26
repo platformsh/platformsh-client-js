@@ -13,10 +13,20 @@ export default class PaymentSource extends Ressource {
   id: string;
   type: string;
   type_label: string;
+  payment_category: string;
   name: string;
   number: string;
-  card: string;
-  mandate: string;
+  card?: {
+    type: string;
+    exp_month: string;
+    exp_year: string;
+  };
+
+  mandate?: {
+    mandate_reference?: string;
+    mandate_url?: string;
+  };
+
   chargeable: boolean;
 
   constructor(
@@ -38,9 +48,10 @@ export default class PaymentSource extends Ressource {
     this.type_label = "";
     this.name = "";
     this.number = "";
-    this.card = "";
-    this.mandate = "";
+    this.card = undefined;
+    this.mandate = undefined;
     this.chargeable = false;
+    this.payment_category = "";
   }
 
   static async get(queryParams = {}, customUrl?: string) {
@@ -54,7 +65,7 @@ export default class PaymentSource extends Ressource {
 
     return request(parsedUrl, "GET", queryParams)
       .then(data => {
-        if (typeof data === "undefined") return {};
+        if (typeof data === "undefined") return;
         return new PaymentSource(this.formatDetails(data.payment_source));
       })
       .catch(() => new PaymentSource({}));
@@ -87,7 +98,7 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static async getAllowed() {
+  static async getAllowed(_?: string) {
     const { api_url } = getConfig();
     return request(`${api_url}${url}/allowed`, "GET");
   }
@@ -97,7 +108,7 @@ export default class PaymentSource extends Ressource {
    *
    * @return object
    */
-  static async intent() {
+  static async intent(_?: string) {
     const { api_url } = getConfig();
     return request(`${api_url}${url}/intent`, "POST");
   }
