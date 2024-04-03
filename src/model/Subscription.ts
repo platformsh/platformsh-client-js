@@ -34,7 +34,8 @@ const modifiableField = [
   "big_dev",
   "backups",
   "blackfire",
-  "observability_suite"
+  "observability_suite",
+  "continuous_profiling"
 ];
 
 const url = "/v1/subscriptions/:id";
@@ -56,7 +57,10 @@ export type SubscriptionGetParams = {
   id: string;
 };
 
-type SellablesNameType = "observability_suite" | "blackfire";
+type SellablesNameType =
+  | "observability_suite"
+  | "blackfire"
+  | "continuous_profiling";
 type SellableType = {
   [x in SellablesNameType]?: {
     available: boolean;
