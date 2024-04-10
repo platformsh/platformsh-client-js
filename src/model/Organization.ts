@@ -1,12 +1,11 @@
+import authenticatedRequest from "../api";
+import { getConfig } from "../config";
+
 import type {
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostMeasure,
   MaybeComplexFormattedCostWithQuantity
-} from "src/model/Cost";
-
-import authenticatedRequest from "../api";
-import { getConfig } from "../config";
-
+} from "./Cost";
 import type CursoredResult from "./CursoredResult";
 import OrganizationMember from "./OrganizationMember";
 import type { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
@@ -209,7 +208,7 @@ export default class Organization extends Ressource {
     ).save();
   }
 
-  async getEstimate<Format extends "formatted" | "complex">(params?: {
+  async getEstimate<Format extends string | undefined>(params?: {
     format?: Format;
     current_month?: boolean;
   }): Promise<

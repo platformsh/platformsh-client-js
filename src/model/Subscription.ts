@@ -1,15 +1,15 @@
 import isUrl from "is-url";
-import type {
-  MaybeComplexFormattedCost,
-  MaybeComplexFormattedCostCounter,
-  MaybeComplexFormattedCostMeasure,
-  MaybeComplexFormattedCostWithQuantity
-} from "src/model/Cost";
 
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import Account from "./Account";
+import type {
+  MaybeComplexFormattedCost,
+  MaybeComplexFormattedCostCounter,
+  MaybeComplexFormattedCostMeasure,
+  MaybeComplexFormattedCostWithQuantity
+} from "./Cost";
 import Project from "./Project";
 import type { APIObject } from "./Ressource";
 import Ressource from "./Ressource";
@@ -34,7 +34,8 @@ const modifiableField = [
   "big_dev",
   "backups",
   "blackfire",
-  "observability_suite"
+  "observability_suite",
+  "continuous_profiling"
 ];
 
 const url = "/v1/subscriptions/:id";
@@ -56,7 +57,10 @@ export type SubscriptionGetParams = {
   id: string;
 };
 
-type SellablesNameType = "observability_suite" | "blackfire";
+type SellablesNameType =
+  | "observability_suite"
+  | "blackfire"
+  | "continuous_profiling";
 type SellableType = {
   [x in SellablesNameType]?: {
     available: boolean;
@@ -108,7 +112,7 @@ type EnforcedType = {
   };
 };
 
-export type _SubscriptionEstimate<IsComplex extends boolean> = {
+type _SubscriptionEstimate<IsComplex extends boolean> = {
   plan: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   total: MaybeComplexFormattedCost<IsComplex>;
   options: {
@@ -132,6 +136,7 @@ export type _SubscriptionEstimate<IsComplex extends boolean> = {
     egress_bandwidth: MaybeComplexFormattedCost<IsComplex>;
     ingress_requests: MaybeComplexFormattedCost<IsComplex>;
     logs_fwd_content_size: MaybeComplexFormattedCost<IsComplex>;
+    continuous_profiling?: MaybeComplexFormattedCost<IsComplex>;
   };
   storage: MaybeComplexFormattedCostMeasure<IsComplex>;
   environments: MaybeComplexFormattedCostMeasure<IsComplex>;
@@ -211,6 +216,7 @@ export default class Subscription extends Ressource {
   environment_options: string[];
   enterprise_tag: string;
   support_tier: string;
+  continuous_profiling: null | "UPSUN-FEATURE-CONTINUOUS-PROFILING";
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -270,6 +276,7 @@ export default class Subscription extends Ressource {
     this.blackfire = "";
     this.observability_suite = "";
     this.environment_options = [];
+    this.continuous_profiling = null;
   }
 
   static async get(params: SubscriptionGetParams, customUrl?: string) {
@@ -424,7 +431,7 @@ export default class Subscription extends Ressource {
    * @param query the query parameter for this subscription estimate
    * @return Project|false
    */
-  async getEstimate<Format extends "formatted" | "complex">(query?: {
+  async getEstimate<Format extends string | undefined>(query?: {
     plan?: string;
     environments?: number;
     storage?: number;
@@ -432,6 +439,7 @@ export default class Subscription extends Ressource {
     format?: Format;
     current_month?: boolean;
     big_dev?: string; // Not available anymore on API
+    continuous_profiling?: "UPSUN-FEATURE-CONTINUOUS-PROFILING";
   }): Promise<
     Format extends "complex"
       ? SubscriptionEstimateComplex
