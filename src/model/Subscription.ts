@@ -8,6 +8,7 @@ import type {
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostCounter,
   MaybeComplexFormattedCostMeasure,
+  MaybeComplexFormattedCostWithTitle,
   MaybeComplexFormattedCostWithQuantity
 } from "./Cost";
 import Project from "./Project";
@@ -165,6 +166,11 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
   continuous_profiling: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   observability_suite: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   resources_total: MaybeComplexFormattedCost<IsComplex>;
+  components?: {
+    [k: string]: MaybeComplexFormattedCostWithTitle<IsComplex>;
+    base_price: MaybeComplexFormattedCostWithTitle<IsComplex>;
+    component_total: MaybeComplexFormattedCostWithTitle<IsComplex>;
+  };
 };
 
 export type SubscriptionEstimate = _SubscriptionEstimate<false>;
@@ -440,6 +446,7 @@ export default class Subscription extends Ressource {
     current_month?: boolean;
     big_dev?: string; // Not available anymore on API
     continuous_profiling?: "UPSUN-FEATURE-CONTINUOUS-PROFILING";
+    include_components?: boolean;
   }): Promise<
     Format extends "complex"
       ? SubscriptionEstimateComplex
