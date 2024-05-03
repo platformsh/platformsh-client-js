@@ -9,6 +9,10 @@ export type FormattedCostWithQuantity = FormattedCost & {
   quantity: number;
 };
 
+export type FormattedCostWithTitle = FormattedCost & {
+  display_title: string;
+};
+
 export type FormattedCostMeasure = FormattedCostWithQuantity & {
   usage_type: "measure";
   current_usage: number;
@@ -29,6 +33,9 @@ export type MaybeComplexFormattedCost<IsComplex = false> = MaybeComplex<
 
 export type MaybeComplexFormattedCostWithQuantity<IsComplex = false> =
   MaybeComplex<FormattedCostWithQuantity, IsComplex>;
+
+export type MaybeComplexFormattedCostWithTitle<IsComplex = false> =
+  MaybeComplex<FormattedCostWithTitle, IsComplex>;
 
 export type MaybeComplexFormattedCostMeasure<IsComplex = false> = MaybeComplex<
   FormattedCostMeasure,
