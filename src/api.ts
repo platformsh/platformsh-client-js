@@ -49,10 +49,13 @@ const getChallengeExtraParams = (headers: Headers): Record<string, string> => {
   const wwwAuthentication = decodeHeaderString(
     headers.get("WWW-Authenticate") ?? ""
   );
-  return ["max_age", "acr_values"].reduce<Record<string, string>>((acc, cu) => {
-    if (wwwAuthentication[cu]) acc[cu] = wwwAuthentication[cu];
-    return acc;
-  }, {});
+  return ["amr", "max_age", "acr_values"].reduce<Record<string, string>>(
+    (acc, cu) => {
+      if (wwwAuthentication[cu]) acc[cu] = wwwAuthentication[cu];
+      return acc;
+    },
+    {}
+  );
 };
 
 export const request = async (
