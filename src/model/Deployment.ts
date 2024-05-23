@@ -51,6 +51,7 @@ export type RoutesRedirectInfo = {
   ssi?: {
     enabled: boolean;
   };
+  upstream?: string;
 };
 
 export type DeploymentRoutes = Record<string, RoutesRedirectInfo>;
