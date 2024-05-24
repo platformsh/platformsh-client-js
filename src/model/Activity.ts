@@ -20,6 +20,10 @@ export type ActivityQueryParams = {
   environmentId?: string;
 };
 
+type ActivityParameters = {
+  [k: string]: string | null | ActivityParameters;
+};
+
 export default class Activity extends Ressource {
   readonly RESULT_SUCCESS = "success";
   readonly RESULT_FAILURE = "failure";
@@ -35,7 +39,7 @@ export default class Activity extends Ressource {
   cancelled_at: string;
   environments: string[];
   completed_at: string;
-  parameters: string[];
+  parameters: ActivityParameters;
   project: string;
   state: string;
   result: string;
@@ -57,7 +61,7 @@ export default class Activity extends Ressource {
     this.cancelled_at = "";
     this.environments = [];
     this.completed_at = "";
-    this.parameters = [];
+    this.parameters = {};
     this.project = "";
     this.state = "";
     this.result = "";
