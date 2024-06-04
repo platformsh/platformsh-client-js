@@ -142,6 +142,7 @@ export default class Integration extends Ressource {
   base_url: string | undefined = undefined;
   build_draft_pull_requests: boolean | undefined = undefined;
   build_pull_requests_post_merge: boolean | undefined = undefined;
+  token_type: "classic_personal_token" | "github_app" | undefined;
 
   // GitLabIntegration
   build_wip_merge_requests: boolean | undefined = undefined;
