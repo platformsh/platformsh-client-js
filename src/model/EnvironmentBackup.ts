@@ -39,6 +39,8 @@ export default class EnvironmentBackup extends Ressource {
   safe = true;
   restorable = false;
   automated = false;
+  size_of_volumes?: number = undefined;
+  size_used?: number = undefined;
 
   constructor(environmentBackup: APIObject, url: string) {
     super(url, paramDefaults, {}, environmentBackup, [], []);
