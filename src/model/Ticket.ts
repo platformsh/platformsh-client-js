@@ -35,6 +35,12 @@ export default class Ticket extends Ressource {
   subscription_id: string;
   attachment: string;
   attachment_filename: string;
+  ticket_id: string;
+  environment: string;
+  created: string;
+  updated: string;
+  status: string;
+  attachments?: { url: string; filename: string; contentType: string }[];
 
   constructor(ticket: APIObject) {
     const { api_url } = getConfig();
@@ -49,6 +55,12 @@ export default class Ticket extends Ressource {
     this.subscription_id = "";
     this.attachment = "";
     this.attachment_filename = "";
+    this.ticket_id = "";
+    this.environment = "";
+    this.created = "";
+    this.updated = "";
+    this.status = "";
+    this.attachments = undefined;
   }
 
   static async getAttachments(ticketId: string) {
