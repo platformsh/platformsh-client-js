@@ -91,9 +91,11 @@ type _OrganizationEstimate<IsComplex> = {
         backup_storage: number;
         build_cpu: number;
         build_memory: number;
-        egress_bandwidth: null;
-        ingress_requests: null;
+        egress_bandwidth: number | null;
+        ingress_requests: number | null;
         logs_fwd_content_size: number;
+        fastly_bandwidth?: number;
+        fastly_requests?: number;
       };
     }[];
   };

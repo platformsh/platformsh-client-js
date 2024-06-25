@@ -137,6 +137,8 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
     egress_bandwidth: MaybeComplexFormattedCost<IsComplex>;
     ingress_requests: MaybeComplexFormattedCost<IsComplex>;
     logs_fwd_content_size: MaybeComplexFormattedCost<IsComplex>;
+    fastly_bandwidth?: MaybeComplexFormattedCost<IsComplex>;
+    fastly_requests?: MaybeComplexFormattedCost<IsComplex>;
     continuous_profiling?: MaybeComplexFormattedCost<IsComplex>;
   };
   storage: MaybeComplexFormattedCostMeasure<IsComplex>;
@@ -159,6 +161,8 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
   egress_bandwidth: MaybeComplexFormattedCostCounter<IsComplex>;
   ingress_requests: MaybeComplexFormattedCostCounter<IsComplex>;
   logs_fwd_content_size: MaybeComplexFormattedCostCounter<IsComplex>;
+  fastly_bandwidth?: MaybeComplexFormattedCostCounter<IsComplex>;
+  fastly_requests?: MaybeComplexFormattedCostCounter<IsComplex>;
   big_dev: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   backups: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   big_dev_service: MaybeComplexFormattedCostWithQuantity<IsComplex>;
