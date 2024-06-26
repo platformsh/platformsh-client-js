@@ -39,6 +39,7 @@ export default class OrganizationProfile extends Ressource {
   website_url: string;
   account_tier: string;
   currency: string;
+  invoiced?: boolean;
 
   constructor(profile: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
