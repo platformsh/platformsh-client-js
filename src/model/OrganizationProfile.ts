@@ -39,7 +39,7 @@ export default class OrganizationProfile extends Ressource {
   website_url: string;
   account_tier: string;
   currency: string;
-  invoiced?: boolean;
+  invoiced: boolean;
 
   constructor(profile: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -64,6 +64,7 @@ export default class OrganizationProfile extends Ressource {
     this.resources_limit = {};
     this.account_tier = "";
     this.currency = "";
+    this.invoiced = false;
   }
 
   static async get(params: OrganizationProfilGetParams) {
