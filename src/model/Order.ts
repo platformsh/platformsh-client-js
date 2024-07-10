@@ -30,7 +30,22 @@ export type OrderLineItem = {
   start: string;
   end: string;
   unit_price: number;
-  quantity: string;
+  quantity: string | number;
+
+  consumption: number;
+  duration: number;
+  id: false;
+  organization: string;
+  plan_record_id: string;
+  proration: number;
+  records: {
+    duration: number;
+    end: string;
+    quantity: string;
+    series: string;
+    start: string;
+  }[];
+  total_price: number;
 };
 
 export default class Order extends Ressource {
