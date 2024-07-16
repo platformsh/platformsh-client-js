@@ -46,6 +46,7 @@ export type OrderLineItem = {
     start: string;
   }[];
   total_price: number;
+  total_price_formatted: string;
 };
 
 export default class Order extends Ressource {
@@ -58,6 +59,7 @@ export default class Order extends Ressource {
   billing_period_end: string;
   last_refreshed: string;
   total: number;
+  total_formatted: string;
   components: Record<string, LineItemComponent>;
   currency: string;
   invoice_url: string;
@@ -83,6 +85,7 @@ export default class Order extends Ressource {
     this.billing_period_end = "";
     this.last_refreshed = "";
     this.total = 0;
+    this.total_formatted = "";
     this.components = {};
     this.currency = "";
     this.invoice_url = "";
