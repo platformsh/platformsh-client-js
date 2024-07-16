@@ -2,6 +2,7 @@ import authenticatedRequest from "../api";
 import { getConfig } from "../config";
 
 import type {
+  FormattedCost,
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostMeasure,
   MaybeComplexFormattedCostWithQuantity
@@ -106,6 +107,35 @@ type _OrganizationEstimate<IsComplex> = {
 
 export type OrganizationEstimate = _OrganizationEstimate<false>;
 export type OrganizationEstimateComplex = _OrganizationEstimate<true>;
+
+export type Discount = {
+  commitment: {
+    amount: FormattedCost;
+    months: number;
+  };
+  config: {
+    commitment_amount: number;
+    commitment_months: number;
+    discount_amount: number;
+    discount_currency: string;
+    end_month: number;
+    end_year: number;
+    start_month: number;
+    start_year: number;
+  };
+  discount: {
+    commitment_period: FormattedCost;
+    monthly: FormattedCost;
+    total: FormattedCost;
+  };
+  end_at: string;
+  id: number;
+  organization_id: string;
+  start_at: string;
+  status: string;
+  type: string;
+  type_label: string;
+};
 
 export default class Organization extends Ressource {
   id: string;
@@ -222,6 +252,13 @@ export default class Organization extends Ressource {
     const url = `${api_url}/organizations/${this.id}/estimate`;
 
     return authenticatedRequest(url, "GET", params);
+  }
+
+  async getDiscounts(): Promise<{ items: Discount[] }> {
+    const { api_url } = getConfig();
+    const url = `${api_url}/organizations/${this.id}/discounts`;
+
+    return authenticatedRequest(url, "GET");
   }
 
   getLink(rel: string, absolute = true) {
