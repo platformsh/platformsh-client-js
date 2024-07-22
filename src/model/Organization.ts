@@ -8,6 +8,7 @@ import type {
   MaybeComplexFormattedCostWithQuantity
 } from "./Cost";
 import type CursoredResult from "./CursoredResult";
+import OrganizationDiscount from "./OrganizationDiscount";
 import OrganizationMember from "./OrganizationMember";
 import type { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 import OrganizationSubscription from "./OrganizationSubscription";
@@ -225,6 +226,10 @@ export default class Organization extends Ressource {
     return organizationMember.save();
   }
 
+  async getDiscounts() {
+    return OrganizationDiscount.get({ organizationId: this.id });
+  }
+
   async getVouchers() {
     return OrganizationVoucher.get({ organizationId: this.id });
   }
@@ -252,13 +257,6 @@ export default class Organization extends Ressource {
     const url = `${api_url}/organizations/${this.id}/estimate`;
 
     return authenticatedRequest(url, "GET", params);
-  }
-
-  async getDiscounts(): Promise<{ items: Discount[] }> {
-    const { api_url } = getConfig();
-    const url = `${api_url}/organizations/${this.id}/discounts`;
-
-    return authenticatedRequest(url, "GET");
   }
 
   getLink(rel: string, absolute = true) {

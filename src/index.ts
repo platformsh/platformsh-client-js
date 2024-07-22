@@ -968,6 +968,16 @@ export default class Client {
   }
 
   /**
+   * Get organization discounts
+   *
+   *
+   * @return Discount
+   */
+  async getOrganizationDiscounts(organizationId: string) {
+    return entities.OrganizationDiscount.get({ organizationId });
+  }
+
+  /**
    * Get a users cardonfile
    *
    * @return Promise
