@@ -110,9 +110,18 @@ export type OrganizationEstimateComplex = _OrganizationEstimate<true>;
 
 export type Discount = {
   commitment: {
-    amount: FormattedCost;
+    amount: {
+      commitment_period: FormattedCost;
+      contract_total: FormattedCost;
+      monthly: FormattedCost;
+    };
     months: number;
-  };
+    net: {
+      commitment_period: FormattedCost;
+      contract_total: FormattedCost;
+      monthly: FormattedCost;
+    };
+  } | null;
   config: {
     commitment_amount: number;
     commitment_months: number;
@@ -124,15 +133,16 @@ export type Discount = {
     start_year: number;
   };
   discount: {
-    commitment_period: FormattedCost;
+    commitment_period?: FormattedCost;
+    contract_total?: FormattedCost;
     monthly: FormattedCost;
-    total: FormattedCost;
   };
   end_at: string;
   id: number;
   organization_id: string;
   start_at: string;
   status: string;
+  total_months: number;
   type: string;
   type_label: string;
 };
