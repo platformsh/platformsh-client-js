@@ -258,6 +258,7 @@ export default class Organization extends Ressource {
   async getEstimate<Format extends string | undefined>(params?: {
     format?: Format;
     current_month?: boolean;
+    simulate_discount?: string;
   }): Promise<
     Format extends "complex"
       ? OrganizationEstimateComplex
