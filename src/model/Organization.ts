@@ -37,6 +37,7 @@ export type OrganizationQueryParams = {
 type _OrganizationEstimate<IsComplex> = {
   total: MaybeComplexFormattedCost<IsComplex>;
   sub_total: MaybeComplexFormattedCost<IsComplex>;
+  discounts: MaybeComplexFormattedCost<IsComplex>;
   vouchers: MaybeComplexFormattedCost<IsComplex>;
   options: {
     support_level: MaybeComplexFormattedCost<IsComplex>;
