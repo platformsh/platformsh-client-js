@@ -930,6 +930,16 @@ export default class Client {
    * Get vouchers
    *
    *
+   * @return Discount
+   */
+  async getDiscounts(uuid: string) {
+    return entities.Discount.get({ uuid });
+  }
+
+  /**
+   * Get vouchers
+   *
+   *
    * @return Voucher
    */
   async getVouchers(uuid: string) {
