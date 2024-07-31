@@ -8,7 +8,6 @@ import Certificate from "./Certificate";
 import Comment from "./Comment";
 import ConnectedAccount from "./ConnectedAccount";
 import Deployment from "./Deployment";
-import Discount from "./Discount";
 import Domain from "./Domain";
 import Environment from "./Environment";
 import EnvironmentAccess from "./EnvironmentAccess";
@@ -74,7 +73,6 @@ export default {
   Route,
   Variable,
   Deployment,
-  Discount,
   Organization,
   Team,
   Region,
