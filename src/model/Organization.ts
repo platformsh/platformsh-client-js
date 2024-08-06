@@ -37,6 +37,7 @@ export type OrganizationQueryParams = {
 type _OrganizationEstimate<IsComplex> = {
   total: MaybeComplexFormattedCost<IsComplex>;
   sub_total: MaybeComplexFormattedCost<IsComplex>;
+  discounts: MaybeComplexFormattedCost<IsComplex>;
   vouchers: MaybeComplexFormattedCost<IsComplex>;
   options: {
     support_level: MaybeComplexFormattedCost<IsComplex>;
@@ -258,6 +259,7 @@ export default class Organization extends Ressource {
   async getEstimate<Format extends string | undefined>(params?: {
     format?: Format;
     current_month?: boolean;
+    simulate_discount?: string;
   }): Promise<
     Format extends "complex"
       ? OrganizationEstimateComplex
