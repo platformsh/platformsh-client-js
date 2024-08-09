@@ -1,5 +1,6 @@
 import { getConfig } from "../config";
 
+import type { FormattedCost } from "./Cost";
 import type { APIObject } from "./Ressource";
 import Ressource from "./Ressource";
 
@@ -18,63 +19,41 @@ export type DiscountResponse = {
 
 export default class OrganizationDiscount extends Ressource {
   items: {
-    end_at?: string;
+    end_at: string;
     id: number;
     organization_id: string;
     start_at: string;
     status: string;
+    total_months: number;
     type: string;
     type_label: string;
-    commitment?: {
-      months?: number;
-      amount?: {
-        amount: number;
-        currency_code: string;
-        currency_symbol: string;
-        formatted: string;
+    commitment: {
+      months: number;
+      amount: {
+        commitment_period: FormattedCost;
+        contract_total: FormattedCost;
+        monthly: FormattedCost;
       };
+      net: {
+        commitment_period: FormattedCost;
+        contract_total: FormattedCost;
+        monthly: FormattedCost;
+      };
+    } | null;
+    config: {
+      commitment_amount: number;
+      commitment_months: number;
+      discount_amount: number;
+      discount_currency: string;
+      end_month: number;
+      end_year: number;
+      start_month: number;
+      start_year: number;
     };
-    config?:
-      | {
-          commitment_amount: number;
-          commitment_months: number;
-          discount_amount: number;
-          discount_currency: string;
-          end_month: number;
-          end_year: number;
-          start_month: number;
-          start_year: number;
-        }
-      | {
-          commitment_amount: number;
-          commitment_months: number;
-          discount_amount: number;
-          discount_currency: string;
-          end_month: number;
-          end_year: number;
-          start_month: number;
-          start_year: number;
-        }[];
     discount: {
-      commitment_period?: {
-        amount: number;
-        currency_code: string;
-        currency_symbol: string;
-        formatted: string;
-      };
-
-      monthly?: {
-        amount: number;
-        currency_code: string;
-        currency_symbol: string;
-        formatted: string;
-      };
-      total?: {
-        amount: number;
-        currency_code: string;
-        currency_symbol: string;
-        formatted: string;
-      };
+      commitment_period?: FormattedCost;
+      contract_total?: FormattedCost;
+      monthly: FormattedCost;
     };
   }[];
 
