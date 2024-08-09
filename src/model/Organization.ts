@@ -2,7 +2,6 @@ import authenticatedRequest from "../api";
 import { getConfig } from "../config";
 
 import type {
-  FormattedCost,
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostMeasure,
   MaybeComplexFormattedCostWithQuantity
@@ -109,45 +108,6 @@ type _OrganizationEstimate<IsComplex> = {
 
 export type OrganizationEstimate = _OrganizationEstimate<false>;
 export type OrganizationEstimateComplex = _OrganizationEstimate<true>;
-
-export type Discount = {
-  commitment: {
-    amount: {
-      commitment_period: FormattedCost;
-      contract_total: FormattedCost;
-      monthly: FormattedCost;
-    };
-    months: number;
-    net: {
-      commitment_period: FormattedCost;
-      contract_total: FormattedCost;
-      monthly: FormattedCost;
-    };
-  } | null;
-  config: {
-    commitment_amount: number;
-    commitment_months: number;
-    discount_amount: number;
-    discount_currency: string;
-    end_month: number;
-    end_year: number;
-    start_month: number;
-    start_year: number;
-  };
-  discount: {
-    commitment_period?: FormattedCost;
-    contract_total?: FormattedCost;
-    monthly: FormattedCost;
-  };
-  end_at: string;
-  id: number;
-  organization_id: string;
-  start_at: string;
-  status: string;
-  total_months: number;
-  type: string;
-  type_label: string;
-};
 
 export default class Organization extends Ressource {
   id: string;
