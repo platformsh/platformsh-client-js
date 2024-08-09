@@ -24,7 +24,7 @@ import Metrics from "./Metrics";
 import Order from "./Order";
 import Organization from "./Organization";
 import OrganizationAddress from "./OrganizationAddress";
-import OrganizationDiscount from "./OrganizationDiscount";
+// import OrganizationDiscount from "./OrganizationDiscount";
 import OrganizationInvitation from "./OrganizationInvitation";
 import OrganizationMember from "./OrganizationMember";
 import OrganizationOrder from "./OrganizationOrder";
@@ -103,7 +103,7 @@ export default {
   OrganizationProfile,
   OrganizationAddress,
   OrganizationVoucher,
-  OrganizationDiscount,
+  // OrganizationDiscount,
   OrganizationInvitation,
   OrganizationRegion,
   SourceOperation,
