@@ -967,15 +967,15 @@ export default class Client {
     ).save();
   }
 
-  /**
-   * Get organization discounts
-   *
-   *
-   * @return Discount
-   */
-  async getOrganizationDiscounts(organizationId: string) {
-    return entities.OrganizationDiscount.get({ organizationId });
-  }
+  // /**
+  //  * Get organization discounts
+  //  *
+  //  *
+  //  * @return Discount
+  //  */
+  // async getOrganizationDiscounts(organizationId: string) {
+  //   return entities.OrganizationDiscount.get({ organizationId });
+  // }
 
   /**
    * Get a users cardonfile

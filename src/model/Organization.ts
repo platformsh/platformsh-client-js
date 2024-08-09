@@ -8,7 +8,7 @@ import type {
   MaybeComplexFormattedCostWithQuantity
 } from "./Cost";
 import type CursoredResult from "./CursoredResult";
-import OrganizationDiscount from "./OrganizationDiscount";
+// import OrganizationDiscount from "./OrganizationDiscount";
 import OrganizationMember from "./OrganizationMember";
 import type { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 import OrganizationSubscription from "./OrganizationSubscription";
@@ -237,8 +237,15 @@ export default class Organization extends Ressource {
     return organizationMember.save();
   }
 
-  async getDiscounts() {
-    return OrganizationDiscount.get({ organizationId: this.id });
+  // async getDiscounts() {
+  //   return OrganizationDiscount.get({ organizationId: this.id });
+  // }
+
+  async getDiscounts(): Promise<{ items: Discount[] }> {
+    const { api_url } = getConfig();
+    const url = `${api_url}/organizations/${this.id}/discounts`;
+
+    return authenticatedRequest(url, "GET");
   }
 
   async getVouchers() {
