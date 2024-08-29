@@ -16,6 +16,6 @@
     "checkJs": false,
     "baseUrl": "."
   },
-  "include": ["src"],
+  "include": ["src", "test"],
   "exclude": ["node_modules", "lib", "types"]
 }
