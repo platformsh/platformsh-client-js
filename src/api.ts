@@ -1,7 +1,7 @@
 import isNode from "detect-node";
 import { EventSourcePolyfill as EventSource } from "event-source-polyfill";
 import param from "to-querystring";
-import "cross-fetch/polyfill"; // fetch api polyfill
+import "cross-fetch/dist/node-polyfill.js"; // fetch api polyfill
 
 import type { JWTToken } from "./authentication";
 import authenticate from "./authentication";

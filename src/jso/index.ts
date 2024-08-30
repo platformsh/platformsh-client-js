@@ -1,8 +1,9 @@
 import type {
   ClientConfiguration,
   DefaultClientConfiguration
-} from "src/config";
+} from "../config";
 
+import type { TokenOAuthRedirectResponse } from "./ApiDefaultStorage";
 import ApiDefaultStorage from "./ApiDefaultStorage";
 
 export type PKCERequest = {
@@ -25,11 +26,6 @@ export type CodeOAuthRedirectResponse = {
   state: string | null;
 };
 
-export type TokenOAuthRedirectResponse = {
-  [key: string]: any;
-  state?: string | null;
-};
-
 export type OAuthState = {
   providerID: string;
   scopes?: string[];
@@ -50,9 +46,8 @@ const internalStates: Record<string, any> = {};
 
 /**
  * A log wrapper, that only logs if logging is turned on in the config
- * @param  {string} msg Log message
  */
-const log = (msg: string) => {
+const log = (msg: any) => {
   if (!options.debug) return;
   if (!console) return;
   if (!console.log) return;

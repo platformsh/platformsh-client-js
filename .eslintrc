@@ -9,11 +9,7 @@
     "escape": false,
     "navigator": false,
     "unescape": false,
-    "window": false,
-    "describe": true,
-    "it": true,
-    "expect": true,
-    "sinon": true
+    "window": false
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
