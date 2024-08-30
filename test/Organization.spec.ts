@@ -1,42 +1,43 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import type OrganizationMember from "src/model/OrganizationMember";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import Organization from "../src/model/Organization";
 
 describe("Organization", () => {
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get members", done => {
+  it("Get members", async () => {
     fetchMock.mock("https://api.platform.sh/api/organizations/1/members", {
       items: [{ user_id: "1" }]
     });
 
     const organization = new Organization({ id: 1 });
 
-    organization.getMembers().then(organizationMembers => {
+    await organization.getMembers().then(organizationMembers => {
       assert.equal(organizationMembers.items[0].user_id, "1");
       assert.equal(
         organizationMembers.items[0].constructor.name,
         "OrganizationMember"
       );
-      done();
     });
   });
 
-  it("Add member", done => {
+  it("Add member", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/1/members",
       {},
-      "POST"
+      { method: "POST" }
     );
 
     const organization = new Organization(
@@ -44,17 +45,18 @@ describe("Organization", () => {
       "https://api.platform.sh/api/organizations/1"
     );
 
-    organization.addMember({ user: "test" }).then(result => {
-      assert.equal(result.constructor.name, "Result");
-      done();
-    });
+    await organization
+      .addMember({ user_id: "test" } as OrganizationMember)
+      .then(result => {
+        assert.equal(result.constructor.name, "Result");
+      });
   });
 
-  it("Update organization", done => {
+  it("Update organization", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/aliceorg",
       {},
-      "PATCH"
+      { method: "PATCH" }
     );
 
     const organization = new Organization(
@@ -62,34 +64,32 @@ describe("Organization", () => {
       "https://api.platform.sh/api/organizations/aliceorg"
     );
 
-    organization.update({ name: "test" }).then(result => {
+    await organization.update({ name: "test" }).then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Get vouchers", done => {
+  it("Get vouchers", async () => {
     fetchMock.mock("https://api.platform.sh/api/organizations/1/vouchers", {
       vouchers: [{ code: "voucher-1" }]
     });
 
     const organization = new Organization({ id: 1 });
 
-    organization.getVouchers().then(organizationVouchers => {
-      assert.equal(organizationVouchers.data.vouchers[0].code, "voucher-1");
+    await organization.getVouchers().then(organizationVouchers => {
+      assert.equal(organizationVouchers.vouchers[0].code, "voucher-1");
       assert.equal(
         organizationVouchers.constructor.name,
         "OrganizationVoucher"
       );
-      done();
     });
   });
 
-  it("Add voucher", done => {
+  it("Add voucher", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/1/vouchers/apply",
       {},
-      "POST"
+      { method: "POST" }
     );
 
     const organization = new Organization(
@@ -97,17 +97,16 @@ describe("Organization", () => {
       "https://api.platform.sh/api/organizations/1"
     );
 
-    organization.addVoucher({ code: "voucher-1" }).then(result => {
+    await organization.addVoucher("voucher-1").then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Add subsciption", done => {
+  it("Add subsciption", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/1/subscriptions",
       {},
-      "POST"
+      { method: "POST" }
     );
 
     const organization = new Organization(
@@ -115,17 +114,13 @@ describe("Organization", () => {
       "https://api.platform.sh/api/organizations/1"
     );
 
-    organization
+    await organization
       .addSubscription({
         defaultBranch: "main",
-        organizationId: "01GF31FWWMP6ZXDQPMHBQKBSXK",
-        project_region: "org.recreation.plat.farm",
-        project_title: "wq",
-        title: "wq"
+        project_region: ""
       })
       .then(result => {
         assert.equal(result.constructor.name, "Result");
-        done();
       });
   });
 });

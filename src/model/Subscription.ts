@@ -335,7 +335,7 @@ export default class Subscription extends Ressource {
   ) {
     const millisecInterval = intervalSeconds * 1000;
 
-    return new Promise(resolve => {
+    return new Promise<Subscription>(resolve => {
       const interval: ReturnType<typeof setInterval> = setInterval(() => {
         if (!this.isPending()) {
           resolve(this);

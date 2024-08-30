@@ -198,7 +198,7 @@ export default class Project extends Ressource {
    *
    * @return Environment[]
    */
-  async getEnvironments(limit: number) {
+  async getEnvironments(limit?: number) {
     return Environment.query(
       { projectId: this.id, limit },
       this.getLink("environments")
@@ -379,8 +379,6 @@ export default class Project extends Ressource {
    * @return bool
    */
   isSuspended() {
-    console.log("TEST");
-    console.log(this.status);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     return this.status === SubscriptionStatusEnum.STATUS_SUSPENDED;
   }
@@ -483,7 +481,7 @@ export default class Project extends Ressource {
    * @param string key
    * @param array  chain
    */
-  async addCertificate(certificate: string, key: string, chain = []) {
+  async addCertificate(certificate: string, key: string, chain: string[] = []) {
     const certificateObj = new Certificate(
       { certificate, key, chain },
       `${this.getUri()}/certificates`

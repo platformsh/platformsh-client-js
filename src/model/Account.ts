@@ -8,7 +8,7 @@ const paramDefaults = {};
 
 export type AccountGetParams = {
   [index: string]: any;
-  id?: string;
+  id?: string | string[];
 };
 
 export default class Account extends Ressource {
@@ -37,10 +37,7 @@ export default class Account extends Ressource {
     this.roles = [];
   }
 
-  static async get(
-    params: AccountGetParams,
-    customUrl?: string
-  ): Promise<Account> {
+  static async get(params: AccountGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
     const { account_url } = getConfig();
 
@@ -52,7 +49,7 @@ export default class Account extends Ressource {
     );
   }
 
-  static async query(params: AccountGetParams): Promise<Account[]> {
+  static async query(params: AccountGetParams) {
     const { account_url } = getConfig();
 
     return super._query<Account>(

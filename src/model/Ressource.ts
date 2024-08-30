@@ -434,8 +434,7 @@ export default abstract class Ressource {
   /**
    * Execute an operation on the resource.
    */
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  runOperation(op: string, method = "POST", body?: object) {
+  async runOperation(op: string, method = "POST", body?: object) {
     if (!this.operationAvailable(op)) {
       throw new Error(`Operation not available: ${op}`);
     }
@@ -450,9 +449,9 @@ export default abstract class Ressource {
     method = "POST",
     body?: ParamsType
   ): Promise<Activity> {
-    return this.runOperation(op, method, body).then((data: APIObject) => {
+    return this.runOperation(op, method, body).then(async (data: APIObject) => {
       const result = new Result(data, this.getUri());
-      const activities = result.getActivities();
+      const activities = await result.getActivities();
       const mainActivities = activities.filter(
         activity => !secondaryActivityTypes.includes(activity.type)
       );

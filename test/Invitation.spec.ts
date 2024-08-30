@@ -1,36 +1,36 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import Invitation from "../src/model/Invitation";
 
 describe("Invitation", () => {
   const { api_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get invitation", done => {
+  it("Get invitation", async () => {
     fetchMock.mock(`${api_url}/projects/project_id/invitations/1`, {
       id: "1"
     });
 
-    Invitation.get("project_id", "1").then(invitation => {
+    await Invitation.get("project_id", "1").then(invitation => {
       assert.equal(invitation.id, "1");
       assert.equal(invitation.constructor.name, "Invitation");
-      done();
     });
   });
 
-  it("Get invitations", done => {
+  it("Get invitations", async () => {
     const invitations = [
       { state: "pending", id: "1" },
       { state: "pending", id: "2" },
@@ -39,37 +39,42 @@ describe("Invitation", () => {
 
     fetchMock.mock(`${api_url}/projects/project_id/invitations`, invitations);
 
-    Invitation.query("project_id").then(invitation => {
+    await Invitation.query("project_id").then(invitation => {
       assert.equal(invitation.length, 3);
       assert.equal(invitation[1].id, "2");
       assert.equal(invitation[1].projectId, "project_id");
       assert.equal(invitation[1].state, "pending");
       assert.equal(invitation[0].constructor.name, "Invitation");
-      done();
     });
   });
 
-  it("Delete invitation", done => {
-    fetchMock.mock(`${api_url}/projects/project_id/invitations/1`, {
-      id: "1",
-      projectId: "projectId"
-    });
+  it("Delete invitation", async () => {
+    fetchMock.mock(
+      `${api_url}/projects/project_id/invitations/1`,
+      {
+        id: "1",
+        projectId: "projectId"
+      },
+      { method: "GET" }
+    );
 
     fetchMock.mock(
       `${api_url}/projects/project_id/invitations/1`,
       {},
-      "DELETE"
+      { method: "DELETE" }
     );
 
-    Invitation.get("project_id", "1").then(invitation => {
-      invitation.delete().then(() => {
-        done();
-      });
+    await Invitation.get("project_id", "1").then(async invitation => {
+      await invitation.delete();
     });
   });
 
-  it("Create invitation", done => {
-    fetchMock.mock(`${api_url}/projects/project_id/invitations`, {}, "POST");
+  it("Create invitation", async () => {
+    fetchMock.mock(
+      `${api_url}/projects/project_id/invitations`,
+      {},
+      { method: "POST" }
+    );
 
     const invitation = new Invitation({
       projectId: "project_id",
@@ -78,7 +83,7 @@ describe("Invitation", () => {
       inviteeEmail: "test@psh.com"
     });
 
-    invitation.save().then(() => done());
+    await invitation.save();
   });
 
   it("Create and delete invitation", async () => {
@@ -87,13 +92,13 @@ describe("Invitation", () => {
       {
         id: "1"
       },
-      "POST"
+      { method: "POST" }
     );
 
     fetchMock.mock(
       `${api_url}/projects/project_id/invitations/1`,
       {},
-      "DELETE"
+      { method: "DELETE" }
     );
 
     const invitation = new Invitation({
@@ -105,7 +110,7 @@ describe("Invitation", () => {
 
     const res = await invitation.save();
 
-    const invit = new Invitation({
+    const invite = new Invitation({
       id: res.data.id,
       projectId: "project_id",
       environments: [],
@@ -113,6 +118,6 @@ describe("Invitation", () => {
       inviteeEmail: "test@psh.com"
     });
 
-    await invit.delete();
+    await invite.delete();
   });
 });

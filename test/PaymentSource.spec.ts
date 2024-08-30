@@ -1,24 +1,25 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import PaymentSource from "../src/model/PaymentSource";
 
 describe("PaymentSource", () => {
   const { api_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get PaymentSource", done => {
+  it("Get PaymentSource", async () => {
     fetchMock.mock(`${api_url}/platform/payment_source`, {
       count: 1,
       payment_source: {
@@ -34,20 +35,19 @@ describe("PaymentSource", () => {
       }
     });
 
-    PaymentSource.get().then(paymentSource => {
-      assert.equal(paymentSource.constructor.name, "PaymentSource");
-      assert.equal(paymentSource.id, "12345");
-      assert.equal(paymentSource.type, "credit-card");
-      assert.equal(paymentSource.name, "Bob");
-      assert.equal(paymentSource.number, "XXXX-XXXX-XXXX-4242");
-      assert.equal(paymentSource.card.type, "visa");
-      assert.equal(paymentSource.card.exp_month, "4");
-      assert.equal(paymentSource.card.exp_year, "2024");
-      done();
+    await PaymentSource.get().then(paymentSource => {
+      assert.equal(paymentSource?.constructor.name, "PaymentSource");
+      assert.equal(paymentSource?.id, "12345");
+      assert.equal(paymentSource?.type, "credit-card");
+      assert.equal(paymentSource?.name, "Bob");
+      assert.equal(paymentSource?.number, "XXXX-XXXX-XXXX-4242");
+      assert.equal(paymentSource?.card?.type, "visa");
+      assert.equal(paymentSource?.card?.exp_month, "4");
+      assert.equal(paymentSource?.card?.exp_year, "2024");
     });
   });
 
-  it("Get PaymentSource SEPA", done => {
+  it("Get PaymentSource SEPA", async () => {
     fetchMock.mock(`${api_url}/platform/payment_source`, {
       count: 1,
       payment_source: {
@@ -61,35 +61,28 @@ describe("PaymentSource", () => {
       }
     });
 
-    PaymentSource.get().then(paymentSource => {
-      assert.equal(paymentSource.constructor.name, "PaymentSource");
-      assert.equal(paymentSource.id, "67890");
-      assert.equal(paymentSource.type, "stripe_sepa_debit");
-      assert.equal(paymentSource.name, "Bob");
-      assert.equal(paymentSource.number, "DE** **** 3000");
-      assert.equal(paymentSource.mandate.mandate_reference, "84H2QIORBDUQR9BR");
-      done();
+    await PaymentSource.get().then(paymentSource => {
+      assert.equal(paymentSource?.constructor.name, "PaymentSource");
+      assert.equal(paymentSource?.id, "67890");
+      assert.equal(paymentSource?.type, "stripe_sepa_debit");
+      assert.equal(paymentSource?.name, "Bob");
+      assert.equal(paymentSource?.number, "DE** **** 3000");
+      assert.equal(
+        paymentSource?.mandate?.mandate_reference,
+        "84H2QIORBDUQR9BR"
+      );
     });
   });
 
-  it("Get PaymentSource return 404", done => {
-    fetchMock.mock(
-      `${api_url}/platform/payment_source`,
-      {},
-      {
-        title: "No sources on file.",
-        status: 404,
-        detail: "Not Found."
-      }
-    );
+  it("Get PaymentSource return 404", async () => {
+    fetchMock.mock(`${api_url}/platform/payment_source`, {});
 
-    PaymentSource.get().then(paymentSource => {
-      assert.equal(paymentSource.id, undefined);
-      done();
+    await PaymentSource.get().then(paymentSource => {
+      assert.equal(paymentSource?.id, undefined);
     });
   });
 
-  it("Get PaymentSource filter by uuid", done => {
+  it("Get PaymentSource filter by uuid", async () => {
     fetchMock.mock(`${api_url}/platform/payment_source?owner=uuid`, {
       count: 1,
       payment_source: {
@@ -97,26 +90,24 @@ describe("PaymentSource", () => {
       }
     });
 
-    PaymentSource.get({ owner: "uuid" }).then(paymentSource => {
-      assert.equal(paymentSource.constructor.name, "PaymentSource");
-      assert.equal(paymentSource.id, "12345");
-      done();
+    await PaymentSource.get({ owner: "uuid" }).then(paymentSource => {
+      assert.equal(paymentSource?.constructor.name, "PaymentSource");
+      assert.equal(paymentSource?.id, "12345");
     });
   });
 
-  it("Get PaymentSource with empty answer", done => {
+  it("Get PaymentSource with empty answer", async () => {
     fetchMock.mock(`${api_url}/platform/payment_source`, {
       count: 0,
       payment_source: {}
     });
 
-    PaymentSource.get().then(paymentSource => {
-      assert.equal(paymentSource.id, undefined);
-      done();
+    await PaymentSource.get().then(paymentSource => {
+      assert.equal(paymentSource?.id, undefined);
     });
   });
 
-  it("Get PaymentSource allowed", done => {
+  it("Get PaymentSource allowed", async () => {
     fetchMock.mock(`${api_url}/platform/payment_source/allowed`, {
       count: 2,
       payment_sources: [
@@ -125,23 +116,22 @@ describe("PaymentSource", () => {
       ]
     });
 
-    PaymentSource.getAllowed().then(data => {
+    await PaymentSource.getAllowed().then(data => {
       assert.equal(data.count, 2);
       assert.equal(data.payment_sources[0].id, "12345");
       assert.equal(data.payment_sources[0].label, "credit-card");
       assert.equal(data.payment_sources[1].id, "67890");
-      done();
     });
   });
 
-  it("Create payment source", done => {
+  it("Create payment source", async () => {
     const mock = fetchMock.mock(
       `${api_url}/platform/payment_source`,
       {
         id: "12345",
         type: "credit-card"
       },
-      "POST"
+      { method: "POST" }
     );
 
     const ps = new PaymentSource({
@@ -149,43 +139,39 @@ describe("PaymentSource", () => {
       token: "string",
       email: "email@domain.com"
     });
-    ps.save().then(paymentSource => {
+    await ps.save().then(paymentSource => {
       assert.isTrue(mock.called());
       assert.equal(paymentSource.data.id, "12345");
-      done();
     });
   });
 
-  it("Delete payment source", done => {
+  it("Delete payment source", async () => {
     const mock = fetchMock.mock(
       `${api_url}/platform/payment_source`,
       {},
       {
-        method: "DELETE",
-        status: 204
+        method: "DELETE"
       }
     );
 
-    PaymentSource.delete().then(() => {
+    await PaymentSource.delete().then(() => {
       assert.isTrue(mock.called());
-      done();
     });
   });
 
-  it("Create setup intent", done => {
+  it("Create setup intent", async () => {
     const mock = fetchMock.mock(
       `${api_url}/platform/payment_source/intent`,
       {
         client_secret: "qwerty",
         public_key: "azerty"
       },
-      "POST"
+      { method: "POST" }
     );
 
-    PaymentSource.intent().then(data => {
+    await PaymentSource.intent().then(data => {
       assert.isTrue(mock.called());
       assert.equal(data.client_secret, "qwerty");
-      done();
     });
   });
 });

@@ -1,21 +1,22 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import Project from "../src/model/Project";
 
 describe("Project", () => {
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get users associated with a project", done => {
+  it("Get users associated with a project", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/access", [
       { id: 1, role: "r1" },
       { id: 2, role: "r2" }
@@ -31,11 +32,10 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getUsers().then(projectAccess => {
+    await project.getUsers().then(projectAccess => {
       assert.equal(projectAccess.length, 2);
       assert.equal(projectAccess[0].role, "r1");
       assert.equal(projectAccess[0].constructor.name, "ProjectAccess");
-      done();
     });
   });
 
@@ -57,7 +57,7 @@ describe("Project", () => {
     assert.equal(gitUrl, "ffzefzef3@git.test.com:ffzefzef3.git");
   });
 
-  it("Add user in a project", done => {
+  it("Add user in a project", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/access",
       {
@@ -69,7 +69,7 @@ describe("Project", () => {
           ]
         }
       },
-      "POST"
+      { method: "POST" }
     );
 
     const project = new Project(
@@ -85,18 +85,16 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.addUser("test@test.com", "admin").then(result => {
+    await project.addUser("test@test.com", "admin").then(async result => {
       assert.equal(result.constructor.name, "Result");
       assert.equal(
-        result.getActivities("https://test.com/api/projects/ffzefzef3")[0]
-          .constructor.name,
+        (await result.getActivities())[0].constructor.name,
         "Activity"
       );
-      done();
     });
   });
 
-  it("Add user in a project with bad role", done => {
+  it("Add user in a project with bad role", () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/access",
       {
@@ -108,7 +106,7 @@ describe("Project", () => {
           ]
         }
       },
-      "POST"
+      { method: "POST" }
     );
 
     const project = new Project(
@@ -126,11 +124,10 @@ describe("Project", () => {
 
     project.addUser("test@test.com", "role").catch(err => {
       assert.equal(err.role, "Invalid role: 'role'");
-      done();
     });
   });
 
-  it("Add user in a project with bad email and role", done => {
+  it("Add user in a project with bad email and role", () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/access",
       {
@@ -142,7 +139,7 @@ describe("Project", () => {
           ]
         }
       },
-      "POST"
+      { method: "POST" }
     );
 
     const project = new Project(
@@ -161,11 +158,10 @@ describe("Project", () => {
     project.addUser("test@test", "role").catch(err => {
       assert.equal(err.email, "Invalid email address: 'test@test'");
       assert.equal(err.role, "Invalid role: 'role'");
-      done();
     });
   });
 
-  it("Get environment", done => {
+  it("Get environment", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/environments/1", {
       id: 1
     });
@@ -182,13 +178,12 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getEnvironment(1).then(environment => {
+    await project.getEnvironment("1").then(environment => {
       assert.equal(environment.constructor.name, "Environment");
-      done();
     });
   });
 
-  it("Get environments", done => {
+  it("Get environments", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments?limit=2",
       [{ id: 1 }]
@@ -206,14 +201,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getEnvironments(2).then(environments => {
-      assert.equal(environments[0].id, 1);
+    await project.getEnvironments(2).then(environments => {
+      assert.equal(environments[0].id, "1");
       assert.equal(environments[0].constructor.name, "Environment");
-      done();
     });
   });
 
-  it("Get environments without _links", done => {
+  it("Get environments without _links", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/environments", [
       { id: 1 }
     ]);
@@ -226,14 +220,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getEnvironments().then(environments => {
-      assert.equal(environments[0].id, 1);
+    await project.getEnvironments().then(environments => {
+      assert.equal(environments[0].id, "1");
       assert.equal(environments[0].constructor.name, "Environment");
-      done();
     });
   });
 
-  it("Get domains", done => {
+  it("Get domains", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/domains?limit=2", [
       { id: 1 }
     ]);
@@ -250,14 +243,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getDomains(2).then(domains => {
-      assert.equal(domains[0].id, 1);
+    await project.getDomains(2).then(domains => {
+      assert.equal(domains[0].id, "1");
       assert.equal(domains[0].constructor.name, "Domain");
-      done();
     });
   });
 
-  it("Get domain", done => {
+  it("Get domain", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/domains/domainName",
       {
@@ -278,18 +270,17 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getDomain("domainName").then(domain => {
+    await project.getDomain("domainName").then(domain => {
       assert.equal(domain.name, "domainName");
       assert.equal(domain.constructor.name, "Domain");
-      done();
     });
   });
 
-  it("Add domain", done => {
+  it("Add domain", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/domains",
       {},
-      "POST"
+      { method: "POST" }
     );
     const project = new Project(
       {
@@ -304,13 +295,12 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.addDomain("domainName").then(result => {
+    await project.addDomain("domainName").then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Get integrations", done => {
+  it("Get integrations", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/integrations?limit=2",
       [{}]
@@ -328,14 +318,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getIntegrations(2).then(integrations => {
+    await project.getIntegrations(2).then(integrations => {
       assert.equal(integrations.length, 1);
       assert.equal(integrations[0].constructor.name, "Integration");
-      done();
     });
   });
 
-  it("Get integration", done => {
+  it("Get integration", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/integrations/1", {
       id: 1
     });
@@ -352,18 +341,17 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getIntegration(1).then(integration => {
+    await project.getIntegration("1").then(integration => {
       assert.equal(integration.constructor.name, "Integration");
-      assert.equal(integration.id, 1);
-      done();
+      assert.equal(integration.id, "1");
     });
   });
 
-  it("Add integration", done => {
+  it("Add integration", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/integrations",
       {},
-      "POST"
+      { method: "POST" }
     );
     const project = new Project(
       {
@@ -378,17 +366,16 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.addIntegration("bitbucket").then(result => {
+    await project.addIntegration("bitbucket").then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Add integration with bad type", done => {
+  it("Add integration with bad type", () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/integrations",
       {},
-      "POST"
+      { method: "POST" }
     );
     const project = new Project(
       {
@@ -405,11 +392,10 @@ describe("Project", () => {
 
     project.addIntegration("test").catch(err => {
       assert.equal(err.type, "Invalid type: 'test'");
-      done();
     });
   });
 
-  it("Get activity", done => {
+  it("Get activity", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/activities/1", {
       id: 1
     });
@@ -426,14 +412,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getActivity(1).then(activity => {
+    await project.getActivity("1").then(activity => {
       assert.equal(activity.constructor.name, "Activity");
-      assert.equal(activity.id, 1);
-      done();
+      assert.equal(activity.id, "1");
     });
   });
 
-  it("Get activities", done => {
+  it("Get activities", async () => {
     const queryString = "?type=theType&starts_at=2017-03-21T09%3A06%3A30.550Z";
 
     fetchMock.mock(
@@ -457,12 +442,11 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project
-      .getActivities("theType", new Date("2017-03-21T09:06:30.550116+00:00"))
+    await project
+      .getActivities(["theType"], new Date("2017-03-21T09:06:30.550116+00:00"))
       .then(activities => {
         assert.equal(activities[0].constructor.name, "Activity");
-        assert.equal(activities[0].id, 1);
-        done();
+        assert.equal(activities[0].id, "1");
       });
   });
 
@@ -520,7 +504,7 @@ describe("Project", () => {
     assert.equal(project.isSuspended(), false);
   });
 
-  it("Get variables", done => {
+  it("Get variables", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/variables?limit=1",
       [
@@ -543,14 +527,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getVariables(1).then(activities => {
+    await project.getVariables(1).then(activities => {
       assert.equal(activities[0].constructor.name, "ProjectLevelVariable");
-      assert.equal(activities[0].id, 1);
-      done();
+      assert.equal(activities[0].id, "1");
     });
   });
 
-  it("Get variable", done => {
+  it("Get variable", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/variables/theVariableName",
       {
@@ -571,14 +554,13 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getVariable("theVariableName").then(activitie => {
+    await project.getVariable("theVariableName").then(activitie => {
       assert.equal(activitie.constructor.name, "ProjectLevelVariable");
-      assert.equal(activitie.id, 1);
-      done();
+      assert.equal(activitie.id, "1");
     });
   });
 
-  it("Set existing variable", done => {
+  it("Set existing variable", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/variables/variableName",
       {
@@ -604,7 +586,7 @@ describe("Project", () => {
           name: "variableName"
         }
       ],
-      "PATCH"
+      { method: "PATCH" }
     );
     const project = new Project(
       {
@@ -619,13 +601,12 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.setVariable("variableName").then(result => {
+    await project.setVariable("variableName", "").then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Get certificates", done => {
+  it("Get certificates", async () => {
     fetchMock.mock("https://test.com/api/projects/ffzefzef3/certificates", [
       {}
     ]);
@@ -642,18 +623,17 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getCertificates().then(certificates => {
+    await project.getCertificates().then(certificates => {
       assert.equal(certificates.length, 1);
       assert.equal(certificates[0].constructor.name, "Certificate");
-      done();
     });
   });
 
-  it("Add certificate", done => {
+  it("Add certificate", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/certificates",
       {},
-      "POST"
+      { method: "POST" }
     );
     const project = new Project(
       {
@@ -668,9 +648,8 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.addCertificate("certif", "key", "chain").then(result => {
+    await project.addCertificate("certif", "key", ["chain"]).then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
@@ -695,13 +674,13 @@ describe("Project", () => {
     assert.equal(updatedProject.constructor.name, "Project");
   });
 
-  it("Load the theme", done => {
+  it("Load the theme", async () => {
     fetchMock.mock(
       "https://test.com/vendor.json",
       {
         color: "#FFFFF"
       },
-      "GET"
+      { method: "GET" }
     );
     const project = new Project(
       {
@@ -717,16 +696,15 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.loadTheme().then(theme => {
+    await project.loadTheme().then(theme => {
       assert.equal(theme.color, "#FFFFF");
       assert.equal(theme.logo, "https://test.com/images/logo.svg");
       assert.equal(theme.smallLogo, "https://test.com/images/logo-ui.svg");
       assert.equal(theme.emailLogo, "https://test.com/images/logo-email.png");
-      done();
     });
   });
 
-  it("Get Capabilities", done => {
+  it("Get Capabilities", async () => {
     const capabilities = {
       id: "capabilities",
       _links: {
@@ -760,9 +738,8 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.getCapabilities().then(({ source_operation }) => {
+    await project.getCapabilities().then(({ source_operation }) => {
       assert.equal(source_operation.enabled, true);
-      done();
     });
   });
 });

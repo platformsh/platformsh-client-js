@@ -1,42 +1,42 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import Environment from "../src/model/Environment";
 
 describe("Environment", () => {
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get environments", done => {
+  it("Get environments", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments",
       [
         {
-          id: 1,
+          id: "1",
           name: "thevar"
         }
       ]
     );
 
-    Environment.query({
+    await Environment.query({
       projectId: "ffzefzef3"
     }).then(environment => {
       assert.equal(environment.length, 1);
-      assert.equal(environment[0].id, 1);
-      done();
+      assert.equal(environment[0].id, "1");
     });
   });
 
-  it("Get environment", done => {
+  it("Get environment", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1",
       {
@@ -45,16 +45,15 @@ describe("Environment", () => {
       }
     );
 
-    Environment.get({
+    await Environment.get({
       projectId: "ffzefzef3",
       id: "1"
     }).then(environment => {
-      assert.equal(environment.id, 1);
-      done();
+      assert.equal(environment.id, "1");
     });
   });
 
-  it("Get variable", done => {
+  it("Get variable", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments/1/variables/1",
       {
@@ -74,17 +73,16 @@ describe("Environment", () => {
       "https://test.com/api/projects/ffzefzef3/environments"
     );
 
-    environment.getVariable(1).then(variable => {
-      assert.equal(variable.id, 1);
-      done();
+    await environment.getVariable("1").then(variable => {
+      assert.equal(variable.id, "1");
     });
   });
 
-  it("Delete environment", done => {
+  it("Delete environment", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments/1",
       {},
-      "DELETE"
+      { method: "DELETE" }
     );
     const environment = new Environment(
       {
@@ -102,12 +100,10 @@ describe("Environment", () => {
       "https://test.com/api/projects/ffzefzef3/environments/1"
     );
 
-    environment.delete().then(() => {
-      done();
-    });
+    await environment.delete();
   });
 
-  it("Activate environment", done => {
+  it("Activate environment", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments/1/activate",
       {
@@ -247,7 +243,7 @@ describe("Environment", () => {
           ]
         }
       },
-      "POST"
+      { method: "POST" }
     );
     const environment = new Environment(
       {
@@ -268,12 +264,10 @@ describe("Environment", () => {
       "https://test.com/api/projects/ffzefzef3/environments/1"
     );
 
-    environment.activate().then(() => {
-      done();
-    });
+    await environment.activate();
   });
 
-  it("Deactivate environment", done => {
+  it("Deactivate environment", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments/1/deactivate",
       {
@@ -413,7 +407,7 @@ describe("Environment", () => {
           ]
         }
       },
-      "POST"
+      { method: "POST" }
     );
     const environment = new Environment(
       {
@@ -434,12 +428,10 @@ describe("Environment", () => {
       "https://test.com/api/projects/ffzefzef3/environments/1"
     );
 
-    environment.deactivate().then(() => {
-      done();
-    });
+    await environment.deactivate();
   });
 
-  it("Get metrics", done => {
+  it("Get metrics", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/environments/metrics",
       {
@@ -459,9 +451,8 @@ describe("Environment", () => {
       "https://test.com/api/projects/ffzefzef3/environments"
     );
 
-    environment.getMetrics().then(metrics => {
+    await environment.getMetrics("").then(metrics => {
       assert.isNotNull(metrics.results);
-      done();
     });
   });
 
@@ -552,7 +543,7 @@ describe("Environment", () => {
     assert.equal(sshUrl, "testproject-master-7rqtwti--php@git.local.c-g.io");
   });
 
-  it("Get ssh key with the app ssh link in priority", done => {
+  it("Get ssh key with the app ssh link in priority", async () => {
     const environment = new Environment(
       {
         _links: {
@@ -598,9 +589,8 @@ describe("Environment", () => {
       parents: ["shaparent"]
     });
 
-    environment.getHeadCommit().then(c => {
+    await environment.getHeadCommit().then(c => {
       assert.equal(c.sha, "shastring");
-      done();
     });
   });
 });

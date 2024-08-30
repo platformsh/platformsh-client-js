@@ -1,17 +1,15 @@
-/* global beforeEach, afterEach*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeEach, describe, it, expect } from "vitest";
 
 import Client from "../src";
 import { getConfig } from "../src/config";
 import Invitation from "../src/model/Invitation";
 
-const _fetch = (url, data, ...params) =>
-  fetchMock.mock(url, JSON.stringify(data), ...params);
+const _fetch = (url: string, data: unknown, params?: fetchMock.MockOptions) =>
+  fetchMock.mock(url, JSON.stringify(data), params);
 
 describe("Client", () => {
-  let client;
+  let client: Client;
   const { authentication_url, api_url } = getConfig();
 
   beforeEach(() => {
@@ -19,7 +17,9 @@ describe("Client", () => {
       access_token: "test"
     });
     client = new Client({
-      api_token: "test"
+      api_token: "test",
+      api_url,
+      authorization: ""
     });
   });
 
@@ -27,7 +27,7 @@ describe("Client", () => {
     fetchMock.restore();
   });
 
-  it("Get current Account", done => {
+  it("Get current Account", async () => {
     fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       display_name: "test",
@@ -39,26 +39,24 @@ describe("Client", () => {
         }
       ]
     });
-    client.getAccountInfo().then(me => {
+    await client.getAccountInfo().then(me => {
       assert.equal(me.display_name, "test");
-      done();
     });
   });
 
-  it("Get project", done => {
+  it("Get project", async () => {
     fetchMock.mock(`${api_url}/projects/ffzefzef3`, {
       id: "ffzefzef1",
       title: "greatProject",
       endpoint: "http://test.com/api/projects/ffzefzef1"
     });
-    client.getProject("ffzefzef3").then(project => {
+    await client.getProject("ffzefzef3").then(project => {
       assert.equal(project.title, "greatProject");
       assert.equal(project.constructor.name, "Project");
-      done();
     });
   });
 
-  it("Get environments", done => {
+  it("Get environments", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments",
       [
@@ -68,16 +66,15 @@ describe("Client", () => {
         }
       ]
     );
-    client.getEnvironments("ffzefzef3").then(environments => {
+    await client.getEnvironments("ffzefzef3").then(environments => {
       assert.equal(environments.length, 1);
-      assert.equal(environments[0].id, 1);
+      assert.equal(environments[0].id, "1");
       assert.equal(environments[0].name, "bestEnv");
       assert.equal(environments[0].constructor.name, "Environment");
-      done();
     });
   });
 
-  it("Get environment", done => {
+  it("Get environment", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1",
       {
@@ -85,15 +82,14 @@ describe("Client", () => {
         name: "bestEnv"
       }
     );
-    client.getEnvironment("ffzefzef3", "1").then(environment => {
-      assert.equal(environment.id, 1);
+    await client.getEnvironment("ffzefzef3", "1").then(environment => {
+      assert.equal(environment.id, "1");
       assert.equal(environment.name, "bestEnv");
       assert.equal(environment.constructor.name, "Environment");
-      done();
     });
   });
 
-  it("Get activities", done => {
+  it("Get activities", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/activities",
       [
@@ -103,16 +99,15 @@ describe("Client", () => {
         }
       ]
     );
-    client.getEnvironmentActivities("ffzefzef3", "1").then(activities => {
+    await client.getEnvironmentActivities("ffzefzef3", "1").then(activities => {
       assert.equal(activities.length, 1);
-      assert.equal(activities[0].id, 1);
+      assert.equal(activities[0].id, "1");
       assert.equal(activities[0].completion_percent, 50);
       assert.equal(activities[0].constructor.name, "Activity");
-      done();
     });
   });
 
-  it("Get certificates", done => {
+  it("Get certificates", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/certificates",
       [
@@ -122,69 +117,64 @@ describe("Client", () => {
         }
       ]
     );
-    client.getCertificates("ffzefzef3").then(certificates => {
+    await client.getCertificates("ffzefzef3").then(certificates => {
       assert.equal(certificates.length, 1);
-      assert.equal(certificates[0].id, 1);
+      assert.equal(certificates[0].id, "1");
       assert.equal(certificates[0].key, "test");
       assert.equal(certificates[0].constructor.name, "Certificate");
-      done();
     });
   });
 
-  it("Add certificates", done => {
+  it("Add certificates", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/certificates",
       {},
-      "POST"
+      { method: "POST" }
     );
 
-    client
-      .addCertificate("ffzefzef3", "certif", "key", "chain")
+    await client
+      .addCertificate("ffzefzef3", "certif", "key", ["chain"])
       .then(result => {
         assert.equal(result.constructor.name, "Result");
-        done();
       });
   });
 
-  it("Get domains", done => {
+  it("Get domains", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/domains?limit=2",
       [{ id: 1 }]
     );
 
-    client.getDomains("ffzefzef3", 2).then(domains => {
-      assert.equal(domains[0].id, 1);
+    await client.getDomains("ffzefzef3", 2).then(domains => {
+      assert.equal(domains[0].id, "1");
       assert.equal(domains[0].constructor.name, "Domain");
-      done();
     });
   });
 
-  it("Get environment users", done => {
+  it("Get environment users", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/access",
       [{ id: 1 }]
     );
 
-    client.getEnvironmentUsers("ffzefzef3", "1").then(users => {
-      assert.equal(users[0].id, 1);
+    await client.getEnvironmentUsers("ffzefzef3", "1").then(users => {
+      assert.equal(users[0].id, "1");
       assert.equal(users[0].constructor.name, "EnvironmentAccess");
-      done();
     });
   });
 
-  it("Get project users", done => {
+  it("Get project users", async () => {
     fetchMock.mock("https://api.platform.sh/api/projects/ffzefzef3/access", [
       { id: 1 }
     ]);
 
-    client.getProjectUsers("ffzefzef3").then(users => {
-      assert.equal(users[0].id, 1);
+    await client.getProjectUsers("ffzefzef3").then(users => {
+      assert.equal(users[0].id, "1");
       assert.equal(users[0].constructor.name, "ProjectAccess");
-      done();
     });
   });
 
-  it("Get variables", done => {
+  it("Get variables", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/variables?limit=1",
       [
@@ -195,14 +185,13 @@ describe("Client", () => {
       ]
     );
 
-    client.getProjectVariables("ffzefzef3", 1).then(activities => {
+    await client.getProjectVariables("ffzefzef3", 1).then(activities => {
       assert.equal(activities[0].constructor.name, "ProjectLevelVariable");
-      assert.equal(activities[0].id, 1);
-      done();
+      assert.equal(activities[0].id, "1");
     });
   });
 
-  it("Get environment variables", done => {
+  it("Get environment variables", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/variables?limit=1",
       [
@@ -213,14 +202,15 @@ describe("Client", () => {
       ]
     );
 
-    client.getEnvironmentVariables("ffzefzef3", "1", 1).then(activities => {
-      assert.equal(activities[0].constructor.name, "Variable");
-      assert.equal(activities[0].id, 1);
-      done();
-    });
+    await client
+      .getEnvironmentVariables("ffzefzef3", "1", 1)
+      .then(activities => {
+        assert.equal(activities[0].constructor.name, "Variable");
+        assert.equal(activities[0].id, "1");
+      });
   });
 
-  it("Get routes", done => {
+  it("Get routes", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/routes",
       [
@@ -231,27 +221,27 @@ describe("Client", () => {
       ]
     );
 
-    client.getRoutes("ffzefzef3", 1).then(routes => {
+    await client.getRoutes("ffzefzef3", "1").then(routes => {
       assert.equal(routes[0].constructor.name, "Route");
       assert.equal(routes[0].project, "ffzefzef3");
-      done();
     });
   });
 
-  it("Get environment metrics", done => {
+  it("Get environment metrics", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/metrics?q=test",
       { results: 1 }
     );
 
-    client.getEnvironmentMetrics("ffzefzef3", "1", "test").then(metrics => {
-      assert.equal(metrics.results, 1);
-      assert.equal(metrics.constructor.name, "Metrics");
-      done();
-    });
+    await client
+      .getEnvironmentMetrics("ffzefzef3", "1", "test")
+      .then(metrics => {
+        assert.equal(metrics.results, 1);
+        assert.equal(metrics.constructor.name, "Metrics");
+      });
   });
 
-  it("Get ssh keys", done => {
+  it("Get ssh keys", async () => {
     fetchMock.mock(`${api_url}/platform/me`, {
       id: 1,
       name: "test",
@@ -261,25 +251,23 @@ describe("Client", () => {
         }
       ]
     });
-    client.getSshKeys().then(sshkeys => {
+    await client.getSshKeys().then(sshkeys => {
       assert.equal(sshkeys.length, 1);
       assert.equal(sshkeys[0].constructor.name, "SshKey");
-      done();
     });
   });
 
-  it("Get ssh key", done => {
+  it("Get ssh key", async () => {
     fetchMock.mock(`${api_url}/v1/ssh_keys/theId`, {
       changed: "2017-03-13T17:38:49+01:00"
     });
-    client.getSshKey("theId").then(sshkey => {
+    await client.getSshKey("theId").then(sshkey => {
       assert.equal(sshkey.changed, "2017-03-13T17:38:49+01:00");
       assert.equal(sshkey.constructor.name, "SshKey");
-      done();
     });
   });
 
-  it("Add a bad ssh key", done => {
+  it("Add a bad ssh key", async () => {
     fetchMock.mock(
       `${api_url}/v1/ssh_keys`,
       {
@@ -287,12 +275,17 @@ describe("Client", () => {
       },
       { method: "POST" }
     );
-    client.addSshKey("valueofsshkey", "titleofsshkey").catch(() => {
-      done();
-    });
+
+    await expect(async () => {
+      await client.addSshKey("valueofsshkey", "titleofsshkey");
+    }).rejects.toThrowErrorMatchingInlineSnapshot(`
+      {
+        "value": "The SSH key is invalid",
+      }
+    `);
   });
 
-  it("Add a ssh key", done => {
+  it("Add a ssh key", async () => {
     fetchMock.mock(
       `${api_url}/v1/ssh_keys`,
       {
@@ -303,9 +296,8 @@ describe("Client", () => {
     const validSshKey =
       "ssh-rsa MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMsT3DdVcyLyrr4nOH2gCd3xvXNAZEDxnHQDFzFRel9tVPnWWkz176NK0tYw2SY6SUOAe/2552BuY1s5PV/HiVwxhpompzZ/xxYHLf+mvN/aCnONKUqPsioYhoD2FtTG4WKIBsNv9S5ZCk8YwvJy6kiABq//W9NnSfP58DXTw8wQIDAQAB";
 
-    client.addSshKey(validSshKey, "titleofsshkey").then(result => {
+    await client.addSshKey(validSshKey, "titleofsshkey").then(result => {
       assert.equal(result.constructor.name, "SshKey");
-      done();
     });
   });
 
@@ -319,7 +311,7 @@ describe("Client", () => {
     assert.equal(cleanedReq.test, "ok");
   });
 
-  it("Create subscription", done => {
+  it("Create subscription", async () => {
     fetchMock.mock(
       `${api_url}/v1/subscriptions`,
       {
@@ -329,7 +321,7 @@ describe("Client", () => {
     );
     const activationCallback = { uri: "http://www.google.fr" };
 
-    client
+    await client
       .createSubscription({
         region: "region",
         plan: "development",
@@ -341,33 +333,32 @@ describe("Client", () => {
       })
       .then(result => {
         assert.equal(result.constructor.name, "Result");
-        done();
       });
   });
 
-  it("Get subscription", done => {
+  it("Get subscription", async () => {
     fetchMock.mock(`${api_url}/v1/subscriptions/1`, {
       project_region: "region"
     });
-    client.getSubscription("1").then(subscription => {
+    await client.getSubscription("1").then(subscription => {
       assert.equal(subscription.project_region, "region");
       assert.equal(subscription.constructor.name, "Subscription");
-      done();
     });
   });
 
-  it("Get organization subscription", done => {
+  it("Get organization subscription", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions/1`, {
       project_region: "region"
     });
-    client.getOrganizationSubscription("aliceOrg", "1").then(subscription => {
-      assert.equal(subscription.project_region, "region");
-      assert.equal(subscription.constructor.name, "OrganizationSubscription");
-      done();
-    });
+    await client
+      .getOrganizationSubscription("aliceOrg", "1")
+      .then(subscription => {
+        assert.equal(subscription.project_region, "region");
+        assert.equal(subscription.constructor.name, "OrganizationSubscription");
+      });
   });
 
-  it("Get subscriptions", done => {
+  it("Get subscriptions", async () => {
     fetchMock.mock(`${api_url}/v1/subscriptions`, {
       subscriptions: [
         {
@@ -375,15 +366,14 @@ describe("Client", () => {
         }
       ]
     });
-    client.getSubscriptions().then(subscriptions => {
+    await client.getSubscriptions([]).then(subscriptions => {
       assert.equal(subscriptions.length, 1);
       assert.equal(subscriptions[0].project_region, "region");
       assert.equal(subscriptions[0].constructor.name, "Subscription");
-      done();
     });
   });
 
-  it("Get organization subscriptions", done => {
+  it("Get organization subscriptions", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions`, {
       items: [
         {
@@ -391,18 +381,19 @@ describe("Client", () => {
         }
       ]
     });
-    client.getOrganizationSubscriptions("aliceOrg").then(subscriptions => {
-      assert.equal(subscriptions.items.length, 1);
-      assert.equal(subscriptions.items[0].project_region, "region");
-      assert.equal(
-        subscriptions.items[0].constructor.name,
-        "OrganizationSubscription"
-      );
-      done();
-    });
+    await client
+      .getOrganizationSubscriptions("aliceOrg")
+      .then(subscriptions => {
+        assert.equal(subscriptions.items.length, 1);
+        assert.equal(subscriptions.items[0].project_region, "region");
+        assert.equal(
+          subscriptions.items[0].constructor.name,
+          "OrganizationSubscription"
+        );
+      });
   });
 
-  it("Get subscriptions with filters", done => {
+  it("Get subscriptions with filters", async () => {
     fetchMock.mock(
       `${api_url}/v1/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`,
       {
@@ -413,7 +404,7 @@ describe("Client", () => {
         ]
       }
     );
-    client
+    await client
       .getSubscriptions([
         { project_title: { value: "Demo", operator: "Contains" } }
       ])
@@ -421,31 +412,29 @@ describe("Client", () => {
         assert.equal(subscriptions.length, 1);
         assert.equal(subscriptions[0].project_region, "region");
         assert.equal(subscriptions[0].constructor.name, "Subscription");
-        done();
       });
   });
 
-  it("Get subscription estimate", done => {
+  it("Get subscription estimate", async () => {
     const params = {
       plan: "plan",
-      storage: "storage",
-      environments: "environments",
-      user_licenses: "users",
+      storage: 1,
+      environments: 1,
+      user_licenses: 1,
       backups: "backups"
     };
     fetchMock.mock(
-      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users&backups=backups`,
+      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=1&environments=1&user_licenses=1&backups=backups`,
       {
         key: "value"
       }
     );
-    client.getSubscriptionEstimate(params).then(estimate => {
+    await client.getSubscriptionEstimate(params).then(estimate => {
       assert.equal(estimate.key, "value");
-      done();
     });
   });
 
-  it("Get current deployment informations", done => {
+  it("Get current deployment informations", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/deployments/current",
       {
@@ -454,35 +443,34 @@ describe("Client", () => {
         }
       }
     );
-    client.getCurrentDeployment("ffzefzef3", "1").then(deployment => {
+    await client.getCurrentDeployment("ffzefzef3", "1").then(deployment => {
       assert.equal(deployment.constructor.name, "Deployment");
-      done();
     });
   });
 
-  it("Get organization subscription estimate", done => {
+  it("Get organization subscription estimate", async () => {
     fetchMock.mock(
-      `${api_url}/organizations/aliceorg/subscriptions/estimate?plan=plan&storage=storage&environments=environments&user_licenses=users&backups=backups`,
+      `${api_url}/organizations/aliceorg/subscriptions/estimate?plan=plan&storage=1&environments=1&user_licenses=1&backups=backups&organizationId=`,
       {
         key: "value"
       }
     );
-    client
+    await client
       .getOrganizationSubscriptionEstimate("aliceorg", {
         plan: "plan",
-        storage: "storage",
-        environments: "environments",
-        user_licenses: "users",
-        backups: "backups"
+        storage: 1,
+        environments: 1,
+        user_licenses: 1,
+        backups: "backups",
+        organizationId: ""
       })
 
       .then(estimate => {
         assert.equal(estimate.key, "value");
-        done();
       });
   });
 
-  it("Get current deployment informations", done => {
+  it("Get current deployment informations", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/projects/ffzefzef3/environments/1/deployments/current",
       {
@@ -491,13 +479,12 @@ describe("Client", () => {
         }
       }
     );
-    client.getCurrentDeployment("ffzefzef3", "1").then(deployment => {
+    await client.getCurrentDeployment("ffzefzef3", "1").then(deployment => {
       assert.equal(deployment.constructor.name, "Deployment");
-      done();
     });
   });
 
-  it("Get organizations", done => {
+  it("Get organizations", async () => {
     fetchMock.mock("https://api.platform.sh/api/organizations", {
       items: [
         {
@@ -508,16 +495,15 @@ describe("Client", () => {
         }
       ]
     });
-    client.getOrganizations().then(organizations => {
+    await client.getOrganizations().then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
       assert.equal(organizations[0].label, "the organization");
       assert.equal(organizations[0].constructor.name, "Organization");
-      done();
     });
   });
 
-  it("Get organizations with user id", done => {
+  it("Get organizations with user id", async () => {
     fetchMock.mock("https://api.platform.sh/api/users/aliceId/organizations", {
       items: [
         {
@@ -528,32 +514,30 @@ describe("Client", () => {
         }
       ]
     });
-    client.getOrganizations({ userId: "aliceId" }).then(organizations => {
+    await client.getOrganizations({ userId: "aliceId" }).then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
       assert.equal(organizations[0].label, "the organization");
       assert.equal(organizations[0].constructor.name, "Organization");
-      done();
     });
   });
 
-  it("Get organization", done => {
+  it("Get organization", async () => {
     fetchMock.mock("https://api.platform.sh/api/organizations/1", {
       id: "1",
       name: "org1",
       label: "the organization",
       owner: "10"
     });
-    client.getOrganization("1").then(organization => {
+    await client.getOrganization("1").then(organization => {
       assert.equal(organization.id, "1");
       assert.equal(organization.name, "org1");
       assert.equal(organization.label, "the organization");
       assert.equal(organization.constructor.name, "Organization");
-      done();
     });
   });
 
-  it("Get teams", done => {
+  it("Get teams", async () => {
     fetchMock.mock("https://api.platform.sh/api/platform/me", {
       teams: [
         {
@@ -563,47 +547,51 @@ describe("Client", () => {
         }
       ]
     });
-    client.getTeams().then(teams => {
-      assert.equal(teams[0].id, "1");
-      assert.equal(teams[0].name, "team1");
-      assert.equal(teams[0].parent, "2");
-      assert.equal(teams[0].constructor.name, "Team");
-      done();
+    await client.getTeams().then(teams => {
+      assert.equal(teams?.[0].id, "1");
+      assert.equal(teams?.[0].name, "team1");
+      assert.equal(teams?.[0].parent, "2");
+      assert.equal(teams?.[0].constructor.name, "Team");
     });
   });
 
-  it("Get team", done => {
+  it("Get team", async () => {
     fetchMock.mock("https://api.platform.sh/api/platform/teams/1", {
       id: "1",
       name: "team1",
       parent: "2"
     });
-    client.getTeam("1").then(team => {
+    await client.getTeam("1").then(team => {
       assert.equal(team.id, "1");
       assert.equal(team.name, "team1");
       assert.equal(team.parent, "2");
       assert.equal(team.constructor.name, "Team");
-      done();
     });
   });
 
-  it("Create team", done => {
-    fetchMock.mock("https://api.platform.sh/api/platform/teams", {}, "POST");
-    client.createTeam({ name: "team1" }).then(result => {
+  it("Create team", async () => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/platform/teams",
+      {},
+      { method: "POST" }
+    );
+    await client.createTeam({ name: "team1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Create organization", done => {
-    fetchMock.mock("https://api.platform.sh/api/organizations", {}, "POST");
-    client.createOrganization({ name: "organization1" }).then(result => {
+  it("Create organization", async () => {
+    fetchMock.mock(
+      "https://api.platform.sh/api/organizations",
+      {},
+      { method: "POST" }
+    );
+    await client.createOrganization({ name: "organization1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
-      done();
     });
   });
 
-  it("Get regions", done => {
+  it("Get regions", async () => {
     fetchMock.mock("https://accounts.platform.sh/api/platform/regions", {
       regions: [
         {
@@ -617,18 +605,17 @@ describe("Client", () => {
         }
       ]
     });
-    client.getRegions().then(regions => {
+    await client.getRegions().then(regions => {
       assert.equal(regions[0].id, "us.platform.sh");
       assert.equal(regions[0].endpoint, "https://staging.plat.farm/api");
       assert.equal(regions[0].available, true);
       assert.equal(regions[0].label, "PEPSi Staging");
       assert.equal(regions[0].zone, "Europe");
       assert.equal(regions[0].constructor.name, "Region");
-      done();
     });
   });
 
-  it("Get organization regions", done => {
+  it("Get organization regions", async () => {
     fetchMock.mock(
       "https://api.platform.sh/api/organizations/aliceorgid/regions",
       {
@@ -645,30 +632,28 @@ describe("Client", () => {
         ]
       }
     );
-    client.getOrganizationRegions("aliceorgid").then(result => {
+    await client.getOrganizationRegions("aliceorgid").then(result => {
       assert.equal(result.items[0].id, "us.platform.sh");
       assert.equal(result.items[0].endpoint, "https://staging.plat.farm/api");
       assert.equal(result.items[0].available, true);
       assert.equal(result.items[0].label, "PEPSi Staging");
       assert.equal(result.items[0].zone, "Europe");
       assert.equal(result.items[0].constructor.name, "OrganizationRegion");
-      done();
     });
   });
 
-  it("Get account", done => {
+  it("Get account", async () => {
     fetchMock.mock("https://accounts.platform.sh/api/platform/users/test", {
       id: "test",
       display_name: "testdn"
     });
-    client.getAccount("test").then(user => {
+    await client.getAccount("test").then(user => {
       assert.equal(user.id, "test");
       assert.equal(user.constructor.name, "Account");
-      done();
     });
   });
 
-  it("Get orders", done => {
+  it("Get orders", async () => {
     fetchMock.mock(`${api_url}/v1/orders?filter[owner]=1`, {
       commerce_order: [
         {
@@ -724,14 +709,13 @@ describe("Client", () => {
         }
       }
     });
-    client.getOrders("1").then(orders => {
+    await client.getOrders("1").then(orders => {
       assert.equal(orders.length, 1);
       assert.equal(orders[0].constructor.name, "Order");
-      done();
     });
   });
 
-  it("Get organization orders", done => {
+  it("Get organization orders", async () => {
     fetchMock.mock(
       `${api_url}/organizations/aliceorgid/orders?filter[owner]=1`,
       {
@@ -790,14 +774,15 @@ describe("Client", () => {
         }
       }
     );
-    client.getOrganizationOrders("aliceorgid", { owner: "1" }).then(orders => {
-      assert.equal(orders.length, 1);
-      assert.equal(orders[0].constructor.name, "OrganizationOrder");
-      done();
-    });
+    await client
+      .getOrganizationOrders("aliceorgid", { owner: "1" })
+      .then(orders => {
+        assert.equal(orders.length, 1);
+        assert.equal(orders[0].constructor.name, "OrganizationOrder");
+      });
   });
 
-  it("Get order", done => {
+  it("Get order", async () => {
     fetchMock.mock(
       `${api_url}/v1/orders/1`,
       JSON.stringify({
@@ -854,14 +839,13 @@ describe("Client", () => {
       })
     );
 
-    client.getOrder("1").then(order => {
+    await client.getOrder("1").then(order => {
       assert.equal(order.id, "31619");
       assert.equal(order.constructor.name, "Order");
-      done();
     });
   });
 
-  it("Get organization order", done => {
+  it("Get organization order", async () => {
     fetchMock.mock(
       `${api_url}/organizations/aliceorgid/orders/1`,
       JSON.stringify({
@@ -918,10 +902,9 @@ describe("Client", () => {
       })
     );
 
-    client.getOrganizationOrder("aliceorgid", "1").then(order => {
+    await client.getOrganizationOrder("aliceorgid", "1").then(order => {
       assert.equal(order.id, "31619");
       assert.equal(order.constructor.name, "OrganizationOrder");
-      done();
     });
   });
 
@@ -939,10 +922,10 @@ describe("Client", () => {
     });
 
     it("Enroll TFA", async () => {
-      _fetch(`${api_url}/users/1/totp`, ["123"], "POST");
+      _fetch(`${api_url}/users/1/totp`, ["123"], { method: "POST" });
 
       const response = await client.enrollTFA("1", "XYZ", "000000");
-      const params = fetchMock.lastOptions().body;
+      const params = fetchMock.lastOptions()?.body as string;
       assert.deepEqual(response, ["123"]);
       assert.deepEqual(JSON.parse(params), {
         secret: "XYZ",
@@ -951,7 +934,7 @@ describe("Client", () => {
     });
 
     it("Disable TFA", async () => {
-      _fetch(`${api_url}/users/1/totp`, null, "DELETE");
+      _fetch(`${api_url}/users/1/totp`, null, { method: "DELETE" });
 
       try {
         await client.disableTFA("1");
@@ -962,13 +945,13 @@ describe("Client", () => {
     });
 
     it("Reset recovery codes", async () => {
-      _fetch(`${api_url}/users/1/codes`, ["22222"], "POST");
+      _fetch(`${api_url}/users/1/codes`, ["22222"], { method: "POST" });
 
       const response = await client.resetRecoveryCodes("1");
       assert.deepEqual(response, ["22222"]);
     });
   });
-  it("Get connected accounts", done => {
+  it("Get connected accounts", async () => {
     const connectedAccounts = [
       { provider: "github", subject: "1" },
       { provider: "bitbucket", subject: "2" },
@@ -977,18 +960,17 @@ describe("Client", () => {
 
     fetchMock.mock(`${api_url}/users/1/connections`, connectedAccounts);
 
-    client.getConnectedAccounts("1").then(connectedAccount => {
+    await client.getConnectedAccounts("1").then(connectedAccount => {
       assert.equal(connectedAccount.length, 3);
       assert.equal(connectedAccount[1].provider, "bitbucket");
       assert.equal(connectedAccount[1].subject, "2");
       assert.equal(connectedAccount[0].constructor.name, "ConnectedAccount");
-      done();
     });
   });
 
   describe("Profile pictures", () => {
     it("Delete", async () => {
-      _fetch(`${api_url}/v1/profile/1/picture`, null, "DELETE");
+      _fetch(`${api_url}/v1/profile/1/picture`, null, { method: "DELETE" });
 
       try {
         await client.deleteProfilePicture("1");
@@ -999,38 +981,40 @@ describe("Client", () => {
     });
 
     it("Update", async () => {
-      _fetch(`${api_url}/v1/profile/1/picture`, { url: "xyz" }, "POST");
+      _fetch(
+        `${api_url}/v1/profile/1/picture`,
+        { url: "xyz" },
+        { method: "POST" }
+      );
 
-      const response = await client.updateProfilePicture(1, {});
+      const response = await client.updateProfilePicture("1", {} as FormData);
 
       assert.deepEqual(response, { url: "xyz" });
     });
   });
 
   describe("Integrations", () => {
-    it("Get integrations", done => {
+    it("Get integrations", async () => {
       fetchMock.mock(
         "https://api.platform.sh/api/projects/ffzefzef3/integrations",
         [{ id: 1 }, { id: 2 }]
       );
 
-      client.getIntegrations("ffzefzef3").then(integrations => {
-        assert.equal(integrations[0].id, 1);
+      await client.getIntegrations("ffzefzef3").then(integrations => {
+        assert.equal(integrations[0].id, "1");
         assert.equal(integrations[0].constructor.name, "Integration");
-        done();
       });
     });
 
-    it("Get integration", done => {
+    it("Get integration", async () => {
       fetchMock.mock(
         "https://api.platform.sh/api/projects/ffzefzef3/integrations/qwerty",
         { id: "qwerty" }
       );
 
-      client.getIntegration("ffzefzef3", "qwerty").then(integration => {
+      await client.getIntegration("ffzefzef3", "qwerty").then(integration => {
         assert.equal(integration.id, "qwerty");
         assert.equal(integration.constructor.name, "Integration");
-        done();
       });
     });
   });
@@ -1062,7 +1046,7 @@ describe("Client", () => {
         {
           id: "invitation-id"
         },
-        "POST"
+        { method: "POST" }
       );
 
       const res = await client.createInvitation(
@@ -1179,7 +1163,7 @@ describe("Client", () => {
     });
   });
   describe("Organization members", () => {
-    it("Get organization members", done => {
+    it("Get organization members", async () => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/members`, {
         items: [
           {
@@ -1187,63 +1171,59 @@ describe("Client", () => {
           }
         ]
       });
-      client.getOrganizationMembers("aliceOrg").then(members => {
+      await client.getOrganizationMembers("aliceOrg").then(members => {
         assert.equal(members.items[0].id, "alice");
         assert.equal(members.items[0].constructor.name, "OrganizationMember");
-        done();
       });
     });
 
-    it("Get an organization member", done => {
+    it("Get an organization member", async () => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/members/1`, {
         id: "alice"
       });
-      client.getOrganizationMember("aliceOrg", "1").then(member => {
+      await client.getOrganizationMember("aliceOrg", "1").then(member => {
         assert.equal(member.id, "alice");
         assert.equal(member.constructor.name, "OrganizationMember");
-        done();
       });
     });
   });
   describe("Organization payment", () => {
-    it("Create payment intent", done => {
+    it("Create payment intent", async () => {
       fetchMock.mock(
         `${api_url}/organizations/aliceOrgId/payment-source/intent`,
         {
           id: "alice"
         },
-        "POST"
+        { method: "POST" }
       );
-      client
+      await client
         .createOrganizationPaymentSourceIntent("aliceOrgId")
         .then(intent => {
           assert.equal(intent.id, "alice");
           // assert.equal(intent.constructor.name, "OrganizationPaymentSource");
-          done();
         });
     });
   });
   describe("Comments", () => {
-    it("Create comments", done => {
+    it("Create comments", async () => {
       fetchMock.mock(
         `${api_url}/v1/comments`,
         {
           id: "alice"
         },
-        "POST"
+        { method: "POST" }
       );
-      client
+      await client
         .sendComment({
           ticket_id: "test"
         })
         .then(result => {
           assert.equal(result.constructor.name, "Result");
-          done();
         });
     });
   });
   describe("Organization vouchers", () => {
-    it("Get organization vouchers", done => {
+    it("Get organization vouchers", async () => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/vouchers`, {
         vouchers: [
           {
@@ -1251,21 +1231,19 @@ describe("Client", () => {
           }
         ]
       });
-      client.getOrganizationVouchers("aliceOrg").then(vouchers => {
-        assert.equal(vouchers.data.vouchers[0].code, "voucher-1");
+      await client.getOrganizationVouchers("aliceOrg").then(vouchers => {
+        assert.equal(vouchers.vouchers[0].code, "voucher-1");
         assert.equal(vouchers.constructor.name, "OrganizationVoucher");
-        done();
       });
     });
 
-    it("Get an organization member", done => {
+    it("Get an organization member", async () => {
       fetchMock.mock(`${api_url}/organizations/aliceOrg/members/1`, {
         id: "alice"
       });
-      client.getOrganizationMember("aliceOrg", "1").then(member => {
+      await client.getOrganizationMember("aliceOrg", "1").then(member => {
         assert.equal(member.id, "alice");
         assert.equal(member.constructor.name, "OrganizationMember");
-        done();
       });
     });
   });

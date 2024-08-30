@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "outDir": "types",
     "module": "esnext",
     "target": "es2015",
     "lib": ["es6", "dom", "dom.iterable", "es2019"],
-    "sourceMap": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -13,10 +10,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowJs": true,
-    "checkJs": false,
-    "baseUrl": ".",
     "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": ["."],
   "exclude": ["node_modules", "lib", "types"]
 }

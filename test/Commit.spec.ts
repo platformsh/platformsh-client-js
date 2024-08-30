@@ -1,24 +1,25 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import Commit from "../src/model/git/Commit";
 
 describe("Commit", () => {
   const { api_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get commit", done => {
+  it("Get commit", async () => {
     fetchMock.mock(`${api_url}/projects/projectid/git/commits/shastring`, {
       id: "shastring",
       _links: {
@@ -66,14 +67,13 @@ describe("Commit", () => {
       ]
     });
 
-    Commit.get("projectid", "shastring").then(commit => {
+    await Commit.get("projectid", "shastring").then(async commit => {
       assert.equal(commit.sha, "shastring");
       assert.equal(commit.message, "the message\n");
       assert.equal(commit.constructor.name, "Commit");
 
-      commit.getTree().then(t => {
-        assert.equal(t.sha, "shatree");
-        done();
+      await commit.getTree().then(t => {
+        assert.equal(t?.sha, "shatree");
       });
     });
   });

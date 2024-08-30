@@ -1,24 +1,26 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
+import type Blob from "../src/model/git/Blob";
 import Tree from "../src/model/git/Tree";
 
 describe("Tree", () => {
   const { api_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get tree", done => {
+  it("Get tree", async () => {
     fetchMock.mock(`${api_url}/projects/projectid/git/trees/shastring`, {
       id: "shastring",
       _links: {
@@ -74,19 +76,18 @@ describe("Tree", () => {
       content: "YXdlc29tZSBmaWxl"
     });
 
-    Tree.get("projectid", "shastring").then(tree => {
-      assert.equal(tree.sha, "shastring");
-      assert.equal(tree.tree.length, 2);
+    await Tree.get("projectid", "shastring").then(async tree => {
+      assert.equal(tree?.sha, "shastring");
+      assert.equal(tree?.tree.length, 2);
 
-      tree.tree[1].getInstance().then(b => {
-        assert.equal(b.path, "file2.js");
-        tree.tree[1].getRawContent().then(c => {
+      await tree?.tree[1]?.getInstance().then(async b => {
+        assert.equal(b?.path, "file2.js");
+        await (tree?.tree[1] as Blob).getRawContent().then(async c => {
           assert.equal(c, "awesome file");
-          tree.tree[0].getInstance().then(t => {
-            assert.equal(t.tree.length, 1);
-            assert.equal(t.path, "folder1");
-            assert.equal(t.sha, "shastringfolder");
-            done();
+          await (tree?.tree[0] as Tree).getInstance().then(t => {
+            assert.equal(t?.tree.length, 1);
+            assert.equal(t?.path, "folder1");
+            assert.equal(t?.sha, "shastringfolder");
           });
         });
         assert.equal(tree.constructor.name, "Tree");

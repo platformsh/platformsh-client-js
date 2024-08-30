@@ -49,7 +49,7 @@ export default class Region extends Ressource {
   static async query(params: RegionGetParams) {
     const { account_url } = getConfig();
 
-    return super._query(
+    return super._query<Region>(
       `${account_url}${url}`,
       {},
       paramDefaults,

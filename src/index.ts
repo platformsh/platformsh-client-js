@@ -155,7 +155,7 @@ export default class Client {
   async getEnvironmentActivities(
     projectId: string,
     environmentId: string,
-    type: string,
+    type?: string,
     starts_at?: Date
   ) {
     const startsAt = starts_at?.toISOString();
@@ -201,7 +201,7 @@ export default class Client {
     projectId: string,
     certificate: string,
     key: string,
-    chain = []
+    chain: string[] = []
   ) {
     const { api_url } = getConfig();
     const certificateUrl = `${api_url}/projects/${projectId}/certificates`;
@@ -533,7 +533,7 @@ export default class Client {
    *
    * @return Subscriptions[]
    */
-  async getSubscriptions(filter: object, all: boolean) {
+  async getSubscriptions(filter: object, all?: boolean) {
     return entities.Subscription.query({ filter, all: all && 1 });
   }
 
@@ -547,7 +547,7 @@ export default class Client {
    */
   async getOrganizationSubscriptions(
     organizationId: string,
-    params: Record<string, any>
+    params?: Record<string, any>
   ) {
     return entities.OrganizationSubscription.query({
       ...params,
@@ -641,7 +641,7 @@ export default class Client {
     storage: number;
     environments: number;
     user_licenses: number;
-    big_dev: string;
+    big_dev?: string;
     format?: string;
     country_code?: string;
   }) {
@@ -669,7 +669,7 @@ export default class Client {
       storage: number;
       environments: number;
       user_licenses: number;
-      big_dev: string;
+      big_dev?: string;
       backups?: string;
       format?: string;
       country_code?: string;
@@ -695,7 +695,7 @@ export default class Client {
   async getCurrentDeployment(
     projectId: string,
     environmentId: string,
-    params: object
+    params?: object
   ) {
     return entities.Deployment.get({ projectId, environmentId, ...params });
   }
@@ -758,7 +758,7 @@ export default class Client {
    *
    * @return Organization[]
    */
-  async getOrganizations(params: object) {
+  async getOrganizations(params?: object) {
     return entities.Organization.query(params);
   }
 
@@ -808,7 +808,7 @@ export default class Client {
   async getTeams() {
     return this.getAccountInfo().then(me => {
       if (!me) {
-        return false;
+        return;
       }
 
       return me.teams.map(team => new entities.Team(team));
@@ -842,7 +842,7 @@ export default class Client {
    *
    * @return CursoredResult
    */
-  async getOrganizationRegions(organizationId: string, params: object) {
+  async getOrganizationRegions(organizationId: string, params?: object) {
     return entities.OrganizationRegion.query({ organizationId, ...params });
   }
 

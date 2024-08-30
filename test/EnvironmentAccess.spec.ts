@@ -1,14 +1,15 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import Environment from "../src/model/Environment";
 
 describe("Environment Access", () => {
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
@@ -87,7 +88,7 @@ describe("Environment Access", () => {
 
     const user = accesses[0].getUser();
 
-    assert.equal(user.id, "alice");
-    assert.equal(user.constructor.name, "User");
+    assert.equal(user?.id, "alice");
+    assert.equal(user?.constructor.name, "User");
   });
 });

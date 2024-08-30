@@ -36,7 +36,9 @@ export default class ProjectAccess extends Ressource {
     const { projectId } = params;
     const { api_url } = getConfig();
 
-    return super._query(customUrl ?? `${api_url}${_url}`, { projectId });
+    return super._query<ProjectAccess>(customUrl ?? `${api_url}${_url}`, {
+      projectId
+    });
   }
 
   /**

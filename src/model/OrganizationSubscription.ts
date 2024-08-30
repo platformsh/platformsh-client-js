@@ -21,7 +21,7 @@ export type OrganizationSubscriptionQueryParams = {
 };
 
 export type CreateSubscriptionPayloadType = {
-  projectRegion: string;
+  project_region: string;
   plan?: string;
   projectTitle?: string;
   optionsUrl?: string;

@@ -33,13 +33,19 @@ export default class ConnectedAccount extends Ressource {
   static async query(userId: string) {
     const { api_url } = getConfig();
 
-    return super._query(`${api_url}${_url}`, { userId }, {}, {}, data => {
-      if (Array.isArray(data)) {
-        return data.map(d => ({ ...d, id: d.provider }));
-      }
+    return super._query<ConnectedAccount>(
+      `${api_url}${_url}`,
+      { userId },
+      {},
+      {},
+      data => {
+        if (Array.isArray(data)) {
+          return data.map(d => ({ ...d, id: d.provider }));
+        }
 
-      return [];
-    });
+        return [];
+      }
+    );
   }
 
   async delete() {
