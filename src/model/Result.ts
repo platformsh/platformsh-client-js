@@ -35,16 +35,15 @@ export default class Result {
    *
    * @return Activity[]
    */
-  getActivities() {
+  async getActivities() {
     if (!this.data._embedded?.activities) {
       return [];
     }
     // Workaround the cycle dependency with webpack Ressource->Result->Activity->Ressouce...
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-    const Activity = require("./Activity").default;
+    const Activity = (await import("./Activity")).default;
 
     return this.data._embedded.activities.map(
-      activity => new Activity(activity, this._url)
+      activity => new Activity(activity, this._url!)
     );
   }
 

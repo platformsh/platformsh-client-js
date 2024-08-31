@@ -1,43 +1,43 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { afterEach, assert, describe, beforeAll, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import Account from "../src/model/Account";
 
 describe("Account", () => {
   const { account_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get account", done => {
+  it("Get account", async () => {
     fetchMock.mock(`${account_url}/platform/users/1`, {
       id: 1,
       email: "test@test.com"
     });
 
-    Account.get({ id: 1 }).then(account => {
-      assert.equal(account.id, 1);
+    await Account.get({ id: "1" }).then(account => {
+      assert.equal(account.id, "1");
       assert.equal(account.email, "test@test.com");
       assert.equal(account.constructor.name, "Account");
-      done();
     });
   });
 
-  it("Get accounts", done => {
+  it("Get accounts", async () => {
     const accounts = [
-      { id: 1, email: "test1" },
-      { id: 2, email: "test2" },
-      { id: 3, email: "test3" },
-      { id: 4, email: "test4" }
+      { id: "1", email: "test1" },
+      { id: "2", email: "test2" },
+      { id: "3", email: "test3" },
+      { id: "4", email: "test4" }
     ];
 
     fetchMock.mock(
@@ -45,11 +45,10 @@ describe("Account", () => {
       accounts
     );
 
-    Account.query({ id: [1, 2, 3, 4] }).then(accts => {
+    await Account.query({ id: ["1", "2", "3", "4"] }).then(accts => {
       assert.equal(accts.length, 4);
       assert.equal(accts[0].email, "test1");
       assert.equal(accts[0].constructor.name, "Account");
-      done();
     });
   });
 });

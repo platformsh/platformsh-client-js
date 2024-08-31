@@ -93,7 +93,7 @@ export default class AuthUser extends Ressource {
     );
   }
 
-  static async update(id: string, data: AuthUser) {
+  static async update(id: string, data: Partial<AuthUser>) {
     const { api_url } = getConfig();
     const endpoint = `${api_url}${_urlParser(url, { id })}`;
 

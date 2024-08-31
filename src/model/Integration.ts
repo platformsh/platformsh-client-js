@@ -258,7 +258,7 @@ export default class Integration extends Ressource {
    *
    * @return Activity[]
    */
-  async getActivities(type: string, starts_at: number) {
+  async getActivities(type?: string, starts_at?: number) {
     const params = { type, starts_at };
 
     return Activity.query(params, `${this.getUri()}/activities`);

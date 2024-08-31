@@ -51,9 +51,9 @@ export default class SourceOperation extends Ressource {
     if (typeof variables !== "undefined") {
       body.variables = { ...variables };
     }
-    return request(this._url, "POST", body).then(data => {
+    return request(this._url, "POST", body).then(async data => {
       const result = new Result(data, this._url);
-      const activities = result.getActivities();
+      const activities = await result.getActivities();
 
       if (activities.length !== 1) {
         throw new Error(`Expected one activity, found ${activities.length}`);

@@ -368,9 +368,9 @@ export default class Deployment extends Ressource {
     };
     const url = `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/${deploymentId}/operations`;
 
-    return request(url, "POST", body).then(data => {
+    return request(url, "POST", body).then(async data => {
       const result = new Result(data, url);
-      const activities = result.getActivities();
+      const activities = await result.getActivities();
 
       if (activities.length !== 1) {
         throw new Error(`Expected one activity, found ${activities.length}`);

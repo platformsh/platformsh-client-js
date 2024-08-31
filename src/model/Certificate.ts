@@ -42,7 +42,7 @@ export default class Certificate extends Ressource {
     const { projectId, ...queryParams } = params;
     const { api_url } = getConfig();
 
-    return super._query(
+    return super._query<Certificate>(
       customUrl ?? `${api_url}${_url}`,
       { projectId },
       paramDefaults,

@@ -1,9 +1,8 @@
-/* global beforeEach, afterEach*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeEach, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import OrganizationSubscription from "../src/model/OrganizationSubscription";
 
@@ -11,47 +10,45 @@ describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();
 
   beforeEach(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get organization subscription", done => {
+  it("Get organization subscription", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions/1`, {
       project_region: "region"
     });
-    OrganizationSubscription.get({ organizationId: "aliceOrg", id: "1" }).then(
-      subscription => {
-        assert.equal(subscription.project_region, "region");
-        assert.equal(subscription.constructor.name, "OrganizationSubscription");
-        done();
-      }
-    );
+    await OrganizationSubscription.get({
+      organizationId: "aliceOrg",
+      id: "1"
+    }).then(subscription => {
+      assert.equal(subscription.project_region, "region");
+      assert.equal(subscription.constructor.name, "OrganizationSubscription");
+    });
   });
 
-  it("Save organization subscription", done => {
+  it("Save organization subscription", async () => {
     fetchMock.mock(
       `${api_url}/organizations/aliceOrg/subscriptions`,
       {
         project_region: "region"
       },
-      "POST"
+      { method: "POST" }
     );
     const organizationSubscription = new OrganizationSubscription({
       organizationId: "aliceOrg",
       project_region: "region"
     });
-    organizationSubscription
-      .save()
-      .then(subscription => {
-        assert.equal(subscription.constructor.name, "Result");
-        done();
-      })
-      .catch(err => console.log(err));
+    await organizationSubscription.save().then(subscription => {
+      assert.equal(subscription.constructor.name, "Result");
+    });
   });
-  it("Get organization subscription estimate", done => {
+  it("Get organization subscription estimate", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions/1`, {
       id: 1,
       project_region: "region",
@@ -67,18 +64,17 @@ describe("OrganizationSubscription", () => {
         project_region: "region"
       }
     );
-    OrganizationSubscription.get({ organizationId: "aliceOrg", id: "1" }).then(
-      subscription => {
-        assert.equal(subscription.project_region, "region");
-        assert.equal(subscription.constructor.name, "OrganizationSubscription");
-        subscription.getEstimate().then(() => {
-          done();
-        });
-      }
-    );
+    await OrganizationSubscription.get({
+      organizationId: "aliceOrg",
+      id: "1"
+    }).then(async subscription => {
+      assert.equal(subscription.project_region, "region");
+      assert.equal(subscription.constructor.name, "OrganizationSubscription");
+      await subscription.getEstimate();
+    });
   });
 
-  it("Get organization subscriptions", done => {
+  it("Get organization subscriptions", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/subscriptions`, {
       items: [
         {
@@ -87,7 +83,7 @@ describe("OrganizationSubscription", () => {
         }
       ]
     });
-    OrganizationSubscription.query({ organizationId: "aliceOrg" }).then(
+    await OrganizationSubscription.query({ organizationId: "aliceOrg" }).then(
       subscriptions => {
         assert.equal(subscriptions.items.length, 1);
         assert.equal(subscriptions.items[0].project_region, "region");
@@ -96,12 +92,11 @@ describe("OrganizationSubscription", () => {
           subscriptions.items[0].constructor.name,
           "OrganizationSubscription"
         );
-        done();
       }
     );
   });
 
-  it("Get organization subscriptions with filters", done => {
+  it("Get organization subscriptions with filters", async () => {
     fetchMock.mock(
       `${api_url}/organizations/aliceOrg/subscriptions?filter[status][value][]=active&filter[status][value][]=suspended&filter[status][operator]=IN`,
       {
@@ -112,7 +107,7 @@ describe("OrganizationSubscription", () => {
         ]
       }
     );
-    OrganizationSubscription.query({
+    await OrganizationSubscription.query({
       organizationId: "aliceOrg",
       filter: {
         status: {
@@ -127,17 +122,16 @@ describe("OrganizationSubscription", () => {
         subscriptions.items[0].constructor.name,
         "OrganizationSubscription"
       );
-      done();
     });
   });
 
-  it("Update organization subscription", done => {
+  it("Update organization subscription", async () => {
     fetchMock.mock(
       `https://api.platform.sh/organizations/aliceOrg/subscriptions/1`,
       {
         project_region: "region"
       },
-      "PATCH"
+      { method: "PATCH" }
     );
     const organizationSubscription = new OrganizationSubscription({
       id: 1,
@@ -149,20 +143,18 @@ describe("OrganizationSubscription", () => {
         }
       }
     });
-    organizationSubscription
+    await organizationSubscription
       .update({ environments: 3 })
       .then(subscription => {
         assert.equal(subscription.constructor.name, "Result");
-        done();
-      })
-      .catch(err => console.log(err));
+      });
   });
 
-  it("Delete organization subscription", done => {
+  it("Delete organization subscription", async () => {
     fetchMock.mock(
       `https://api.platform.sh/organizations/aliceOrg/subscriptions/1`,
       {},
-      "DELETE"
+      { method: "DELETE" }
     );
     const organizationSubscription = new OrganizationSubscription({
       id: 1,
@@ -177,11 +169,6 @@ describe("OrganizationSubscription", () => {
         }
       }
     });
-    organizationSubscription
-      .delete()
-      .then(() => {
-        done();
-      })
-      .catch(err => console.log(err));
+    await organizationSubscription.delete();
   });
 });

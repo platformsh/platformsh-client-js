@@ -1,9 +1,8 @@
-/* global beforeEach, afterEach*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeEach, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import OrganizationMember from "../src/model/OrganizationMember";
 
@@ -11,14 +10,16 @@ describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();
 
   beforeEach(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get organization member user", done => {
+  it("Get organization member user", async () => {
     fetchMock.mock(`${api_url}/organizations/aliceOrg/members/1`, {
       id: "1",
       organization_id: "aliceOrg",
@@ -41,24 +42,23 @@ describe("OrganizationSubscription", () => {
       id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     });
 
-    OrganizationMember.get({ organizationId: "aliceOrg", id: "1" }).then(
-      member => {
+    await OrganizationMember.get({ organizationId: "aliceOrg", id: "1" }).then(
+      async member => {
         assert.equal(member.id, "1");
         assert.equal(member.constructor.name, "OrganizationMember");
-        member.getUser().then(user => {
+        await member.getUser().then(user => {
           assert.equal(user.id, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
           assert.equal(user.constructor.name, "AuthUser");
-          done();
         });
       }
     );
   });
 
-  it("Update organization member", done => {
+  it("Update organization member", async () => {
     fetchMock.mock(
       "https://api.platform.sh/organizations/aliceOrg/members/1",
       {},
-      "PATCH"
+      { method: "PATCH" }
     );
 
     const member = new OrganizationMember({
@@ -71,16 +71,14 @@ describe("OrganizationSubscription", () => {
       }
     });
 
-    member.update({ permissions: ["billing"] }).then(() => {
-      done();
-    });
+    await member.update({ permissions: ["billing"] });
   });
 
-  it("Delete organization member", done => {
+  it("Delete organization member", async () => {
     fetchMock.mock(
       "https://api.platform.sh/organizations/aliceOrg/members/1",
       {},
-      "DELETE"
+      { method: "DELETE" }
     );
 
     const member = new OrganizationMember({
@@ -93,8 +91,6 @@ describe("OrganizationSubscription", () => {
       }
     });
 
-    member.delete().then(() => {
-      done();
-    });
+    await member.delete();
   });
 });

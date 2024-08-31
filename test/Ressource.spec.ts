@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, expect, it } from "vitest";
 
 import Ressource from "../src/model/Ressource";
 
@@ -24,14 +24,16 @@ describe("Ressource", () => {
   });
 
   describe("runOperation", () => {
-    it("Throws if the operation is not available", () => {
+    it("Throws if the operation is not available", async () => {
       const data = {
         _links: {}
       };
       const resource = new MockResource("/test", {}, {}, data);
 
-      expect(() => resource.runOperation("test")).to.throw(
-        "Operation not available: test"
+      await expect(async () =>
+        resource.runOperation("test")
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `[Error: Operation not available: test]`
       );
     });
   });

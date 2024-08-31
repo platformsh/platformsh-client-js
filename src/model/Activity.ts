@@ -205,7 +205,7 @@ export default class Activity extends Ressource {
     return request(this.getLink("log"), "GET", { start_at });
   }
 
-  getLogs(callback: (log: string[] | string, response?: Response) => void) {
+  getLogs(callback: (log: any[] | string, response?: Response) => void) {
     let canceled = false;
 
     const cancel = () => {
@@ -226,7 +226,8 @@ export default class Activity extends Ressource {
         let delay = 0;
 
         while (
-          (!lastResponse || !lastResponse[lastResponse.data.length - 1].seal) &&
+          (!lastResponse ||
+            !lastResponse[lastResponse.data?.length - 1]?.seal) &&
           attempts < 5 &&
           // eslint-disable-next-line no-unmodified-loop-condition
           !canceled

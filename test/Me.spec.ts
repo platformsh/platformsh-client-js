@@ -1,24 +1,25 @@
-/* global afterEach, before*/
-
-import { assert } from "chai";
 import fetchMock from "fetch-mock";
+import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
+import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
 import Me from "../src/model/Me";
 
 describe("Me", () => {
   const { api_url } = getConfig();
 
-  before(() => {
-    setAuthenticationPromise(Promise.resolve("testToken"));
+  beforeAll(() => {
+    setAuthenticationPromise(
+      Promise.resolve("testToken" as unknown as JWTToken)
+    );
   });
 
   afterEach(() => {
     fetchMock.restore();
   });
 
-  it("Get me", done => {
+  it("Get me", async () => {
     fetchMock.get(`${api_url}/platform/me`, {
       id: 1,
       display_name: "test",
@@ -32,15 +33,14 @@ describe("Me", () => {
       ]
     });
 
-    Me.get().then(me => {
-      assert.equal(me.id, 1);
+    await Me.get().then(me => {
+      assert.equal(me.id, "1");
       assert.equal(me.email, "test@test.com");
       assert.equal(me.constructor.name, "Me");
-      done();
     });
   });
 
-  it("Get and update me", done => {
+  it("Get and update me", async () => {
     fetchMock.get(`${api_url}/platform/me`, {
       id: 1,
       display_name: "test",
@@ -59,13 +59,12 @@ describe("Me", () => {
       picture: "testNewPic"
     });
 
-    Me.get().then(me => {
-      me.update({ picture: "testNewPic" }).then(newMe => {
+    await Me.get().then(async me => {
+      await me.update({ picture: "testNewPic" }).then(newMe => {
         assert.equal(newMe.data.id, 1);
         assert.equal(newMe.data.email, "test@test.com");
         assert.equal(newMe.data.picture, "testNewPic");
         assert.equal(newMe.constructor.name, "Result");
-        done();
       });
     });
   });
