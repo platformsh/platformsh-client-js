@@ -37,6 +37,9 @@ type _OrganizationEstimate<IsComplex> = {
   total: MaybeComplexFormattedCost<IsComplex>;
   sub_total: MaybeComplexFormattedCost<IsComplex>;
   discounts: MaybeComplexFormattedCost<IsComplex>;
+  allowance_discount: MaybeComplexFormattedCost<IsComplex>;
+  enterprise_discount: MaybeComplexFormattedCost<IsComplex>;
+  startup_discount: MaybeComplexFormattedCost<IsComplex>;
   vouchers: MaybeComplexFormattedCost<IsComplex>;
   options: {
     support_level: MaybeComplexFormattedCost<IsComplex>;
