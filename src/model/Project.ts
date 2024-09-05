@@ -1,4 +1,3 @@
-import "cross-fetch/polyfill"; // fetch api polyfill
 import path from "path";
 
 import parse_url from "parse_url";
