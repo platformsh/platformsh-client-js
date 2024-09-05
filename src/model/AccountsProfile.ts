@@ -57,7 +57,7 @@ export default class AccountsProfile extends Ressource {
   ui_colorscheme: string;
   ui_contrast: string;
   default_catalog: string;
-  marketing: string;
+  marketing: boolean;
   billing_contact: string;
   vat_number: string;
 
@@ -86,7 +86,7 @@ export default class AccountsProfile extends Ressource {
     this.ui_colorscheme = "";
     this.ui_contrast = "";
     this.default_catalog = "";
-    this.marketing = "";
+    this.marketing = false;
     this.billing_contact = "";
     this.vat_number = "";
   }
