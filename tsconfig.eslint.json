@@ -1,17 +1,4 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "es2015",
-    "lib": ["es6", "dom", "dom.iterable", "es2019"],
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowJs": true,
-    "skipLibCheck": true
-  },
+  "extends": "./tsconfig.json",
   "include": ["."],
-  "exclude": ["node_modules", "lib", "types"]
 }
