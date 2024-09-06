@@ -32,6 +32,7 @@
     "array-callback-return": "error",
     "default-case": "error",
     "dot-notation": "error",
+    "eslint-comments/disable-enable-pair": "off",
     "eslint-comments/no-unused-disable": "error",
     "eqeqeq": "error",
     "func-names": "error",

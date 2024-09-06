@@ -1,12 +1,11 @@
 import isNode from "detect-node";
 import { EventSourcePolyfill as EventSource } from "event-source-polyfill";
-import param from "to-querystring";
-import "cross-fetch/polyfill"; // fetch api polyfill
 
 import type { JWTToken } from "./authentication";
 import authenticate from "./authentication";
 import type { ClientConfiguration } from "./config";
 import { getConfig } from "./config";
+import param from "./toQuerystring";
 
 export type RequestOptions = {
   queryStringArrayPrefix?: string;
