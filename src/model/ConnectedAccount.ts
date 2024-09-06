@@ -15,10 +15,10 @@ export default class ConnectedAccount extends Ressource {
   constructor(connectedAccount: APIObject, url: string) {
     super(url, {}, {}, connectedAccount, [], []);
 
-    this.provider = "";
-    this.subject = "";
-    this.created_at = "";
-    this.updated_at = "";
+    this.provider = connectedAccount.provider ?? "";
+    this.subject = connectedAccount.subject ?? "";
+    this.created_at = connectedAccount.created_at ?? "";
+    this.updated_at = connectedAccount.updated_at ?? "";
   }
 
   static async get(userId: string, provider: string) {

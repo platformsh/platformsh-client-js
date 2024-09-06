@@ -41,11 +41,11 @@ export default class ApiToken extends Ressource {
       Ressource.getQueryUrl(`${api_url}${url}`),
       params
     );
-    this.id = "";
-    this.name = "";
-    this.created_at = "";
-    this.update_at = "";
-    this.token = "";
+    this.id = apiToken.id ?? "";
+    this.name = apiToken.name ?? "";
+    this.created_at = apiToken.created_at ?? "";
+    this.update_at = apiToken.update_at ?? "";
+    this.token = apiToken.token ?? "";
   }
 
   static async get(params: APITokenGetParams, customUrl: string) {

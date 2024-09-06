@@ -73,22 +73,22 @@ export default class AccountsProfile extends Ressource {
       modifiableField
     );
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = "";
-    this.display_name = "";
-    this.email = "";
-    this.username = "";
-    this.picture = "";
-    this.company_type = "";
-    this.company_role = "";
-    this.company_name = "";
-    this.website_url = "";
-    this.new_ui = true;
-    this.ui_colorscheme = "";
-    this.ui_contrast = "";
-    this.default_catalog = "";
-    this.marketing = false;
-    this.billing_contact = "";
-    this.vat_number = "";
+    this.id = profile.id ?? "";
+    this.display_name = profile.display_name ?? "";
+    this.email = profile.email ?? "";
+    this.username = profile.username ?? "";
+    this.picture = profile.picture ?? "";
+    this.company_type = profile.company_type ?? "";
+    this.company_role = profile.company_role ?? "";
+    this.company_name = profile.company_name ?? "";
+    this.website_url = profile.website_url ?? "";
+    this.new_ui = profile.new_ui ?? true;
+    this.ui_colorscheme = profile.ui_colorscheme ?? "";
+    this.ui_contrast = profile.ui_contrast ?? "";
+    this.default_catalog = profile.default_catalog ?? "";
+    this.marketing = profile.marketing ?? false;
+    this.billing_contact = profile.billing_contact ?? "";
+    this.vat_number = profile.vat_number ?? "";
   }
 
   static async get(params: AccountsProfileGetParams, customUrl?: string) {

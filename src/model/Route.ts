@@ -27,15 +27,15 @@ export type RouteQueryParams = {
 };
 
 export default class Route extends Ressource {
-  id = "";
-  project = "";
-  environment = "";
-  route = {};
-  cache = {};
-  ssi = [];
-  upstream = "";
-  to = "";
-  type = "";
+  id: string;
+  project: string;
+  environment: string;
+  route: Record<string, unknown>;
+  cache: Record<string, unknown>;
+  ssi: unknown[];
+  upstream: string;
+  to: string;
+  type: string;
 
   constructor(route: APIObject, url: string) {
     super(
@@ -46,6 +46,16 @@ export default class Route extends Ressource {
       creatableAndModifiableField,
       creatableAndModifiableField
     );
+
+    this.id = route.id ?? "";
+    this.project = route.project ?? "";
+    this.environment = route.environment ?? "";
+    this.route = route.route ?? {};
+    this.cache = route.cache ?? {};
+    this.ssi = route.ssi ?? [];
+    this.upstream = route.upstream ?? "";
+    this.to = route.to ?? "";
+    this.type = route.type ?? "";
   }
 
   static async get(params: RouteGetParams, customUrl?: string) {

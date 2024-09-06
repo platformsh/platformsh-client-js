@@ -13,10 +13,12 @@ export type MetricsGetParams = {
 };
 
 export default class Metrics extends Ressource {
-  results = {};
+  results: Record<string, unknown>;
 
   constructor(metrics: APIObject, url: string) {
     super(url, paramDefaults, {}, metrics);
+
+    this.results = metrics.results ?? {};
   }
 
   static async get(params: MetricsGetParams, customUrl?: string) {

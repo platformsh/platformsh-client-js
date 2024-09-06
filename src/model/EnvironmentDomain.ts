@@ -21,13 +21,13 @@ export type EnvironmentDomainQueryParams = {
 };
 
 export default class EnvironmentDomain extends Ressource {
-  id = "";
-  name = "";
-  is_default = false;
-  created_at = "";
-  ssl = [];
-  updated_at = "";
-  replacement_for = "";
+  id: string;
+  name: string;
+  is_default: boolean;
+  created_at: string;
+  ssl: unknown[];
+  updated_at: string;
+  replacement_for: string;
 
   constructor(environmentDomain: APIObject, url: string) {
     super(
@@ -38,6 +38,13 @@ export default class EnvironmentDomain extends Ressource {
       ["name", "ssl", "is_default", "replacement_for"],
       modifiableField
     );
+    this.id = environmentDomain.id ?? "";
+    this.name = environmentDomain.name;
+    this.is_default = environmentDomain.is_default ?? false;
+    this.created_at = environmentDomain.created_at ?? "";
+    this.ssl = environmentDomain.ssl ?? [];
+    this.updated_at = environmentDomain.updated_at ?? "";
+    this.replacement_for = environmentDomain.replacement_for ?? "";
     this._required = ["name"];
   }
 

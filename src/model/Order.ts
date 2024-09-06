@@ -76,21 +76,22 @@ export default class Order extends Ressource {
     const { api_url } = getConfig();
 
     super(`${api_url}${url}`, paramDefaults, { id }, account);
-    this.id = "";
-    this.status = "";
-    this.owner = "";
-    this.address = {};
-    this.vat_number = 0;
-    this.billing_period_start = "";
-    this.billing_period_end = "";
-    this.last_refreshed = "";
-    this.total = 0;
-    this.total_formatted = "";
-    this.components = {};
-    this.currency = "";
-    this.invoice_url = "";
-    this.line_items = [];
-    this.billing_period_label = undefined;
+
+    this.id = id ?? "";
+    this.status = account.status ?? "";
+    this.owner = account.owner ?? "";
+    this.address = account.address ?? {};
+    this.vat_number = account.vat_number ?? 0;
+    this.billing_period_start = account.billing_period_start ?? "";
+    this.billing_period_end = account.billing_period_end ?? "";
+    this.last_refreshed = account.last_refreshed ?? "";
+    this.total = account.total ?? 0;
+    this.total_formatted = account.total_formatted ?? "";
+    this.components = account.components ?? {};
+    this.currency = account.currency ?? "";
+    this.invoice_url = account.invoice_url ?? "";
+    this.line_items = account.line_items ?? [];
+    this.billing_period_label = account.billing_period_label ?? undefined;
   }
 
   static async get(params: OrdersGetParams, customUrl?: string) {

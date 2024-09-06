@@ -28,30 +28,6 @@ export type ParamsType = Record<string, any>;
 
 export type RessourceChildClass<T> = new (obj: any, url?: string) => T;
 
-const handler = {
-  get(target: any, key: string) {
-    if (
-      typeof key !== "symbol" &&
-      key !== "data" &&
-      ((!key.startsWith("_") && target.hasOwnProperty(key)) ||
-        ["_embedded", "_links"].includes(key))
-    ) {
-      return target.data?.[key];
-    }
-
-    return target[key];
-  },
-  set(target: any, key: string, value: any) {
-    if (key !== "data" && target.hasOwnProperty(key)) {
-      target.data[key] = value;
-      return true;
-    }
-
-    target[key] = value;
-    return true;
-  }
-};
-
 const pick = (data: APIObject, fields: string[]) =>
   Object.keys(data)
     .filter(k => fields.includes(k))
@@ -81,8 +57,6 @@ export default abstract class Ressource {
   protected _required?: string[];
   protected _queryUrl?: string;
 
-  private data?: APIObject;
-
   constructor(
     _url: string,
     paramDefaults: ParamsType,
@@ -95,8 +69,6 @@ export default abstract class Ressource {
     if (this.constructor === Ressource) {
       throw new Error("Can't instantiate abstract class");
     }
-
-    this.copy(data);
 
     const url = _url || this.getLink("self");
     this._params = params;
@@ -113,8 +85,8 @@ export default abstract class Ressource {
     this._modifiableField = _modifiableField;
     this._paramDefaults = paramDefaults;
 
-    // eslint-disable-next-line no-constructor-return
-    return new Proxy(this, handler);
+    this._links = data._links;
+    this._embedded = data._embedded;
   }
 
   static getQueryUrl(url = "", _id?: string) {
@@ -181,7 +153,7 @@ export default abstract class Ressource {
    *
    * @return string{} An object of validation errors.
    */
-  checkUpdate(values: APIObject | undefined) {
+  checkUpdate(values: Record<string, any>) {
     if (!values) {
       return;
     }
@@ -200,7 +172,7 @@ export default abstract class Ressource {
       throw new Error("Can't call update on this ressource");
     }
 
-    const errors = this.checkUpdate(this.data);
+    const errors = this.checkUpdate(this);
 
     if (errors) {
       return Promise.reject(errors);
@@ -218,7 +190,7 @@ export default abstract class Ressource {
     if (!updateLink) {
       updateLink = _urlParser(
         _url ?? this._url,
-        this.data,
+        this as Record<string, any>,
         this._paramDefaults
       );
     }
@@ -234,7 +206,7 @@ export default abstract class Ressource {
   }
 
   updateLocal(data: APIObject) {
-    return new (this.constructor as any)({ ...this.data, ...data }, this._url);
+    return new (this.constructor as any)({ ...this, ...data }, this._url);
   }
 
   /**
@@ -253,7 +225,7 @@ export default abstract class Ressource {
    *
    * @return string{} An object of validation errors.
    */
-  checkNew(values: APIObject | undefined) {
+  checkNew(values: Record<string, any>) {
     if (!values) {
       return;
     }
@@ -278,17 +250,13 @@ export default abstract class Ressource {
       throw new Error("Can't call save on this ressource");
     }
 
-    const errors = this.checkNew(this.data);
+    const errors = this.checkNew(this);
     if (errors) {
       return Promise.reject(errors);
     }
     const url = this._queryUrl ?? this._url;
 
-    return request(
-      url,
-      "POST",
-      this.data && pick(this.data, this._creatableField)
-    ).then(
+    return request(url, "POST", pick(this, this._creatableField)).then(
       (data: APIObject) =>
         new Result(data, url, this.constructor as RessourceChildClass<any>)
     );
@@ -311,7 +279,7 @@ export default abstract class Ressource {
   }
 
   copy(data: APIObject) {
-    this.data = { ...this.data, ...data };
+    Object.assign(this, data);
   }
 
   /**
@@ -333,7 +301,7 @@ export default abstract class Ressource {
    * @return {boolean} true if the operation is available false otherwise
    */
   operationAvailable(operationName: string): boolean {
-    const links = this.data?._links;
+    const links = this._links;
     const operation = links?.[`#${operationName}`];
     return !!operation?.href;
   }
@@ -346,7 +314,7 @@ export default abstract class Ressource {
    * @return bool
    */
   hasLink(rel: string): boolean {
-    return hasLink(this.data?._links, rel);
+    return hasLink(this._links, rel);
   }
 
   /**
@@ -357,11 +325,7 @@ export default abstract class Ressource {
    * @return bool
    */
   hasEmbedded(rel: string): boolean {
-    return !!(
-      this.data?._embedded &&
-      this.data._embedded[rel] &&
-      this.data._embedded[rel].length
-    );
+    return !!this._embedded?.[rel]?.length;
   }
 
   /**
@@ -376,7 +340,7 @@ export default abstract class Ressource {
       throw new Error(`Embedded not found: ${rel}`);
     }
 
-    return this.data?._embedded && this.data._embedded[rel];
+    return this._embedded?.[rel];
   }
 
   /**
@@ -387,7 +351,7 @@ export default abstract class Ressource {
    * @return string
    */
   getLink(rel: string, absolute = true): string {
-    const href = getLinkHref(this.data?._links, rel, absolute, this._baseUrl);
+    const href = getLinkHref(this._links, rel, absolute, this._baseUrl);
 
     if (typeof href === "string") {
       return href;
@@ -402,7 +366,7 @@ export default abstract class Ressource {
    * @return Links
    */
   getLinks() {
-    return this.data?._links;
+    return this._links;
   }
 
   /**
@@ -467,7 +431,7 @@ export default abstract class Ressource {
   }
 
   hasPermission(permission: string) {
-    return this.data?._links && !!this.data._links[permission];
+    return this._links && !!this._links[permission];
   }
 
   // Load a single object from the ref API
@@ -477,7 +441,7 @@ export default abstract class Ressource {
     absolute = true
   ) {
     return getRef<T>(
-      this.data?._links,
+      this._links,
       linkKey,
       constructor,
       absolute,
@@ -492,7 +456,7 @@ export default abstract class Ressource {
     absolute = true
   ) {
     return getRefs<T>(
-      this.data?._links,
+      this._links,
       linkKey,
       constructor,
       absolute,

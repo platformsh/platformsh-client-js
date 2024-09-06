@@ -34,10 +34,10 @@ export default class Team extends Ressource {
       creatableField,
       modifiableField
     );
-    this.id = "";
-    this.name = "";
-    this.parent = "";
-    this.organization = "";
+    this.id = team.id ?? "";
+    this.name = team.name ?? "";
+    this.parent = team.parent ?? "";
+    this.organization = team.organization ?? "";
   }
 
   static async get(params: TeamGetParams, customUrl?: string) {

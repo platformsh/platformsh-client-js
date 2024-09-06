@@ -65,32 +65,56 @@ type HttpAccess = {
 };
 
 export default class Environment extends Ressource {
-  id = "";
-  status: Status = Status.inactive;
-  head_commit = "";
-  name = "";
-  parent: string | null = null;
-  machine_name = "";
-  restrict_robots = false;
-  title = "";
-  created_at = "";
-  updated_at = "";
-  last_active_at = "";
-  last_backup_at = "";
-  project = "";
-  is_dirty = false;
-  enable_smtp = false;
-  has_code = false;
-  deployment_target = "";
-  deployment_state: DeploymentState | undefined = undefined;
-  http_access: HttpAccess = {};
-  is_main = false;
-  type = "";
-  edge_hostname = "";
-  has_deployment = false;
+  id: string;
+  status: Status;
+  head_commit: string;
+  name: string;
+  parent: string | null;
+  machine_name: string;
+  restrict_robots: boolean;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  last_active_at: string;
+  last_backup_at: string;
+  project: string;
+  is_dirty: boolean;
+  enable_smtp: boolean;
+  has_code: boolean;
+  deployment_target: string;
+  deployment_state?: DeploymentState;
+  http_access: HttpAccess;
+  is_main: boolean;
+  type: string;
+  edge_hostname: string;
+  has_deployment: boolean;
 
   constructor(environment: APIObject, url: string) {
     super(url, paramDefaults, environment, environment, [], modifiableField);
+
+    this.id = environment.id ?? "";
+    this.status = environment.status ?? Status.inactive;
+    this.head_commit = environment.head_commit ?? "";
+    this.name = environment.name ?? "";
+    this.parent = environment.parent ?? null;
+    this.machine_name = environment.machine_name ?? "";
+    this.restrict_robots = environment.restrict_robots ?? false;
+    this.title = environment.title ?? "";
+    this.created_at = environment.created_at ?? "";
+    this.updated_at = environment.updated_at ?? "";
+    this.last_active_at = environment.last_active_at ?? "";
+    this.last_backup_at = environment.last_backup_at ?? "";
+    this.project = environment.project ?? "";
+    this.is_dirty = environment.is_dirty ?? false;
+    this.enable_smtp = environment.enable_smtp ?? false;
+    this.has_code = environment.has_code ?? false;
+    this.deployment_target = environment.deployment_target ?? "";
+    this.deployment_state = environment.deployment_state ?? undefined;
+    this.http_access = environment.http_access ?? {};
+    this.is_main = environment.is_main ?? false;
+    this.type = environment.type ?? "";
+    this.edge_hostname = environment.edge_hostname ?? "";
+    this.has_deployment = environment.has_deployment ?? false;
   }
 
   static async get(params: EnvironmentGetParams, customUrl?: string) {

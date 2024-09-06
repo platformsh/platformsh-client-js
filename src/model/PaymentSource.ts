@@ -43,15 +43,15 @@ export default class PaymentSource extends Ressource {
       paymentSource,
       creatableField
     );
-    this.id = "";
-    this.type = "";
-    this.type_label = "";
-    this.name = "";
-    this.number = "";
-    this.card = undefined;
-    this.mandate = undefined;
-    this.chargeable = false;
-    this.payment_category = "";
+    this.id = paymentSource.id;
+    this.type = paymentSource.type ?? "";
+    this.type_label = paymentSource.type_label ?? "";
+    this.name = paymentSource.name ?? "";
+    this.number = paymentSource.number ?? "";
+    this.card = paymentSource.card;
+    this.mandate = paymentSource.mandate;
+    this.chargeable = paymentSource.chargeable ?? false;
+    this.payment_category = paymentSource.payment_category ?? "";
   }
 
   static async get(queryParams = {}, customUrl?: string) {

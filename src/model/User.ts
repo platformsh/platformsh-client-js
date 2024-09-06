@@ -35,13 +35,13 @@ export default class User extends Ressource {
 
     super(url, paramDefaults, { id }, user, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = "";
-    this.created_at = "";
-    this.updated_at = "";
-    this.has_key = false;
-    this.display_name = "";
-    this.email = "";
-    this.username = "";
+    this.id = id ?? "";
+    this.created_at = user.created_at ?? "";
+    this.updated_at = user.updated_at ?? "";
+    this.has_key = user.has_key ?? false;
+    this.display_name = user.display_name ?? "";
+    this.email = user.email ?? "";
+    this.username = user.username ?? "";
   }
 
   static async get(

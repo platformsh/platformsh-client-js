@@ -40,20 +40,20 @@ export type VariableQueryParams = {
 };
 
 export default class Variable extends Ressource {
-  id = "";
-  name = "";
-  project = "";
-  environment = "";
-  value = "";
-  is_enabled = false;
-  created_at = "";
-  updated_at = "";
-  inherited = false;
-  is_json = false;
-  is_sensitive = false;
-  is_inheritable = true;
-  visible_build = false;
-  visible_runtime = true;
+  id: string;
+  name: string;
+  project: string;
+  environment: string;
+  value: string;
+  is_enabled: boolean;
+  created_at: string;
+  updated_at: string;
+  inherited: boolean;
+  is_json: boolean;
+  is_sensitive: boolean;
+  is_inheritable: boolean;
+  visible_build: boolean;
+  visible_runtime: boolean;
 
   constructor(variable: APIObject, url?: string) {
     super(
@@ -64,6 +64,21 @@ export default class Variable extends Ressource {
       creatableField,
       modifialbleField
     );
+
+    this.id = variable.id ?? "";
+    this.name = variable.name ?? "";
+    this.project = variable.project ?? "";
+    this.environment = variable.environment ?? "";
+    this.value = variable.value ?? "";
+    this.is_enabled = variable.is_enabled ?? false;
+    this.created_at = variable.created_at ?? "";
+    this.updated_at = variable.updated_at ?? "";
+    this.inherited = variable.inherited ?? false;
+    this.is_json = variable.is_json ?? false;
+    this.is_sensitive = variable.is_sensitive ?? false;
+    this.is_inheritable = variable.is_inheritable ?? true;
+    this.visible_build = variable.visible_build ?? false;
+    this.visible_runtime = variable.visible_runtime ?? true;
   }
 
   static async get(params: VariableGetParams, customUrl?: string) {

@@ -35,8 +35,8 @@ export default class EnvironmentAccess extends Ressource {
   user = "";
   email = "";
   role = "";
-  project? = "";
-  environment? = "";
+  project = "";
+  environment = "";
 
   constructor(environmentAccess: APIObject, url: string) {
     super(
@@ -47,6 +47,13 @@ export default class EnvironmentAccess extends Ressource {
       creatableField,
       modifiableField
     );
+
+    this.id = environmentAccess.id ?? "";
+    this.user = environmentAccess.user ?? "";
+    this.email = environmentAccess.email ?? "";
+    this.role = environmentAccess.role;
+    this.project = environmentAccess.project ?? "";
+    this.environment = environmentAccess.environment ?? "";
 
     this._required = ["role"];
   }

@@ -1,10 +1,10 @@
 import fetchMock from "fetch-mock";
-import type OrganizationMember from "src/model/OrganizationMember";
 import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
 import Organization from "../src/model/Organization";
+import type OrganizationMember from "../src/model/OrganizationMember";
 
 describe("Organization", () => {
   beforeAll(() => {

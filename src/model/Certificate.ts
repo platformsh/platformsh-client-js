@@ -25,16 +25,16 @@ export default class Certificate extends Ressource {
 
   constructor(certificate: APIObject, url: string) {
     super(url, paramDefaults, {}, certificate, ["key", "certificate", "chain"]);
-    this.key = "";
-    this.id = "";
-    this.certificate = "";
-    this.chain = [];
-    this.domains = [];
-    this.expires_at = "";
-    this.updated_at = "";
-    this.created_at = "";
-    this.is_provisioned = true;
-    this.issuer = [];
+    this.key = certificate.key;
+    this.id = certificate.id ?? "";
+    this.certificate = certificate.certificate;
+    this.chain = certificate.chain ?? [];
+    this.domains = certificate.domains ?? [];
+    this.expires_at = certificate.expires_at ?? "";
+    this.updated_at = certificate.updated_at ?? "";
+    this.created_at = certificate.created_at ?? "";
+    this.is_provisioned = certificate.is_provisioned ?? true;
+    this.issuer = certificate.issuer ?? [];
     this._required = ["key", "certificate"];
   }
 

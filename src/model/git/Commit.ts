@@ -22,13 +22,13 @@ export default class Commit extends Ressource {
   constructor(commit: Commit, url: string, params: CommitParams) {
     super(url, {}, params, commit, [], []);
 
-    this.id = "";
-    this.sha = "";
-    this.author = "";
-    this.committer = "";
-    this.message = "";
-    this.tree = "";
-    this.parents = [];
+    this.id = commit.id ?? "";
+    this.sha = commit.sha ?? "";
+    this.author = commit.author ?? "";
+    this.committer = commit.committer ?? "";
+    this.message = commit.message ?? "";
+    this.tree = commit.tree ?? "";
+    this.parents = commit.parents ?? [];
   }
 
   static async get(projectId: string, sha: string) {
