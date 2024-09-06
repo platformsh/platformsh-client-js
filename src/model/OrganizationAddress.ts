@@ -57,17 +57,17 @@ export default class OrganizationAddress extends Ressource {
       _modifiableField
     );
     this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
-    this.id = account.id ?? "";
-    this.country = account.country ?? "";
-    this.name_line = account.name_line ?? "";
-    this.premise = account.premise ?? "";
-    this.sub_premise = account.sub_premise ?? "";
-    this.thoroughfare = account.thoroughfare ?? "";
-    this.administrative_area = account.administrative_area ?? "";
-    this.sub_administrative_area = account.sub_administrative_area ?? "";
-    this.locality = account.locality ?? "";
-    this.dependent_locality = account.dependent_locality ?? "";
-    this.postal_code = account.postal_code ?? "";
+    this.id = account.id;
+    this.country = account.country;
+    this.name_line = account.name_line;
+    this.premise = account.premise;
+    this.sub_premise = account.sub_premise;
+    this.thoroughfare = account.thoroughfare;
+    this.administrative_area = account.administrative_area;
+    this.sub_administrative_area = account.sub_administrative_area;
+    this.locality = account.locality;
+    this.dependent_locality = account.dependent_locality;
+    this.postal_code = account.postal_code;
   }
 
   static getQueryUrl(_url: string, id: string) {

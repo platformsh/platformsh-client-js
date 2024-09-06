@@ -42,15 +42,15 @@ export default class Invitation extends Ressource {
 
     this._queryUrl = Ressource.getQueryUrl(this._url);
 
-    this.id = invitation.id ?? "";
+    this.id = invitation.id;
     this.owner = invitation.owner ?? {};
-    this.projectId = invitation.projectId ?? "";
+    this.projectId = invitation.projectId;
     this.environments = invitation.environments ?? []; // This field is deprecated, use permissions instead
     this.permissions = invitation.permissions ?? [];
-    this.state = invitation.state ?? "";
-    this.email = invitation.email ?? "";
-    this.role = invitation.role ?? "";
-    this.force = invitation.force ?? false;
+    this.state = invitation.state;
+    this.email = invitation.email;
+    this.role = invitation.role;
+    this.force = invitation.force;
   }
 
   static async get(projectId: string, id: string) {

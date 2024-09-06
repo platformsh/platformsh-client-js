@@ -31,10 +31,10 @@ export default class ProjectAccess extends Ressource {
   constructor(projectAccess: APIObject, url: string) {
     super(url, paramDefaults, {}, projectAccess, createField, modifiableField);
     this._required = ["email"];
-    this.id = projectAccess.id ?? "";
+    this.id = projectAccess.id;
     this.email = projectAccess.email;
-    this.role = projectAccess.role ?? "";
-    this.user = projectAccess.user ?? "";
+    this.role = projectAccess.role;
+    this.user = projectAccess.user;
   }
 
   static async query(params: ProjectAccessQueryParams, customUrl?: string) {

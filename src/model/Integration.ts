@@ -197,7 +197,7 @@ export default class Integration extends Ressource {
       fields
     );
 
-    this.id = integration.id ?? "";
+    this.id = integration.id;
     this.type = integration.type;
     this.app_credentials = integration.app_credentials;
     this.addon_credentials = integration.addon_credentials;

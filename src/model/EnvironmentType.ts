@@ -50,7 +50,7 @@ export default class EnvironmentType extends Ressource {
     const { api_url } = getConfig();
 
     super(`${api_url}${url}`, paramDefaults, { id }, environmentType);
-    this.id = environmentType.id ?? "";
+    this.id = environmentType.id;
     this.accesses = environmentType.accesses ?? [];
   }
 

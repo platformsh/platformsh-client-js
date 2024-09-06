@@ -54,17 +54,17 @@ export default class OrganizationProfile extends Ressource {
     );
 
     this.stripe = profile.stripe ?? {};
-    this.security_contact = profile.security_contact ?? "";
-    this.vat_number = profile.vat_number ?? "";
-    this.billing_contact = profile.billing_contact ?? "";
-    this.default_catalog = profile.default_catalog ?? "";
-    this.company_name = profile.company_name ?? "";
-    this.website_url = profile.website_url ?? "";
+    this.security_contact = profile.security_contact;
+    this.vat_number = profile.vat_number;
+    this.billing_contact = profile.billing_contact;
+    this.default_catalog = profile.default_catalog;
+    this.company_name = profile.company_name;
+    this.website_url = profile.website_url;
     this.current_trial = profile.current_trial ?? {};
     this.resources_limit = profile.resources_limit ?? {};
-    this.account_tier = profile.account_tier ?? "";
-    this.currency = profile.currency ?? "";
-    this.invoiced = profile.invoiced ?? false;
+    this.account_tier = profile.account_tier;
+    this.currency = profile.currency;
+    this.invoiced = profile.invoiced;
   }
 
   static async get(params: OrganizationProfilGetParams) {

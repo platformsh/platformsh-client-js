@@ -45,18 +45,18 @@ export default class EnvironmentBackup extends Ressource {
   constructor(environmentBackup: APIObject, url: string) {
     super(url, paramDefaults, {}, environmentBackup, [], []);
 
-    this.id = environmentBackup.id ?? "";
-    this.created_at = environmentBackup.created_at ?? "";
-    this.updated_at = environmentBackup.updated_at ?? "";
+    this.id = environmentBackup.id;
+    this.created_at = environmentBackup.created_at;
+    this.updated_at = environmentBackup.updated_at;
     this.attributes = environmentBackup.attributes ?? {};
-    this.status = environmentBackup.status ?? "";
-    this.expires_at = environmentBackup.expires_at ?? "";
-    this.index = environmentBackup.index ?? "";
-    this.commit_id = environmentBackup.commit_id ?? "";
-    this.environment = environmentBackup.environment ?? "";
+    this.status = environmentBackup.status;
+    this.expires_at = environmentBackup.expires_at;
+    this.index = environmentBackup.index;
+    this.commit_id = environmentBackup.commit_id;
+    this.environment = environmentBackup.environment;
     this.safe = environmentBackup.safe ?? true;
-    this.restorable = environmentBackup.restorable ?? false;
-    this.automated = environmentBackup.automated ?? false;
+    this.restorable = environmentBackup.restorable;
+    this.automated = environmentBackup.automated;
     this.size_of_volumes = environmentBackup.size_of_volumes;
     this.size_used = environmentBackup.size_used;
   }

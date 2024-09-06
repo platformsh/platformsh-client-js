@@ -38,13 +38,13 @@ export default class EnvironmentDomain extends Ressource {
       ["name", "ssl", "is_default", "replacement_for"],
       modifiableField
     );
-    this.id = environmentDomain.id ?? "";
+    this.id = environmentDomain.id;
     this.name = environmentDomain.name;
-    this.is_default = environmentDomain.is_default ?? false;
-    this.created_at = environmentDomain.created_at ?? "";
+    this.is_default = environmentDomain.is_default;
+    this.created_at = environmentDomain.created_at;
     this.ssl = environmentDomain.ssl ?? [];
-    this.updated_at = environmentDomain.updated_at ?? "";
-    this.replacement_for = environmentDomain.replacement_for ?? "";
+    this.updated_at = environmentDomain.updated_at;
+    this.replacement_for = environmentDomain.replacement_for;
     this._required = ["name"];
   }
 

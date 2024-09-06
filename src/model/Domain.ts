@@ -35,12 +35,12 @@ export default class Domain extends Ressource {
       ["name", "ssl", "is_default"],
       modifiableField
     );
-    this.id = domain.id ?? "";
+    this.id = domain.id;
     this.name = domain.name;
-    this.is_default = domain.is_default ?? false;
-    this.created_at = domain.created_at ?? "";
+    this.is_default = domain.is_default;
+    this.created_at = domain.created_at;
     this.ssl = domain.ssl ?? [];
-    this.updated_at = domain.updated_at ?? "";
+    this.updated_at = domain.updated_at;
     this._required = ["name"];
   }
 

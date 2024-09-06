@@ -33,14 +33,14 @@ export default class Region extends Ressource {
 
     super(`${account_url}${url}`, paramDefaults, { id }, region);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = region.id ?? "";
-    this.available = region.available ?? false;
-    this.endpoint = region.endpoint ?? "";
-    this.label = region.label ?? "";
+    this.id = region.id;
+    this.available = region.available;
+    this.endpoint = region.endpoint;
+    this.label = region.label;
     this.private = region.private ?? true;
     this.provider = region.provider ?? {};
-    this.zone = region.zone ?? "";
-    this.project_label = region.project_label ?? "";
+    this.zone = region.zone;
+    this.project_label = region.project_label;
     this.environmental_impact = region.environmental_impact ?? {
       carbon_intensity: 0
     };

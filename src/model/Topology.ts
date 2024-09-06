@@ -21,8 +21,8 @@ export default class Topology extends Ressource {
 
   constructor(topology: APIObject, url: string) {
     super(url, paramDefaults, {}, topology);
-    this.id = topology.id ?? "";
-    this.name = topology.name ?? "";
+    this.id = topology.id;
+    this.name = topology.name;
     this.constraints = topology.constraints ?? {};
     this.services = topology.services ?? {};
   }

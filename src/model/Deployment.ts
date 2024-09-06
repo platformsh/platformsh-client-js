@@ -315,8 +315,8 @@ export default class Deployment extends Ressource {
     this.variables = deployment.variables ?? [];
     this.project_info = deployment.project_info ?? {};
     this.environment_info = deployment.environment_info ?? {};
-    this.fingerprint = deployment.fingerprint ?? "";
-    this.id = deployment.id ?? "";
+    this.fingerprint = deployment.fingerprint;
+    this.id = deployment.id;
   }
 
   static async get(params: DeploymentGetParams, customUrl?: string) {

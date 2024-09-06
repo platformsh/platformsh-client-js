@@ -32,11 +32,11 @@ export default class SshKey extends Ressource {
     ]);
     this._required = ["value"];
     this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
-    this.changed = sshKey.changed ?? "";
-    this.id = id ?? "";
-    this.title = sshKey.title ?? "";
-    this.key_id = sshKey.key_id ?? "";
-    this.fingerprint = sshKey.fingerprint ?? "";
+    this.changed = sshKey.changed;
+    this.id = id;
+    this.title = sshKey.title;
+    this.key_id = sshKey.key_id;
+    this.fingerprint = sshKey.fingerprint;
     this.value = sshKey.value;
   }
 

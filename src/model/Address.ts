@@ -51,17 +51,17 @@ export default class Address extends Ressource {
       _modifiableField
     );
     this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
-    this.id = address.id ?? "";
-    this.country = address.country ?? "";
-    this.name_line = address.name_line ?? "";
-    this.premise = address.premise ?? "";
-    this.sub_premise = address.sub_premise ?? "";
-    this.thoroughfare = address.thoroughfare ?? "";
-    this.administrative_area = address.administrative_area ?? "";
-    this.sub_administrative_area = address.sub_administrative_area ?? "";
-    this.locality = address.locality ?? "";
-    this.dependent_locality = address.dependent_locality ?? "";
-    this.postal_code = address.postal_code ?? "";
+    this.id = address.id;
+    this.country = address.country;
+    this.name_line = address.name_line;
+    this.premise = address.premise;
+    this.sub_premise = address.sub_premise;
+    this.thoroughfare = address.thoroughfare;
+    this.administrative_area = address.administrative_area;
+    this.sub_administrative_area = address.sub_administrative_area;
+    this.locality = address.locality;
+    this.dependent_locality = address.dependent_locality;
+    this.postal_code = address.postal_code;
   }
 
   static getQueryUrl(_url: string, id?: string) {

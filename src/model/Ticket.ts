@@ -47,19 +47,19 @@ export default class Ticket extends Ressource {
 
     super(`${api_url}${url}`, paramDefaults, {}, ticket, [], []);
 
-    this.subject = ticket.subject ?? "";
-    this.description = ticket.description ?? "";
-    this.requester_id = ticket.requester_id ?? "";
-    this.priority = ticket.priority ?? "";
-    this.affected_url = ticket.affected_url ?? "";
-    this.subscription_id = ticket.subscription_id ?? "";
-    this.attachment = ticket.attachment ?? "";
-    this.attachment_filename = ticket.attachment_filename ?? "";
-    this.ticket_id = ticket.ticket_id ?? "";
-    this.environment = ticket.environment ?? "";
-    this.created = ticket.created ?? "";
-    this.updated = ticket.updated ?? "";
-    this.status = ticket.status ?? "";
+    this.subject = ticket.subject;
+    this.description = ticket.description;
+    this.requester_id = ticket.requester_id;
+    this.priority = ticket.priority;
+    this.affected_url = ticket.affected_url;
+    this.subscription_id = ticket.subscription_id;
+    this.attachment = ticket.attachment;
+    this.attachment_filename = ticket.attachment_filename;
+    this.ticket_id = ticket.ticket_id;
+    this.environment = ticket.environment;
+    this.created = ticket.created;
+    this.updated = ticket.updated;
+    this.status = ticket.status;
     this.attachments = ticket.attachments;
   }
 

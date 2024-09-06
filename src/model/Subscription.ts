@@ -247,26 +247,26 @@ export default class Subscription extends Ressource {
     this._required = ["project_region"];
     this.id = subscription.id;
     this.status = subscription.status ?? SubscriptionStatusEnum.STATUS_FAILED;
-    this.owner = subscription.owner ?? "";
-    this.plan = subscription.plan ?? "";
-    this.environments = subscription.environments ?? 0;
+    this.owner = subscription.owner;
+    this.plan = subscription.plan;
+    this.environments = subscription.environments;
     this.storage = subscription.storage;
-    this.big_dev = subscription.big_dev ?? 0;
-    this.backups = subscription.backups ?? "";
+    this.big_dev = subscription.big_dev;
+    this.backups = subscription.backups;
     this.user_licenses = subscription.user_licenses;
-    this.project_id = subscription.project_id ?? "";
-    this.project_title = subscription.project_title ?? "";
+    this.project_id = subscription.project_id;
+    this.project_title = subscription.project_title;
     this.project_region = subscription.project_region;
-    this.project_region_label = subscription.project_region_label ?? "";
-    this.project_ui = subscription.project_ui ?? "";
-    this.vendor = subscription.vendor ?? "";
+    this.project_region_label = subscription.project_region_label;
+    this.project_ui = subscription.project_ui;
+    this.vendor = subscription.vendor;
     this.owner_info = subscription.owner_info ?? {
       type: ""
     };
-    this.organization = subscription.organization ?? "";
-    this.created_at = subscription.created_at ?? "";
+    this.organization = subscription.organization;
+    this.created_at = subscription.created_at;
     this.users_licenses = subscription.users_licenses;
-    this.license_uri = subscription.license_uri ?? "";
+    this.license_uri = subscription.license_uri;
     this.organization_id = subscription.organization_id;
     this.project_options = subscription.project_options ?? {
       plan_title: {},
@@ -283,10 +283,10 @@ export default class Subscription extends Ressource {
         totals: {}
       }
     };
-    this.enterprise_tag = subscription.enterprise_tag ?? "";
-    this.support_tier = subscription.support_tier ?? "";
-    this.blackfire = subscription.blackfire ?? "";
-    this.observability_suite = subscription.observability_suite ?? "";
+    this.enterprise_tag = subscription.enterprise_tag;
+    this.support_tier = subscription.support_tier;
+    this.blackfire = subscription.blackfire;
+    this.observability_suite = subscription.observability_suite;
     this.environment_options = subscription.environment_options ?? [];
     this.continuous_profiling = subscription.continuous_profiling ?? null;
   }

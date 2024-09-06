@@ -48,12 +48,12 @@ export default class EnvironmentAccess extends Ressource {
       modifiableField
     );
 
-    this.id = environmentAccess.id ?? "";
-    this.user = environmentAccess.user ?? "";
-    this.email = environmentAccess.email ?? "";
+    this.id = environmentAccess.id;
+    this.user = environmentAccess.user;
+    this.email = environmentAccess.email;
     this.role = environmentAccess.role;
-    this.project = environmentAccess.project ?? "";
-    this.environment = environmentAccess.environment ?? "";
+    this.project = environmentAccess.project;
+    this.environment = environmentAccess.environment;
 
     this._required = ["role"];
   }

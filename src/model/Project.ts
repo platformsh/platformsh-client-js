@@ -15,7 +15,8 @@ import ProjectAccess from "./ProjectAccess";
 import ProjectLevelVariable from "./ProjectLevelVariable";
 import type { APIObject } from "./Ressource";
 import Ressource from "./Ressource";
-import Subscription, { SubscriptionStatusEnum } from "./Subscription";
+import type Subscription from "./Subscription";
+import { SubscriptionStatusEnum } from "./Subscription";
 
 const paramDefaults = {};
 const modifiableField = [
@@ -76,35 +77,35 @@ export default class Project extends Ressource {
   constructor(project: APIObject, url: string) {
     super(url, paramDefaults, {}, project, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = project.id ?? "";
-    this.cluster = project.cluster ?? "";
-    this.cluster_label = project.cluster_label ?? "";
-    this.title = project.title ?? "";
-    this.created_at = project.created_at ?? "";
-    this.updated_at = project.updated_at ?? "";
-    this.name = project.name ?? "";
-    this.owner = project.owner ?? "";
+    this.id = project.id;
+    this.cluster = project.cluster;
+    this.cluster_label = project.cluster_label;
+    this.title = project.title;
+    this.created_at = project.created_at;
+    this.updated_at = project.updated_at;
+    this.name = project.name;
+    this.owner = project.owner;
     this.owner_info = project.owner_info ?? {};
-    this.plan = project.plan ?? "";
-    this.plan_uri = project.plan_uri ?? "";
-    this.hipaa = project.hipaa ?? "";
-    this.enterprise_tag = project.enterprise_tag ?? "";
-    this.subscription = project.subscription ?? new Subscription({});
-    this.subscription_id = project.subscription_id ?? "";
-    this.environment_id = project.environment_id ?? "";
-    this.status = project.status ?? "";
-    this.endpoint = project.endpoint ?? "";
+    this.plan = project.plan;
+    this.plan_uri = project.plan_uri;
+    this.hipaa = project.hipaa;
+    this.enterprise_tag = project.enterprise_tag;
+    this.subscription = project.subscription;
+    this.subscription_id = project.subscription_id;
+    this.environment_id = project.environment_id;
+    this.status = project.status;
+    this.endpoint = project.endpoint;
     this.repository = project.repository;
-    this.region = project.region ?? "";
-    this.region_label = project.region_label ?? "";
-    this.vendor = project.vendor ?? "";
-    this.vendor_label = project.vendor_label ?? "";
-    this.vendor_resources = project.vendor_resources ?? "";
-    this.vendor_website = project.vendor_website ?? "";
-    this.default_domain = project.default_domain ?? "";
-    this.organization_id = project.organization_id ?? "";
-    this.default_branch = project.default_branch ?? "";
-    this.timezone = project.timezone ?? "";
+    this.region = project.region;
+    this.region_label = project.region_label;
+    this.vendor = project.vendor;
+    this.vendor_label = project.vendor_label;
+    this.vendor_resources = project.vendor_resources;
+    this.vendor_website = project.vendor_website;
+    this.default_domain = project.default_domain;
+    this.organization_id = project.organization_id;
+    this.default_branch = project.default_branch;
+    this.timezone = project.timezone;
   }
 
   static async get(params: ProjectGetParams, customUrl?: string) {

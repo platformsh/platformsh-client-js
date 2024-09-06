@@ -18,8 +18,8 @@ export default class SetupConfig extends Ressource {
   ) {
     super(url, paramDefaults, {}, setupConfig, []);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.app = setupConfig.app ?? "";
-    this.service = setupConfig.service ?? "";
+    this.app = setupConfig.app;
+    this.service = setupConfig.service;
   }
 
   static async get({ service = "", format = "commented" }, customUrl?: string) {

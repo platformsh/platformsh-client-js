@@ -33,15 +33,15 @@ export default class SetupRegistry extends Ressource {
   ) {
     super(url, paramDefaults, {}, registry, [], modifiableField);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.description = registry.description ?? "";
-    this.repo_name = registry.repo_name ?? "";
+    this.description = registry.description;
+    this.repo_name = registry.repo_name;
     this.disk = registry.disk ?? null;
     this.docs = registry.docs ?? {};
-    this.endpoint = registry.endpoint ?? "";
+    this.endpoint = registry.endpoint;
     this.min_disk_size = registry.min_disk_size ?? null;
-    this.name = registry.name ?? "";
+    this.name = registry.name;
     this.runtime = registry.runtime ?? null;
-    this.type = registry.type ?? "";
+    this.type = registry.type;
     this.versions = registry.versions ?? {};
   }
 

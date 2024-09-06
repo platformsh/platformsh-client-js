@@ -63,22 +63,22 @@ export default class AuthUser extends Ressource {
       modifiableField
     );
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = user.id ?? "";
-    this.username = user.username ?? "";
-    this.first_name = user.first_name ?? "";
-    this.last_name = user.last_name ?? "";
-    this.email = user.email ?? "";
-    this.email_verified = user.email_verified ?? false;
-    this.phone_number_verified = user.phone_number_verified ?? false;
-    this.picture = user.picture ?? "";
-    this.website = user.website ?? "";
-    this.country = user.country ?? "";
-    this.company = user.company ?? "";
-    this.mfa_enabled = user.mfa_enabled ?? false;
-    this.sso_enabled = user.sso_enabled ?? false;
-    this.deactivated = user.deactivated ?? false;
-    this.created_at = user.created_at ?? "";
-    this.updated_at = user.updated_at ?? "";
+    this.id = user.id;
+    this.username = user.username;
+    this.first_name = user.first_name;
+    this.last_name = user.last_name;
+    this.email = user.email;
+    this.email_verified = user.email_verified;
+    this.phone_number_verified = user.phone_number_verified;
+    this.picture = user.picture;
+    this.website = user.website;
+    this.country = user.country;
+    this.company = user.company;
+    this.mfa_enabled = user.mfa_enabled;
+    this.sso_enabled = user.sso_enabled;
+    this.deactivated = user.deactivated;
+    this.created_at = user.created_at;
+    this.updated_at = user.updated_at;
   }
 
   static async get(params: AuthUserParams, customUrl?: string) {

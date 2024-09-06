@@ -146,16 +146,16 @@ export default class Organization extends Ressource {
       modifiableField
     );
     this.id = organization.id;
-    this.user_id = organization.user_id ?? "";
-    this.name = organization.name ?? "";
-    this.label = organization.label ?? "";
-    this.country = organization.country ?? "";
-    this.owner_id = organization.owner_id ?? "";
-    this.created_at = organization.created_at ?? "";
-    this.updated_at = organization.updated_at ?? "";
+    this.user_id = organization.user_id;
+    this.name = organization.name;
+    this.label = organization.label;
+    this.country = organization.country;
+    this.owner_id = organization.owner_id;
+    this.created_at = organization.created_at;
+    this.updated_at = organization.updated_at;
     this.capabilities = organization.capabilities ?? [];
-    this.status = organization.status ?? undefined;
-    this.vendor = organization.vendor ?? "";
+    this.status = organization.status;
+    this.vendor = organization.vendor;
 
     this._queryUrl = url ?? `${api_url}${_url}`;
   }

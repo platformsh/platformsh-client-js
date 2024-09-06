@@ -19,10 +19,10 @@ export default class TicketPriority extends Ressource {
 
     super(`${api_url}${url}`, paramDefaults, {}, ticketPriority, [], []);
 
-    this.id = ticketPriority.id ?? "";
-    this.label = ticketPriority.label ?? "";
-    this.short_description = ticketPriority.short_description ?? "";
-    this.description = ticketPriority.description ?? "";
+    this.id = ticketPriority.id;
+    this.label = ticketPriority.label;
+    this.short_description = ticketPriority.short_description;
+    this.description = ticketPriority.description;
   }
 
   static async get(queryParams: TicketPriorityGetParams) {

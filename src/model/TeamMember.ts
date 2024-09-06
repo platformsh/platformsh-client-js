@@ -34,7 +34,7 @@ export default class TeamMember extends Ressource {
       creatableField,
       creatableField
     );
-    this.user = teamMember.user ?? "";
+    this.user = teamMember.user;
   }
 
   static async get(params: TeamMemberGetParams, customUrl?: string) {

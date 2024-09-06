@@ -47,15 +47,15 @@ export default class Route extends Ressource {
       creatableAndModifiableField
     );
 
-    this.id = route.id ?? "";
-    this.project = route.project ?? "";
-    this.environment = route.environment ?? "";
+    this.id = route.id;
+    this.project = route.project;
+    this.environment = route.environment;
     this.route = route.route ?? {};
     this.cache = route.cache ?? {};
     this.ssi = route.ssi ?? [];
-    this.upstream = route.upstream ?? "";
-    this.to = route.to ?? "";
-    this.type = route.type ?? "";
+    this.upstream = route.upstream;
+    this.to = route.to;
+    this.type = route.type;
   }
 
   static async get(params: RouteGetParams, customUrl?: string) {

@@ -56,15 +56,15 @@ export default class ProjectLevelVariable extends Ressource {
       modifiableField
     );
 
-    this.id = projectLevelVariable.id ?? "";
-    this.name = projectLevelVariable.name ?? "";
-    this.value = projectLevelVariable.value ?? "";
-    this.is_json = projectLevelVariable.is_json ?? false;
-    this.is_sensitive = projectLevelVariable.is_sensitive ?? false;
-    this.visible_build = projectLevelVariable.visible_build ?? false;
+    this.id = projectLevelVariable.id;
+    this.name = projectLevelVariable.name;
+    this.value = projectLevelVariable.value;
+    this.is_json = projectLevelVariable.is_json;
+    this.is_sensitive = projectLevelVariable.is_sensitive;
+    this.visible_build = projectLevelVariable.visible_build;
     this.visible_runtime = projectLevelVariable.visible_runtime ?? true;
-    this.created_at = projectLevelVariable.created_at ?? "";
-    this.updated_at = projectLevelVariable.updated_at ?? "";
+    this.created_at = projectLevelVariable.created_at;
+    this.updated_at = projectLevelVariable.updated_at;
   }
 
   static async get(params: ProjectLevelVariableGetParams, customUrl?: string) {

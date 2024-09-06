@@ -60,15 +60,15 @@ export default class Me extends User {
     this.ssh_keys = account.ssh_keys ?? [];
     this.roles = account.roles ?? [];
     this.teams = account.teams ?? [];
-    this.picture = account.picture ?? "";
-    this.newsletter = account.newsletter ?? false;
-    this.plaintext = account.plaintext ?? false;
-    this.website = account.website ?? "";
-    this.company_role = account.company_role ?? "";
-    this.company_type = account.company_type ?? "";
-    this.mail = account.mail ?? "";
-    this.trial = account.trial ?? false;
-    this.uuid = account.uuid ?? "";
+    this.picture = account.picture;
+    this.newsletter = account.newsletter;
+    this.plaintext = account.plaintext;
+    this.website = account.website;
+    this.company_role = account.company_role;
+    this.company_type = account.company_type;
+    this.mail = account.mail;
+    this.trial = account.trial;
+    this.uuid = account.uuid;
     this.current_trial = account.current_trial ?? {};
     this.stripe = account.stripe ?? {
       public_key: ""

@@ -65,19 +65,19 @@ export default class Variable extends Ressource {
       modifialbleField
     );
 
-    this.id = variable.id ?? "";
-    this.name = variable.name ?? "";
-    this.project = variable.project ?? "";
-    this.environment = variable.environment ?? "";
-    this.value = variable.value ?? "";
-    this.is_enabled = variable.is_enabled ?? false;
-    this.created_at = variable.created_at ?? "";
-    this.updated_at = variable.updated_at ?? "";
-    this.inherited = variable.inherited ?? false;
-    this.is_json = variable.is_json ?? false;
-    this.is_sensitive = variable.is_sensitive ?? false;
+    this.id = variable.id;
+    this.name = variable.name;
+    this.project = variable.project;
+    this.environment = variable.environment;
+    this.value = variable.value;
+    this.is_enabled = variable.is_enabled;
+    this.created_at = variable.created_at;
+    this.updated_at = variable.updated_at;
+    this.inherited = variable.inherited;
+    this.is_json = variable.is_json;
+    this.is_sensitive = variable.is_sensitive;
     this.is_inheritable = variable.is_inheritable ?? true;
-    this.visible_build = variable.visible_build ?? false;
+    this.visible_build = variable.visible_build;
     this.visible_runtime = variable.visible_runtime ?? true;
   }
 
