@@ -362,11 +362,11 @@ export default class Project extends Ressource {
    * Add an integration to the project.
    *
    * @param string type
-   * @param array data
+   * @param object data
    *
    * @return Result
    */
-  async addIntegration(type: string, data = []) {
+  async addIntegration(type: string, data?: APIObject) {
     const body = { type, ...data };
     const integration = new Integration(body, this.getLink("integrations"));
 

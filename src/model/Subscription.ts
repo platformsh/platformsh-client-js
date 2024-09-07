@@ -74,6 +74,7 @@ type ResourceType = {
   environments?: number;
   memory?: number;
   storage?: number;
+  projects?: number;
 };
 
 type ProjectResourcesType = ResourceType & { subscription_id: number };
@@ -217,13 +218,15 @@ export default class Subscription extends Ressource {
   };
 
   green?: boolean;
-  resources_limit?: {
-    limit: ResourceType;
-    used: {
-      projects: ProjectResourcesType[];
-      totals: ResourceType;
-    };
-  };
+  resources_limit?:
+    | {
+        limit: ResourceType;
+        used: {
+          projects: ProjectResourcesType[];
+          totals: ResourceType;
+        };
+      }
+    | false;
 
   environment_options: string[];
   enterprise_tag: string;

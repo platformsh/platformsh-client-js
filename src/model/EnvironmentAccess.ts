@@ -31,12 +31,12 @@ export type EnvironmentAccessQueryParams = {
 };
 
 export default class EnvironmentAccess extends Ressource {
-  id = "";
-  user = "";
-  email = "";
-  role = "";
-  project = "";
-  environment = "";
+  id: string;
+  user: string;
+  email: string;
+  role: string;
+  project: string;
+  environment: string;
 
   constructor(environmentAccess: APIObject, url: string) {
     super(
