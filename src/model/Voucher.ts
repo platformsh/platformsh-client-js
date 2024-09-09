@@ -28,13 +28,13 @@ export default class Voucher extends Ressource {
     const { api_url } = getConfig();
 
     super(`${api_url}${url}`, paramDefaults, { uuid }, voucher);
-    this.currency = "";
-    this.discounted_orders = [];
-    this.uuid = "";
-    this.vouchers = [];
-    this.vouchers_applied = 0;
-    this.vouchers_remaining_balance = 0;
-    this.vouchers_total = 0;
+    this.currency = voucher.currency;
+    this.discounted_orders = voucher.discounted_orders ?? [];
+    this.uuid = voucher.uuid;
+    this.vouchers = voucher.vouchers ?? [];
+    this.vouchers_applied = voucher.vouchers_applied;
+    this.vouchers_remaining_balance = voucher.vouchers_remaining_balance;
+    this.vouchers_total = voucher.vouchers_total;
   }
 
   static async get(params: VoucherGetParams, customUrl?: string) {

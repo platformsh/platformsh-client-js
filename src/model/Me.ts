@@ -56,21 +56,21 @@ export default class Me extends User {
     const { api_url } = getConfig();
     super(account, `${api_url}${url}`, modifiableField);
 
-    this.projects = [];
-    this.ssh_keys = [];
-    this.roles = [];
-    this.teams = [];
-    this.picture = "";
-    this.newsletter = false;
-    this.plaintext = false;
-    this.website = "";
-    this.company_role = "";
-    this.company_type = "";
-    this.mail = "";
-    this.trial = false;
-    this.uuid = "";
-    this.current_trial = {};
-    this.stripe = {
+    this.projects = account.projects ?? [];
+    this.ssh_keys = account.ssh_keys ?? [];
+    this.roles = account.roles ?? [];
+    this.teams = account.teams ?? [];
+    this.picture = account.picture;
+    this.newsletter = account.newsletter;
+    this.plaintext = account.plaintext;
+    this.website = account.website;
+    this.company_role = account.company_role;
+    this.company_type = account.company_type;
+    this.mail = account.mail;
+    this.trial = account.trial;
+    this.uuid = account.uuid;
+    this.current_trial = account.current_trial ?? {};
+    this.stripe = account.stripe ?? {
       public_key: ""
     };
   }

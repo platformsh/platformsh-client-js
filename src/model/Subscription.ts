@@ -74,6 +74,7 @@ type ResourceType = {
   environments?: number;
   memory?: number;
   storage?: number;
+  projects?: number;
 };
 
 type ProjectResourcesType = ResourceType & { subscription_id: number };
@@ -186,6 +187,8 @@ export default class Subscription extends Ressource {
   created_at: string;
   owner_info: {
     type: string;
+    username?: string;
+    display_name?: string;
   };
 
   blackfire?: string;
@@ -215,13 +218,15 @@ export default class Subscription extends Ressource {
   };
 
   green?: boolean;
-  resources_limit?: {
-    limit: ResourceType;
-    used: {
-      projects: ProjectResourcesType[];
-      totals: ResourceType;
-    };
-  };
+  resources_limit?:
+    | {
+        limit: ResourceType;
+        used: {
+          projects: ProjectResourcesType[];
+          totals: ResourceType;
+        };
+      }
+    | false;
 
   environment_options: string[];
   enterprise_tag: string;
@@ -240,33 +245,33 @@ export default class Subscription extends Ressource {
       modifiableField
     );
 
-    this.green = false;
+    this.green = subscription.green ?? false;
     this._queryUrl = Ressource.getQueryUrl(customUrl ?? `${api_url}${url}`);
     this._required = ["project_region"];
-    this.id = "";
-    this.status = SubscriptionStatusEnum.STATUS_FAILED;
-    this.owner = "";
-    this.plan = "";
-    this.environments = 0;
-    this.storage = 0;
-    this.big_dev = 0;
-    this.backups = "";
-    this.user_licenses = 0;
-    this.project_id = "";
-    this.project_title = "";
-    this.project_region = "";
-    this.project_region_label = "";
-    this.project_ui = "";
-    this.vendor = "";
-    this.owner_info = {
+    this.id = subscription.id;
+    this.status = subscription.status ?? SubscriptionStatusEnum.STATUS_FAILED;
+    this.owner = subscription.owner;
+    this.plan = subscription.plan;
+    this.environments = subscription.environments;
+    this.storage = subscription.storage;
+    this.big_dev = subscription.big_dev;
+    this.backups = subscription.backups;
+    this.user_licenses = subscription.user_licenses;
+    this.project_id = subscription.project_id;
+    this.project_title = subscription.project_title;
+    this.project_region = subscription.project_region;
+    this.project_region_label = subscription.project_region_label;
+    this.project_ui = subscription.project_ui;
+    this.vendor = subscription.vendor;
+    this.owner_info = subscription.owner_info ?? {
       type: ""
     };
-    this.organization = "";
-    this.created_at = "";
-    this.users_licenses = 0;
-    this.license_uri = "";
-    this.organization_id = "";
-    this.project_options = {
+    this.organization = subscription.organization;
+    this.created_at = subscription.created_at;
+    this.users_licenses = subscription.users_licenses;
+    this.license_uri = subscription.license_uri;
+    this.organization_id = subscription.organization_id;
+    this.project_options = subscription.project_options ?? {
       plan_title: {},
       sellables: {
         blackfire: { products: [], available: false },
@@ -274,19 +279,19 @@ export default class Subscription extends Ressource {
       },
       initialize: {}
     };
-    this.resources_limit = {
+    this.resources_limit = subscription.resources_limit ?? {
       limit: {},
       used: {
         projects: [],
         totals: {}
       }
     };
-    this.enterprise_tag = "";
-    this.support_tier = "";
-    this.blackfire = "";
-    this.observability_suite = "";
-    this.environment_options = [];
-    this.continuous_profiling = null;
+    this.enterprise_tag = subscription.enterprise_tag;
+    this.support_tier = subscription.support_tier;
+    this.blackfire = subscription.blackfire;
+    this.observability_suite = subscription.observability_suite;
+    this.environment_options = subscription.environment_options ?? [];
+    this.continuous_profiling = subscription.continuous_profiling ?? null;
   }
 
   static async get(params: SubscriptionGetParams, customUrl?: string) {
@@ -358,7 +363,7 @@ export default class Subscription extends Ressource {
     const errors: Record<string, string> = {};
 
     if (property === "storage" && typeof value === "number" && value < 1024) {
-      errors[property] = "Surltorage must be at least 1024 MiB";
+      errors[property] = "Storage must be at least 1024 MiB";
     } else if (
       property === "activation_callback" &&
       typeof value !== "number"

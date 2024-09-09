@@ -23,13 +23,18 @@ export type ProjectAccessQueryParams = {
 };
 
 export default class ProjectAccess extends Ressource {
-  id = "";
-  role = "";
-  user = "";
+  id: string;
+  email: string;
+  role: string;
+  user: string;
 
   constructor(projectAccess: APIObject, url: string) {
     super(url, paramDefaults, {}, projectAccess, createField, modifiableField);
     this._required = ["email"];
+    this.id = projectAccess.id;
+    this.email = projectAccess.email;
+    this.role = projectAccess.role;
+    this.user = projectAccess.user;
   }
 
   static async query(params: ProjectAccessQueryParams, customUrl?: string) {

@@ -36,15 +36,15 @@ export type ProjectLevelVariableQueryParams = {
 };
 
 export default class ProjectLevelVariable extends Ressource {
-  id = "";
-  name = "";
-  value = "";
-  is_json = false;
-  is_sensitive = false;
-  visible_build = false;
-  visible_runtime = true;
-  created_at = "";
-  updated_at = "";
+  id: string;
+  name: string;
+  value: string;
+  is_json: boolean;
+  is_sensitive: boolean;
+  visible_build: boolean;
+  visible_runtime: boolean;
+  created_at: string;
+  updated_at: string;
 
   constructor(projectLevelVariable: APIObject, url: string) {
     super(
@@ -55,6 +55,16 @@ export default class ProjectLevelVariable extends Ressource {
       creatableField,
       modifiableField
     );
+
+    this.id = projectLevelVariable.id;
+    this.name = projectLevelVariable.name;
+    this.value = projectLevelVariable.value;
+    this.is_json = projectLevelVariable.is_json;
+    this.is_sensitive = projectLevelVariable.is_sensitive;
+    this.visible_build = projectLevelVariable.visible_build;
+    this.visible_runtime = projectLevelVariable.visible_runtime ?? true;
+    this.created_at = projectLevelVariable.created_at;
+    this.updated_at = projectLevelVariable.updated_at;
   }
 
   static async get(params: ProjectLevelVariableGetParams, customUrl?: string) {

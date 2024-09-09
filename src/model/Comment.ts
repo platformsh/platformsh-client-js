@@ -31,14 +31,14 @@ export default class Comment extends Ressource {
 
     super(`${api_url}${url}`, paramDefaults, {}, comment, createableField, []);
 
-    this.ticket_id = "";
+    this.ticket_id = comment.ticket_id;
     this.id = this.ticket_id;
-    this.comment_id = "";
-    this.created_at = "";
-    this.body = "";
-    this.author_id = "";
-    this.public = "";
-    this.attachments = [];
+    this.comment_id = comment.comment_id;
+    this.created_at = comment.created_at;
+    this.body = comment.body;
+    this.author_id = comment.author_id;
+    this.public = comment.public;
+    this.attachments = comment.attachments ?? [];
   }
 
   static async query(ticketId: string, queryParams: Record<string, any>) {

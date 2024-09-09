@@ -53,25 +53,25 @@ export default class Activity extends Ressource {
 
   constructor(activity: APIObject, url: string) {
     super(url, paramDefaults, {}, activity, ["name", "ssl"]);
-    this.id = "";
-    this.completion_percent = 0;
-    this.log = "";
-    this.created_at = "";
-    this.updated_at = "";
-    this.cancelled_at = "";
-    this.environments = [];
-    this.completed_at = "";
-    this.parameters = {};
-    this.project = "";
-    this.state = "";
-    this.result = "";
-    this.started_at = "";
-    this.type = "";
-    this.payload = [];
-    this.description = "";
-    this.integration = "";
-    this.timings = {};
-    this.text = "";
+    this.id = activity.id;
+    this.completion_percent = activity.completion_percent ?? 0;
+    this.log = activity.log;
+    this.created_at = activity.created_at;
+    this.updated_at = activity.updated_at;
+    this.cancelled_at = activity.cancelled_at;
+    this.environments = activity.environments ?? [];
+    this.completed_at = activity.completed_at;
+    this.parameters = activity.parameters ?? {};
+    this.project = activity.project;
+    this.state = activity.state;
+    this.result = activity.result;
+    this.started_at = activity.started_at;
+    this.type = activity.type;
+    this.payload = activity.payload ?? [];
+    this.description = activity.description;
+    this.integration = activity.integration;
+    this.timings = activity.timings ?? {};
+    this.text = activity.text;
   }
 
   static async get(params: ActivityGetParams, customUrl?: string) {

@@ -17,8 +17,8 @@ export default class TicketCategory extends Ressource {
 
     super(`${api_url}${url}`, paramDefaults, {}, ticketCategory, [], []);
 
-    this.id = "";
-    this.label = "";
+    this.id = ticketCategory.id;
+    this.label = ticketCategory.label;
   }
 
   static async get(queryParams?: TicketCategoryGetParams) {

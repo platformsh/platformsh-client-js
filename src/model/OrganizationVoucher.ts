@@ -38,12 +38,12 @@ export default class OrganizationVoucher extends Ressource {
       voucher,
       creatableField
     );
-    this.currency = "";
-    this.discounted_orders = [];
-    this.vouchers = [];
-    this.vouchers_applied = 0;
-    this.vouchers_remaining_balance = 0;
-    this.vouchers_total = 0;
+    this.currency = voucher.currency;
+    this.discounted_orders = voucher.discounted_orders ?? [];
+    this.vouchers = voucher.vouchers ?? [];
+    this.vouchers_applied = voucher.vouchers_applied;
+    this.vouchers_remaining_balance = voucher.vouchers_remaining_balance;
+    this.vouchers_total = voucher.vouchers_total;
   }
 
   static async get(params: OrganizationVoucherGetParams, customUrl?: string) {

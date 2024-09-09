@@ -67,7 +67,7 @@ export default class OrganizationDiscount extends Ressource {
       discount,
       creatableField
     );
-    this.items = [];
+    this.items = discount.items ?? [];
   }
 
   static async get(params: OrganizationDiscountGetParams, customUrl?: string) {

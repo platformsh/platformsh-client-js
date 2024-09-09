@@ -127,7 +127,7 @@ describe("Project", () => {
     });
   });
 
-  it("Add user in a project with bad email and role", () => {
+  it("Add user in a project with bad email and role", async () => {
     fetchMock.mock(
       "https://test.com/api/projects/ffzefzef3/access",
       {
@@ -155,7 +155,7 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    project.addUser("test@test", "role").catch(err => {
+    await project.addUser("test@test", "role").catch(err => {
       assert.equal(err.email, "Invalid email address: 'test@test'");
       assert.equal(err.role, "Invalid role: 'role'");
     });
@@ -554,9 +554,9 @@ describe("Project", () => {
       "https://test.com/api/projects/ffzefzef3"
     );
 
-    await project.getVariable("theVariableName").then(activitie => {
-      assert.equal(activitie.constructor.name, "ProjectLevelVariable");
-      assert.equal(activitie.id, "1");
+    await project.getVariable("theVariableName").then(activity => {
+      assert.equal(activity.constructor.name, "ProjectLevelVariable");
+      assert.equal(activity.id, "1");
     });
   });
 

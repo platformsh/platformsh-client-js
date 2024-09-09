@@ -9,7 +9,6 @@ import type {
 import type CursoredResult from "./CursoredResult";
 import OrganizationDiscount from "./OrganizationDiscount";
 import OrganizationMember from "./OrganizationMember";
-import type { CreateSubscriptionPayloadType } from "./OrganizationSubscription";
 import OrganizationSubscription from "./OrganizationSubscription";
 import OrganizationVoucher from "./OrganizationVoucher";
 import Ressource from "./Ressource";
@@ -112,6 +111,16 @@ type _OrganizationEstimate<IsComplex> = {
 export type OrganizationEstimate = _OrganizationEstimate<false>;
 export type OrganizationEstimateComplex = _OrganizationEstimate<true>;
 
+export type CreateSubscriptionPayloadType = {
+  project_region: string;
+  plan?: string;
+  projectTitle?: string;
+  optionsUrl?: string;
+  defaultBranch?: string;
+  environments?: number;
+  storage?: number;
+};
+
 export default class Organization extends Ressource {
   id: string;
   user_id: string;
@@ -136,17 +145,17 @@ export default class Organization extends Ressource {
       creatableField,
       modifiableField
     );
-    this.id = "";
-    this.user_id = "";
-    this.name = "";
-    this.label = "";
-    this.country = "";
-    this.owner_id = "";
-    this.created_at = "";
-    this.updated_at = "";
-    this.capabilities = [];
-    this.status = undefined;
-    this.vendor = "";
+    this.id = organization.id;
+    this.user_id = organization.user_id;
+    this.name = organization.name;
+    this.label = organization.label;
+    this.country = organization.country;
+    this.owner_id = organization.owner_id;
+    this.created_at = organization.created_at;
+    this.updated_at = organization.updated_at;
+    this.capabilities = organization.capabilities ?? [];
+    this.status = organization.status;
+    this.vendor = organization.vendor;
 
     this._queryUrl = url ?? `${api_url}${_url}`;
   }

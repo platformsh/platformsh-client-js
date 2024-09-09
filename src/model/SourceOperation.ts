@@ -19,12 +19,16 @@ export type SourceOperationQueryParams = {
 };
 
 export default class SourceOperation extends Ressource {
-  operation = "";
-  app = "";
-  command = "";
+  operation: string;
+  app: string;
+  command: string;
 
   constructor(sourceOperation: APIObject, url: string) {
     super(url, paramDefaults, {}, sourceOperation);
+
+    this.operation = sourceOperation.operation;
+    this.app = sourceOperation.app;
+    this.command = sourceOperation.command;
   }
 
   // This is a custom method because we have to override the url

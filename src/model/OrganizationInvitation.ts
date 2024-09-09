@@ -32,13 +32,13 @@ export default class OrganizationInvitation extends Ressource {
 
     this._queryUrl = Ressource.getQueryUrl(this._url);
 
-    this.id = "";
-    this.owner = {};
-    this.organization_id = "";
-    this.permissions = [];
-    this.state = "";
-    this.email = "";
-    this.force = false;
+    this.id = id;
+    this.owner = invitation.owner ?? {};
+    this.organization_id = organizationId;
+    this.permissions = invitation.permissions ?? [];
+    this.state = invitation.state;
+    this.email = invitation.email;
+    this.force = invitation.force;
   }
 
   static async get(organizationId: string, id: string) {

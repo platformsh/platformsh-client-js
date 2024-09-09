@@ -20,19 +20,10 @@ export type OrganizationSubscriptionQueryParams = {
   organizationId: string;
 };
 
-export type CreateSubscriptionPayloadType = {
-  project_region: string;
-  plan?: string;
-  projectTitle?: string;
-  optionsUrl?: string;
-  defaultBranch?: string;
-  environments?: number;
-  storage?: number;
-};
-
 // @ts-expect-error solve the query function inheritance ts error
 export default class OrganizationSubscription extends Subscription {
   organization_id: string;
+  project_region: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { organizationId } = subscription;
@@ -45,10 +36,11 @@ export default class OrganizationSubscription extends Subscription {
     );
     super(subscription, _url);
 
-    this._required = ["project_region", "organizationId"];
+    this._required = ["project_region", "organization_id"];
     this._creatableField.push("organizationId");
 
     this.organization_id = organizationId;
+    this.project_region = subscription.project_region;
   }
 
   static async get(

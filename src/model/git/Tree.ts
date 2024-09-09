@@ -13,18 +13,17 @@ export type TreeParams = {
 export default class Tree extends Ressource {
   id: string;
   sha: string;
-  type: "tree";
+  readonly type = "tree";
   path: string;
   tree: (Tree | Blob | undefined)[];
 
   constructor(tree: Tree, url = _url, params: TreeParams) {
     super(url, {}, params, tree, [], []);
 
-    this.id = "";
-    this.type = "tree";
-    this.sha = "";
-    this.path = "";
-    this.tree = [];
+    this.id = this.id = tree.id ?? "";
+    this.sha = this.sha = tree.sha ?? "";
+    this.path = this.path = tree.path ?? "";
+    this.tree = this.tree = tree.tree ?? [];
   }
 
   static async get(projectId: string, sha: string) {

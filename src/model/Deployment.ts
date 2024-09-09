@@ -307,16 +307,16 @@ export default class Deployment extends Ressource {
 
   constructor(deployment: APIObject, url: string) {
     super(url, paramDefaults, {}, deployment, [], modifiableField);
-    this.webapps = {} as Record<string, DeploymentService>;
-    this.services = {} as Record<string, DeploymentService>;
-    this.workers = {} as Record<string, DeploymentService>;
-    this.routes = {};
-    this.container_profiles = {};
-    this.variables = [];
-    this.project_info = {} as DeploymentProjectInfo;
-    this.environment_info = {} as DeploymentEnvironmentInfo;
-    this.fingerprint = "";
-    this.id = "";
+    this.webapps = deployment.webapps ?? {};
+    this.services = deployment.services ?? {};
+    this.workers = deployment.workers ?? {};
+    this.routes = deployment.routes ?? {};
+    this.container_profiles = deployment.container_profiles ?? {};
+    this.variables = deployment.variables ?? [];
+    this.project_info = deployment.project_info ?? {};
+    this.environment_info = deployment.environment_info ?? {};
+    this.fingerprint = deployment.fingerprint;
+    this.id = deployment.id;
   }
 
   static async get(params: DeploymentGetParams, customUrl?: string) {

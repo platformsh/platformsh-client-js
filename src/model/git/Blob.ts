@@ -12,7 +12,7 @@ export type BlobParams = {
 
 export default class Blob extends Ressource {
   id: string;
-  type: "blob";
+  readonly type = "blob";
   path: string;
   sha: string;
   size: string;
@@ -22,13 +22,12 @@ export default class Blob extends Ressource {
   constructor(blob: Blob, url = _url, params: BlobParams) {
     super(url, {}, params, blob, [], []);
 
-    this.id = "";
-    this.type = "blob";
-    this.path = "";
-    this.sha = "";
-    this.size = "";
-    this.encoding = "";
-    this.content = "";
+    this.id = blob.id ?? "";
+    this.path = blob.path ?? "";
+    this.sha = blob.sha ?? "";
+    this.size = blob.size ?? "";
+    this.encoding = blob.encoding ?? "";
+    this.content = blob.content ?? "";
   }
 
   static async get(projectId: string, sha: string) {

@@ -19,12 +19,12 @@ export type DomainQueryParams = {
 };
 
 export default class Domain extends Ressource {
-  id = "";
-  name = "";
-  is_default = false;
-  created_at = "";
-  ssl = [];
-  updated_at = "";
+  id: string;
+  name: string;
+  is_default: boolean;
+  created_at: string;
+  ssl: unknown[];
+  updated_at: string;
 
   constructor(domain: APIObject, url: string) {
     super(
@@ -35,6 +35,12 @@ export default class Domain extends Ressource {
       ["name", "ssl", "is_default"],
       modifiableField
     );
+    this.id = domain.id;
+    this.name = domain.name;
+    this.is_default = domain.is_default;
+    this.created_at = domain.created_at;
+    this.ssl = domain.ssl ?? [];
+    this.updated_at = domain.updated_at;
     this._required = ["name"];
   }
 

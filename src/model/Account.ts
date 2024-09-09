@@ -27,14 +27,14 @@ export default class Account extends Ressource {
 
     super(`${account_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
-    this.id = "";
-    this.created_at = "";
-    this.updated_at = "";
-    this.has_key = false;
-    this.display_name = "";
-    this.email = "";
-    this.picture = "";
-    this.roles = [];
+    this.id = account.id;
+    this.created_at = account.created_at;
+    this.updated_at = account.updated_at;
+    this.has_key = account.has_key;
+    this.display_name = account.display_name;
+    this.email = account.email;
+    this.picture = account.picture;
+    this.roles = account.roles ?? [];
   }
 
   static async get(params: AccountGetParams, customUrl?: string) {

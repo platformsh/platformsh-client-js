@@ -21,10 +21,10 @@ export default class TwoFactorAuthentication extends Ressource {
     super(`${api_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
 
-    this.issuer = "";
-    this.account_name = "";
-    this.secret = "";
-    this.qr_code = "";
+    this.issuer = account.issuer;
+    this.account_name = account.account_name;
+    this.secret = account.secret;
+    this.qr_code = account.qr_code;
   }
 
   static async get(userId: string) {

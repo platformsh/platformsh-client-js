@@ -42,13 +42,13 @@ export default class OrganizationMember extends CursoredRessource {
       creatableField,
       updatableField
     );
-    this.id = "";
-    this.user_id = "";
-    this.organization_id = "";
-    this.permissions = [];
-    this.owner = false;
-    this.created_at = "";
-    this.updated_at = "";
+    this.id = organizationMember.id;
+    this.user_id = organizationMember.user_id;
+    this.organization_id = organizationId;
+    this.permissions = organizationMember.permissions ?? [];
+    this.owner = organizationMember.owner;
+    this.created_at = organizationMember.created_at;
+    this.updated_at = organizationMember.updated_at;
   }
 
   static async get(params: OrganizationMemberGetParams, customUrl?: string) {

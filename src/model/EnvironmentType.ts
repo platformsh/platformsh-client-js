@@ -43,15 +43,15 @@ export type DeleteAccessParams = {
 
 export default class EnvironmentType extends Ressource {
   id: string;
-  accesses: any[];
+  accesses: ProjectAccess[];
 
   constructor(environmentType: APIObject) {
     const { id } = environmentType;
     const { api_url } = getConfig();
 
     super(`${api_url}${url}`, paramDefaults, { id }, environmentType);
-    this.id = "";
-    this.accesses = [];
+    this.id = environmentType.id;
+    this.accesses = environmentType.accesses ?? [];
   }
 
   static async get(params: EnvironmentTypeGetParams, customUrl?: string) {

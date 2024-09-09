@@ -21,10 +21,10 @@ export default class Topology extends Ressource {
 
   constructor(topology: APIObject, url: string) {
     super(url, paramDefaults, {}, topology);
-    this.id = "";
-    this.name = "";
-    this.constraints = {};
-    this.services = {};
+    this.id = topology.id;
+    this.name = topology.name;
+    this.constraints = topology.constraints ?? {};
+    this.services = topology.services ?? {};
   }
 
   static async get(params: TopologyGetParams, customUrl?: string) {
