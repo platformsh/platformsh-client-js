@@ -21,6 +21,7 @@ export type TeamMemberQueryParams = {
 
 export default class TeamMember extends Ressource {
   user: string;
+  role?: unknown;
 
   constructor(teamMember: APIObject, url?: string) {
     const { teamId } = teamMember;
@@ -35,6 +36,7 @@ export default class TeamMember extends Ressource {
       creatableField
     );
     this.user = teamMember.user;
+    this.role = teamMember.role;
   }
 
   static async get(params: TeamMemberGetParams, customUrl?: string) {

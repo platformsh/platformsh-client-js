@@ -232,6 +232,9 @@ export default class Subscription extends Ressource {
   enterprise_tag: string;
   support_tier: string;
   continuous_profiling: null | "UPSUN-FEATURE-CONTINUOUS-PROFILING";
+  options_url?: unknown;
+  options_custom?: unknown;
+  default_branch?: unknown;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
@@ -292,6 +295,9 @@ export default class Subscription extends Ressource {
     this.observability_suite = subscription.observability_suite;
     this.environment_options = subscription.environment_options ?? [];
     this.continuous_profiling = subscription.continuous_profiling ?? null;
+    this.options_url = subscription.options_url;
+    this.options_custom = subscription.options_custom;
+    this.default_branch = subscription.default_branch;
   }
 
   static async get(params: SubscriptionGetParams, customUrl?: string) {

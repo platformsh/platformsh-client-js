@@ -21,6 +21,7 @@ export type VoucherResponse = {
 };
 
 export default class OrganizationVoucher extends Ressource {
+  code?: unknown;
   currency: string;
   discounted_orders: any[];
   vouchers: any[];
@@ -38,6 +39,7 @@ export default class OrganizationVoucher extends Ressource {
       voucher,
       creatableField
     );
+    this.code = voucher.code;
     this.currency = voucher.currency;
     this.discounted_orders = voucher.discounted_orders ?? [];
     this.vouchers = voucher.vouchers ?? [];
