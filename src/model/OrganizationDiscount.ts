@@ -57,6 +57,8 @@ export default class OrganizationDiscount extends Ressource {
     };
   }[];
 
+  code?: unknown;
+
   constructor(discount: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
 
@@ -68,6 +70,7 @@ export default class OrganizationDiscount extends Ressource {
       creatableField
     );
     this.items = discount.items ?? [];
+    this.code = discount.code;
   }
 
   static async get(params: OrganizationDiscountGetParams, customUrl?: string) {

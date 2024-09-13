@@ -12,6 +12,8 @@ const creatableField = ["type", "token", "email", "chargeable"];
 export default class PaymentSource extends Ressource {
   id: string;
   type: string;
+  token: string;
+  email?: string;
   type_label: string;
   payment_category: string;
   name: string;
@@ -43,8 +45,11 @@ export default class PaymentSource extends Ressource {
       paymentSource,
       creatableField
     );
+
     this.id = paymentSource.id;
     this.type = paymentSource.type;
+    this.token = paymentSource.token;
+    this.email = paymentSource.email;
     this.type_label = paymentSource.type_label;
     this.name = paymentSource.name;
     this.number = paymentSource.number;
