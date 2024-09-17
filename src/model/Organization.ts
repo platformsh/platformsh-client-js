@@ -16,7 +16,7 @@ import type { APIObject } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/organizations";
-const user_url = "/users/:userId/organizations";
+const user_url = "/users/:userId/organizations?sort=label";
 
 const creatableField = ["name", "label", "country"];
 
