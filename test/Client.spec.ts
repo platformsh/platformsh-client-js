@@ -504,16 +504,19 @@ describe("Client", () => {
   });
 
   it("Get organizations with user id", async () => {
-    fetchMock.mock("https://api.platform.sh/api/users/aliceId/organizations", {
-      items: [
-        {
-          id: "1",
-          name: "org1",
-          label: "the organization",
-          owner: "10"
-        }
-      ]
-    });
+    fetchMock.mock(
+      "https://api.platform.sh/api/users/aliceId/organizations?sort=label",
+      {
+        items: [
+          {
+            id: "1",
+            name: "org1",
+            label: "the organization",
+            owner: "10"
+          }
+        ]
+      }
+    );
     await client.getOrganizations({ userId: "aliceId" }).then(organizations => {
       assert.equal(organizations[0].id, "1");
       assert.equal(organizations[0].name, "org1");
