@@ -39,9 +39,14 @@ const pick = (data: APIObject, fields: string[]) =>
 
 const secondaryActivityTypes = ["integration.webhook", "integration.script"];
 
-const getInstance = <T>(context: typeof Ressource, ...args: any[]) => {
+const getInstance = <T extends object>(
+  context: typeof Ressource,
+  ...args: any[]
+) => {
   const instance = Object.create(context?.prototype || null);
-  return new instance.constructor(...args) as T;
+  const obj = new instance.constructor(...args) as T;
+  Object.assign(obj, args[0]);
+  return obj;
 };
 
 export default abstract class Ressource {
@@ -93,7 +98,7 @@ export default abstract class Ressource {
     return url.substring(0, url.lastIndexOf("/"));
   }
 
-  static async _get<T>(
+  static async _get<T extends object>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,
@@ -107,7 +112,7 @@ export default abstract class Ressource {
     );
   }
 
-  static async _query<T>(
+  static async _query<T extends object>(
     _url: string,
     params?: ParamsType,
     paramDefaults?: ParamsType,

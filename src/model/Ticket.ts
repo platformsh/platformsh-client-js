@@ -16,10 +16,8 @@ export type Attachment = {
 };
 
 export type TicketResponse = {
-  data: {
-    count: number;
-    tickets: Ticket[];
-  };
+  count: number;
+  tickets: Ticket[];
 } & APIObject;
 
 export type AttachmentsResponse = {

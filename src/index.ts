@@ -1373,12 +1373,9 @@ export default class Client {
 
   /**
    * Get a list of Zendesk tickets based on the settings.
-   *
-   * @param {object} settings - Filters and settings.
-   * @return Promise<TicketResponse>
    */
   async getTickets(settings: TicketQueryParams) {
-    return entities.Ticket.query(settings).then(({ data }) => data);
+    return entities.Ticket.query(settings);
   }
 
   /**
