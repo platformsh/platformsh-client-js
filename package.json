@@ -1,6 +1,6 @@
 {
   "name": "platformsh-client",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "description": "Isomorphic Javascript library for accessing the Platform.sh API",
   "type": "module",
   "main": "lib/index.js",
