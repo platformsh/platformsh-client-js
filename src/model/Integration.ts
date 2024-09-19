@@ -186,6 +186,7 @@ export default class Integration extends Ressource {
   headers: Record<string, string>;
   // WebHookIntegration
   shared_key: string | undefined;
+  token: string | undefined;
 
   constructor(integration: APIObject, url: string) {
     super(
@@ -242,8 +243,9 @@ export default class Integration extends Ressource {
     this.protocol = integration.protocol;
     this.facility = integration.facility;
     this.message_format = integration.message_format;
-    this.headers = integration.headers ?? {};
+    this.headers = integration.headers;
     this.shared_key = integration.shared_key;
+    this.token = integration.token;
     this._required = ["type"];
   }
 
