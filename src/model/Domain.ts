@@ -39,7 +39,7 @@ export default class Domain extends Ressource {
     this.name = domain.name;
     this.is_default = domain.is_default;
     this.created_at = domain.created_at;
-    this.ssl = domain.ssl ?? [];
+    this.ssl = domain.ssl;
     this.updated_at = domain.updated_at;
     this._required = ["name"];
   }
