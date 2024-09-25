@@ -38,7 +38,7 @@ export default class Comment extends Ressource {
     this.body = comment.body;
     this.author_id = comment.author_id;
     this.public = comment.public;
-    this.attachments = comment.attachments ?? [];
+    this.attachments = comment.attachments;
   }
 
   static async query(ticketId: string, queryParams: Record<string, any>) {

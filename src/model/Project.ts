@@ -278,7 +278,7 @@ export default class Project extends Ressource {
   ) {
     const body: Partial<EnvironmentDomain> = { name, replacement_for };
 
-    if (ssl) {
+    if (ssl?.length) {
       body.ssl = ssl;
     }
 

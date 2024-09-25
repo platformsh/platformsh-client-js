@@ -42,7 +42,7 @@ export default class EnvironmentDomain extends Ressource {
     this.name = environmentDomain.name;
     this.is_default = environmentDomain.is_default;
     this.created_at = environmentDomain.created_at;
-    this.ssl = environmentDomain.ssl ?? [];
+    this.ssl = environmentDomain.ssl;
     this.updated_at = environmentDomain.updated_at;
     this.replacement_for = environmentDomain.replacement_for;
     this._required = ["name"];
