@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/organizations/:organizationId/profile";
 const paramDefaults = {};
@@ -27,7 +27,7 @@ export type OrganizationProfilGetParams = {
   organizationId: string;
 };
 
-export default class OrganizationProfile extends Ressource {
+export class OrganizationProfile extends Ressource {
   stripe: object;
   security_contact: string;
   vat_number: string;

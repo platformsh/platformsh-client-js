@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {
   id: "name"
@@ -35,7 +35,7 @@ export type ProjectLevelVariableQueryParams = {
   projectId: string;
 };
 
-export default class ProjectLevelVariable extends Ressource {
+export class ProjectLevelVariable extends Ressource {
   id: string;
   name: string;
   value: string;

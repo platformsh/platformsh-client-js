@@ -1,14 +1,14 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/tickets/priority";
 const paramDefaults = {};
 
 export type TicketPriorityGetParams = Record<string, any>;
 
-export default class TicketPriority extends Ressource {
+export class TicketPriority extends Ressource {
   id: string;
   label: string;
   short_description: string;

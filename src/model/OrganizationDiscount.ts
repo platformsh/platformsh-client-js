@@ -2,7 +2,7 @@ import { getConfig } from "../config";
 
 import type { FormattedCost } from "./Cost";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/organizations/:organizationId/discounts";
 const paramDefaults = {};
@@ -17,7 +17,7 @@ export type DiscountResponse = {
   discounts: OrganizationDiscount[];
 };
 
-export default class OrganizationDiscount extends Ressource {
+export class OrganizationDiscount extends Ressource {
   items: {
     end_at: string;
     id: number;

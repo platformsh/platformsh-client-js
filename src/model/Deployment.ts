@@ -1,9 +1,9 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import Result from "./Result";
+import { Ressource } from "./Ressource";
+import { Result } from "./Result";
 
 const paramDefaults = {};
 
@@ -279,7 +279,7 @@ export type RunRuntimeOpParams = {
 
 export type DeploymentServices = Record<string, DeploymentService>;
 
-export default class Deployment extends Ressource {
+export class Deployment extends Ressource {
   id: string;
   webapps: DeploymentServices;
   services: DeploymentServices;
@@ -368,7 +368,7 @@ export default class Deployment extends Ressource {
     };
     const url = `${api_url}/projects/${projectId}/environments/${environmentId}/deployments/${deploymentId}/operations`;
 
-    return request(url, "POST", body).then(async data => {
+    return authenticatedRequest(url, "POST", body).then(async data => {
       const result = new Result(data, url);
       const activities = await result.getActivities();
 

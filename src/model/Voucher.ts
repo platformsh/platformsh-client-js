@@ -2,7 +2,7 @@ import { getConfig } from "../config";
 
 import type { VoucherResponse } from "./OrganizationVoucher";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/vouchers";
 const paramDefaults = {};
@@ -14,7 +14,7 @@ export type VoucherGetParams = {
 
 export type VoucherQueryParams = Record<string, any>;
 
-export default class Voucher extends Ressource {
+export class Voucher extends Ressource {
   currency: string;
   discounted_orders: any[];
   uuid: string;

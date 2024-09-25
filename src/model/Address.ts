@@ -1,8 +1,8 @@
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/profiles/:id/address";
 const paramDefaults = {};
@@ -25,7 +25,7 @@ const _modifiableField = [
   "postal_code"
 ];
 
-export default class Address extends Ressource {
+export class Address extends Ressource {
   id: string;
   country: string;
   name_line: string;
@@ -66,7 +66,7 @@ export default class Address extends Ressource {
 
   static getQueryUrl(_url: string, id?: string) {
     if (id) {
-      return _urlParser(_url, { id });
+      return urlParser(_url, { id });
     }
     return "";
   }

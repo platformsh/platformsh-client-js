@@ -1,9 +1,9 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 import type { Links } from "../refs";
 import { getRef, getRefs, hasLink, getLinkHref } from "../refs";
 
-import AuthUser from "./AuthUser";
+import { AuthUser } from "./AuthUser";
 import type { APIObject, RessourceChildClass } from "./Ressource";
 
 export enum Directions {
@@ -26,7 +26,7 @@ class CursoredLinksManager<T> {
   async getPage(direction: Directions) {
     const { api_url } = getConfig();
 
-    const result = await request(
+    const result = await authenticatedRequest(
       getLinkHref(this.links, direction, true, api_url)
     );
 
@@ -70,7 +70,7 @@ class CursoredLinksManager<T> {
   }
 }
 
-export default class CursoredResult<T> {
+export class CursoredResult<T> {
   baseUrl: string;
   items: T[];
   links: Links;

@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 
@@ -26,7 +26,7 @@ export type EnvironmentBackupsRestoreBody = {
   restore_code: boolean;
 };
 
-export default class EnvironmentBackup extends Ressource {
+export class EnvironmentBackup extends Ressource {
   id: string;
   created_at: string;
   updated_at: string;

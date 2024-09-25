@@ -1,12 +1,12 @@
 import type { RequestOptions } from "../api";
-import request from "../api";
-import _urlParser from "../urlParser";
+import { authenticatedRequest } from "../api";
+import { urlParser } from "../urlParser";
 
-import CursoredResult from "./CursoredResult";
-import Ressource from "./Ressource";
+import { CursoredResult } from "./CursoredResult";
+import { Ressource } from "./Ressource";
 import type { ParamsType, RessourceChildClass } from "./Ressource";
 
-export default abstract class CursoredRessource extends Ressource {
+export abstract class CursoredRessource extends Ressource {
   static async queryCursoredResult<T>(
     _url: string,
     params: ParamsType,
@@ -15,9 +15,16 @@ export default abstract class CursoredRessource extends Ressource {
     ResultConstructor: RessourceChildClass<T>,
     options?: RequestOptions
   ) {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+    const parsedUrl = urlParser(_url, params, paramDefaults);
 
-    const result = await request(parsedUrl, "GET", queryParams, {}, 0, options);
+    const result = await authenticatedRequest(
+      parsedUrl,
+      "GET",
+      queryParams,
+      {},
+      0,
+      options
+    );
 
     return new CursoredResult(
       parsedUrl,

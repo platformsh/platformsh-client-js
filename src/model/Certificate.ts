@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/certificates";
@@ -11,7 +11,7 @@ export type CertificateQueryParams = {
   projectId?: string;
 };
 
-export default class Certificate extends Ressource {
+export class Certificate extends Ressource {
   key: string;
   id: string;
   certificate: string;

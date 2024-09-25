@@ -1,6 +1,6 @@
 import parse_url from "parse_url";
 
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import type { Link } from "../refs";
 import {
   makeAbsoluteUrl,
@@ -9,14 +9,14 @@ import {
   hasLink,
   getLinkHref
 } from "../refs";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
-import type Activity from "./Activity";
-import type CursoredResult from "./CursoredResult";
+import type { Activity } from "./Activity";
+import type { CursoredResult } from "./CursoredResult";
 import type { CommerceOrderResponse } from "./Order";
 import type { VoucherResponse } from "./OrganizationVoucher";
 import type { RegionResponse } from "./Region";
-import Result from "./Result";
+import { Result } from "./Result";
 
 export type APIObject = {
   [key: string]: any;
@@ -49,7 +49,7 @@ const getInstance = <T extends object>(
   return obj;
 };
 
-export default abstract class Ressource {
+export abstract class Ressource {
   public _links?: Record<string, Link>;
   public _embedded?: Record<string, object[]>;
 
@@ -78,7 +78,7 @@ export default abstract class Ressource {
     const url = _url || this.getLink("self");
     this._params = params;
 
-    this._url = _urlParser(url, params, paramDefaults);
+    this._url = urlParser(url, params, paramDefaults);
     const parsedUrl = parse_url(url);
 
     if (parsedUrl?.[1] === "http" || parsedUrl?.[1] === "https") {
@@ -105,11 +105,16 @@ export default abstract class Ressource {
     queryParams?: ParamsType,
     options?: object
   ): Promise<T> {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+    const parsedUrl = urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
-      (data: APIObject) => getInstance<T>(this, data, parsedUrl, params)
-    );
+    return authenticatedRequest(
+      parsedUrl,
+      "GET",
+      queryParams,
+      {},
+      0,
+      options
+    ).then((data: APIObject) => getInstance<T>(this, data, parsedUrl, params));
   }
 
   static async _query<T extends object>(
@@ -127,20 +132,25 @@ export default abstract class Ressource {
     ) => APIObject[],
     options?: object
   ): Promise<T[]> {
-    const parsedUrl = _urlParser(_url, params, paramDefaults);
+    const parsedUrl = urlParser(_url, params, paramDefaults);
 
-    return request(parsedUrl, "GET", queryParams, {}, 0, options).then(
-      (data: APIObject[]) => {
-        let dataToMap = data;
-        if (transformResultBeforeMap) {
-          dataToMap = transformResultBeforeMap(data);
-        }
-
-        return dataToMap.map((d: APIObject) =>
-          getInstance<T>(this, d, `${parsedUrl}/${d.id}`)
-        );
+    return authenticatedRequest(
+      parsedUrl,
+      "GET",
+      queryParams,
+      {},
+      0,
+      options
+    ).then((data: APIObject[]) => {
+      let dataToMap = data;
+      if (transformResultBeforeMap) {
+        dataToMap = transformResultBeforeMap(data);
       }
-    );
+
+      return dataToMap.map((d: APIObject) =>
+        getInstance<T>(this, d, `${parsedUrl}/${d.id}`)
+      );
+    });
   }
 
   static wrap<T extends APIObject>(objs: T[]): T[] {
@@ -193,14 +203,18 @@ export default abstract class Ressource {
     }
 
     if (!updateLink) {
-      updateLink = _urlParser(
+      updateLink = urlParser(
         _url ?? this._url,
         this as Record<string, any>,
         this._paramDefaults
       );
     }
 
-    return request(updateLink, "PATCH", pick(data, this._modifiableField)).then(
+    return authenticatedRequest(
+      updateLink,
+      "PATCH",
+      pick(data, this._modifiableField)
+    ).then(
       (apiObject: APIObject) =>
         new Result(
           apiObject,
@@ -261,7 +275,11 @@ export default abstract class Ressource {
     }
     const url = this._queryUrl ?? this._url;
 
-    return request(url, "POST", pick(this, this._creatableField)).then(
+    return authenticatedRequest(
+      url,
+      "POST",
+      pick(this, this._creatableField)
+    ).then(
       (data: APIObject) =>
         new Result(data, url, this.constructor as RessourceChildClass<any>)
     );
@@ -273,7 +291,7 @@ export default abstract class Ressource {
     if (!deleteLink) {
       throw new Error("Not allowed to delete");
     }
-    return request(deleteLink, "DELETE", {}).then(
+    return authenticatedRequest(deleteLink, "DELETE", {}).then(
       (result: APIObject) =>
         new Result(
           result,
@@ -292,10 +310,12 @@ export default abstract class Ressource {
    *
    */
   async refresh(params?: ParamsType) {
-    return request(this.getUri(), "GET", params).then((data: APIObject) => {
-      this.copy(data);
-      return this;
-    });
+    return authenticatedRequest(this.getUri(), "GET", params).then(
+      (data: APIObject) => {
+        this.copy(data);
+        return this;
+      }
+    );
   }
 
   /**
@@ -407,7 +427,7 @@ export default abstract class Ressource {
     if (!this.operationAvailable(op)) {
       throw new Error(`Operation not available: ${op}`);
     }
-    return request(this.getLink(`#${op}`), method, body);
+    return authenticatedRequest(this.getLink(`#${op}`), method, body);
   }
 
   /**

@@ -3,7 +3,7 @@ import { assert, afterEach, beforeEach, describe, it, expect } from "vitest";
 
 import Client from "../src";
 import { getConfig } from "../src/config";
-import Invitation from "../src/model/Invitation";
+import { Invitation } from "../src/model/Invitation";
 
 const _fetch = (url: string, data: unknown, params?: fetchMock.MockOptions) =>
   fetchMock.mock(url, JSON.stringify(data), params);

@@ -1,12 +1,12 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const _url = "/users/:userId/connections";
 
-export default class ConnectedAccount extends Ressource {
+export class ConnectedAccount extends Ressource {
   provider: string;
   subject: string;
   created_at: string;
@@ -49,6 +49,6 @@ export default class ConnectedAccount extends Ressource {
   }
 
   async delete() {
-    return request(this._url, "DELETE");
+    return authenticatedRequest(this._url, "DELETE");
   }
 }

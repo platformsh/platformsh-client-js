@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/metrics";
@@ -12,7 +12,7 @@ export type MetricsGetParams = {
   environmentId?: string;
 };
 
-export default class Metrics extends Ressource {
+export class Metrics extends Ressource {
   results: Record<string, unknown>;
 
   constructor(metrics: APIObject, url: string) {

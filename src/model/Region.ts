@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/platform/regions";
 const paramDefaults = {};
@@ -12,7 +12,7 @@ export type RegionResponse = {
   regions: Region[];
 };
 
-export default class Region extends Ressource {
+export class Region extends Ressource {
   id: string;
   available: boolean;
   endpoint: string;

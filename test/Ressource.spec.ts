@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import Ressource from "../src/model/Ressource";
+import { Ressource } from "../src/model/Ressource";
 
 class MockResource extends Ressource {}
 

@@ -1,8 +1,8 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
-import PaymentSource from "./PaymentSource";
+import { PaymentSource } from "./PaymentSource";
 import type { APIObject } from "./Ressource";
 
 const url = "/organizations/:organizationId/payment-source";
@@ -13,7 +13,7 @@ export type OrganizationPaymentSourceParams = {
   organizationId: string;
 };
 
-export default class OrganizationPaymentSource extends PaymentSource {
+export class OrganizationPaymentSource extends PaymentSource {
   constructor(paymentSource: APIObject, customUrl?: string) {
     const { api_url } = getConfig();
     const { organizationId, ...paymentSourceData } = paymentSource;
@@ -30,13 +30,13 @@ export default class OrganizationPaymentSource extends PaymentSource {
     const { api_url } = getConfig();
     const { organizationId, ...queryParams } = params;
 
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       customUrl ?? `${api_url}${url}`,
       { organizationId },
       paramDefaults
     );
 
-    return request(parsedUrl, "GET", queryParams)
+    return authenticatedRequest(parsedUrl, "GET", queryParams)
       .then(data => {
         if (typeof data === "undefined") return;
         return new OrganizationPaymentSource(
@@ -53,7 +53,7 @@ export default class OrganizationPaymentSource extends PaymentSource {
    */
   static async delete() {
     const { api_url } = getConfig();
-    return request(`${api_url}${url}`, "DELETE");
+    return authenticatedRequest(`${api_url}${url}`, "DELETE");
   }
 
   /**
@@ -64,14 +64,14 @@ export default class OrganizationPaymentSource extends PaymentSource {
    */
   static async getAllowed(organizationId: string) {
     const { api_url } = getConfig();
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       `${api_url}${url}`,
       {
         organizationId
       },
       {}
     );
-    return request(`${parsedUrl}/allowed`, "GET");
+    return authenticatedRequest(`${parsedUrl}/allowed`, "GET");
   }
 
   /**
@@ -81,25 +81,25 @@ export default class OrganizationPaymentSource extends PaymentSource {
    */
   static async intent(organizationId: string) {
     const { api_url } = getConfig();
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       `${api_url}${url}`,
       {
         organizationId
       },
       {}
     );
-    return request(`${parsedUrl}/intent`, "POST");
+    return authenticatedRequest(`${parsedUrl}/intent`, "POST");
   }
 
   static async setVerificationMethodAsPaymentMethod(organizationId: string) {
     const { api_url } = getConfig();
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       `${api_url}${url}`,
       {
         organizationId
       },
       {}
     );
-    return request(`${parsedUrl}`, "PATCH", { chargeable: true });
+    return authenticatedRequest(`${parsedUrl}`, "PATCH", { chargeable: true });
   }
 }

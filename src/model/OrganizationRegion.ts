@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
-import CursoredRessource from "./CursoredRessource";
-import Region from "./Region";
+import { CursoredRessource } from "./CursoredRessource";
+import { Region } from "./Region";
 
 const url = "/organizations/:organizationId/regions/:id";
 
@@ -11,7 +11,7 @@ export type OrganizationRegionQueryParams = {
 };
 
 // @ts-expect-error solve the query function inheritance ts error
-export default class OrganizationRegion extends Region {
+export class OrganizationRegion extends Region {
   static async query(params: OrganizationRegionQueryParams) {
     const { organizationId, ...queryParams } = params;
     const { api_url } = getConfig();

@@ -1,10 +1,10 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import Result from "./Result";
+import { Ressource } from "./Ressource";
+import { Result } from "./Result";
 
 const paramDefaults = {};
 const _queryUrl =
@@ -18,7 +18,7 @@ export type SourceOperationQueryParams = {
   environmentId: string;
 };
 
-export default class SourceOperation extends Ressource {
+export class SourceOperation extends Ressource {
   operation: string;
   app: string;
   command: string;
@@ -35,15 +35,11 @@ export default class SourceOperation extends Ressource {
   // that gets passed into the prototype.constructor().
   static async query(params: SourceOperationQueryParams) {
     const { api_url } = getConfig();
-    const queryUrl = _urlParser(
-      `${api_url}${_queryUrl}`,
-      params,
-      paramDefaults
-    );
+    const queryUrl = urlParser(`${api_url}${_queryUrl}`, params, paramDefaults);
 
-    const url = _urlParser(`${api_url}${_url}`, params, paramDefaults);
+    const url = urlParser(`${api_url}${_url}`, params, paramDefaults);
 
-    return request(queryUrl, "GET").then(data =>
+    return authenticatedRequest(queryUrl, "GET").then(data =>
       data.map((d: APIObject) => new SourceOperation(d, url))
     );
   }
@@ -55,7 +51,7 @@ export default class SourceOperation extends Ressource {
     if (typeof variables !== "undefined") {
       body.variables = { ...variables };
     }
-    return request(this._url, "POST", body).then(async data => {
+    return authenticatedRequest(this._url, "POST", body).then(async data => {
       const result = new Result(data, this._url);
       const activities = await result.getActivities();
 

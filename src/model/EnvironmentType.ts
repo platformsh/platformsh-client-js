@@ -1,9 +1,9 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
-import ProjectAccess from "./ProjectAccess";
+import { ProjectAccess } from "./ProjectAccess";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/projects/:projectId/environment-types/:id";
 const paramDefaults = {};
@@ -41,7 +41,7 @@ export type DeleteAccessParams = {
   accessId: string;
 };
 
-export default class EnvironmentType extends Ressource {
+export class EnvironmentType extends Ressource {
   id: string;
   accesses: ProjectAccess[];
 
@@ -82,7 +82,7 @@ export default class EnvironmentType extends Ressource {
     const { projectId, environmentTypeId, email, role, user } = params;
     const { api_url } = getConfig();
     const accessUrl = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access`;
-    const response = await request(accessUrl, "POST", {
+    const response = await authenticatedRequest(accessUrl, "POST", {
       email,
       role,
       user
@@ -94,7 +94,7 @@ export default class EnvironmentType extends Ressource {
     const { projectId, environmentTypeId, accessId, role } = params;
     const { api_url } = getConfig();
     const accessUrl = `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`;
-    const response = await request(accessUrl, "PATCH", {
+    const response = await authenticatedRequest(accessUrl, "PATCH", {
       role
     });
     return new ProjectAccess(response._embedded.entity, accessUrl);
@@ -105,7 +105,7 @@ export default class EnvironmentType extends Ressource {
   ): Promise<{ status: string; code: number }> {
     const { projectId, environmentTypeId, accessId } = params;
     const { api_url } = getConfig();
-    return request(
+    return authenticatedRequest(
       `${api_url}/projects/${projectId}/environment-types/${environmentTypeId}/access/${accessId}`,
       "DELETE"
     );
@@ -113,7 +113,7 @@ export default class EnvironmentType extends Ressource {
 
   async getAccesses() {
     const accessLink = this.getLink("#access");
-    const accesses = await request(accessLink);
+    const accesses = await authenticatedRequest(accessLink);
     this.accesses = [];
 
     for (const access of accesses) {

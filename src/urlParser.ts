@@ -1,6 +1,6 @@
 const paramsRegex = /(:[0-z]+)/gu;
 
-export default (
+export const urlParser = (
   url = "",
   params: Record<string, string> = {},
   paramDefaults: Record<string, string> = {}

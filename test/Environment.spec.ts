@@ -4,7 +4,7 @@ import { assert, afterEach, beforeAll, describe, it } from "vitest";
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
-import Environment from "../src/model/Environment";
+import { Environment } from "../src/model/Environment";
 
 describe("Environment", () => {
   beforeAll(() => {

@@ -4,7 +4,7 @@ import type {
 } from "../config";
 
 import type { TokenOAuthRedirectResponse } from "./ApiDefaultStorage";
-import ApiDefaultStorage from "./ApiDefaultStorage";
+import { ApiDefaultStorage } from "./ApiDefaultStorage";
 
 export type PKCERequest = {
   codeVerifier: string;

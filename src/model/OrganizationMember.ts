@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
-import AuthUser from "./AuthUser";
-import CursoredRessource from "./CursoredRessource";
+import { AuthUser } from "./AuthUser";
+import { CursoredRessource } from "./CursoredRessource";
 import type { APIObject } from "./Ressource";
 
 const paramDefaults = {};
@@ -21,7 +21,7 @@ export type OrganizationMemberQueryParams = {
   organizationId: string;
 };
 
-export default class OrganizationMember extends CursoredRessource {
+export class OrganizationMember extends CursoredRessource {
   id: string;
   user_id: string;
   organization_id: string;

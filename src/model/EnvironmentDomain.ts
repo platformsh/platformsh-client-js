@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const modifiableField = ["is_default"];
@@ -20,7 +20,7 @@ export type EnvironmentDomainQueryParams = {
   environmentId: string;
 };
 
-export default class EnvironmentDomain extends Ressource {
+export class EnvironmentDomain extends Ressource {
   id: string;
   name: string;
   is_default: boolean;

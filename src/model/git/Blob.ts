@@ -1,7 +1,7 @@
 import isNode from "detect-node";
 
 import { getConfig } from "../../config";
-import Ressource from "../Ressource";
+import { Ressource } from "../Ressource";
 
 const _url = "/projects/:projectId/git/blobs/:sha";
 
@@ -10,7 +10,7 @@ export type BlobParams = {
   sha: string;
 };
 
-export default class Blob extends Ressource {
+export class Blob extends Ressource {
   id: string;
   readonly type = "blob";
   path: string;

@@ -3,7 +3,7 @@ import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
-import SourceOperation from "../src/model/SourceOperation";
+import { SourceOperation } from "../src/model/SourceOperation";
 
 describe("Source operation", () => {
   beforeAll(() => {

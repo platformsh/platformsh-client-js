@@ -1,14 +1,14 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/tickets/category";
 const paramDefaults = {};
 
 export type TicketCategoryGetParams = Record<string, any>;
 
-export default class TicketCategory extends Ressource {
+export class TicketCategory extends Ressource {
   id: string;
   label: string;
 

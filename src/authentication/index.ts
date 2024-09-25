@@ -1,9 +1,8 @@
 import { setAuthenticationPromise, getAuthenticationPromise } from "../api";
 import type { ClientConfiguration } from "../config";
 import { jso_wipe } from "../jso";
-export { default as authenticatedRequest } from "../api";
 
-import connector from "./connector";
+import { connector } from "./connector";
 
 let authenticationInProgress = false;
 
@@ -15,7 +14,7 @@ export type JWTToken = {
   scope: string;
 };
 
-export default async (
+export const authenticate = async (
   {
     api_token,
     access_token,

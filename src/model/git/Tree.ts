@@ -1,7 +1,7 @@
 import { getConfig } from "../../config";
-import Ressource from "../Ressource";
+import { Ressource } from "../Ressource";
 
-import Blob from "./Blob";
+import { Blob } from "./Blob";
 
 const _url = "/projects/:projectId/git/trees/:sha";
 
@@ -10,7 +10,7 @@ export type TreeParams = {
   projectId?: string;
 };
 
-export default class Tree extends Ressource {
+export class Tree extends Ressource {
   id: string;
   sha: string;
   readonly type = "tree";

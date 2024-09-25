@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const creatableAndModifiableField = [
@@ -26,7 +26,7 @@ export type RouteQueryParams = {
   environmentId: string;
 };
 
-export default class Route extends Ressource {
+export class Route extends Ressource {
   id: string;
   project: string;
   environment: string;

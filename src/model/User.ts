@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const _url = "/api/users";
 const paramDefaults = {};
@@ -17,7 +17,7 @@ export type UserQueryParams = {
   environmentId: string;
 };
 
-export default class User extends Ressource {
+export class User extends Ressource {
   id: string;
   created_at: string;
   updated_at: string;

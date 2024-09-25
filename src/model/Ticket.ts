@@ -1,8 +1,8 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/tickets";
 const paramDefaults = {};
@@ -24,7 +24,7 @@ export type AttachmentsResponse = {
   attachments: Attachment[];
 };
 
-export default class Ticket extends Ressource {
+export class Ticket extends Ressource {
   subject: string;
   description: string;
   requester_id: string;
@@ -75,7 +75,10 @@ export default class Ticket extends Ressource {
   static async getAllAttachments(ticketId: string): Promise<Attachment[]> {
     const { api_url } = getConfig();
 
-    return request(`${api_url}/v1/comments/${ticketId}/attachments`, "GET");
+    return authenticatedRequest(
+      `${api_url}/v1/comments/${ticketId}/attachments`,
+      "GET"
+    );
   }
 
   static async query(queryParams: TicketQueryParams) {
@@ -92,12 +95,16 @@ export default class Ticket extends Ressource {
   static async open(ticket: APIObject) {
     const { api_url } = getConfig();
 
-    return request(`${api_url}${url}`, "POST", ticket);
+    return authenticatedRequest(`${api_url}${url}`, "POST", ticket);
   }
 
   static async patch(ticketId: string, ticket: APIObject) {
     const { api_url } = getConfig();
 
-    return request(`${api_url}${url}/${ticketId}`, "PATCH", ticket);
+    return authenticatedRequest(
+      `${api_url}${url}/${ticketId}`,
+      "PATCH",
+      ticket
+    );
   }
 }
