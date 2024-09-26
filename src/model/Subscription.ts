@@ -218,6 +218,11 @@ export default class Subscription extends Ressource {
   };
 
   green?: boolean;
+  resources?: {
+    container_profiles: boolean;
+    production: {};
+    development: {};
+  };
   resources_limit?:
     | {
         limit: ResourceType;
@@ -281,6 +286,11 @@ export default class Subscription extends Ressource {
         observability_suite: { products: [], available: false }
       },
       initialize: {}
+    };
+    this.resources = subscription.resources ?? {
+      container_profiles: false,
+      production: {},
+      development: {}
     };
     this.resources_limit = subscription.resources_limit ?? {
       limit: {},
