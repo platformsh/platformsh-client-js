@@ -1,8 +1,8 @@
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { ParamsType, APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/users/:userId/api-tokens/:id";
 const paramDefaults = {};
@@ -26,7 +26,7 @@ export type APITokenQueryParams = {
   userId?: string;
 };
 
-export default class ApiToken extends Ressource {
+export class ApiToken extends Ressource {
   id: string;
   name: string;
   created_at: string;
@@ -37,7 +37,7 @@ export default class ApiToken extends Ressource {
     const { api_url } = getConfig();
 
     super(`${api_url}${url}`, params, {}, apiToken, createableField);
-    this._queryUrl = _urlParser(
+    this._queryUrl = urlParser(
       Ressource.getQueryUrl(`${api_url}${url}`),
       params
     );
@@ -70,16 +70,19 @@ export default class ApiToken extends Ressource {
     );
   }
 
-  // @ts-expect-error @deprecated use deleteWithParams instead
+  /**
+   * @deprecated use deleteWithParams instead
+   */
+  // @ts-expect-error deprecated
   async delete(params: APITokenQueryParams) {
     return super.delete(
-      `${_urlParser(this._queryUrl, { ...params })}/${this.id}`
+      `${urlParser(this._queryUrl, { ...params })}/${this.id}`
     );
   }
 
   async deleteWithParams(params: APITokenQueryParams) {
     return super.delete(
-      `${_urlParser(this._queryUrl, { ...params })}/${this.id}`
+      `${urlParser(this._queryUrl, { ...params })}/${this.id}`
     );
   }
 }

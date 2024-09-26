@@ -1,9 +1,9 @@
 import { request } from "../api";
 import { getConfig } from "../config";
 
-import Activity from "./Activity";
+import { Activity } from "./Activity";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const types = [
@@ -99,7 +99,7 @@ type BitbucketAddonCredentials = {
   shared_secret: string;
 };
 
-export default class Integration extends Ressource {
+export class Integration extends Ressource {
   id: string;
   type: string;
 

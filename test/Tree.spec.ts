@@ -4,8 +4,8 @@ import { assert, afterEach, beforeAll, describe, it } from "vitest";
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
-import type Blob from "../src/model/git/Blob";
-import Tree from "../src/model/git/Tree";
+import type { Blob } from "../src/model/git/Blob";
+import { Tree } from "../src/model/git/Tree";
 
 describe("Tree", () => {
   const { api_url } = getConfig();

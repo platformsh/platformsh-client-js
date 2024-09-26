@@ -1,8 +1,8 @@
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/organizations/:organizationId/address";
 const paramDefaults = {};
@@ -31,7 +31,7 @@ export type OrganizationAddressQueryParams = {
   organizationId: string;
 };
 
-export default class OrganizationAddress extends Ressource {
+export class OrganizationAddress extends Ressource {
   id: string;
   country: string;
   name_line: string;
@@ -71,7 +71,7 @@ export default class OrganizationAddress extends Ressource {
   }
 
   static getQueryUrl(_url: string, id: string) {
-    return _urlParser(_url, { id });
+    return urlParser(_url, { id });
   }
 
   static async get(params: OrganizationAddressGetParams, customUrl?: string) {
@@ -108,7 +108,7 @@ export default class OrganizationAddress extends Ressource {
     const { api_url } = getConfig();
     return super.update(
       address,
-      _urlParser(`${api_url}${url}`, { organizationId }, {})
+      urlParser(`${api_url}${url}`, { organizationId }, {})
     );
   }
 }

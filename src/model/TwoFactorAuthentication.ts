@@ -1,14 +1,14 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 import type { APIObject } from "./Ressource";
 
 const url = "/users/:userId/totp";
 const paramDefaults = {};
 
-export default class TwoFactorAuthentication extends Ressource {
+export class TwoFactorAuthentication extends Ressource {
   issuer: string;
   account_name: string;
   secret: string;
@@ -39,19 +39,19 @@ export default class TwoFactorAuthentication extends Ressource {
 
   static async enroll(userId: string, secret: string, passcode: string) {
     const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}${url}`, { userId });
-    return request(endpoint, "POST", { secret, passcode });
+    const endpoint = urlParser(`${api_url}${url}`, { userId });
+    return authenticatedRequest(endpoint, "POST", { secret, passcode });
   }
 
   static async reset(userId: string) {
     const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}/users/:userId/codes`, { userId });
-    return request(endpoint, "POST");
+    const endpoint = urlParser(`${api_url}/users/:userId/codes`, { userId });
+    return authenticatedRequest(endpoint, "POST");
   }
 
   static async delete(userId: string) {
     const { api_url } = getConfig();
-    const endpoint = _urlParser(`${api_url}${url}`, { userId });
-    return request(endpoint, "DELETE");
+    const endpoint = urlParser(`${api_url}${url}`, { userId });
+    return authenticatedRequest(endpoint, "DELETE");
   }
 }

@@ -1,9 +1,9 @@
 import { getConfig } from "../config";
 
-import Account from "./Account";
+import { Account } from "./Account";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import User from "./User";
+import { Ressource } from "./Ressource";
+import { User } from "./User";
 
 const paramDefaults = {};
 
@@ -30,7 +30,7 @@ export type EnvironmentAccessQueryParams = {
   environmentId: string;
 };
 
-export default class EnvironmentAccess extends Ressource {
+export class EnvironmentAccess extends Ressource {
   id: string;
   user: string;
   email: string;

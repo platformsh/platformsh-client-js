@@ -1,6 +1,6 @@
 import type { APIObject, RessourceChildClass } from "./Ressource";
 
-export default class Result {
+export class Result {
   data: APIObject;
   detail: any;
   private readonly _url: string | undefined;
@@ -40,7 +40,7 @@ export default class Result {
       return [];
     }
     // Workaround the cycle dependency with webpack Ressource->Result->Activity->Ressouce...
-    const Activity = (await import("./Activity")).default;
+    const { Activity } = await import("./Activity");
 
     return this.data._embedded.activities.map(
       activity => new Activity(activity, this._url!)

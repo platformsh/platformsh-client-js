@@ -1,4 +1,4 @@
-import authenticatedRequest from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type {
@@ -6,12 +6,12 @@ import type {
   MaybeComplexFormattedCostMeasure,
   MaybeComplexFormattedCostWithQuantity
 } from "./Cost";
-import type CursoredResult from "./CursoredResult";
-import OrganizationDiscount from "./OrganizationDiscount";
-import OrganizationMember from "./OrganizationMember";
-import OrganizationSubscription from "./OrganizationSubscription";
-import OrganizationVoucher from "./OrganizationVoucher";
-import Ressource from "./Ressource";
+import type { CursoredResult } from "./CursoredResult";
+import { OrganizationDiscount } from "./OrganizationDiscount";
+import { OrganizationMember } from "./OrganizationMember";
+import { OrganizationSubscription } from "./OrganizationSubscription";
+import { OrganizationVoucher } from "./OrganizationVoucher";
+import { Ressource } from "./Ressource";
 import type { APIObject } from "./Ressource";
 
 const paramDefaults = {};
@@ -121,7 +121,7 @@ export type CreateSubscriptionPayloadType = {
   storage?: number;
 };
 
-export default class Organization extends Ressource {
+export class Organization extends Ressource {
   id: string;
   user_id: string;
   name: string;

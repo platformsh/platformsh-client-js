@@ -1,14 +1,14 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const _url = "/platform/setup/config";
 const paramDefaults = {};
 
-export default class SetupConfig extends Ressource {
+export class SetupConfig extends Ressource {
   app: string;
   service: string;
 
@@ -26,8 +26,8 @@ export default class SetupConfig extends Ressource {
     const { api_url } = getConfig();
     const url =
       customUrl ?? `${api_url}${_url}?service=:service&format=:format`;
-    const parsedUrl = _urlParser(url, { service, format });
-    return request(parsedUrl, "POST").then(data =>
+    const parsedUrl = urlParser(url, { service, format });
+    return authenticatedRequest(parsedUrl, "POST").then(data =>
       typeof data === "undefined" ? undefined : new SetupConfig(data, _url)
     );
   }

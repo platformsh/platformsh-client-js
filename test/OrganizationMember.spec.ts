@@ -4,7 +4,7 @@ import { assert, afterEach, beforeEach, describe, it } from "vitest";
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
 import { getConfig } from "../src/config";
-import OrganizationMember from "../src/model/OrganizationMember";
+import { OrganizationMember } from "../src/model/OrganizationMember";
 
 describe("OrganizationSubscription", () => {
   const { api_url } = getConfig();

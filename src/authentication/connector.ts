@@ -512,7 +512,7 @@ const logInWithWebMessageAndPKCE = async (reset: boolean) => {
   });
 };
 
-export default async (
+export const connector = async (
   token?: string,
   reset = false,
   config?: Partial<ClientConfiguration>

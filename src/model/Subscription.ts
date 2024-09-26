@@ -3,7 +3,7 @@ import isUrl from "is-url";
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
-import Account from "./Account";
+import { Account } from "./Account";
 import type {
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostCounter,
@@ -11,9 +11,9 @@ import type {
   MaybeComplexFormattedCostWithTitle,
   MaybeComplexFormattedCostWithQuantity
 } from "./Cost";
-import Project from "./Project";
+import { Project } from "./Project";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const creatableField = [
@@ -181,7 +181,7 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
 export type SubscriptionEstimate = _SubscriptionEstimate<false>;
 export type SubscriptionEstimateComplex = _SubscriptionEstimate<true>;
 
-export default class Subscription extends Ressource {
+export class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
   created_at: string;

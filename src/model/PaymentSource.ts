@@ -1,15 +1,15 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject, ParamsType } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/platform/payment_source";
 const paramDefaults = {};
 const creatableField = ["type", "token", "email", "chargeable"];
 
-export default class PaymentSource extends Ressource {
+export class PaymentSource extends Ressource {
   id: string;
   type: string;
   token: string;
@@ -62,13 +62,13 @@ export default class PaymentSource extends Ressource {
   static async get(queryParams = {}, customUrl?: string) {
     const { api_url } = getConfig();
 
-    const parsedUrl = _urlParser(
+    const parsedUrl = urlParser(
       customUrl ?? `${api_url}${url}`,
       paramDefaults,
       queryParams
     );
 
-    return request(parsedUrl, "GET", queryParams)
+    return authenticatedRequest(parsedUrl, "GET", queryParams)
       .then(data => {
         if (typeof data === "undefined") return;
         return new PaymentSource(this.formatDetails(data.payment_source));
@@ -94,7 +94,7 @@ export default class PaymentSource extends Ressource {
    */
   static async delete(customUrl?: string) {
     const { api_url } = getConfig();
-    return request(customUrl ?? `${api_url}${url}`, "DELETE");
+    return authenticatedRequest(customUrl ?? `${api_url}${url}`, "DELETE");
   }
 
   /**
@@ -105,7 +105,7 @@ export default class PaymentSource extends Ressource {
    */
   static async getAllowed(_?: string) {
     const { api_url } = getConfig();
-    return request(`${api_url}${url}/allowed`, "GET");
+    return authenticatedRequest(`${api_url}${url}/allowed`, "GET");
   }
 
   /**
@@ -115,7 +115,7 @@ export default class PaymentSource extends Ressource {
    */
   static async intent(_?: string) {
     const { api_url } = getConfig();
-    return request(`${api_url}${url}/intent`, "POST");
+    return authenticatedRequest(`${api_url}${url}/intent`, "POST");
   }
 
   /**

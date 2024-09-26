@@ -1,12 +1,12 @@
-import { authenticatedRequest } from "../authentication";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
-import CursoredRessource from "./CursoredRessource";
-import Organization from "./Organization";
-import Ressource from "./Ressource";
+import { CursoredRessource } from "./CursoredRessource";
+import { Organization } from "./Organization";
+import { Ressource } from "./Ressource";
 import type { APIObject } from "./Ressource";
-import Subscription from "./Subscription";
+import { Subscription } from "./Subscription";
 
 const url = "/organizations/:organizationId/subscriptions/:id";
 
@@ -21,7 +21,7 @@ export type OrganizationSubscriptionQueryParams = {
 };
 
 // @ts-expect-error solve the query function inheritance ts error
-export default class OrganizationSubscription extends Subscription {
+export class OrganizationSubscription extends Subscription {
   organization_id: string;
   project_region: string;
 

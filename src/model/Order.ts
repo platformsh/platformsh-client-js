@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/orders/:id";
 const paramDefaults = {};
@@ -49,7 +49,7 @@ export type OrderLineItem = {
   total_price_formatted: string;
 };
 
-export default class Order extends Ressource {
+export class Order extends Ressource {
   id: string;
   status: string;
   owner: string;

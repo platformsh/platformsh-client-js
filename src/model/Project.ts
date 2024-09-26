@@ -2,20 +2,20 @@ import path from "path";
 
 import parse_url from "parse_url";
 
-import request, { createEventSource } from "../api";
+import { authenticatedRequest, createEventSource } from "../api";
 import { getConfig } from "../config";
 
-import Activity from "./Activity";
-import Certificate from "./Certificate";
-import Domain from "./Domain";
-import Environment from "./Environment";
-import EnvironmentDomain from "./EnvironmentDomain";
-import Integration from "./Integration";
-import ProjectAccess from "./ProjectAccess";
-import ProjectLevelVariable from "./ProjectLevelVariable";
+import { Activity } from "./Activity";
+import { Certificate } from "./Certificate";
+import { Domain } from "./Domain";
+import { Environment } from "./Environment";
+import { EnvironmentDomain } from "./EnvironmentDomain";
+import { Integration } from "./Integration";
+import { ProjectAccess } from "./ProjectAccess";
+import { ProjectLevelVariable } from "./ProjectLevelVariable";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import type Subscription from "./Subscription";
+import { Ressource } from "./Ressource";
+import type { Subscription } from "./Subscription";
 import { SubscriptionStatusEnum } from "./Subscription";
 
 const paramDefaults = {};
@@ -38,7 +38,7 @@ export type Repository = {
   url: string;
 };
 
-export default class Project extends Ressource {
+export class Project extends Ressource {
   id: string;
   cluster: string;
   cluster_label: string;
@@ -556,6 +556,6 @@ export default class Project extends Ressource {
    * by this project
    */
   async getCapabilities() {
-    return request(this.getLink("capabilities"));
+    return authenticatedRequest(this.getLink("capabilities"));
   }
 }

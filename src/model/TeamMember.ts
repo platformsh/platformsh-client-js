@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/platform/teams/:teamId/members";
@@ -19,7 +19,7 @@ export type TeamMemberQueryParams = {
   teamId: string;
 };
 
-export default class TeamMember extends Ressource {
+export class TeamMember extends Ressource {
   user: string;
   role?: unknown;
 

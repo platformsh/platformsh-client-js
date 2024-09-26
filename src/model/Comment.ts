@@ -1,8 +1,8 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/v1/comments";
 const paramDefaults = {};
@@ -16,7 +16,7 @@ export type CommentsResponse = {
   } & APIObject;
 };
 
-export default class Comment extends Ressource {
+export class Comment extends Ressource {
   id: string;
   ticket_id: string;
   comment_id: string;
@@ -56,6 +56,6 @@ export default class Comment extends Ressource {
   static async send(comment: Comment) {
     const { api_url } = getConfig();
 
-    return request(`${api_url}${url}`, "POST", comment);
+    return authenticatedRequest(`${api_url}${url}`, "POST", comment);
   }
 }

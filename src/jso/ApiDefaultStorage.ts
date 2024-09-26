@@ -6,7 +6,7 @@ export type TokenOAuthRedirectResponse = {
   state?: string | null;
 };
 
-export default class ApiDefaultStorage {
+export class ApiDefaultStorage {
   /**
   saveState stores an object with an Identifier.
   TODO: Ensure that both localstorage and JSON encoding has fallbacks for ancient browsers.

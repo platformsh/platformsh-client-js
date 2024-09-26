@@ -4,20 +4,19 @@
   "description": "Isomorphic Javascript library for accessing the Platform.sh API",
   "type": "module",
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
-    "lib",
-    "types"
+    "lib"
   ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": "./lib/index.js",
-      "types": "./types/index.d.ts"
+      "types": "./lib/index.d.ts"
     }
   },
   "scripts": {
-    "build": "rm -rf ./types && rm -rf ./lib && tsup && tsc --emitDeclarationOnly",
+    "build": "tsup",
     "test": "npm run test-web && npm run test-node",
     "test-web": "vitest --environment=jsdom run",
     "test-node": "vitest run",

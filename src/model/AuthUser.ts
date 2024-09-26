@@ -1,9 +1,9 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/users/:id";
 const paramDefaults = {};
@@ -33,7 +33,7 @@ export type AuthUserParams = {
   id?: string;
 };
 
-export default class AuthUser extends Ressource {
+export class AuthUser extends Ressource {
   id: string;
   username: string;
   first_name: string;
@@ -95,16 +95,16 @@ export default class AuthUser extends Ressource {
 
   static async update(id: string, data: Partial<AuthUser>) {
     const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+    const endpoint = `${api_url}${urlParser(url, { id })}`;
 
-    const updatedProfile = await request(endpoint, "PATCH", data);
+    const updatedProfile = await authenticatedRequest(endpoint, "PATCH", data);
     return new AuthUser(updatedProfile);
   }
 
   static async updateEmailAddress(id: string, emailAddress: string) {
     const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}/emailaddress`;
-    return request(endpoint, "POST", {
+    const endpoint = `${api_url}${urlParser(url, { id })}/emailaddress`;
+    return authenticatedRequest(endpoint, "POST", {
       email_address: emailAddress
     });
   }
@@ -112,7 +112,9 @@ export default class AuthUser extends Ressource {
   static async getUserByUsername(username: string) {
     const { api_url } = getConfig();
 
-    const user = await request(`${api_url}/users/username=${username}`);
+    const user = await authenticatedRequest(
+      `${api_url}/users/username=${username}`
+    );
 
     return new AuthUser(user);
   }

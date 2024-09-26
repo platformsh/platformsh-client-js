@@ -1,7 +1,7 @@
 import { getConfig } from "../../config";
-import Ressource from "../Ressource";
+import { Ressource } from "../Ressource";
 
-import Tree from "./Tree";
+import { Tree } from "./Tree";
 
 const _url = "/projects/:projectId/git/commits/:sha";
 
@@ -10,7 +10,7 @@ export type CommitParams = {
   projectId?: string;
 };
 
-export default class Commit extends Ressource {
+export class Commit extends Ressource {
   id: string;
   sha: string;
   author: string;

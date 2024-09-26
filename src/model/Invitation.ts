@@ -1,8 +1,8 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const _queryUrl = "/projects/:projectId/invitations";
 const _url = `${_queryUrl}/:id`;
@@ -16,7 +16,7 @@ const creatableField = [
   "force"
 ];
 
-export default class Invitation extends Ressource {
+export class Invitation extends Ressource {
   id: string;
   owner: any;
   projectId: string;
@@ -77,6 +77,6 @@ export default class Invitation extends Ressource {
   }
 
   async delete() {
-    return request(this._url, "DELETE");
+    return authenticatedRequest(this._url, "DELETE");
   }
 }

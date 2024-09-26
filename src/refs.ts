@@ -1,4 +1,4 @@
-import request from "./api";
+import { authenticatedRequest } from "./api";
 import type { APIObject, RessourceChildClass } from "./model/Ressource";
 
 export type Link = {
@@ -68,7 +68,9 @@ export const getRef = async <T>(
   absolute = true,
   baseUrl = ""
 ) => {
-  const obj = await request(getLinkHref(links, linkKey, absolute, baseUrl));
+  const obj = await authenticatedRequest(
+    getLinkHref(links, linkKey, absolute, baseUrl)
+  );
   return new constructor(obj);
 };
 
@@ -90,7 +92,7 @@ export const getRefs = async <T>(
     obj = {
       ...obj,
       // eslint-disable-next-line no-await-in-loop
-      ...(await request(
+      ...(await authenticatedRequest(
         getLinkHref(links, `${linkKey}:${i}`, absolute, baseUrl)
       ))
     };

@@ -1,9 +1,9 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
-import _urlParser from "../urlParser";
+import { urlParser } from "../urlParser";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/platform/profiles/:id";
 const paramDefaults = {};
@@ -43,7 +43,7 @@ export type AccountsProfileGetParams = {
   id: string;
 };
 
-export default class AccountsProfile extends Ressource {
+export class AccountsProfile extends Ressource {
   id: string;
   display_name: string;
   email: string;
@@ -105,16 +105,16 @@ export default class AccountsProfile extends Ressource {
 
   static async update(id: string, data: APIObject) {
     const { api_url } = getConfig();
-    const endpoint = `${api_url}${_urlParser(url, { id })}`;
+    const endpoint = `${api_url}${urlParser(url, { id })}`;
 
-    const updatedProfile = await request(endpoint, "PATCH", data);
+    const updatedProfile = await authenticatedRequest(endpoint, "PATCH", data);
     return new AccountsProfile(updatedProfile);
   }
 
   static async getUserByUsername(username: string) {
     const { api_url } = getConfig();
 
-    const user = await request(
+    const user = await authenticatedRequest(
       `${api_url}/v1/profiles?filter[username]=${username}`
     );
 
@@ -123,11 +123,18 @@ export default class AccountsProfile extends Ressource {
 
   static async updateProfilePicture(userId: string, picture: FormData) {
     const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "POST", picture);
+    return authenticatedRequest(
+      `${api_url}/v1/profile/${userId}/picture`,
+      "POST",
+      picture
+    );
   }
 
   static async deleteProfilePicture(userId: string) {
     const { api_url } = getConfig();
-    return request(`${api_url}/v1/profile/${userId}/picture`, "DELETE");
+    return authenticatedRequest(
+      `${api_url}/v1/profile/${userId}/picture`,
+      "DELETE"
+    );
   }
 }

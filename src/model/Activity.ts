@@ -1,8 +1,8 @@
-import request from "../api";
+import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
 const _url = "/projects/:projectId/environments/:environmentId/activities";
@@ -24,7 +24,7 @@ type ActivityParameters = {
   [k: string]: string | null | ActivityParameters;
 };
 
-export default class Activity extends Ressource {
+export class Activity extends Ressource {
   readonly RESULT_SUCCESS = "success";
   readonly RESULT_FAILURE = "failure";
   readonly STATE_COMPLETE = "complete";
@@ -197,12 +197,14 @@ export default class Activity extends Ressource {
     if (delay) {
       return new Promise(resolve => {
         setTimeout(() => {
-          resolve(request(this.getLink("log"), "GET", { start_at }));
+          resolve(
+            authenticatedRequest(this.getLink("log"), "GET", { start_at })
+          );
         }, delay);
       });
     }
 
-    return request(this.getLink("log"), "GET", { start_at });
+    return authenticatedRequest(this.getLink("log"), "GET", { start_at });
   }
 
   getLogs(callback: (log: any[] | string, response?: Response) => void) {

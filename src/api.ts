@@ -2,7 +2,7 @@ import isNode from "detect-node";
 import { EventSourcePolyfill as EventSource } from "event-source-polyfill";
 
 import type { JWTToken } from "./authentication";
-import authenticate from "./authentication";
+import { authenticate } from "./authentication";
 import type { ClientConfiguration } from "./config";
 import { getConfig } from "./config";
 import param from "./toQuerystring";
@@ -238,5 +238,3 @@ export const createEventSource = async (url: string) =>
         }
       })
   );
-
-export default authenticatedRequest;

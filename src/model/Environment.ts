@@ -2,14 +2,14 @@ import slugify from "slugify";
 
 import { getConfig } from "../config";
 
-import Activity from "./Activity";
-import EnvironmentAccess from "./EnvironmentAccess";
-import Commit from "./git/Commit";
-import Metrics from "./Metrics";
+import { Activity } from "./Activity";
+import { EnvironmentAccess } from "./EnvironmentAccess";
+import { Commit } from "./git/Commit";
+import { Metrics } from "./Metrics";
 import type { APIObject, ParamsType } from "./Ressource";
-import Ressource from "./Ressource";
-import Route from "./Route";
-import Variable from "./Variable";
+import { Ressource } from "./Ressource";
+import { Route } from "./Route";
+import { Variable } from "./Variable";
 
 const paramDefaults = {
   projectId: "project"
@@ -64,7 +64,7 @@ type HttpAccess = {
   basic_auth?: Record<string, string | undefined | null>;
 };
 
-export default class Environment extends Ressource {
+export class Environment extends Ressource {
   id: string;
   status: Status;
   head_commit: string;

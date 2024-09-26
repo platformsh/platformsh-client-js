@@ -1,8 +1,8 @@
 import { getConfig } from "../config";
 
-import type CursoredResult from "./CursoredResult";
-import Order from "./Order";
-import Ressource from "./Ressource";
+import type { CursoredResult } from "./CursoredResult";
+import { Order } from "./Order";
+import { Ressource } from "./Ressource";
 
 const url = "/organizations/:organizationId/orders/:id";
 
@@ -17,7 +17,7 @@ export type OrganizationOrderQueryParams = {
   organizationId: string;
 };
 
-export default class OrganizationOrder extends Order {
+export class OrganizationOrder extends Order {
   static async get(params: OrganizationOrderGetParams, customUrl?: string) {
     const { organizationId, id, includeDetails, ...queryParams } = params;
     const { api_url } = getConfig();

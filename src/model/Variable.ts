@@ -1,8 +1,8 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import Result from "./Result";
+import { Ressource } from "./Ressource";
+import { Result } from "./Result";
 
 const paramDefaults = {};
 const creatableField = [
@@ -39,7 +39,7 @@ export type VariableQueryParams = {
   environmentId: string;
 };
 
-export default class Variable extends Ressource {
+export class Variable extends Ressource {
   id: string;
   name: string;
   project: string;

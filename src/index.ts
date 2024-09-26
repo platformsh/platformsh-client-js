@@ -1,23 +1,26 @@
 import type { RequestOptions } from "./api";
-import request from "./api";
+import { authenticatedRequest } from "./api";
 import type { JWTToken } from "./authentication";
-import connector, { wipeToken } from "./authentication";
+import { authenticate, wipeToken } from "./authentication";
 import type { ClientConfiguration } from "./config";
 import { getConfig, setConfig } from "./config";
-import entities from "./model";
-import type Activity from "./model/Activity";
+import { entities } from "./model";
+import type { Activity } from "./model/Activity";
 import type {
   CreateAccessParams,
   DeleteAccessParams,
   UpdateAccessParams
 } from "./model/EnvironmentType";
-import type Me from "./model/Me";
+import type { Me } from "./model/Me";
 import type { APIObject } from "./model/Ressource";
 import type { TicketQueryParams } from "./model/Ticket";
 
-export const models = entities;
+export type { RequestOptions } from "./api";
+export type { JWTToken } from "./authentication";
+export type { ClientConfiguration } from "./config";
+export * from "./model";
 
-export const api = request;
+export const request = authenticatedRequest;
 
 export default class Client {
   authenticationPromise: Promise<JWTToken>;
@@ -26,7 +29,7 @@ export default class Client {
   constructor(authenticationConfig: ClientConfiguration) {
     setConfig(authenticationConfig);
 
-    this.authenticationPromise = connector(authenticationConfig);
+    this.authenticationPromise = authenticate(authenticationConfig);
   }
 
   async getAccessToken() {
@@ -42,7 +45,7 @@ export default class Client {
   }
 
   async reAuthenticate() {
-    this.authenticationPromise = connector(getConfig(), true);
+    this.authenticationPromise = authenticate(getConfig(), true);
 
     return this.authenticationPromise;
   }

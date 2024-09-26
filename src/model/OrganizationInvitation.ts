@@ -1,14 +1,14 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const _queryUrl = "/organizations/:organizationId/invitations";
 const _url = `${_queryUrl}/:id`;
 
 const creatableField = ["permissions", "email", "force"];
 
-export default class OrganizationInvitation extends Ressource {
+export class OrganizationInvitation extends Ressource {
   id: string;
   owner: object;
   organization_id: string;

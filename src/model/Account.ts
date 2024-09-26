@@ -1,7 +1,7 @@
 import { getConfig } from "../config";
 
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
+import { Ressource } from "./Ressource";
 
 const url = "/platform/users/:id";
 const paramDefaults = {};
@@ -11,7 +11,7 @@ export type AccountGetParams = {
   id?: string | string[];
 };
 
-export default class Account extends Ressource {
+export class Account extends Ressource {
   id: string;
   created_at: string;
   updated_at: string;

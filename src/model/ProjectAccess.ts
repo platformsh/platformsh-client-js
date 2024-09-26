@@ -2,10 +2,10 @@ import emailValidator from "email-validator";
 
 import { getConfig } from "../config";
 
-import Account from "./Account";
+import { Account } from "./Account";
 import type { APIObject } from "./Ressource";
-import Ressource from "./Ressource";
-import User from "./User";
+import { Ressource } from "./Ressource";
+import { User } from "./User";
 
 const paramDefaults = {};
 
@@ -22,7 +22,7 @@ export type ProjectAccessQueryParams = {
   projectId: string;
 };
 
-export default class ProjectAccess extends Ressource {
+export class ProjectAccess extends Ressource {
   id: string;
   email: string;
   role: string;
