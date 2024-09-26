@@ -12,7 +12,7 @@ const createableField = [
   "name",
   "created_at",
   "updated_at",
-  "updated_at",
+  "last_used_at",
   "token"
 ];
 
@@ -31,6 +31,7 @@ export class ApiToken extends Ressource {
   name: string;
   created_at: string;
   update_at: string;
+  last_used_at: string | null;
   token: string;
 
   constructor(apiToken: APIObject, params: ParamsType) {
@@ -45,6 +46,7 @@ export class ApiToken extends Ressource {
     this.name = apiToken.name;
     this.created_at = apiToken.created_at;
     this.update_at = apiToken.update_at;
+    this.last_used_at = apiToken.last_used_at;
     this.token = apiToken.token;
   }
 
