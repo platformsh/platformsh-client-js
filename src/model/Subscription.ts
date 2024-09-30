@@ -219,20 +219,21 @@ export default class Subscription extends Ressource {
 
   green?: boolean;
   resources?: {
-    container_profiles?: boolean,
+    container_profiles?: boolean;
     production?: {
-        legacy_development: boolean,
-        max_cpu: number,
-        max_memory: number,
-        max_environments: number
-    },
+      legacy_development: boolean;
+      max_cpu: number;
+      max_memory: number;
+      max_environments: number;
+    };
     development?: {
-        legacy_development: true,
-        max_cpu: number,
-        max_memory: number,
-        max_environments: number
-    }
+      legacy_development: true;
+      max_cpu: number;
+      max_memory: number;
+      max_environments: number;
+    };
   };
+
   resources_limit?:
     | {
         limit: ResourceType;
@@ -300,7 +301,7 @@ export default class Subscription extends Ressource {
     this.resources = subscription.resources ?? {
       container_profiles: false,
       development: {
-          max_environments: 1
+        max_environments: 1
       }
     };
     this.resources_limit = subscription.resources_limit ?? {
