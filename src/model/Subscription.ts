@@ -227,9 +227,9 @@ export default class Subscription extends Ressource {
       max_environments: number;
     };
     development?: {
-      legacy_development: true;
-      max_cpu: number;
-      max_memory: number;
+      legacy_development?: boolean;
+      max_cpu?: number;
+      max_memory?: number;
       max_environments: number;
     };
   };
@@ -298,7 +298,7 @@ export default class Subscription extends Ressource {
       },
       initialize: {}
     };
-    this.resources = subscription.resources ?? {
+    this.resources = {
       container_profiles: false,
       development: {
         max_environments: 1
