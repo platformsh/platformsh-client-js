@@ -298,7 +298,7 @@ export default class Subscription extends Ressource {
       },
       initialize: {}
     };
-    this.resources = {
+    this.resources = subscription.resources && {
       container_profiles: false,
       development: {
         max_environments: 1
