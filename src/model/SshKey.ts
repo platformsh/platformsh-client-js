@@ -103,7 +103,7 @@ export class SshKey extends Ressource {
       return false;
     }
     const match = value.split(" ", 3);
-    const [type] = match;
+
     let key;
 
     try {
@@ -112,7 +112,7 @@ export class SshKey extends Ressource {
       return false;
     }
 
-    if (!["ssh-rsa", "ssh-ed25519", "ssh-ecdsa"].includes(type) || !key) {
+    if (!key) {
       return false;
     }
     return true;
