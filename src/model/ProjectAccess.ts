@@ -3,6 +3,7 @@ import emailValidator from "email-validator";
 import { getConfig } from "../config";
 
 import { Account } from "./Account";
+import type { EnvironmentAccessRole } from "./EnvironmentAccess";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 import { User } from "./User";
@@ -22,10 +23,15 @@ export type ProjectAccessQueryParams = {
   projectId: string;
 };
 
+export type ProjectAccessEnvironmentType =
+  | "production"
+  | "development"
+  | "staging";
+
 export class ProjectAccess extends Ressource {
   id: string;
   email: string;
-  role: string;
+  role: EnvironmentAccessRole;
   user: string;
 
   constructor(projectAccess: APIObject, url: string) {

@@ -38,6 +38,42 @@ export type Repository = {
   url: string;
 };
 
+export type Capabilities = {
+  id: string;
+  runtime_operations?: {
+    enabled: boolean;
+  };
+  outbound_firewall?: {
+    enabled: boolean;
+  };
+  metrics?: {
+    max_range: string;
+  };
+  logs_forwarding?: {
+    max_extra_payload_size: number;
+  };
+  images: unknown;
+  instance_limit: number;
+  build_resources?: {
+    enabled: boolean;
+    max_cpu: number;
+    max_memory: number;
+  };
+  data_retention?: {
+    enabled: boolean;
+  };
+  integrations?: {
+    enabled: boolean;
+    config: Record<string, { enabled: boolean; role?: string }>;
+    allowed_integrations: string[];
+  };
+  custom_domains?: { enabled?: boolean };
+  blackfire?: { enabled?: boolean };
+  source_operations?: {
+    enabled: boolean;
+  };
+};
+
 export class Project extends Ressource {
   id: string;
   cluster: string;
@@ -60,7 +96,13 @@ export class Project extends Ressource {
   subscription: Subscription;
   subscription_id: string;
   environment_id: string;
-  status: string;
+  status:
+    | {
+        code: string;
+        message: string;
+      }
+    | string;
+
   endpoint: string;
   repository: Repository;
   region: string;
@@ -69,10 +111,14 @@ export class Project extends Ressource {
   vendor_label: string;
   vendor_resources: string;
   vendor_website: string;
-  default_domain: string;
+  default_domain: string | null;
   organization_id: string;
   default_branch: string;
   timezone: string;
+  attributes?: unknown;
+  description?: string;
+  namespace?: string;
+  entropy?: string;
 
   constructor(project: APIObject, url: string) {
     super(url, paramDefaults, {}, project, [], modifiableField);
@@ -103,7 +149,7 @@ export class Project extends Ressource {
     this.vendor_resources = project.vendor_resources;
     this.vendor_website = project.vendor_website;
     this.default_domain = project.default_domain;
-    this.organization_id = project.organization_id;
+    this.organization_id = project.organization_id ?? project.organization;
     this.default_branch = project.default_branch;
     this.timezone = project.timezone;
   }
@@ -409,7 +455,6 @@ export class Project extends Ressource {
    * @return bool
    */
   isSuspended() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     return this.status === SubscriptionStatusEnum.STATUS_SUSPENDED;
   }
 
@@ -556,6 +601,8 @@ export class Project extends Ressource {
    * by this project
    */
   async getCapabilities() {
-    return authenticatedRequest(this.getLink("capabilities"));
+    return authenticatedRequest(
+      this.getLink("capabilities")
+    ) as Promise<Capabilities>;
   }
 }

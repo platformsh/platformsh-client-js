@@ -102,6 +102,7 @@ type BitbucketAddonCredentials = {
 export class Integration extends Ressource {
   id: string;
   type: string;
+  token_type?: string;
 
   // These properties may or may not exist on this object, depending on which
   // type of integration it is.
@@ -200,6 +201,7 @@ export class Integration extends Ressource {
 
     this.id = integration.id;
     this.type = integration.type;
+    this.token_type = integration.token_type;
     this.app_credentials = integration.app_credentials;
     this.addon_credentials = integration.addon_credentials;
     this.repository = integration.repository;
