@@ -18,13 +18,25 @@ export class Region extends Ressource {
   endpoint: string;
   label: string;
   private: boolean;
-  provider: Record<string, any>;
+  provider: {
+    name: string;
+    logo: string;
+  };
+
   zone: string;
   project_label: string;
   environmental_impact: {
     carbon_intensity: number;
     zone?: string;
     green?: boolean;
+  };
+
+  selection_label?: string;
+  timezone?: string;
+  datacenter?: {
+    name: string;
+    label: string;
+    location: string;
   };
 
   constructor(region: APIObject) {
@@ -44,6 +56,9 @@ export class Region extends Ressource {
     this.environmental_impact = region.environmental_impact ?? {
       carbon_intensity: 0
     };
+    this.selection_label = region.selection_label;
+    this.timezone = region.timezone;
+    this.datacenter = region.datacenter;
   }
 
   static async query(params: RegionGetParams) {

@@ -1,6 +1,7 @@
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
+import type { EnvironmentAccessRole } from "./EnvironmentAccess";
 import { ProjectAccess } from "./ProjectAccess";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
@@ -18,13 +19,11 @@ export type EnvironmentTypeQueryParams = {
   projectId: string;
 };
 
-export type AccessRole = "admin" | "contributor" | "viewer";
-
 export type CreateAccessParams = {
   projectId: string;
   environmentTypeId: string;
   email?: string;
-  role: AccessRole;
+  role: EnvironmentAccessRole;
   user?: string;
 };
 
@@ -32,7 +31,7 @@ export type UpdateAccessParams = {
   projectId: string;
   environmentTypeId: string;
   accessId: string;
-  role: AccessRole;
+  role: EnvironmentAccessRole;
 };
 
 export type DeleteAccessParams = {

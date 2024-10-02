@@ -94,6 +94,10 @@ export abstract class Ressource {
     this._embedded = data._embedded;
   }
 
+  public get params() {
+    return this._params;
+  }
+
   static getQueryUrl(url = "", _id?: string) {
     return url.substring(0, url.lastIndexOf("/"));
   }

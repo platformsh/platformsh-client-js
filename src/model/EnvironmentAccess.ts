@@ -30,11 +30,14 @@ export type EnvironmentAccessQueryParams = {
   environmentId: string;
 };
 
+export type EnvironmentAccessRole = "admin" | "contributor" | "viewer";
+export type ConsoleAccessRole = EnvironmentAccessRole | "no-access";
+
 export class EnvironmentAccess extends Ressource {
   id: string;
   user: string;
   email: string;
-  role: string;
+  role: EnvironmentAccessRole;
   project: string;
   environment: string;
 

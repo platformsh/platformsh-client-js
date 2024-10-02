@@ -1,6 +1,7 @@
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
+import type { ConsoleAccessRole } from "./EnvironmentAccess";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
@@ -16,16 +17,37 @@ const creatableField = [
   "force"
 ];
 
+export type InvitationRole = "admin" | "viewer";
+
+export type InvitationEnvironmentType =
+  | "production"
+  | "development"
+  | "staging";
+
 export class Invitation extends Ressource {
   id: string;
-  owner: any;
+  owner: {
+    id: string;
+    display_name: string;
+  };
+
   projectId: string;
-  environments: any[]; // This field is deprecated, use permissions instead
+  /** @deprecated This field is deprecated, use permissions instead */
+  environments: {
+    id?: string;
+    type: InvitationEnvironmentType;
+    role: ConsoleAccessRole;
+    title?: string;
+  }[];
+
   permissions: any[];
   state: string;
   email: string;
-  role: string;
+  role: InvitationRole;
   force: boolean;
+  created_at: string;
+  updated_at: string;
+  finished_at: string;
 
   constructor(invitation: APIObject, url?: string) {
     const { projectId, id } = invitation;
@@ -51,6 +73,9 @@ export class Invitation extends Ressource {
     this.email = invitation.email;
     this.role = invitation.role;
     this.force = invitation.force;
+    this.created_at = invitation.created_at;
+    this.updated_at = invitation.updated_at;
+    this.finished_at = invitation.finished_at;
   }
 
   static async get(projectId: string, id: string) {

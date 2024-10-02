@@ -255,6 +255,8 @@ export type DeploymentService = {
   hooks: ServiceHooks;
   crons: Record<string, any>;
   instance_count?: number;
+  stack?: unknown;
+  worker?: Record<string, Record<string, string>>;
 };
 
 export type DeploymentGetParams = {

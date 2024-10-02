@@ -6,11 +6,13 @@ import type { ClientConfiguration } from "./config";
 import { getConfig, setConfig } from "./config";
 import { entities } from "./model";
 import type { Activity } from "./model/Activity";
+import type { EnvironmentAccessRole } from "./model/EnvironmentAccess";
 import type {
   CreateAccessParams,
   DeleteAccessParams,
   UpdateAccessParams
 } from "./model/EnvironmentType";
+import type { InvitationEnvironmentType } from "./model/Invitation";
 import type { Me } from "./model/Me";
 import type { APIObject } from "./model/Ressource";
 import type { TicketQueryParams } from "./model/Ticket";
@@ -113,12 +115,6 @@ export default class Client {
 
   /**
    * Get a single project by its ID.
-   *
-   * @param string id
-   * @param string hostname
-   * @param bool   https
-   *
-   * @return Project|false
    */
   async getProject(id: string) {
     return entities.Project.get({ id });
@@ -158,7 +154,7 @@ export default class Client {
   async getEnvironmentActivities(
     projectId: string,
     environmentId: string,
-    type?: string,
+    type?: string | string[],
     starts_at?: Date
   ) {
     const startsAt = starts_at?.toISOString();
@@ -365,7 +361,7 @@ export default class Client {
   async getIntegrationActivities(
     projectId: string,
     integrationId: string,
-    type: string,
+    type: string | string[],
     starts_at?: Date
   ) {
     const { api_url } = getConfig();
@@ -1389,7 +1385,7 @@ export default class Client {
    *
    * @return Promise<Ticket>
    */
-  async updateTicketStatus(ticketId: string, status: string) {
+  async updateTicketStatus(ticketId: string | number, status: string) {
     return entities.Ticket.patch(ticketId, { status }).then(ticket => ticket);
   }
 
@@ -1426,7 +1422,7 @@ export default class Client {
    *
    * @return Promise<Attachment[]>
    */
-  async getTicketAttachments(ticketId: string) {
+  async getTicketAttachments(ticketId: string | number) {
     const response = await entities.Ticket.getAttachments(ticketId);
     const { attachments } = response;
     return Object.entries(attachments || {}).map(([filename, attachment]) => ({
@@ -1443,7 +1439,7 @@ export default class Client {
    *
    * @return Promise<Attachment[]>
    */
-  async getAllTicketAttachments(ticketId: string) {
+  async getAllTicketAttachments(ticketId: string | number) {
     const response = await entities.Ticket.getAllAttachments(ticketId);
     return response.map(attachment => ({
       filename: attachment.filename,
@@ -1518,7 +1514,7 @@ export default class Client {
    * Updates the user profile picture
    *
    * @param {string} userId User identifier
-   * @param {FormData} FormData object containign picture File object to be
+   * @param {FormData} picture object containing picture File object to be
    * uploaded.
    *
    * @returns {Promise<{url: string}>} Promise that returns the url to the new
@@ -1624,8 +1620,8 @@ export default class Client {
     projectId: string,
     role: string,
     permissions: {
-      type: "production" | "development" | "staging";
-      role: "viewer" | "contributor" | "admin";
+      type: InvitationEnvironmentType;
+      role: EnvironmentAccessRole;
     }[],
     force = false
   ) {

@@ -191,14 +191,14 @@ export class Subscription extends Ressource {
     display_name?: string;
   };
 
-  blackfire?: string;
-  observability_suite?: string;
+  blackfire?: string | null;
+  observability_suite?: string | null;
   owner: string;
   plan: string;
   environments: number;
   storage: number;
-  big_dev: number;
-  backups: string;
+  big_dev: number | null;
+  backups: string | null;
   user_licenses: number;
   project_id: string;
   project_title: string;
@@ -211,18 +211,55 @@ export class Subscription extends Ressource {
   license_uri: string;
   organization_id: string;
   project_options: {
-    plan_title: Record<string, string>;
+    plan_titles: Record<string, string>;
     sellables?: SellableType;
     initialize?: Record<string, string>;
     enforced?: EnforcedType;
+    billing?: unknown[];
+    defaults?: {
+      access?: unknown[];
+      capabilities?: {
+        images?: Record<string, unknown>;
+        integrations?: {
+          config?: Record<
+            string,
+            {
+              enabled: boolean;
+            }
+          >;
+          enabled?: boolean;
+        };
+      };
+      settings?: Record<string, boolean>;
+      variables?: unknown[];
+    };
+    features?: {
+      backups?: {
+        available: string[];
+        default: string[];
+      };
+    };
+    plans: string[];
+    regions: string[];
   };
 
   green?: boolean;
   resources?: {
     container_profiles: boolean;
-    production: {};
-    development: {};
+    production: {
+      legacy_development: boolean;
+      max_cpu: number;
+      max_memory: number;
+      max_environments: number;
+    };
+    development: {
+      legacy_development: boolean;
+      max_cpu: number;
+      max_memory: number;
+      max_environments: number;
+    };
   };
+
   resources_limit?:
     | {
         limit: ResourceType;
@@ -233,7 +270,7 @@ export class Subscription extends Ressource {
       }
     | false;
 
-  environment_options: string[];
+  environment_options: string[] | Record<string, number[]>;
   enterprise_tag: string;
   support_tier: string;
   continuous_profiling: null | "UPSUN-FEATURE-CONTINUOUS-PROFILING";
@@ -287,11 +324,7 @@ export class Subscription extends Ressource {
       },
       initialize: {}
     };
-    this.resources = subscription.resources ?? {
-      container_profiles: false,
-      production: {},
-      development: {}
-    };
+    this.resources = subscription.resources;
     this.resources_limit = subscription.resources_limit ?? {
       limit: {},
       used: {
@@ -482,8 +515,8 @@ export class Subscription extends Ressource {
       storage: query?.storage ?? this.storage,
       environments: query?.environments ?? this.environments,
       user_licenses: query?.user_licenses ?? this.users_licenses,
-      big_dev: this.big_dev || undefined,
-      backups: this.backups || undefined,
+      big_dev: this.big_dev ?? undefined,
+      backups: this.backups ?? undefined,
       format: query?.format,
       ...query
     };

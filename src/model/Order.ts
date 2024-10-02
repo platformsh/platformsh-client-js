@@ -31,10 +31,10 @@ export type OrderLineItem = {
   end: string;
   unit_price: number;
   quantity: string | number;
-
-  consumption: number;
+  consumption: string | number;
   duration: number;
-  id: false;
+  exclude_from_invoice?: boolean;
+  id: string;
   organization: string;
   plan_record_id: string;
   proration: number;
@@ -47,6 +47,7 @@ export type OrderLineItem = {
   }[];
   total_price: number;
   total_price_formatted: string;
+  unit_price_formatted?: string;
 };
 
 export class Order extends Ressource {
