@@ -23,37 +23,14 @@ export type OrganizationSubscriptionQueryParams = {
 // @ts-expect-error solve the query function inheritance ts error
 export class OrganizationSubscription extends Subscription {
   agency_site: boolean;
-  big_dev: null;
   big_dev_service: null;
-  continuous_profiling: null;
-  created_at: string;
-  enterprise_tag: string;
-  environments: number;
-  fastly_service_ids: null;
-  green: boolean;
+  fastly_service_ids: string[] | null;
   hipaa: boolean;
-  id: string;
   invoiced: boolean;
   is_trial_plan: boolean;
   locked: null;
-  options_url: string;
-  owner: string;
-  owner_info: {
-    type: string;
-  };
-
-  plan: string;
-  project_id: string;
   project_notes: string;
-  project_region_label: string;
-  project_title: string;
-  project_ui: string;
   services: unknown[];
-  storage: number;
-  support_tier: string;
-  updated_at: string;
-  user_licenses: number;
-  vendor: string;
 
   constructor(subscription: APIObject, customUrl?: string) {
     const { organizationId } = subscription;
@@ -70,34 +47,14 @@ export class OrganizationSubscription extends Subscription {
     this._creatableField.push("organizationId");
 
     this.agency_site = subscription.agency_site;
-    this.big_dev = subscription.big_dev;
     this.big_dev_service = subscription.big_dev_service;
-    this.continuous_profiling = subscription.continuous_profiling;
-    this.created_at = subscription.created_at;
-    this.enterprise_tag = subscription.enterprise_tag;
-    this.environments = subscription.environments;
     this.fastly_service_ids = subscription.fastly_service_ids;
-    this.green = subscription.green;
     this.hipaa = subscription.hipaa;
-    this.id = subscription.id;
     this.invoiced = subscription.invoiced;
     this.is_trial_plan = subscription.is_trial_plan;
     this.locked = subscription.locked;
-    this.options_url = subscription.options_url;
-    this.owner = subscription.owner;
-    this.owner_info = subscription.owner_info;
-    this.plan = subscription.plan;
-    this.project_id = subscription.project_id;
     this.project_notes = subscription.project_notes;
-    this.project_region_label = subscription.project_region_label;
-    this.project_title = subscription.project_title;
-    this.project_ui = subscription.project_ui;
     this.services = subscription.services;
-    this.storage = subscription.storage;
-    this.support_tier = subscription.support_tier;
-    this.updated_at = subscription.updated_at;
-    this.user_licenses = subscription.user_licenses;
-    this.vendor = subscription.vendor;
   }
 
   static async get(
