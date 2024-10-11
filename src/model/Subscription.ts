@@ -185,6 +185,7 @@ export class Subscription extends Ressource {
   id: string;
   status: SubscriptionStatusEnum;
   created_at: string;
+  updated_at: string;
   owner_info: {
     type: string;
     username?: string;
@@ -274,7 +275,7 @@ export class Subscription extends Ressource {
   enterprise_tag: string;
   support_tier: string;
   continuous_profiling: null | "UPSUN-FEATURE-CONTINUOUS-PROFILING";
-  options_url?: unknown;
+  options_url?: string;
   options_custom?: unknown;
   default_branch?: unknown;
 
@@ -313,6 +314,7 @@ export class Subscription extends Ressource {
     };
     this.organization = subscription.organization;
     this.created_at = subscription.created_at;
+    this.updated_at = subscription.updated_at;
     this.users_licenses = subscription.users_licenses;
     this.license_uri = subscription.license_uri;
     this.organization_id = subscription.organization_id;

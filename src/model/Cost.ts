@@ -16,11 +16,13 @@ export type FormattedCostWithTitle = FormattedCost & {
 export type FormattedCostMeasure = FormattedCostWithQuantity & {
   usage_type: "measure";
   current_usage: number;
+  current_usage_formatted: string;
 };
 
 export type FormattedCostCounter = FormattedCostWithQuantity & {
   usage_type: "counter";
   current_usage: number;
+  current_usage_formatted: string;
   daily_average: number;
 };
 
