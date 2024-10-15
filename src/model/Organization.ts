@@ -267,4 +267,12 @@ export class Organization extends Ressource {
     });
     return organizationSubscription.save();
   }
+
+  async getWizardSteps(params: { template: string }) {
+    const { api_url } = getConfig();
+
+    const url = `${api_url}/organizations/${this.id}/setup/wizard/${params.template}`;
+
+    return authenticatedRequest(url, "GET");
+  }
 }
