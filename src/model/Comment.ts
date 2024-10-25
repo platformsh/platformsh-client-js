@@ -10,11 +10,9 @@ const paramDefaults = {};
 const createableField = ["body", "ticket_id", "attachments", "author_id"];
 
 export type CommentsResponse = {
-  data: {
-    comments: Comment[];
-    count: number;
-  } & APIObject;
-};
+  comments: Comment[];
+  count: number;
+} & APIObject;
 
 export class Comment extends Ressource {
   id: string;

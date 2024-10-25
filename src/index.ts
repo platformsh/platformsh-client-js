@@ -1467,7 +1467,7 @@ export default class Client {
    * @return Promise<Comment[]>
    */
   async loadComments(ticketId: string, params: Record<string, any>) {
-    const { data } = await entities.Comment.query(ticketId, params);
+    const data = await entities.Comment.query(ticketId, params);
     const page = params.page || 1;
     const PAGE_SIZE = 50;
     const pages = Math.ceil(data.count / PAGE_SIZE);
