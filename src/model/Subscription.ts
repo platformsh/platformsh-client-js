@@ -39,7 +39,7 @@ const modifiableField = [
   "continuous_profiling"
 ];
 
-const url = "/v1/subscriptions/:id";
+const url = "/subscriptions/:id";
 
 const availablePlans = ["development", "standard", "medium", "large"];
 const availableRegions = ["eu.platform.sh", "us.platform.sh"];

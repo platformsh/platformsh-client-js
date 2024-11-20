@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/orders/:id";
+const url = "/orders/:id";
 const paramDefaults = {};
 
 export type OrdersGetParams = {

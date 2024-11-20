@@ -7,7 +7,7 @@ import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
 const paramDefaults = {};
-const url = "/v1/ssh_keys/:id";
+const url = "/ssh_keys/:id";
 
 export type SshKeyGetParams = {
   [key: string]: any;

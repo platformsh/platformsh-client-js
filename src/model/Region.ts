@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/platform/regions";
+const url = "/regions";
 const paramDefaults = {};
 
 export type RegionGetParams = Record<string, any>;
@@ -41,9 +41,9 @@ export class Region extends Ressource {
 
   constructor(region: APIObject) {
     const { id } = region;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, region);
+    super(`${api_url}${url}`, paramDefaults, { id }, region);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = region.id;
     this.available = region.available;
@@ -62,10 +62,10 @@ export class Region extends Ressource {
   }
 
   static async query(params: RegionGetParams) {
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super._query<Region>(
-      `${account_url}${url}`,
+      `${api_url}${url}`,
       {},
       paramDefaults,
       params,

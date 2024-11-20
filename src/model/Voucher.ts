@@ -4,7 +4,7 @@ import type { VoucherResponse } from "./OrganizationVoucher";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/vouchers";
+const url = "/vouchers";
 const paramDefaults = {};
 
 export type VoucherGetParams = {

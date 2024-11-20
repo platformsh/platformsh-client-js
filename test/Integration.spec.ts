@@ -45,7 +45,7 @@ describe("Integration", () => {
       {
         _links: {
           "#delete": {
-            href: "/api/projects/ffzefzef3/integrations/integration_id"
+            href: "/projects/ffzefzef3/integrations/integration_id"
           }
         },
         id: 1,

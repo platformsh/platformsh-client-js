@@ -20,7 +20,7 @@ describe("Me", () => {
   });
 
   it("Get me", async () => {
-    fetchMock.get(`${api_url}/platform/me`, {
+    fetchMock.get(`${api_url}/me`, {
       id: 1,
       display_name: "test",
       email: "test@test.com",
@@ -41,7 +41,7 @@ describe("Me", () => {
   });
 
   it("Get and update me", async () => {
-    fetchMock.get(`${api_url}/platform/me`, {
+    fetchMock.get(`${api_url}/me`, {
       id: 1,
       display_name: "test",
       projects: [
@@ -53,7 +53,7 @@ describe("Me", () => {
       ]
     });
 
-    fetchMock.patch(`${api_url}/platform/profiles/1`, {
+    fetchMock.patch(`${api_url}/profiles/1`, {
       id: 1,
       email: "test@test.com",
       picture: "testNewPic"

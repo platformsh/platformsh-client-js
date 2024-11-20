@@ -3,10 +3,13 @@ import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
+import { getConfig } from "../src/config";
 import { Organization } from "../src/model/Organization";
 import type { OrganizationMember } from "../src/model/OrganizationMember";
 
 describe("Organization", () => {
+  const { api_url } = getConfig();
+
   beforeAll(() => {
     setAuthenticationPromise(
       Promise.resolve("testToken" as unknown as JWTToken)
@@ -18,7 +21,7 @@ describe("Organization", () => {
   });
 
   it("Get members", async () => {
-    fetchMock.mock("https://api.platform.sh/api/organizations/1/members", {
+    fetchMock.mock(`${api_url}/organizations/1/members`, {
       items: [{ user_id: "1" }]
     });
 
@@ -35,14 +38,14 @@ describe("Organization", () => {
 
   it("Add member", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/organizations/1/members",
+      `${api_url}/organizations/1/members`,
       {},
       { method: "POST" }
     );
 
     const organization = new Organization(
       { id: 1 },
-      "https://api.platform.sh/api/organizations/1"
+      `${api_url}//organizations/1`
     );
 
     await organization
@@ -54,14 +57,14 @@ describe("Organization", () => {
 
   it("Update organization", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/organizations/aliceorg",
+      `${api_url}/organizations/aliceorg`,
       {},
       { method: "PATCH" }
     );
 
     const organization = new Organization(
       { id: "aliceorg" },
-      "https://api.platform.sh/api/organizations/aliceorg"
+      `${api_url}/organizations/aliceorg`
     );
 
     await organization.update({ name: "test" }).then(result => {
@@ -70,7 +73,7 @@ describe("Organization", () => {
   });
 
   it("Get vouchers", async () => {
-    fetchMock.mock("https://api.platform.sh/api/organizations/1/vouchers", {
+    fetchMock.mock(`${api_url}/organizations/1/vouchers`, {
       vouchers: [{ code: "voucher-1" }]
     });
 
@@ -87,14 +90,14 @@ describe("Organization", () => {
 
   it("Add voucher", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/organizations/1/vouchers/apply",
+      `${api_url}/organizations/1/vouchers/apply`,
       {},
       { method: "POST" }
     );
 
     const organization = new Organization(
       { id: 1 },
-      "https://api.platform.sh/api/organizations/1"
+      `${api_url}/organizations/1`
     );
 
     await organization.addVoucher("voucher-1").then(result => {
@@ -104,14 +107,14 @@ describe("Organization", () => {
 
   it("Add subsciption", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/organizations/1/subscriptions",
+      `${api_url}/organizations/1/subscriptions`,
       {},
       { method: "POST" }
     );
 
     const organization = new Organization(
       { id: 1 },
-      "https://api.platform.sh/api/organizations/1"
+      `${api_url}/organizations/1`
     );
 
     await organization
