@@ -1,10 +1,9 @@
 const DEFAULT_ACCOUNT_URL = "https://accounts.platform.sh";
-const DEFAULT_API_URL = "https://api.platform.sh/api";
+const DEFAULT_API_URL = "https://api.platform.sh";
 
 export type ClientConfiguration = {
   provider?: string;
   client_id?: string;
-  account_url?: string;
   api_url: string;
   authentication_url?: string;
   scope?: string[];
@@ -31,7 +30,6 @@ export type DefaultClientConfiguration = ClientConfiguration & {
   redirect_uri: string;
   provider: string;
   client_id: string;
-  account_url: string;
   authentication_url: string;
   prompt: string;
   response_type: string;
@@ -43,8 +41,6 @@ const getConfigDefault = (
 ): DefaultClientConfiguration => ({
   provider: "cg",
   client_id: "platform@d4tobd5qpizwa.eu.platform.sh",
-  // On development environment, "baseUrl" already has "/api" appended and this is required.
-  account_url: `${baseUrl.replace(/(\/api\/?)$/u, "")}/api`,
   api_url,
   authentication_url: baseUrl,
   scope: [],

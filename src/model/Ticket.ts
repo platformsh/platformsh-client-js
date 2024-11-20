@@ -4,7 +4,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/tickets";
+const url = "/tickets";
 const paramDefaults = {};
 
 export type TicketQueryParams = Record<string, any>;
@@ -125,7 +125,7 @@ export class Ticket extends Ressource {
     const { api_url } = getConfig();
 
     return super._get<AttachmentsResponse>(
-      `${api_url}/v1/comments/${ticketId}/description`,
+      `${api_url}/comments/${ticketId}/description`,
       {},
       paramDefaults,
       {}
@@ -138,7 +138,7 @@ export class Ticket extends Ressource {
     const { api_url } = getConfig();
 
     return authenticatedRequest(
-      `${api_url}/v1/comments/${ticketId}/attachments`,
+      `${api_url}/comments/${ticketId}/attachments`,
       "GET"
     );
   }

@@ -20,7 +20,7 @@ describe("AccountsProfile", () => {
   });
 
   it("Get AccountsProfile", async () => {
-    fetchMock.mock(`${api_url}/platform/profiles/1`, {
+    fetchMock.mock(`${api_url}/profiles/1`, {
       id: 1,
       display_name: "test",
       email: "test@test.com",
@@ -38,7 +38,7 @@ describe("AccountsProfile", () => {
   });
 
   it("GetUserIdFromUsername AccountsProfile", async () => {
-    fetchMock.mock(`${api_url}/v1/profiles?filter[username]=alice`, {
+    fetchMock.mock(`${api_url}/profiles?filter[username]=alice`, {
       profiles: [
         {
           id: "1",
@@ -61,7 +61,7 @@ describe("AccountsProfile", () => {
 
   it("Update AccountsProfile", async () => {
     fetchMock.mock(
-      `${api_url}/platform/profiles/1`,
+      `${api_url}/profiles/1`,
       {
         display_name: "test",
         username: "alice"

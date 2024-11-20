@@ -28,14 +28,14 @@ describe("Client", () => {
   });
 
   it("Get current Account", async () => {
-    fetchMock.mock(`${api_url}/platform/me`, {
+    fetchMock.mock(`${api_url}/me`, {
       id: 1,
       display_name: "test",
       projects: [
         {
           id: "ffzefzef",
           name: "greatProject",
-          endpoint: "http://test.com/api/projects/ffzefzef"
+          endpoint: `${api_url}/projects/ffzefzef`
         }
       ]
     });
@@ -48,7 +48,7 @@ describe("Client", () => {
     fetchMock.mock(`${api_url}/projects/ffzefzef3`, {
       id: "ffzefzef1",
       title: "greatProject",
-      endpoint: "http://test.com/api/projects/ffzefzef1"
+      endpoint: `${api_url}/projects/ffzefzef1`
     });
     await client.getProject("ffzefzef3").then(project => {
       assert.equal(project.title, "greatProject");
@@ -57,15 +57,12 @@ describe("Client", () => {
   });
 
   it("Get environments", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments",
-      [
-        {
-          id: 1,
-          name: "bestEnv"
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments`, [
+      {
+        id: 1,
+        name: "bestEnv"
+      }
+    ]);
     await client.getEnvironments("ffzefzef3").then(environments => {
       assert.equal(environments.length, 1);
       assert.equal(environments[0].id, "1");
@@ -75,13 +72,10 @@ describe("Client", () => {
   });
 
   it("Get environment", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1",
-      {
-        id: 1,
-        name: "bestEnv"
-      }
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1`, {
+      id: 1,
+      name: "bestEnv"
+    });
     await client.getEnvironment("ffzefzef3", "1").then(environment => {
       assert.equal(environment.id, "1");
       assert.equal(environment.name, "bestEnv");
@@ -90,15 +84,12 @@ describe("Client", () => {
   });
 
   it("Get activities", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/activities",
-      [
-        {
-          id: 1,
-          completion_percent: 50
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1/activities`, [
+      {
+        id: 1,
+        completion_percent: 50
+      }
+    ]);
     await client.getEnvironmentActivities("ffzefzef3", "1").then(activities => {
       assert.equal(activities.length, 1);
       assert.equal(activities[0].id, "1");
@@ -108,15 +99,12 @@ describe("Client", () => {
   });
 
   it("Get certificates", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/certificates",
-      [
-        {
-          id: 1,
-          key: "test"
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/certificates`, [
+      {
+        id: 1,
+        key: "test"
+      }
+    ]);
     await client.getCertificates("ffzefzef3").then(certificates => {
       assert.equal(certificates.length, 1);
       assert.equal(certificates[0].id, "1");
@@ -127,7 +115,7 @@ describe("Client", () => {
 
   it("Add certificates", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/certificates",
+      `${api_url}/projects/ffzefzef3/certificates`,
       {},
       { method: "POST" }
     );
@@ -140,10 +128,9 @@ describe("Client", () => {
   });
 
   it("Get domains", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/domains?limit=2",
-      [{ id: 1 }]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/domains?limit=2`, [
+      { id: 1 }
+    ]);
 
     await client.getDomains("ffzefzef3", 2).then(domains => {
       assert.equal(domains[0].id, "1");
@@ -152,10 +139,9 @@ describe("Client", () => {
   });
 
   it("Get environment users", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/access",
-      [{ id: 1 }]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1/access`, [
+      { id: 1 }
+    ]);
 
     await client.getEnvironmentUsers("ffzefzef3", "1").then(users => {
       assert.equal(users[0].id, "1");
@@ -164,9 +150,7 @@ describe("Client", () => {
   });
 
   it("Get project users", async () => {
-    fetchMock.mock("https://api.platform.sh/api/projects/ffzefzef3/access", [
-      { id: 1 }
-    ]);
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/access`, [{ id: 1 }]);
 
     await client.getProjectUsers("ffzefzef3").then(users => {
       assert.equal(users[0].id, "1");
@@ -175,15 +159,12 @@ describe("Client", () => {
   });
 
   it("Get variables", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/variables?limit=1",
-      [
-        {
-          id: 1,
-          name: "theVariableName"
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/variables?limit=1`, [
+      {
+        id: 1,
+        name: "theVariableName"
+      }
+    ]);
 
     await client.getProjectVariables("ffzefzef3", 1).then(activities => {
       assert.equal(activities[0].constructor.name, "ProjectLevelVariable");
@@ -193,7 +174,7 @@ describe("Client", () => {
 
   it("Get environment variables", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/variables?limit=1",
+      `${api_url}/projects/ffzefzef3/environments/1/variables?limit=1`,
       [
         {
           id: 1,
@@ -211,15 +192,12 @@ describe("Client", () => {
   });
 
   it("Get routes", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/routes",
-      [
-        {
-          id: 1,
-          project: "ffzefzef3"
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1/routes`, [
+      {
+        id: 1,
+        project: "ffzefzef3"
+      }
+    ]);
 
     await client.getRoutes("ffzefzef3", "1").then(routes => {
       assert.equal(routes[0].constructor.name, "Route");
@@ -229,7 +207,7 @@ describe("Client", () => {
 
   it("Get environment metrics", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/metrics?q=test",
+      `${api_url}/projects/ffzefzef3/environments/1/metrics?q=test`,
       { results: 1 }
     );
 
@@ -242,7 +220,7 @@ describe("Client", () => {
   });
 
   it("Get ssh keys", async () => {
-    fetchMock.mock(`${api_url}/platform/me`, {
+    fetchMock.mock(`${api_url}/me`, {
       id: 1,
       name: "test",
       ssh_keys: [
@@ -258,7 +236,7 @@ describe("Client", () => {
   });
 
   it("Get ssh key", async () => {
-    fetchMock.mock(`${api_url}/v1/ssh_keys/theId`, {
+    fetchMock.mock(`${api_url}/ssh_keys/theId`, {
       changed: "2017-03-13T17:38:49+01:00"
     });
     await client.getSshKey("theId").then(sshkey => {
@@ -269,7 +247,7 @@ describe("Client", () => {
 
   it("Add a bad ssh key", async () => {
     fetchMock.mock(
-      `${api_url}/v1/ssh_keys`,
+      `${api_url}/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
@@ -287,7 +265,7 @@ describe("Client", () => {
 
   it("Add a ssh key", async () => {
     fetchMock.mock(
-      `${api_url}/v1/ssh_keys`,
+      `${api_url}/ssh_keys`,
       {
         changed: "2017-03-13T17:38:49+01:00"
       },
@@ -313,7 +291,7 @@ describe("Client", () => {
 
   it("Create subscription", async () => {
     fetchMock.mock(
-      `${api_url}/v1/subscriptions`,
+      `${api_url}/subscriptions`,
       {
         project_region: "region"
       },
@@ -337,7 +315,7 @@ describe("Client", () => {
   });
 
   it("Get subscription", async () => {
-    fetchMock.mock(`${api_url}/v1/subscriptions/1`, {
+    fetchMock.mock(`${api_url}/subscriptions/1`, {
       project_region: "region"
     });
     await client.getSubscription("1").then(subscription => {
@@ -359,7 +337,7 @@ describe("Client", () => {
   });
 
   it("Get subscriptions", async () => {
-    fetchMock.mock(`${api_url}/v1/subscriptions`, {
+    fetchMock.mock(`${api_url}/subscriptions`, {
       subscriptions: [
         {
           project_region: "region"
@@ -395,7 +373,7 @@ describe("Client", () => {
 
   it("Get subscriptions with filters", async () => {
     fetchMock.mock(
-      `${api_url}/v1/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`,
+      `${api_url}/subscriptions?filter[project_title][value]=Demo&filter[project_title][operator]=Contains`,
       {
         subscriptions: [
           {
@@ -424,7 +402,7 @@ describe("Client", () => {
       backups: "backups"
     };
     fetchMock.mock(
-      `${api_url}/v1/subscriptions/estimate?plan=plan&storage=1&environments=1&user_licenses=1&backups=backups`,
+      `${api_url}/subscriptions/estimate?plan=plan&storage=1&environments=1&user_licenses=1&backups=backups`,
       {
         key: "value"
       }
@@ -436,7 +414,7 @@ describe("Client", () => {
 
   it("Get current deployment informations", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/deployments/current",
+      `${api_url}/projects/ffzefzef3/environments/1/deployments/current`,
       {
         webapps: {
           php: {}
@@ -472,7 +450,7 @@ describe("Client", () => {
 
   it("Get current deployment informations", async () => {
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1/deployments/current",
+      `${api_url}/projects/ffzefzef3/environments/1/deployments/current`,
       {
         webapps: {
           php: {}
@@ -485,7 +463,7 @@ describe("Client", () => {
   });
 
   it("Get organizations", async () => {
-    fetchMock.mock("https://api.platform.sh/api/organizations", {
+    fetchMock.mock(`${api_url}/organizations`, {
       items: [
         {
           id: "1",
@@ -504,7 +482,7 @@ describe("Client", () => {
   });
 
   it("Get organizations with user id", async () => {
-    fetchMock.mock("https://api.platform.sh/api/users/aliceId/organizations", {
+    fetchMock.mock(`${api_url}/users/aliceId/organizations`, {
       items: [
         {
           id: "1",
@@ -523,7 +501,7 @@ describe("Client", () => {
   });
 
   it("Get organization", async () => {
-    fetchMock.mock("https://api.platform.sh/api/organizations/1", {
+    fetchMock.mock(`${api_url}/organizations/1`, {
       id: "1",
       name: "org1",
       label: "the organization",
@@ -538,7 +516,7 @@ describe("Client", () => {
   });
 
   it("Get teams", async () => {
-    fetchMock.mock("https://api.platform.sh/api/platform/me", {
+    fetchMock.mock(`${api_url}/me`, {
       teams: [
         {
           id: "1",
@@ -556,7 +534,7 @@ describe("Client", () => {
   });
 
   it("Get team", async () => {
-    fetchMock.mock("https://api.platform.sh/api/platform/teams/1", {
+    fetchMock.mock(`${api_url}/teams/1`, {
       id: "1",
       name: "team1",
       parent: "2"
@@ -570,29 +548,21 @@ describe("Client", () => {
   });
 
   it("Create team", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/platform/teams",
-      {},
-      { method: "POST" }
-    );
+    fetchMock.mock(`${api_url}/teams`, {}, { method: "POST" });
     await client.createTeam({ name: "team1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
     });
   });
 
   it("Create organization", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/organizations",
-      {},
-      { method: "POST" }
-    );
+    fetchMock.mock(`${api_url}/organizations`, {}, { method: "POST" });
     await client.createOrganization({ name: "organization1" }).then(result => {
       assert.equal(result.constructor.name, "Result");
     });
   });
 
   it("Get regions", async () => {
-    fetchMock.mock("https://accounts.platform.sh/api/platform/regions", {
+    fetchMock.mock(`${api_url}/regions`, {
       regions: [
         {
           available: true,
@@ -616,22 +586,19 @@ describe("Client", () => {
   });
 
   it("Get organization regions", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/organizations/aliceorgid/regions",
-      {
-        items: [
-          {
-            available: true,
-            endpoint: "https://staging.plat.farm/api",
-            id: "us.platform.sh",
-            label: "PEPSi Staging",
-            private: false,
-            provider: "AWS",
-            zone: "Europe"
-          }
-        ]
-      }
-    );
+    fetchMock.mock(`${api_url}/organizations/aliceorgid/regions`, {
+      items: [
+        {
+          available: true,
+          endpoint: "https://staging.plat.farm/api",
+          id: "us.platform.sh",
+          label: "PEPSi Staging",
+          private: false,
+          provider: "AWS",
+          zone: "Europe"
+        }
+      ]
+    });
     await client.getOrganizationRegions("aliceorgid").then(result => {
       assert.equal(result.items[0].id, "us.platform.sh");
       assert.equal(result.items[0].endpoint, "https://staging.plat.farm/api");
@@ -643,7 +610,7 @@ describe("Client", () => {
   });
 
   it("Get account", async () => {
-    fetchMock.mock("https://accounts.platform.sh/api/platform/users/test", {
+    fetchMock.mock(`${api_url}/users/test`, {
       id: "test",
       display_name: "testdn"
     });
@@ -654,7 +621,7 @@ describe("Client", () => {
   });
 
   it("Get orders", async () => {
-    fetchMock.mock(`${api_url}/v1/orders?filter[owner]=1`, {
+    fetchMock.mock(`${api_url}/orders?filter[owner]=1`, {
       commerce_order: [
         {
           id: "803635",
@@ -705,7 +672,7 @@ describe("Client", () => {
       _links: {
         self: {
           title: "Self",
-          href: "http://accounts.psh.local/api/platform/orders"
+          href: `${api_url}/orders`
         }
       }
     });
@@ -769,7 +736,7 @@ describe("Client", () => {
         _links: {
           self: {
             title: "Self",
-            href: "http://accounts.psh.local/api/platform/orders"
+            href: `${api_url}/orders`
           }
         }
       }
@@ -784,7 +751,7 @@ describe("Client", () => {
 
   it("Get order", async () => {
     fetchMock.mock(
-      `${api_url}/v1/orders/1`,
+      `${api_url}/orders/1`,
       JSON.stringify({
         id: "31619",
         status: "invoiced",
@@ -817,7 +784,7 @@ describe("Client", () => {
           }
         },
         currency: "USD",
-        invoice_url: "http://accounts.psh.local/invoices/11959/pdf",
+        invoice_url: `${api_url}/invoices/11959/pdf`,
         line_items: [
           {
             project: "Schulman Theatres",
@@ -880,7 +847,7 @@ describe("Client", () => {
           }
         },
         currency: "USD",
-        invoice_url: "http://accounts.psh.local/invoices/11959/pdf",
+        invoice_url: `${api_url}/invoices/11959/pdf`,
         line_items: [
           {
             project: "Schulman Theatres",
@@ -970,7 +937,7 @@ describe("Client", () => {
 
   describe("Profile pictures", () => {
     it("Delete", async () => {
-      _fetch(`${api_url}/v1/profile/1/picture`, null, { method: "DELETE" });
+      _fetch(`${api_url}/profile/1/picture`, null, { method: "DELETE" });
 
       try {
         await client.deleteProfilePicture("1");
@@ -982,7 +949,7 @@ describe("Client", () => {
 
     it("Update", async () => {
       _fetch(
-        `${api_url}/v1/profile/1/picture`,
+        `${api_url}/profile/1/picture`,
         { url: "xyz" },
         { method: "POST" }
       );
@@ -995,10 +962,10 @@ describe("Client", () => {
 
   describe("Integrations", () => {
     it("Get integrations", async () => {
-      fetchMock.mock(
-        "https://api.platform.sh/api/projects/ffzefzef3/integrations",
-        [{ id: 1 }, { id: 2 }]
-      );
+      fetchMock.mock(`${api_url}/projects/ffzefzef3/integrations`, [
+        { id: 1 },
+        { id: 2 }
+      ]);
 
       await client.getIntegrations("ffzefzef3").then(integrations => {
         assert.equal(integrations[0].id, "1");
@@ -1007,10 +974,9 @@ describe("Client", () => {
     });
 
     it("Get integration", async () => {
-      fetchMock.mock(
-        "https://api.platform.sh/api/projects/ffzefzef3/integrations/qwerty",
-        { id: "qwerty" }
-      );
+      fetchMock.mock(`${api_url}/projects/ffzefzef3/integrations/qwerty`, {
+        id: "qwerty"
+      });
 
       await client.getIntegration("ffzefzef3", "qwerty").then(integration => {
         assert.equal(integration.id, "qwerty");
@@ -1073,10 +1039,10 @@ describe("Client", () => {
               href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/development"
             },
             "#edit": {
-              href: "https://test.com/api/projects/test_project/environment-types/development"
+              href: `${api_url}/projects/test_project/environment-types/development`
             },
             "#access": {
-              href: "https://test.com/api/projects/test_project/environment-types/development/access"
+              href: `${api_url}/projects/test_project/environment-types/development/access`
             }
           },
           attributes: {}
@@ -1088,10 +1054,10 @@ describe("Client", () => {
               href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/production"
             },
             "#edit": {
-              href: "https://test.com/api/projects/test_project/environment-types/production"
+              href: `${api_url}/projects/test_project/environment-types/production`
             },
             "#access": {
-              href: "https://test.com/api/projects/test_project/environment-types/production/access"
+              href: `${api_url}/projects/test_project/environment-types/production/access`
             }
           },
           attributes: {}
@@ -1103,10 +1069,10 @@ describe("Client", () => {
               href: "http://admin.local.c-g.io/api/projects/test_project/environment-types/staging"
             },
             "#edit": {
-              href: "https://test.com/api/projects/test_project/environment-types/staging"
+              href: `${api_url}/projects/test_project/environment-types/staging`
             },
             "#access": {
-              href: "https://test.com/api/projects/test_project/environment-types/staging/access"
+              href: `${api_url}/projects/test_project/environment-types/staging/access`
             }
           },
           attributes: {}
@@ -1119,7 +1085,7 @@ describe("Client", () => {
       );
 
       fetchMock.mock(
-        "https://test.com/api/projects/test_project/environment-types/staging/access",
+        `${api_url}/projects/test_project/environment-types/staging/access`,
         [
           {
             id: "alice",
@@ -1129,7 +1095,7 @@ describe("Client", () => {
         ]
       );
       fetchMock.mock(
-        "https://test.com/api/projects/test_project/environment-types/production/access",
+        `${api_url}/projects/test_project/environment-types/production/access`,
         [
           {
             id: "alice",
@@ -1139,7 +1105,7 @@ describe("Client", () => {
         ]
       );
       fetchMock.mock(
-        "https://test.com/api/projects/test_project/environment-types/development/access",
+        `${api_url}/projects/test_project/environment-types/development/access`,
         [
           {
             id: "alice",
@@ -1207,7 +1173,7 @@ describe("Client", () => {
   describe("Comments", () => {
     it("Create comments", async () => {
       fetchMock.mock(
-        `${api_url}/v1/comments`,
+        `${api_url}/comments`,
         {
           id: "alice"
         },

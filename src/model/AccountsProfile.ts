@@ -5,7 +5,7 @@ import { urlParser } from "../urlParser";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/platform/profiles/:id";
+const url = "/profiles/:id";
 const paramDefaults = {};
 const createableField = [
   "id",
@@ -115,7 +115,7 @@ export class AccountsProfile extends Ressource {
     const { api_url } = getConfig();
 
     const user = await authenticatedRequest(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${api_url}/profiles?filter[username]=${username}`
     );
 
     return new AccountsProfile(user.profiles[0]);
@@ -124,7 +124,7 @@ export class AccountsProfile extends Ressource {
   static async updateProfilePicture(userId: string, picture: FormData) {
     const { api_url } = getConfig();
     return authenticatedRequest(
-      `${api_url}/v1/profile/${userId}/picture`,
+      `${api_url}/profile/${userId}/picture`,
       "POST",
       picture
     );
@@ -133,7 +133,7 @@ export class AccountsProfile extends Ressource {
   static async deleteProfilePicture(userId: string) {
     const { api_url } = getConfig();
     return authenticatedRequest(
-      `${api_url}/v1/profile/${userId}/picture`,
+      `${api_url}/profile/${userId}/picture`,
       "DELETE"
     );
   }
