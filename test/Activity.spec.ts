@@ -7,7 +7,7 @@ import { getConfig } from "../src/config";
 import { Activity } from "../src/model/Activity";
 
 describe("Activity", () => {
-  const { account_url } = getConfig();
+  const { api_url } = getConfig();
 
   beforeEach(() => {
     setAuthenticationPromise(
@@ -22,7 +22,7 @@ describe("Activity", () => {
   it("Wait for activity", async () => {
     let onPollCalled = false;
     let onLogCalled = false;
-    const url = `${account_url}/projects/1/activities/2`;
+    const url = `${api_url}/projects/1/activities/2`;
 
     fetchMock.mock(`${url}?timeout=5.01`, {
       id: 1,
@@ -60,7 +60,7 @@ describe("Activity", () => {
       {
         _links: {
           self: {
-            href: `${account_url}/projects/1/activities/2`
+            href: `${api_url}/projects/1/activities/2`
           }
         },
         id: 1,
@@ -78,7 +78,7 @@ describe("Activity", () => {
   });
 
   it("Stream the logs", async () => {
-    fetchMock.mock(`${account_url}/projects/1/activities/2/logs?start_at=0`, {
+    fetchMock.mock(`${api_url}/projects/1/activities/2/logs?start_at=0`, {
       body: `{"_id": 1, "data": {"message": "Building application 'app' (runtime type: php:7.0, tree: 55a9ed1)"}}
 {"_id": 2, "seal": true}`,
       headers: { "content-type": "application/x-json-stream" }
@@ -88,10 +88,10 @@ describe("Activity", () => {
       {
         _links: {
           self: {
-            href: `${account_url}/projects/1/activities/2`
+            href: `${api_url}/projects/1/activities/2`
           },
           log: {
-            href: `${account_url}/projects/1/activities/2/logs`
+            href: `${api_url}/projects/1/activities/2/logs`
           }
         },
         id: 1,

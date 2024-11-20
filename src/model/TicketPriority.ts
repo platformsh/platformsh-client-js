@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/tickets/priority";
+const url = "/tickets/priority";
 const paramDefaults = {};
 
 export type TicketPriorityGetParams = Record<string, any>;
