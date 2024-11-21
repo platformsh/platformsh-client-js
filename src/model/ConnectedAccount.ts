@@ -8,6 +8,7 @@ const _url = "/users/:userId/connections";
 
 export class ConnectedAccount extends Ressource {
   provider: string;
+  provider_type: string;
   subject: string;
   created_at: string;
   updated_at: string;
@@ -16,6 +17,8 @@ export class ConnectedAccount extends Ressource {
     super(url, {}, {}, connectedAccount, [], []);
 
     this.provider = connectedAccount.provider;
+    this.provider_type =
+      connectedAccount.provider_type || connectedAccount.provider;
     this.subject = connectedAccount.subject;
     this.created_at = connectedAccount.created_at;
     this.updated_at = connectedAccount.updated_at;
