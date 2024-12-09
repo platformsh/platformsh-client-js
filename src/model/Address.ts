@@ -4,7 +4,7 @@ import { urlParser } from "../urlParser";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/profiles/:id/address";
+const url = "/profiles/:id/address";
 const paramDefaults = {};
 
 export type AddressParams = {
@@ -40,17 +40,17 @@ export class Address extends Ressource {
 
   constructor(address: APIObject) {
     const { id } = address;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     super(
-      `${account_url}${url}`,
+      `${api_url}${url}`,
       paramDefaults,
       { id },
       address,
       [],
       _modifiableField
     );
-    this._queryUrl = Address.getQueryUrl(`${account_url}${url}`, id);
+    this._queryUrl = Address.getQueryUrl(`${api_url}${url}`, id);
     this.id = address.id;
     this.country = address.country;
     this.name_line = address.name_line;

@@ -5,7 +5,7 @@ import { urlParser } from "../urlParser";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const _url = "/platform/setup/config";
+const _url = "/setup/config";
 const paramDefaults = {};
 
 export class SetupConfig extends Ressource {

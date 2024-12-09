@@ -7,7 +7,7 @@ import { getConfig } from "../src/config";
 import { Account } from "../src/model/Account";
 
 describe("Account", () => {
-  const { account_url } = getConfig();
+  const { api_url } = getConfig();
 
   beforeAll(() => {
     setAuthenticationPromise(
@@ -20,7 +20,7 @@ describe("Account", () => {
   });
 
   it("Get account", async () => {
-    fetchMock.mock(`${account_url}/platform/users/1`, {
+    fetchMock.mock(`${api_url}/users/1`, {
       id: 1,
       email: "test@test.com"
     });
@@ -40,10 +40,7 @@ describe("Account", () => {
       { id: "4", email: "test4" }
     ];
 
-    fetchMock.mock(
-      `${account_url}/platform/users?id=1&id=2&id=3&id=4`,
-      accounts
-    );
+    fetchMock.mock(`${api_url}/users?id=1&id=2&id=3&id=4`, accounts);
 
     await Account.query({ id: ["1", "2", "3", "4"] }).then(accts => {
       assert.equal(accts.length, 4);
