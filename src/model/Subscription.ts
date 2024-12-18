@@ -3,7 +3,6 @@ import isUrl from "is-url";
 import { authenticatedRequest } from "../api";
 import { getConfig } from "../config";
 
-import { Account } from "./Account";
 import type {
   MaybeComplexFormattedCost,
   MaybeComplexFormattedCostCounter,
@@ -463,20 +462,6 @@ export class Subscription extends Ressource {
    */
   getStatus() {
     return this.status;
-  }
-
-  /**
-   * Get the account for the project's owner.
-   *
-   * @return Account|false
-   */
-  async getOwner() {
-    const id = this.owner;
-
-    return Account.get(
-      { id },
-      this.makeAbsoluteUrl("/api/users", this.getLink("project"))
-    );
   }
 
   /**
