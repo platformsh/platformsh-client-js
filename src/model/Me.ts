@@ -9,7 +9,7 @@ import type { SshKey } from "./SshKey";
 import type { Team } from "./Team";
 import { User } from "./User";
 
-const url = "/platform/me";
+const url = "/me";
 const modifiableField = [
   "picture",
   "mail",
@@ -92,7 +92,7 @@ export class Me extends User {
   async update(data: APIObject) {
     const { api_url } = getConfig();
 
-    const result = await super.update(data, `${api_url}/platform/profiles/:id`);
+    const result = await super.update(data, `${api_url}/profiles/:id`);
 
     return new Result(new Me(result.data)); // Account API does not return a Result
   }

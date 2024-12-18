@@ -3,9 +3,12 @@ import { assert, afterEach, beforeAll, describe, it } from "vitest";
 
 import { setAuthenticationPromise } from "../src/api";
 import type { JWTToken } from "../src/authentication";
+import { getConfig } from "../src/config";
 import { SourceOperation } from "../src/model/SourceOperation";
 
 describe("Source operation", () => {
+  const { api_url } = getConfig();
+
   beforeAll(() => {
     setAuthenticationPromise(
       Promise.resolve("testToken" as unknown as JWTToken)
@@ -19,7 +22,7 @@ describe("Source operation", () => {
   it("Get SourceOperation", async () => {
     const command = 'set -e\necho "Does this SourceOp run?""\n';
     fetchMock.mock(
-      "https://api.platform.sh/api/projects/asdf1234/environments/staging/source-operations",
+      `${api_url}/projects/asdf1234/environments/staging/source-operations`,
       [
         {
           operation: "Test",

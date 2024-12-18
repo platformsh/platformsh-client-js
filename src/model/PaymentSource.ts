@@ -5,7 +5,7 @@ import { urlParser } from "../urlParser";
 import type { APIObject, ParamsType } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/platform/payment_source";
+const url = "/payment_source";
 const paramDefaults = {};
 const creatableField = ["type", "token", "email", "chargeable"];
 

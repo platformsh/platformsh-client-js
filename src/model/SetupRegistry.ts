@@ -5,7 +5,7 @@ import { urlParser } from "../urlParser";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const _url = "/platform/setup/registry";
+const _url = "/setup/registry";
 const paramDefaults = {};
 
 export type SetupRegistryGetParams = {
