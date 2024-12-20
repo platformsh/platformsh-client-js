@@ -86,9 +86,9 @@ export default class Client {
       if (project?.endpoint) {
         return project.endpoint;
       }
-      const { account_url } = getConfig();
+      const { api_url } = getConfig();
 
-      return request(`${account_url}/platform/projects/${id}`, "GET").then(
+      return request(`${api_url}/projects/${id}`, "GET").then(
         result => result.endpoint || false
       );
     });
@@ -646,7 +646,7 @@ export default class Client {
   }) {
     const { api_url } = getConfig();
 
-    return request(`${api_url}/v1/subscriptions/estimate`, "GET", params);
+    return request(`${api_url}/subscriptions/estimate`, "GET", params);
   }
 
   /**
@@ -983,7 +983,7 @@ export default class Client {
    */
   async getCardOnFile() {
     const { api_url } = getConfig();
-    const card = request(`${api_url}/platform/cardonfile`, "GET");
+    const card = request(`${api_url}/cardonfile`, "GET");
     return card;
   }
 
@@ -1172,7 +1172,7 @@ export default class Client {
   async updateUserProfile(id: string, data: APIObject) {
     const { api_url } = getConfig();
     const updatedProfile = await request(
-      `${api_url}/platform/profiles/${id}`,
+      `${api_url}/profiles/${id}`,
       "PATCH",
       data
     );
@@ -1206,7 +1206,7 @@ export default class Client {
    */
   async getSetupRegistry() {
     const { api_url } = getConfig();
-    return request(`${api_url}/platform/setup/registry`, "POST").then(
+    return request(`${api_url}/setup/registry`, "POST").then(
       (data: Record<string, APIObject>) =>
         typeof data === "undefined"
           ? undefined
@@ -1261,7 +1261,7 @@ export default class Client {
     const { api_url } = getConfig();
 
     const user = await request(
-      `${api_url}/v1/profiles?filter[username]=${username}`
+      `${api_url}/profiles?filter[username]=${username}`
     );
 
     return new entities.AccountsProfile(user.profiles[0]);

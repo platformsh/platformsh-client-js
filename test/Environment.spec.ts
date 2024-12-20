@@ -7,6 +7,8 @@ import { getConfig } from "../src/config";
 import { Environment } from "../src/model/Environment";
 
 describe("Environment", () => {
+  const { api_url } = getConfig();
+
   beforeAll(() => {
     setAuthenticationPromise(
       Promise.resolve("testToken" as unknown as JWTToken)
@@ -18,15 +20,12 @@ describe("Environment", () => {
   });
 
   it("Get environments", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments",
-      [
-        {
-          id: "1",
-          name: "thevar"
-        }
-      ]
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments`, [
+      {
+        id: "1",
+        name: "thevar"
+      }
+    ]);
 
     await Environment.query({
       projectId: "ffzefzef3"
@@ -37,13 +36,10 @@ describe("Environment", () => {
   });
 
   it("Get environment", async () => {
-    fetchMock.mock(
-      "https://api.platform.sh/api/projects/ffzefzef3/environments/1",
-      {
-        id: 1,
-        name: "thevar"
-      }
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1`, {
+      id: 1,
+      name: "thevar"
+    });
 
     await Environment.get({
       projectId: "ffzefzef3",
@@ -54,23 +50,20 @@ describe("Environment", () => {
   });
 
   it("Get variable", async () => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/variables/1",
-      {
-        id: 1,
-        name: "thevar"
-      }
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/1/variables/1`, {
+      id: 1,
+      name: "thevar"
+    });
     const environment = new Environment(
       {
         _links: {
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           }
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     await environment.getVariable("1").then(variable => {
@@ -80,7 +73,7 @@ describe("Environment", () => {
 
   it("Delete environment", async () => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1",
+      `${api_url}/projects/ffzefzef3/environments/1`,
       {},
       { method: "DELETE" }
     );
@@ -88,16 +81,16 @@ describe("Environment", () => {
       {
         _links: {
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#delete": {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           }
         },
         id: 1,
         status: "inactive"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      `${api_url}/projects/ffzefzef3/environments/1`
     );
 
     await environment.delete();
@@ -105,7 +98,7 @@ describe("Environment", () => {
 
   it("Activate environment", async () => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/activate",
+      `${api_url}/projects/ffzefzef3/environments/1/activate`,
       {
         _embedded: {
           activities: [
@@ -113,7 +106,7 @@ describe("Environment", () => {
               id: "kwfj7emjcltpm",
               _links: {
                 self: {
-                  href: "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                  href: `${api_url}/projects/test_project/activities/kwfj7emjcltpm`,
                   meta: {
                     get: {
                       responses: {
@@ -249,19 +242,19 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           },
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#activate": {
-            href: "/api/projects/ffzefzef3/environments/1/activate"
+            href: "/projects/ffzefzef3/environments/1/activate"
           }
         },
         id: 1,
         status: "inactive"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      `${api_url}/projects/ffzefzef3/environments/1`
     );
 
     await environment.activate();
@@ -269,7 +262,7 @@ describe("Environment", () => {
 
   it("Deactivate environment", async () => {
     fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/1/deactivate",
+      `${api_url}/projects/ffzefzef3/environments/1/deactivate`,
       {
         _embedded: {
           activities: [
@@ -277,7 +270,7 @@ describe("Environment", () => {
               id: "kwfj7emjcltpm",
               _links: {
                 self: {
-                  href: "https://admin.local.c-g.io/api/projects/test_project/activities/kwfj7emjcltpm",
+                  href: `${api_url}/projects/test_project/activities/kwfj7emjcltpm`,
                   meta: {
                     get: {
                       responses: {
@@ -413,42 +406,39 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "/api/projects/ffzefzef3/environments/1"
+            href: "/projects/ffzefzef3/environments/1"
           },
           "#manage-variables": {
-            href: "/api/projects/ffzefzef3/environments/1/variables"
+            href: "/projects/ffzefzef3/environments/1/variables"
           },
           "#deactivate": {
-            href: "/api/projects/ffzefzef3/environments/1/deactivate"
+            href: "/projects/ffzefzef3/environments/1/deactivate"
           }
         },
         id: 1,
         status: "active"
       },
-      "https://test.com/api/projects/ffzefzef3/environments/1"
+      `${api_url}/projects/ffzefzef3/environments/1`
     );
 
     await environment.deactivate();
   });
 
   it("Get metrics", async () => {
-    fetchMock.mock(
-      "https://test.com/api/projects/ffzefzef3/environments/metrics",
-      {
-        results: {}
-      }
-    );
+    fetchMock.mock(`${api_url}/projects/ffzefzef3/environments/metrics`, {
+      results: {}
+    });
 
     const environment = new Environment(
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           }
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     await environment.getMetrics("").then(metrics => {
@@ -461,7 +451,7 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           },
           ssh: {
             href: "ssh://testproject-master-7rqtwti@git.local.c-g.io"
@@ -469,7 +459,7 @@ describe("Environment", () => {
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     const sshUrl = environment.getSshUrl();
@@ -482,7 +472,7 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           },
           ssh: {
             href: "ssh://testproject-master-7rqtwti@git.local.c-g.io"
@@ -490,7 +480,7 @@ describe("Environment", () => {
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     const sshUrl = environment.getSshUrl("php");
@@ -503,7 +493,7 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           },
           "pf:ssh:php": {
             href: "ssh://testproject-master-7rqtwti--php@git.local.c-g.io"
@@ -511,7 +501,7 @@ describe("Environment", () => {
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     const sshUrl = environment.getSshUrl("php");
@@ -524,7 +514,7 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           },
           "pf:ssh:php": {
             href: "ssh://testproject-master-7rqtwti--php@git.local.c-g.io"
@@ -535,7 +525,7 @@ describe("Environment", () => {
         },
         id: 1
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
 
     const sshUrl = environment.getSshUrl("php");
@@ -548,7 +538,7 @@ describe("Environment", () => {
       {
         _links: {
           self: {
-            href: "https://test.com/api/projects/ffzefzef3/environments"
+            href: `${api_url}/projects/ffzefzef3/environments`
           },
           "pf:ssh:php": {
             href: "ssh://testproject-master-7rqtwti--php@git.local.c-g.io"
@@ -561,16 +551,14 @@ describe("Environment", () => {
         head_commit: "shastring",
         project: "ffzefzef3"
       },
-      "https://test.com/api/projects/ffzefzef3/environments"
+      `${api_url}/projects/ffzefzef3/environments`
     );
-
-    const { api_url } = getConfig();
 
     fetchMock.mock(`${api_url}/projects/ffzefzef3/git/commits/shastring`, {
       id: "shastring",
       _links: {
         self: {
-          href: "https://region.platform.sh/api/projects/ffzefzef3/git/commits/shastring"
+          href: `${api_url}/projects/ffzefzef3/git/commits/shastring`
         }
       },
       sha: "shastring",

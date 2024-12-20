@@ -3,7 +3,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/platform/users/:id";
+const url = "/users/:id";
 const paramDefaults = {};
 
 export type AccountGetParams = {
@@ -23,9 +23,9 @@ export class Account extends Ressource {
 
   constructor(account: APIObject) {
     const { id } = account;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
-    super(`${account_url}${url}`, paramDefaults, { id }, account);
+    super(`${api_url}${url}`, paramDefaults, { id }, account);
     this._queryUrl = Ressource.getQueryUrl(url);
     this.id = account.id;
     this.created_at = account.created_at;
@@ -39,10 +39,10 @@ export class Account extends Ressource {
 
   static async get(params: AccountGetParams, customUrl?: string) {
     const { id, ...queryParams } = params;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super._get<Account>(
-      customUrl ?? `${account_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       { id },
       paramDefaults,
       queryParams
@@ -50,10 +50,10 @@ export class Account extends Ressource {
   }
 
   static async query(params: AccountGetParams) {
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     return super._query<Account>(
-      this.getQueryUrl(`${account_url}${url}`),
+      this.getQueryUrl(`${api_url}${url}`),
       {},
       paramDefaults,
       params

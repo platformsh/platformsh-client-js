@@ -7,7 +7,7 @@ import { getConfig } from "../src/config";
 import { Subscription } from "../src/model/Subscription";
 
 describe("Subscribe", () => {
-  const { account_url } = getConfig();
+  const { api_url } = getConfig();
 
   beforeEach(() => {
     setAuthenticationPromise(
@@ -22,7 +22,7 @@ describe("Subscribe", () => {
   it("Wait for subscription", async () => {
     let onPollCalled = false;
 
-    fetchMock.mock(`${account_url}/subscriptions/1`, {
+    fetchMock.mock(`${api_url}/subscriptions/1`, {
       body: {
         id: 1,
         status: "active"
@@ -31,7 +31,7 @@ describe("Subscribe", () => {
     const subscription = new Subscription({
       _links: {
         self: {
-          href: `${account_url}/subscriptions/1`
+          href: `${api_url}/subscriptions/1`
         }
       },
       id: 1,
@@ -40,7 +40,7 @@ describe("Subscribe", () => {
     const onPoll = () => {
       onPollCalled = true;
       fetchMock.restore();
-      fetchMock.mock(`${account_url}/subscriptions/1`, {
+      fetchMock.mock(`${api_url}/subscriptions/1`, {
         body: {
           id: 1,
           status: "active"

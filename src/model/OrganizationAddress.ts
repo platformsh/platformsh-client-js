@@ -46,17 +46,17 @@ export class OrganizationAddress extends Ressource {
 
   constructor(account: APIObject, customUrl?: string) {
     const { id } = account;
-    const { account_url } = getConfig();
+    const { api_url } = getConfig();
 
     super(
-      customUrl ?? `${account_url}${url}`,
+      customUrl ?? `${api_url}${url}`,
       paramDefaults,
       { id },
       account,
       [],
       _modifiableField
     );
-    this._queryUrl = Ressource.getQueryUrl(`${account_url}${url}`);
+    this._queryUrl = Ressource.getQueryUrl(`${api_url}${url}`);
     this.id = account.id;
     this.country = account.country;
     this.name_line = account.name_line;

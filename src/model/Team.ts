@@ -5,7 +5,7 @@ import { Ressource } from "./Ressource";
 import { TeamMember } from "./TeamMember";
 
 const paramDefaults = {};
-const _url = "/platform/teams";
+const _url = "/teams";
 
 const creatableField = ["name", "parent", "id"];
 const modifiableField = ["name"];

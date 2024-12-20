@@ -4,7 +4,7 @@ import { getConfig } from "../config";
 import type { APIObject } from "./Ressource";
 import { Ressource } from "./Ressource";
 
-const url = "/v1/comments";
+const url = "/comments";
 const paramDefaults = {};
 
 const createableField = ["body", "ticket_id", "attachments", "author_id"];
