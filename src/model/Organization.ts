@@ -3,8 +3,10 @@ import { getConfig } from "../config";
 
 import type {
   MaybeComplexFormattedCost,
+  MaybeComplexFormattedCostCounter,
   MaybeComplexFormattedCostMeasure,
-  MaybeComplexFormattedCostWithQuantity
+  MaybeComplexFormattedCostWithQuantity,
+  MaybeComplexFormattedCostWithUnitPrice
 } from "./Cost";
 import type { CursoredResult } from "./CursoredResult";
 import { OrganizationDiscount } from "./OrganizationDiscount";
@@ -37,16 +39,17 @@ type _OrganizationEstimate<IsComplex> = {
   sub_total: MaybeComplexFormattedCost<IsComplex>;
   discounts: MaybeComplexFormattedCost<IsComplex>;
   allowance_discount: MaybeComplexFormattedCost<IsComplex>;
-  enterprise_discount: MaybeComplexFormattedCost<IsComplex>;
-  startup_discount: MaybeComplexFormattedCost<IsComplex>;
+  enterprise_discount: MaybeComplexFormattedCost<IsComplex> | null;
+  startup_discount: MaybeComplexFormattedCost<IsComplex> | null;
   vouchers: MaybeComplexFormattedCost<IsComplex>;
   options: {
-    support_level: MaybeComplexFormattedCost<IsComplex>;
-    user_management: MaybeComplexFormattedCost<IsComplex>;
-    viewer_user: MaybeComplexFormattedCost<IsComplex>;
-    admin_user: MaybeComplexFormattedCost<IsComplex>;
-    standard_management_user: MaybeComplexFormattedCost<IsComplex>;
-    advanced_management_user: MaybeComplexFormattedCost<IsComplex>;
+    support_level?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    user_management?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    viewer_user: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    admin_user: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    standard_management_user: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    advanced_management_user: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    onboarding_training?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
   };
 
   user_licenses: {
@@ -100,12 +103,14 @@ type _OrganizationEstimate<IsComplex> = {
         logs_fwd_content_size: number;
         fastly_bandwidth?: number;
         fastly_requests?: number;
+        onboarding_setup?: number;
       };
     }[];
   };
 
   support_level: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   user_management: MaybeComplexFormattedCostWithQuantity<IsComplex>;
+  onboarding_training?: MaybeComplexFormattedCostCounter<IsComplex>;
 };
 
 export type OrganizationEstimate = _OrganizationEstimate<false>;
