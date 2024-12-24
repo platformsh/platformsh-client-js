@@ -8,7 +8,8 @@ import type {
   MaybeComplexFormattedCostCounter,
   MaybeComplexFormattedCostMeasure,
   MaybeComplexFormattedCostWithTitle,
-  MaybeComplexFormattedCostWithQuantity
+  MaybeComplexFormattedCostWithQuantity,
+  MaybeComplexFormattedCostWithUnitPrice
 } from "./Cost";
 import { Project } from "./Project";
 import type { APIObject } from "./Ressource";
@@ -117,29 +118,30 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
   plan: MaybeComplexFormattedCostWithQuantity<IsComplex>;
   total: MaybeComplexFormattedCost<IsComplex>;
   options: {
-    storage: MaybeComplexFormattedCost<IsComplex>;
-    environments: MaybeComplexFormattedCost<IsComplex>;
-    user_licenses: MaybeComplexFormattedCost<IsComplex>;
-    cpu_development: MaybeComplexFormattedCost<IsComplex>;
-    storage_development: MaybeComplexFormattedCost<IsComplex>;
-    memory_development: MaybeComplexFormattedCost<IsComplex>;
-    cpu_production: MaybeComplexFormattedCost<IsComplex>;
-    storage_production: MaybeComplexFormattedCost<IsComplex>;
-    memory_production: MaybeComplexFormattedCost<IsComplex>;
-    cpu_app: MaybeComplexFormattedCost<IsComplex>;
-    storage_app_services: MaybeComplexFormattedCost<IsComplex>;
-    memory_app: MaybeComplexFormattedCost<IsComplex>;
-    cpu_services: MaybeComplexFormattedCost<IsComplex>;
-    memory_services: MaybeComplexFormattedCost<IsComplex>;
-    backup_storage: MaybeComplexFormattedCost<IsComplex>;
-    build_cpu: MaybeComplexFormattedCost<IsComplex>;
-    build_memory: MaybeComplexFormattedCost<IsComplex>;
-    egress_bandwidth: MaybeComplexFormattedCost<IsComplex>;
-    ingress_requests: MaybeComplexFormattedCost<IsComplex>;
-    logs_fwd_content_size: MaybeComplexFormattedCost<IsComplex>;
-    fastly_bandwidth?: MaybeComplexFormattedCost<IsComplex>;
-    fastly_requests?: MaybeComplexFormattedCost<IsComplex>;
-    continuous_profiling?: MaybeComplexFormattedCost<IsComplex>;
+    storage: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    environments: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    user_licenses: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    cpu_development: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    storage_development: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    memory_development: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    cpu_production: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    storage_production: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    memory_production: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    cpu_app: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    storage_app_services: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    memory_app: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    cpu_services: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    memory_services: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    backup_storage: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    build_cpu: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    build_memory: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    egress_bandwidth: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    ingress_requests: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    logs_fwd_content_size: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    fastly_bandwidth?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    fastly_requests?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    continuous_profiling?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
+    onboarding_setup?: MaybeComplexFormattedCostWithUnitPrice<IsComplex>;
   };
   storage: MaybeComplexFormattedCostMeasure<IsComplex>;
   environments: MaybeComplexFormattedCostMeasure<IsComplex>;
@@ -161,6 +163,7 @@ type _SubscriptionEstimate<IsComplex extends boolean> = {
   egress_bandwidth: MaybeComplexFormattedCostCounter<IsComplex>;
   ingress_requests: MaybeComplexFormattedCostCounter<IsComplex>;
   logs_fwd_content_size: MaybeComplexFormattedCostCounter<IsComplex>;
+  onboarding_setup?: MaybeComplexFormattedCostCounter<IsComplex>;
   fastly_bandwidth?: MaybeComplexFormattedCostCounter<IsComplex>;
   fastly_requests?: MaybeComplexFormattedCostCounter<IsComplex>;
   big_dev: MaybeComplexFormattedCostWithQuantity<IsComplex>;

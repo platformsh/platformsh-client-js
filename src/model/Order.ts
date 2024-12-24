@@ -17,8 +17,10 @@ export type CommerceOrderResponse = {
 
 export type LineItemComponent = {
   amount: number;
+  amount_formatted?: string;
   currency?: string;
   display_title: string;
+  formatted?: string;
 };
 
 export type OrderLineItem = {
@@ -31,14 +33,15 @@ export type OrderLineItem = {
   end: string;
   unit_price: number;
   quantity: string | number;
+  quantity_formatted?: string;
   consumption: string | number;
   duration: number;
   exclude_from_invoice?: boolean;
   id: string;
-  organization: string;
+  organization: string | null;
   plan_record_id: string;
   proration: number;
-  records: {
+  records?: {
     duration: number;
     end: string;
     quantity: string;

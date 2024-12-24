@@ -9,6 +9,10 @@ export type FormattedCostWithQuantity = FormattedCost & {
   quantity: number;
 };
 
+export type FormattedCostWithUnitPrice = FormattedCost & {
+  unit_price_formatted: string;
+};
+
 export type FormattedCostWithTitle = FormattedCost & {
   display_title: string;
 };
@@ -23,7 +27,8 @@ export type FormattedCostCounter = FormattedCostWithQuantity & {
   usage_type: "counter";
   current_usage: number;
   current_usage_formatted: string;
-  daily_average: number;
+  daily_average?: number;
+  custom_description?: string;
 };
 
 type MaybeComplex<T, IsComplex> = IsComplex extends true ? T : string;
@@ -32,6 +37,9 @@ export type MaybeComplexFormattedCost<IsComplex = false> = MaybeComplex<
   FormattedCost,
   IsComplex
 >;
+
+export type MaybeComplexFormattedCostWithUnitPrice<IsComplex = false> =
+  MaybeComplex<FormattedCostWithUnitPrice, IsComplex>;
 
 export type MaybeComplexFormattedCostWithQuantity<IsComplex = false> =
   MaybeComplex<FormattedCostWithQuantity, IsComplex>;
