@@ -35,12 +35,13 @@ export type OrderLineItem = {
   quantity: string | number;
   quantity_formatted?: string;
   consumption: string | number;
+  custom_description?: string;
   duration: number;
   exclude_from_invoice?: boolean;
   id: string;
   organization: string | null;
-  plan_record_id: string;
-  proration: number;
+  plan_record_id: string | null;
+  proration: string | number;
   records?: {
     duration: number;
     end: string;
