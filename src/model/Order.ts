@@ -93,7 +93,7 @@ export class Order extends Ressource {
     this.last_refreshed = account.last_refreshed;
     this.total = account.total;
     this.total_formatted = account.total_formatted;
-    this.components = account.components ?? {};
+    this.components = Order.sortByWeight(account.components ?? {});
     this.currency = account.currency;
     this.invoice_url = account.invoice_url;
     this.line_items = account.line_items ?? [];
@@ -122,5 +122,18 @@ export class Order extends Ressource {
       params,
       data => (data as CommerceOrderResponse)?.commerce_order
     );
+  }
+
+  static sortByWeight(
+    components: Record<string, LineItemComponent>
+  ): Record<string, LineItemComponent> {
+    const sortedKeys = Object.keys(components).sort(
+      (a, b) => (components[a].weight ?? 0) - (components[b].weight ?? 0)
+    );
+    const sortedComponents: Record<string, LineItemComponent> = {};
+    for (const key of sortedKeys) {
+      sortedComponents[key] = components[key];
+    }
+    return sortedComponents;
   }
 }
