@@ -21,6 +21,7 @@ export type LineItemComponent = {
   currency?: string;
   display_title: string;
   formatted?: string;
+  weight?: number;
 };
 
 export type OrderLineItem = {
