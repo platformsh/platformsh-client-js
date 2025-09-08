@@ -63,7 +63,8 @@ export const request = async (
   data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber = 0,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
+  returnRaw = false
 ): Promise<any> => {
   const body = data instanceof Array ? data && [...data] : data && { ...data };
 
@@ -119,11 +120,17 @@ export const request = async (
                   data,
                   additionalHeaders,
                   retryNumber + 1,
-                  options
+                  options,
+                  returnRaw
                 )
               );
             });
           }
+        }
+
+        if (returnRaw) {
+          resolve(response);
+          return response;
         }
 
         const imageTypes = ["image/gif", "image/jpeg", "image/png"];
@@ -182,7 +189,8 @@ export const authenticatedRequest = async (
   data?: FormData | object | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber = 0,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
+  returnRaw = false
 ): Promise<any> => {
   const token = await authenticationPromise;
   if (!token) {
@@ -208,7 +216,8 @@ export const authenticatedRequest = async (
         data,
         additionalHeaders,
         retryNumber + 1,
-        options
+        options,
+        returnRaw
       )
     );
   }
@@ -216,6 +225,7 @@ export const authenticatedRequest = async (
   const authenticationHeaders = {
     Authorization: `Bearer ${token.access_token}`
   };
+
   return request(
     url,
     method,
@@ -225,7 +235,8 @@ export const authenticatedRequest = async (
       ...authenticationHeaders
     },
     retryNumber,
-    options
+    options,
+    returnRaw
   );
 };
 
