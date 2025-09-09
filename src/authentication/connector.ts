@@ -183,7 +183,7 @@ const authorizationCodeCallback = async (
 const logInWithRedirect = async (
   reset = false,
   extraParams?: Record<string, string>
-) => {
+): Promise<any> => {
   console.log("In redirect...");
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
