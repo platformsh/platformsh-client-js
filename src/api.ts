@@ -27,7 +27,7 @@ if (isNode) {
   defaultHeaders["Content-Type"] = "application/json";
 }
 
-const isFormData = (data: FormData | object | undefined) =>
+const isFormData = (data: FormData | object | null | undefined) =>
   typeof FormData !== "undefined" && data instanceof FormData;
 
 // To transform header value string to an object:
@@ -60,7 +60,7 @@ const getChallengeExtraParams = (headers: Headers): Record<string, string> => {
 export const request = async (
   url: string,
   method: string,
-  data?: FormData | object | undefined,
+  data?: FormData | object | null | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber = 0,
   options: RequestOptions = {},
@@ -186,7 +186,7 @@ export const request = async (
 export const authenticatedRequest = async (
   url: string,
   method = "GET",
-  data?: FormData | object | undefined,
+  data?: FormData | object | null | undefined,
   additionalHeaders: Record<string, string> = {},
   retryNumber = 0,
   options: RequestOptions = {},
