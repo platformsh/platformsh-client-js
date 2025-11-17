@@ -59,6 +59,7 @@ export class Order extends Ressource {
   status: string;
   owner: string;
   address: object;
+  company: string;
   vat_number: number;
   billing_period_start: string;
   billing_period_end: string;
@@ -86,6 +87,7 @@ export class Order extends Ressource {
     this.status = account.status;
     this.owner = account.owner;
     this.address = account.address ?? {};
+    this.company = account.company;
     this.vat_number = account.vat_number;
     this.billing_period_start = account.billing_period_start;
     this.billing_period_end = account.billing_period_end;
